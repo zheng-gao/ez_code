@@ -197,8 +197,8 @@ function control() {
         local usage=$(ez_build_usage -o "init" -d "Control Project Pipeline")
         usage+=$(ez_build_usage -o "add" -a "-o|--operations" -d "Choose from: [$(ez_join ', ' "${VALID_OPERATIONS[@]}")]")
         usage+=$(ez_build_usage -o "add" -a "-a|--args" -d "The arguments of control_* function")
-        usage+=$(ez_build_usage -o "add" -a "-d|--development" -d "[Flag] Development Workflow: [clean, build, test, install_local]")
-        usage+=$(ez_build_usage -o "add" -a "-r|--release" -d "[Flag] Release Workflow: [clean, build, test, publish]")
+        usage+=$(ez_build_usage -o "add" -a "-d|--development" -d "[Flag] Development Workflow: [clean, build, test, install_local, clean]")
+        usage+=$(ez_build_usage -o "add" -a "-r|--release" -d "[Flag] Release Workflow: [clean, build, test, publish, clean]")
         ez_print_usage "${usage}"; return
     fi
     local main_args=("-o" "--operations" "-d" "--development" "-r" "--release" "-f" "--flags") operations=() development release args=()
