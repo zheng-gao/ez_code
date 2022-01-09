@@ -1,5 +1,7 @@
 import random
 
+from collections import deque
+
 from ezcode.tree.algorithm import *
 from ezcode.tree.const import *
 from ezcode.tree.printer import *
@@ -79,6 +81,45 @@ class BinaryTree(object):
 
     def max_path_sum(self):
         return max_path_sum(self.root, self.data_name, self.left_name, self.right_name)[0]
+
+    def serialize(self, delimiter: str = ",") -> str:
+        if not self.root:
+            return ""
+        sequence = [self.root.__dict__[self.data_name]]
+        queue = deque([self.root])
+        while len(queue) > 0:
+            node = queue.popleft()
+            if node:
+                queue.append(node.__dict__[self.left_name])
+                queue.append(node.__dict__[self.right_name])
+                if not node.__dict__[self.left_name]:
+                    sequence.append(None)
+                else:
+                    sequence.append(node.__dict__[self.left_name].__dict__[self.data_name])
+                if not node.__dict__[self.right_name]:
+                    sequence.append(None)
+                else:
+                    sequence.append(node.__dict__[self.right_name].__dict__[self.data_name])
+        return delimiter.join([str(x) for x in sequence])
+
+    def deserialize(self, formatter, string: str, delimiter: str = ","):
+        sequence = string.split(delimiter)
+        if not sequence or not sequence[0]:
+            return None
+        root = self.new_node(formatter(sequence[0]))
+        queue = deque([root])
+        index = 1
+        while len(queue) > 0:
+            node = queue.popleft()
+            if node:
+                left = self.new_node(formatter(sequence[index])) if sequence[index] != "None" else None
+                right = self.new_node(formatter(sequence[index + 1])) if sequence[index + 1] != "None" else None
+                index += 2
+                node.__dict__[self.left_name] = left
+                node.__dict__[self.right_name] = right
+                queue.append(left)
+                queue.append(right)
+        return root
 
 
 class RandomBinaryTree(BinaryTree):

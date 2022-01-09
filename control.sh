@@ -197,7 +197,7 @@ function control() {
         local usage=$(ez_build_usage -o "init" -d "Control Project Pipeline")
         usage+=$(ez_build_usage -o "add" -a "-o|--operations" -d "Choose from: [$(ez_join ', ' "${VALID_OPERATIONS[@]}")]")
         usage+=$(ez_build_usage -o "add" -a "-a|--args" -d "The arguments of control_* function")
-        usage+=$(ez_build_usage -o "add" -a "-d|--development" -d "[Flag] Development Workflow: [clean, build, test, install_local, clean]")
+        usage+=$(ez_build_usage -o "add" -a "-d|--development" -d "[Flag] Development Workflow: [clean, uninstall, build, test, install_local, clean]")
         usage+=$(ez_build_usage -o "add" -a "-r|--release" -d "[Flag] Release Workflow: [clean, build, test, publish, clean]")
         ez_print_usage "${usage}"; return
     fi
@@ -224,7 +224,7 @@ function control() {
     else
         [[ -z "${operations[*]}" ]] && ez_print_log -l "ERROR" -m "Must select at least one operation if no workflow is selected!" && return 1
     fi
-    [[ "${development}" = "True" ]] && operations=("clean" "build" "test" "install_local")
+    [[ "${development}" = "True" ]] && operations=("clean" "uninstall" "build" "test" "install_local")
     [[ "${release}" = "True" ]] && operations=("clean" "build" "test" "publish")
     for opt in "${operations[@]}"; do
         ez_exclude "${opt}" "${VALID_OPERATIONS[@]}" && ez_print_log -l "ERROR" -m "Invalid operation \"${opt}\"" && return 1
