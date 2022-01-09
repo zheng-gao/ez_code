@@ -228,7 +228,7 @@ function control() {
         ez_exclude "${skp}" "${VALID_SKIPS[@]}" && ez_print_log -l "ERROR" -m "Invalid skip \"${skp}\"" && return 1
     done
     if [[ "${operations[0]}" = "ALL" ]]; then
-        operations=("clean" "uninstall" "build" "install_local" "test")
+        operations=("clean" "uninstall" "build" "test")
     fi
     for opt in "${operations[@]}"; do
         ez_contain "${opt}" "${skips[@]}" && ez_print_log -m "Operation \"${opt}\" is skipped!" && continue

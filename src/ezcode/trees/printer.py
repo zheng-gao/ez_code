@@ -3,9 +3,7 @@ import random
 import sys
 
 from collections import deque
-
-from eztree.utils.const import DATA_NAME, LEFT_NAME, RIGHT_NAME
-from eztree.utils.const import LEFT_WING, LEFT_WING_HEAD, LEFT_WING_TAIL, RIGHT_WING, RIGHT_WING_HEAD, RIGHT_WING_TAIL
+from ezcode.trees.const import *
 
 
 class BinaryTreePrinter:

@@ -1,6 +1,6 @@
 import pytest
 
-from eztree.utils.printer import BinaryTreePrinter
+from ezcode.trees.printer import BinaryTreePrinter
 from fixtures.trees import s_tree
 
 

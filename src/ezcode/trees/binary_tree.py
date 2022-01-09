@@ -1,10 +1,8 @@
-from eztree.utils.algorithms import find_depth, is_balanced
-from eztree.utils.algorithms import lowest_common_ancestor, max_path_sum
-from eztree.utils.algorithms import pre_order, in_order, post_order
-from eztree.utils.algorithms import subtree_sum_extremum, subtree_avg_extremum
-from eztree.utils.const import DATA_NAME, LEFT_NAME, RIGHT_NAME
-from eztree.utils.const import LEFT_WING, LEFT_WING_HEAD, LEFT_WING_TAIL, RIGHT_WING, RIGHT_WING_HEAD, RIGHT_WING_TAIL
-from eztree.utils.printer import BinaryTreePrinter
+import random
+
+from ezcode.trees.algorithms import *
+from ezcode.trees.const import *
+from ezcode.trees.printer import *
 
 
 class BinaryTree(object):
@@ -81,3 +79,38 @@ class BinaryTree(object):
 
     def max_path_sum(self):
         return max_path_sum(self.root, self.data_name, self.left_name, self.right_name)[0]
+
+
+class RandomBinaryTree(BinaryTree):
+    def __init__(self,
+        data_name: str = DATA_NAME, left_name: str = LEFT_NAME, right_name: str = RIGHT_NAME,
+        size: int = 0, lower_bound: int = 0, upper_bound: int = 0
+    ):
+        super(RandomBinaryTree, self).__init__(None, data_name, left_name, right_name)
+        self.size = size
+        self.lower_bound = lower_bound
+        self.upper_bound = upper_bound
+        self.make_tree()
+
+    def add_node(self, data):
+        def _add_node(node, data):
+            if random.randint(0, 1) == 0:
+                if node.__dict__[self.left_name] is None:
+                    node.__dict__[self.left_name] = self.new_node(data)
+                else:
+                    _add_node(node.__dict__[self.left_name], data)
+            else:
+                if node.__dict__[self.right_name] is None:
+                    node.__dict__[self.right_name] = self.new_node(data)
+                else:
+                    _add_node(node.__dict__[self.right_name], data)
+
+        if self.root is None:
+            self.root = self.new_node(data)
+        else:
+            _add_node(self.root, data)
+
+    def make_tree(self):
+        self.root = None
+        for _ in range(self.size):
+            self.add_node(random.randint(self.lower_bound, self.upper_bound))

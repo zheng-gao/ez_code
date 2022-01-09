@@ -1,6 +1,6 @@
 import sys
 
-from eztree.utils.const import DATA_NAME, LEFT_NAME, RIGHT_NAME
+from ezcode.trees.const import DATA_NAME, LEFT_NAME, RIGHT_NAME
 
 
 def pre_order(root, result: list, data_name: str = DATA_NAME, left_name: str = LEFT_NAME, right_name: str = RIGHT_NAME):
