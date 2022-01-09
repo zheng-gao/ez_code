@@ -167,7 +167,6 @@ Subtree Avg Max: 10.0
 ```
 >>> from ezcode.tree.printer import BinaryTreePrinter
 >>> from ezcode.tree.binary_tree import BinaryTree
-
 >>> printer = BinaryTreePrinter(data_name="v", left_name="l", right_name="r")
 >>> root = Node(1, Node(2), Node(3, Node(4), Node(5)))
 >>> tree = BinaryTree(root, data_name="v", left_name="l", right_name="r")
