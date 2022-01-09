@@ -30,7 +30,7 @@ for cmd in "${REQUIRED_COMMANDS[@]}"; do command_exist "${cmd}"; done
 ###################################################################################################
 if [[ "${0}" != "-bash" ]]; then
     # Put all global variables in this block in order to make "source ./control.sh" work
-    PROJECT_NAME="eztree"
+    PROJECT_NAME="ez_code"
     BASE_DIRECTORY="$(dirname "${0}")"
 else
     BASE_DIRECTORY="."
@@ -121,9 +121,10 @@ function control_clean() {
         "${BASE_DIRECTORY}/build"
         "${BASE_DIRECTORY}/dist"
         "${BASE_DIRECTORY}/.pytest_cache"
-        "${BASE_DIRECTORY}/src/${PROJECT_NAME}.egg-info"
     )
     directories+=($(find "${BASE_DIRECTORY}" -name "__pycache__" -type "d"))
+    directories+=($(find "${BASE_DIRECTORY}" -name "*.egg-info" -type "d"))
+    
     for directory in "${directories[@]}"; do
         if [[ -d "${directory}" ]]; then
             ez_print_log -m "Removing \"${directory}\" ..."
