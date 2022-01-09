@@ -28,7 +28,7 @@ printer.print(root)
 ## Random Binary Tree
 
 ```
-from ezcode.tree.random_binary_tree import RandomBinaryTree
+from ezcode.tree.binary_tree import RandomBinaryTree
 tree = RandomBinaryTree(size=10, lower_bound=-5, upper_bound=10)
 tree.print()
 
