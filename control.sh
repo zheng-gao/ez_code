@@ -124,7 +124,7 @@ function control_clean() {
     )
     directories+=($(find "${BASE_DIRECTORY}" -name "__pycache__" -type "d"))
     directories+=($(find "${BASE_DIRECTORY}" -name "*.egg-info" -type "d"))
-    
+    directories+=($(find "${BASE_DIRECTORY}" -name "ezcode-*" -type "d"))
     for directory in "${directories[@]}"; do
         if [[ -d "${directory}" ]]; then
             ez_print_log -m "Removing \"${directory}\" ..."
