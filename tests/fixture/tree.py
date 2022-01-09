@@ -1,4 +1,4 @@
-from ezcode.trees.binary_tree import BinaryTree
+from ezcode.tree.binary_tree import BinaryTree
 
 class Node:
     def __init__(self, v=None, l=None, r=None):

@@ -3,7 +3,7 @@ import random
 import sys
 
 from collections import deque
-from ezcode.trees.const import *
+from ezcode.tree.const import *
 
 
 class BinaryTreePrinter:

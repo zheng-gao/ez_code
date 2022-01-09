@@ -1,8 +1,8 @@
 import random
 
-from ezcode.trees.algorithms import *
-from ezcode.trees.const import *
-from ezcode.trees.printer import *
+from ezcode.tree.algorithm import *
+from ezcode.tree.const import *
+from ezcode.tree.printer import *
 
 
 class BinaryTree(object):

@@ -146,6 +146,8 @@ function control_test() {
     # https://docs.pytest.org/en/latest/
     ez_print_log -m "Installing pytest ..."
     pip3 "install" "pytest" --upgrade
+    ez_print_log -m "Installing pytest-srcpaths ..."
+    pip3 "install" "pytest-srcpaths" --upgrade
     ez_print_log -m "Running tests ..."
     pytest -vv
 }
@@ -190,50 +192,47 @@ function control_publish() {
 # ---------------------------------------- Main Function ---------------------------------------- #
 ###################################################################################################
 function control() {
-    local VALID_SKIPS=("clean" "build" "test" "uninstall" "install_local" "install_test" "install" "publish_test" "publish" )
-    local VALID_OPERATIONS=("ALL" "${VALID_SKIPS[@]}") usage=""
+    local VALID_OPERATIONS=("clean" "build" "test" "uninstall" "install_local" "install_test" "install" "publish_test" "publish")
     if [[ -z "${1}" ]] || [[ "${1}" = "-h" ]] || [[ "${1}" = "--help" ]]; then
-        usage=$(ez_build_usage -o "init" -d "Control Project Pipeline")
+        local usage=$(ez_build_usage -o "init" -d "Control Project Pipeline")
         usage+=$(ez_build_usage -o "add" -a "-o|--operations" -d "Choose from: [$(ez_join ', ' "${VALID_OPERATIONS[@]}")]")
-        usage+=$(ez_build_usage -o "add" -a "-s|--skips" -d "Choose from: [$(ez_join ', ' "${VALID_SKIPS[@]}")]")
-        usage+=$(ez_build_usage -o "add" -a "-f|--flags" -d "[Optional] The arguments of control_* function")
+        usage+=$(ez_build_usage -o "add" -a "-a|--args" -d "The arguments of control_* function")
+        usage+=$(ez_build_usage -o "add" -a "-d|--development" -d "[Flag] Development Workflow: [clean, build, test, install_local]")
+        usage+=$(ez_build_usage -o "add" -a "-r|--release" -d "[Flag] Release Workflow: [clean, build, test, publish]")
         ez_print_usage "${usage}"; return
     fi
-    local args=("-o" "--operations" "-s" "--skips") operations=() skips=() flags=()
+    local main_args=("-o" "--operations" "-d" "--development" "-r" "--release" "-f" "--flags") operations=() development release args=()
     while [[ -n "${1}" ]]; do
         case "${1}" in
             "-o" | "--operations") shift
                 while [[ -n "${1}" ]]; do
-                    if ez_contain "${1}" "${args[@]}"; then break; else operations+=("${1}") && shift; fi
+                    if ez_contain "${1}" "${main_args[@]}"; then break; else operations+=("${1}") && shift; fi
                 done ;;
-            "-s" | "--skips") shift
+            "-a" | "--args") shift
                 while [[ -n "${1}" ]]; do
-                    if ez_contain "${1}" "${args[@]}"; then break; else skips+=("${1}") && shift; fi
+                    if ez_contain "${1}" "${main_args[@]}"; then break; else args+=("${1}") && shift; fi
                 done ;;
-            "-f" | "--flags") shift
-                while [[ -n "${1}" ]]; do
-                    if ez_contain "${1}" "${args[@]}"; then break; else flags+=("${1}") && shift; fi
-                done ;;
-            *) ez_print_log -l "ERROR" -m "Unknown argument identifier \"${1}\", please choose from [${args[*]}]"; return 1 ;;
+            "-d" | "--development") shift; development="True" ;;
+            "-r" | "--release") shift; release="True" ;;
+            *) ez_print_log -l "ERROR" -m "Unknown argument identifier \"${1}\", please choose from [${main_args[*]}]"; return 1 ;;
         esac
     done
-    [[ -z "${operations[*]}" ]] && ez_print_log -l "ERROR" -m "No operation found!" && return 1
-    if [[ "${#operations[@]}" -gt 1 ]] && ez_contain "ALL" "${operations[@]}"; then
-        ez_print_log -l "ERROR" -m "Cannot mix \"ALL\" with other operations" && return 1
+    if [[ "${development}" = "True" ]] && [[ "${release}" = "True" ]]; then
+        ez_print_log -l "ERROR" -m "Cannot choose more than one workflow!" && return 1
+    elif [[ "${development}" = "True" ]] || [[ "${release}" = "True" ]]; then
+        [[ -n "${operations[*]}" ]] && ez_print_log -l "ERROR" -m "The operations and workflow are mutually exclusive" && return 1
+    else
+        [[ -z "${operations[*]}" ]] && ez_print_log -l "ERROR" -m "Must select at least one operation if no workflow is selected!" && return 1
     fi
+    [[ "${development}" = "True" ]] && operations=("clean" "build" "test" "install_local")
+    [[ "${release}" = "True" ]] && operations=("clean" "build" "test" "publish")
     for opt in "${operations[@]}"; do
         ez_exclude "${opt}" "${VALID_OPERATIONS[@]}" && ez_print_log -l "ERROR" -m "Invalid operation \"${opt}\"" && return 1
     done
-    for skp in "${skips[@]}"; do
-        ez_exclude "${skp}" "${VALID_SKIPS[@]}" && ez_print_log -l "ERROR" -m "Invalid skip \"${skp}\"" && return 1
-    done
-    if [[ "${operations[0]}" = "ALL" ]]; then
-        operations=("clean" "uninstall" "build" "test")
-    fi
     for opt in "${operations[@]}"; do
         ez_contain "${opt}" "${skips[@]}" && ez_print_log -m "Operation \"${opt}\" is skipped!" && continue
         ez_print_log -m "Operation \"${opt}\" is running ..."
-        if "control_${opt}" "${flags[@]}"; then ez_print_log -m "Operation \"${opt}\" complete!"
+        if "control_${opt}" "${args[@]}"; then ez_print_log -m "Operation \"${opt}\" complete!"
         else ez_print_log -l "ERROR" -m "Operation \"${opt}\" failed!"; return 2; fi
     done
     ez_print_log -m "Workflow Complete!!!"

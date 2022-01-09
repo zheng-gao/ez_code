@@ -1,15 +1,13 @@
-# Package Installation
-pip3 install eztree
+# Installation
+pip3 install --upgrade ezcode
 
-# Package Releases
-https://pypi.org/project/eztree/#history
+# PyPi Releases
+https://pypi.org/project/ezcode/#history
 
-# Examples
-
+# Tree
 ## Binary Tree Printer
-
 ```
-from eztree.utils.printer import BinaryTreePrinter
+from ezcode.tree.printer import BinaryTreePrinter
 
 class Node:
     def __init__(self, v=None, l=None, r=None):
@@ -30,7 +28,7 @@ printer.print(root)
 ## Random Binary Tree
 
 ```
-from eztree.trees.random_binary_tree import RandomBinaryTree
+from ezcode.tree.random_binary_tree import RandomBinaryTree
 tree = RandomBinaryTree(size=10, lower_bound=-5, upper_bound=10)
 tree.print()
 
@@ -51,7 +49,7 @@ tree.print()
 ## Algorithm
 ### Traversals
 ```
-from eztree.trees.binary_tree import BinaryTree
+from ezcode.tree.binary_tree import BinaryTree
 root = Node(0, Node(1, Node(3, r=Node(7)), Node(4)), Node(2, Node(5, Node(8), Node(9)), Node(6)))
 tree = BinaryTree(root, data_name="v", left_name="l", right_name="r")
 tree.print()
@@ -72,7 +70,7 @@ Post-Order: [1, 3, 7, 4, 2, 5, 8, 9, 6, 0]
 ```
 ### Lowest Common Ancestor
 ```
-from eztree.trees.binary_tree import BinaryTree
+from ezcode.tree.binary_tree import BinaryTree
 root = Node(0, Node(1, Node(3, r=Node(7)), Node(4)), Node(2, Node(5, Node(8), Node(9)), Node(6)))
 tree = BinaryTree(root, data_name="v", left_name="l", right_name="r")
 tree.print()
@@ -90,7 +88,7 @@ tree.node_data(tree.lowest_common_ancestor([n6, n7, n8]))
 ```
 ### Subtree Stats
 ```
-from eztree.trees.binary_tree import BinaryTree
+from ezcode.tree.binary_tree import BinaryTree
 root = Node(-2, Node(8, Node(-4, l=Node(-2)), Node(3, l=Node(-1))), Node(-3, l=Node(2, Node(10), Node(7))))
 tree = BinaryTree(root, data_name="v", left_name="l", right_name="r")
 tree.print()
@@ -113,7 +111,7 @@ Subtree Avg Max: 10.0
 ```
 ### Max Path Sum
 ```
-from eztree.trees.binary_tree import BinaryTree
+from ezcode.tree.binary_tree import BinaryTree
 root = Node(-2, Node(8, Node(-4, l=Node(-2)), Node(3, l=Node(-1))), Node(-3, l=Node(2, Node(10), Node(7))))
 tree = BinaryTree(root, data_name="v", left_name="l", right_name="r")
 tree.print()
@@ -128,7 +126,7 @@ tree.max_path_sum()
 ```
 ### Depth & Balance
 ```
-from eztree.trees.binary_tree import BinaryTree
+from ezcode.tree.binary_tree import BinaryTree
 root = Node(0, Node(0, Node(0), Node(0, r=Node(0))), Node(0, Node(0), Node(0, r=Node(0, l=Node(0)))))
 tree = BinaryTree(root, data_name="v", left_name="l", right_name="r")
 tree.print()

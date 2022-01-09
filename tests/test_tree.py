@@ -1,7 +1,7 @@
 import pytest
 
-from fixtures.trees import s_root, s_tree, c_tree
-from ezcode.trees.printer import BinaryTreePrinter
+from fixture.tree import s_root, s_tree, c_tree
+from ezcode.tree.printer import BinaryTreePrinter
 
 
 def test_printer():
