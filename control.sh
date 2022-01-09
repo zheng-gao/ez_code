@@ -30,7 +30,7 @@ for cmd in "${REQUIRED_COMMANDS[@]}"; do command_exist "${cmd}"; done
 ###################################################################################################
 if [[ "${0}" != "-bash" ]]; then
     # Put all global variables in this block in order to make "source ./control.sh" work
-    PROJECT_NAME="ez_code"
+    PROJECT_NAME="ezcode"
     BASE_DIRECTORY="$(dirname "${0}")"
 else
     BASE_DIRECTORY="."
