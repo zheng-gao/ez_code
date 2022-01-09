@@ -63,12 +63,24 @@ def find_depth(root, left_name: str = LEFT_NAME, right_name: str = RIGHT_NAME) -
     right_depth = find_depth(root.__dict__[right_name], left_name, right_name)
     return max(left_depth, right_depth) + 1
 
+
 def is_balanced(root, left_name: str = LEFT_NAME, right_name: str = RIGHT_NAME) -> (bool, int):
     if root is None:
         return True, 0
     left_balanced, left_depth = is_balanced(root.__dict__[left_name], left_name, right_name)
     right_balanced, right_depth = is_balanced(root.__dict__[right_name], left_name, right_name)
     return left_balanced and right_balanced and abs(left_depth - right_depth) <= 1, max(left_depth, right_depth) + 1
+
+
+def is_copied(root_1, root_2, data_name: str = DATA_NAME, left_name: str = LEFT_NAME, right_name: str = RIGHT_NAME):
+    if not root_1 and not root_2:
+        return True
+    if not root_1 or not root_2:
+        return False
+    if root_1.__dict__[data_name] != root_2.__dict__[data_name]:
+        return False
+    return is_copied(root_1.__dict__[left_name], root_2.__dict__[left_name], data_name, left_name, right_name) and \
+           is_copied(root_1.__dict__[right_name], root_2.__dict__[right_name], data_name, left_name, right_name)
 
 
 def max_path_sum(root, data_name: str = DATA_NAME, left_name: str = LEFT_NAME, right_name: str = RIGHT_NAME):

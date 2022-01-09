@@ -107,19 +107,29 @@ class BinaryTree(object):
         if not sequence or not sequence[0]:
             return None
         root = self.new_node(formatter(sequence[0]))
-        queue = deque([root])
-        index = 1
+        index, queue = 1, deque([root])
         while len(queue) > 0:
             node = queue.popleft()
             if node:
                 left = self.new_node(formatter(sequence[index])) if sequence[index] != "None" else None
                 right = self.new_node(formatter(sequence[index + 1])) if sequence[index + 1] != "None" else None
-                index += 2
-                node.__dict__[self.left_name] = left
-                node.__dict__[self.right_name] = right
                 queue.append(left)
                 queue.append(right)
+                node.__dict__[self.left_name], node.__dict__[self.right_name] = left, right
+                index += 2
         return root
+
+    def is_copied(self, root):
+        def _is_copied(root_1, root_2):
+            if not root_1 and not root_2:
+                return True
+            if not root_1 or not root_2:
+                return False
+            if root_1.__dict__[self.data_name] != root_2.__dict__[self.data_name]:
+                return False
+            return _is_copied(root_1.__dict__[self.left_name], root_2.__dict__[self.left_name]) and \
+                   _is_copied(root_1.__dict__[self.right_name], root_2.__dict__[self.right_name])
+        return _is_copied(self.root, root)
 
 
 class RandomBinaryTree(BinaryTree):

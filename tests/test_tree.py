@@ -1,25 +1,11 @@
 import pytest
 
-from fixture.tree import s_root, s_tree, c_tree
-from ezcode.tree.printer import BinaryTreePrinter
+from fixture.tree import printer, s_root, s_tree, c_tree, s_tree_print, c_tree_print
 
 
 def test_printer():
-    simple_tree = """
-       ┌──────────(0)──────────┐       
- ┌────(1)────┐           ┌────(2)────┐ 
-(3)─┐       (4)       ┌─(5)─┐       (6)
-   (7)               (8)   (9)         
-"""
-    complex_tree = """
-            ┌───────────(-2)────────────┐ 
-     ┌─────(8)─────┐             ┌────(-3)
-  ┌(-4)         ┌─(3)        ┌──(2)─┐     
-(-2)          (-1)         (10)    (7)    
-"""
-    printer = BinaryTreePrinter(data_name="v", left_name="l", right_name="r")
-    assert simple_tree == "\n" + printer.to_string(s_tree.root)
-    assert complex_tree == "\n" + printer.to_string(c_tree.root)
+    assert s_tree_print == printer.to_string(s_tree.root)
+    assert c_tree_print == printer.to_string(c_tree.root)
 
 
 def test_traversals():
@@ -54,3 +40,11 @@ def test_is_balanced():
 def test_max_path_sum():
     assert s_tree.max_path_sum() == 27
     assert c_tree.max_path_sum() == 19
+
+
+def test_serialization():
+    assert s_tree.serialize() == "0,1,2,3,4,5,6,None,7,None,None,8,9,None,None,None,None,None,None,None,None"
+
+
+def test_deserialization():
+    assert s_tree.is_copied(s_tree.deserialize(formatter=int, string=s_tree.serialize()))
