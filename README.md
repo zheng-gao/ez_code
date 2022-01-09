@@ -1,11 +1,31 @@
 # Installation
+
+```
 pip3 install --upgrade ezcode
+```
 
 # PyPi Releases
+
 https://pypi.org/project/ezcode/#history
 
+
+# Development
+```
+git clone https://github.com/zheng-gao/ez_code.git
+ez_code/control.sh --development
+```
+
+# Publish Release
+
+```
+git clone https://github.com/zheng-gao/ez_code.git
+ez_code/control.sh --release
+```
+
 # Tree
+
 ## Binary Tree Printer
+
 ```
 >>> class Node:
 ...     def __init__(self, v=None, l=None, r=None):
