@@ -42,11 +42,6 @@ def test_max_path_sum():
     assert c_tree.max_path_sum() == 19
 
 
-def test_serialization():
-    assert s_tree.serialize() == "0,1,2,3,4,5,6,None,7,None,None,8,9,None,None,None,None,None,None,None,None"
-    assert c_tree.serialize() == "-2,8,-3,-4,3,2,None,-2,None,-1,None,10,7,None,None,None,None,None,None,None,None"
-
-
 def test_is_copied():
     assert s_tree.is_copied(s_tree)
     assert c_tree.is_copied(c_tree)
@@ -55,6 +50,11 @@ def test_is_copied():
 def test_copy():
     assert s_tree.is_copied(s_tree.copy())
     assert c_tree.is_copied(c_tree.copy())
+
+
+def test_serialization():
+    assert s_tree.serialize() == "0,1,2,3,4,5,6,None,7,None,None,8,9,None,None,None,None,None,None,None,None"
+    assert c_tree.serialize() == "-2,8,-3,-4,3,2,None,-2,None,-1,None,10,7,None,None,None,None,None,None,None,None"
 
 
 def test_deserialization():
