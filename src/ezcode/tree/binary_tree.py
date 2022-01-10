@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 import random
 
 from collections import deque
 
-from ezcode.tree.algorithm import *
 from ezcode.tree.const import *
-from ezcode.tree.printer import *
+from ezcode.tree.algorithm import BinaryTreeAlgorithm
+from ezcode.tree.printer import BinaryTreePrinter
 
 
 class BinaryTree(object):
@@ -17,6 +19,7 @@ class BinaryTree(object):
         self.data_name=data_name
         self.left_name=left_name
         self.right_name=right_name
+        self.algorithm = BinaryTreeAlgorithm(data_name, left_name, right_name)
 
     def new_node(self, data):
         node = self.FakeNode()
@@ -39,48 +42,47 @@ class BinaryTree(object):
         ).print(self.root)
 
     def depth(self):
-        return find_depth(self.root, self.left_name, self.right_name)
+        return self.algorithm.depth(self.root)
 
-    def is_balanced(self):
-        return is_balanced(self.root, self.left_name, self.right_name)[0]
+    def is_balanced(self) -> bool:
+        return self.algorithm.is_balanced(self.root)[0]
 
     def traversal(self, mode="pre-order"):
         result = list()
         if mode not in ["pre-order", "in-order", "post-order"]:
             raise ValueError(f"mode = \"{mode}\" is not supported, please choose from [\"pre-order\", \"in-order\", \"post-order\"]")
         elif mode == "pre-order":
-            pre_order(self.root, result, self.data_name, self.left_name, self.right_name)
+            self.algorithm.pre_order(self.root, result)
         elif mode == "in-order":
-            in_order(self.root, result, self.data_name, self.left_name, self.right_name)
+            self.algorithm.in_order(self.root, result)
         elif mode == "post-order":
-            post_order(self.root, result, self.data_name, self.left_name, self.right_name)
+            self.algorithm.post_order(self.root, result)
         return result
 
     def subtree(self, mode="sum-min"):
         if mode not in ["sum-min", "sum-max", "avg-min", "avg-max"]:
             raise ValueError(f"mode = \"{mode}\" is not supported, please choose from [\"sum-min\", \"sum-max\", \"avg-min\", \"avg-max\"]")
         elif mode == "sum-min":
-            return subtree_sum_extremum(self.root, min, self.data_name, self.left_name, self.right_name)[0]
+            return self.algorithm.subtree_sum_extremum(self.root, min)[0]
         elif mode == "sum-max":
-            return subtree_sum_extremum(self.root, max, self.data_name, self.left_name, self.right_name)[0]
+            return self.algorithm.subtree_sum_extremum(self.root, max)[0]
         elif mode == "avg-min":
-            return subtree_avg_extremum(self.root, min, self.data_name, self.left_name, self.right_name)[0]
+            return self.algorithm.subtree_avg_extremum(self.root, min)[0]
         else:
-            return subtree_avg_extremum(self.root, max, self.data_name, self.left_name, self.right_name)[0]
+            return self.algorithm.subtree_avg_extremum(self.root, max)[0]
 
     def lowest_common_ancestor(self, nodes):
         if not nodes:
             return None
         if len(nodes) == 1:
-            return lowest_common_ancestor(self.root, node[0], None, self.data_name, self.left_name, self.right_name)
-        else:
-            ancestor = nodes[0]
-            for node in nodes[1:]:
-                ancestor = lowest_common_ancestor(self.root, ancestor, node, self.data_name, self.left_name, self.right_name)
-            return ancestor
+            return nodes[0]
+        ancestor = nodes[0]
+        for node in nodes[1:]:
+            ancestor = self.algorithm.lowest_common_ancestor(self.root, ancestor, node)
+        return ancestor
 
     def max_path_sum(self):
-        return max_path_sum(self.root, self.data_name, self.left_name, self.right_name)[0]
+        return self.algorithm.max_path_sum(self.root)[0]
 
     def serialize(self, delimiter: str = ",") -> str:
         if not self.root:
@@ -117,19 +119,10 @@ class BinaryTree(object):
                 queue.append(right)
                 node.__dict__[self.left_name], node.__dict__[self.right_name] = left, right
                 index += 2
-        return root
+        return BinaryTree(root, self.data_name, self.left_name, self.right_name)
 
-    def is_copied(self, root):
-        def _is_copied(root_1, root_2):
-            if not root_1 and not root_2:
-                return True
-            if not root_1 or not root_2:
-                return False
-            if root_1.__dict__[self.data_name] != root_2.__dict__[self.data_name]:
-                return False
-            return _is_copied(root_1.__dict__[self.left_name], root_2.__dict__[self.left_name]) and \
-                   _is_copied(root_1.__dict__[self.right_name], root_2.__dict__[self.right_name])
-        return _is_copied(self.root, root)
+    def is_copied(self, tree: BinaryTree) -> bool:
+        return self.algorithm.is_copied(self.root, tree.root)
 
 
 class RandomBinaryTree(BinaryTree):

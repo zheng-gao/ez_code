@@ -27,7 +27,7 @@ def test_subtree_stats():
     assert c_tree.subtree('avg-max') == 10
 
 
-def test_find_depth():
+def test_depth():
     assert s_tree.depth() == 4
     assert c_tree.depth() == 4
 
@@ -44,7 +44,14 @@ def test_max_path_sum():
 
 def test_serialization():
     assert s_tree.serialize() == "0,1,2,3,4,5,6,None,7,None,None,8,9,None,None,None,None,None,None,None,None"
+    assert c_tree.serialize() == "-2,8,-3,-4,3,2,None,-2,None,-1,None,10,7,None,None,None,None,None,None,None,None"
+
+
+def test_is_copied():
+    assert s_tree.is_copied(s_tree)
+    assert c_tree.is_copied(c_tree)
 
 
 def test_deserialization():
     assert s_tree.is_copied(s_tree.deserialize(formatter=int, string=s_tree.serialize()))
+    assert c_tree.is_copied(c_tree.deserialize(formatter=int, string=c_tree.serialize()))

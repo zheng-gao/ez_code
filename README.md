@@ -11,15 +11,15 @@ https://pypi.org/project/ezcode/#history
 
 # Development
 ```
-git clone https://github.com/zheng-gao/ez_code.git
-ez_code/control.sh --development
+git clone https://github.com/zheng-gao/ez_code.git && cd ez_code
+./ez.sh --development
 ```
 
 # Publish Release
 
 ```
-git clone https://github.com/zheng-gao/ez_code.git
-ez_code/control.sh --release
+git clone https://github.com/zheng-gao/ez_code.git && cd ez_code
+./ez.sh --release
 ```
 
 # Tree

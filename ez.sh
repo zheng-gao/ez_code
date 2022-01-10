@@ -191,7 +191,7 @@ function control_publish() {
 ###################################################################################################
 # ---------------------------------------- Main Function ---------------------------------------- #
 ###################################################################################################
-function control() {
+function ez() {
     local VALID_OPERATIONS=("clean" "build" "test" "uninstall" "install_local" "install_test" "install" "publish_test" "publish")
     if [[ -z "${1}" ]] || [[ "${1}" = "-h" ]] || [[ "${1}" = "--help" ]]; then
         local usage=$(ez_build_usage -o "init" -d "Control Project Pipeline")
@@ -239,5 +239,5 @@ function control() {
 }
 
 # Entry Point
-[[ "${0}" != "-bash" ]] && [[ "${0}" != "-sh" ]] && [[ $(basename "${0}") = "control.sh" ]] && control "${@}"
+[[ "${0}" != "-bash" ]] && [[ "${0}" != "-sh" ]] && [[ $(basename "${0}") = "ez.sh" ]] && ez "${@}"
 

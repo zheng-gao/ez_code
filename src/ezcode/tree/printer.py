@@ -147,3 +147,5 @@ class BinaryTreePrinter:
 
     def print(self, node, trim_left=True, trim_right=True):
         print("\n" + self.to_string(node, trim_left, trim_right))
+
+

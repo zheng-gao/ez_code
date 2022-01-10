@@ -19,7 +19,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],                                              # Information to filter the project on PyPi website
-    python_requires=">=3.6",                        # Minimum version requirement of the package
+    python_requires=">=3.7",                        # Minimum version requirement of the package
     py_modules=["ezcode"],                           # Name of the python package
     package_dir={"": "src"},                        # Directory of the source code of the package
     packages=setuptools.find_packages(where="src"), # List of all python modules to be installed
