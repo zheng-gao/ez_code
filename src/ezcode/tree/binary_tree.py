@@ -124,6 +124,26 @@ class BinaryTree(object):
     def is_copied(self, tree: BinaryTree) -> bool:
         return self.algorithm.is_copied(self.root, tree.root)
 
+    def copy(self) -> BinaryTree:
+        if self.root is None:
+            return BinaryTree(None, self.data_name, self.left_name, self.right_name)
+        self_queue = deque([self.root])
+        other_root = self.new_node(data=self.root.__dict__[self.data_name])
+        other_queue = deque([other_root])
+        while len(self_queue) > 0:
+            self_node = self_queue.popleft()
+            other_node = other_queue.popleft()
+            if self_node:
+                self_queue.append(self_node.__dict__[self.left_name])
+                self_queue.append(self_node.__dict__[self.right_name])
+                if self_node.__dict__[self.left_name]:
+                    other_node.__dict__[self.left_name] = self.new_node(data=self_node.__dict__[self.left_name].__dict__[self.data_name])
+                if self_node.__dict__[self.right_name]:
+                    other_node.__dict__[self.right_name] = self.new_node(data=self_node.__dict__[self.right_name].__dict__[self.data_name])
+                other_queue.append(other_node.__dict__[self.left_name])
+                other_queue.append(other_node.__dict__[self.right_name])
+        return BinaryTree(other_root, self.data_name, self.left_name, self.right_name)
+        
 
 class RandomBinaryTree(BinaryTree):
     def __init__(self,

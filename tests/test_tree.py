@@ -52,6 +52,12 @@ def test_is_copied():
     assert c_tree.is_copied(c_tree)
 
 
+def test_copy():
+    assert s_tree.is_copied(s_tree.copy())
+    assert c_tree.is_copied(c_tree.copy())
+
+
 def test_deserialization():
     assert s_tree.is_copied(s_tree.deserialize(formatter=int, string=s_tree.serialize()))
     assert c_tree.is_copied(c_tree.deserialize(formatter=int, string=c_tree.serialize()))
+
