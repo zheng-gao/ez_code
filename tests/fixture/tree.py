@@ -8,6 +8,9 @@ class Node:
         self.l = l
         self.r = r
 
+    def __repr__(self):
+        return f"Node({self.v})"
+
 
 printer = BinaryTreePrinter(data_name="v", left_name="l", right_name="r")
 s_root = Node(0, Node(1, Node(3, r=Node(7)), Node(4)), Node(2, Node(5, Node(8), Node(9)), Node(6)))

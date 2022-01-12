@@ -7,9 +7,9 @@ class BinaryTreeAlgorithm:
     """ Recursion Helpers """
 
     def __init__(self, data_name: str = DATA_NAME, left_name: str = LEFT_NAME, right_name: str = RIGHT_NAME):
-        self.data_name=data_name
-        self.left_name=left_name
-        self.right_name=right_name
+        self.data_name = data_name
+        self.left_name = left_name
+        self.right_name = right_name
 
     def pre_order(self, root, result: list):
         if root is not None:

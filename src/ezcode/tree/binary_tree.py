@@ -10,15 +10,16 @@ from ezcode.tree.printer import BinaryTreePrinter
 
 
 class BinaryTree(object):
+
     class FakeNode(object):
         def __init__(self):
            pass
 
     def __init__(self, root=None, data_name: str = DATA_NAME, left_name: str = LEFT_NAME, right_name: str = RIGHT_NAME):
         self.root = root
-        self.data_name=data_name
-        self.left_name=left_name
-        self.right_name=right_name
+        self.data_name = data_name
+        self.left_name = left_name
+        self.right_name = right_name
         self.algorithm = BinaryTreeAlgorithm(data_name, left_name, right_name)
 
     def new_node(self, data):
