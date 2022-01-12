@@ -8,7 +8,7 @@ class SinglyLinkedListAlgorithm:
         self.data_name = data_name
         self.next_name = next_name
 
-    def reverse_print(node, head):
+    def reverse_print(self, node, head):
         if not node:
             print(f"{node} <- ", end="")
         self.reverse_print(node.__dict__[self.next_name])
