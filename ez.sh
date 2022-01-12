@@ -5,11 +5,14 @@
 REQUIRED_COMMANDS=()
 # System Command
 REQUIRED_COMMANDS+=("basename")
+REQUIRED_COMMANDS+=("cut")
 REQUIRED_COMMANDS+=("date")
 REQUIRED_COMMANDS+=("dirname")
+REQUIRED_COMMANDS+=("grep")
 REQUIRED_COMMANDS+=("mkdir")
 REQUIRED_COMMANDS+=("read")
 REQUIRED_COMMANDS+=("rm")
+REQUIRED_COMMANDS+=("sed")
 REQUIRED_COMMANDS+=("tabs")
 REQUIRED_COMMANDS+=("touch")
 # Git Command
@@ -188,29 +191,53 @@ function control_publish() {
     python3 -m "twine" "upload" "dist/"*
 }
 
+function control_bump() {
+    local version=$(cat "${BASE_DIRECTORY}/setup.py" | grep "version=" | sed "s/[^0-9.]*\([0-9.]*\).*/\1/") new_version
+    local major=$(echo "${version}" | cut -d "." -f 1)
+    local minor=$(echo "${version}" | cut -d "." -f 2)
+    local patch=$(echo "${version}" | cut -d "." -f 3)
+    ez_print_log -m "Current Version: ${version}"
+    if [[ -z "${1}" ]] || [[ "${1}" = "patch" ]]; then
+        ((++patch)); new_version="${major}.${minor}.${patch}"
+        ez_print_log -m "Bumped Patch Version: ${new_version}"
+    elif [[ "${1}" = "minor" ]]; then
+        ((++minor)); new_version="${major}.${minor}.${patch}"
+        ez_print_log -m "Bumped Minor Version: ${new_version}"
+    elif [[ "${1}" = "major" ]]; then
+        ((++major)); new_version="${major}.${minor}.${patch}"
+        ez_print_log -m "Bumped Major Version: ${new_version}"
+    else
+        ez_print_log -l "ERROR" -m "Wrong argument \"${1}\"" && return 1
+    fi
+    sed -i ".bak" "s/${version}/${new_version}/" "${BASE_DIRECTORY}/setup.py"
+    rm "${BASE_DIRECTORY}/setup.py.bak"
+    git diff "${BASE_DIRECTORY}/setup.py"
+}
+
 ###################################################################################################
 # ---------------------------------------- Main Function ---------------------------------------- #
 ###################################################################################################
 function ez() {
-    local VALID_OPERATIONS=("clean" "build" "test" "uninstall" "install_local" "install_test" "install" "publish_test" "publish")
+    local VALID_OPERATIONS=(
+        "clean" "build" "test" "uninstall" "install_local" "install_test" "install" "publish_test" "publish" "bump")
     if [[ -z "${1}" ]] || [[ "${1}" = "-h" ]] || [[ "${1}" = "--help" ]]; then
         local usage=$(ez_build_usage -o "init" -d "Control Project Pipeline")
         usage+=$(ez_build_usage -o "add" -a "-o|--operations" -d "Choose from: [$(ez_join ', ' "${VALID_OPERATIONS[@]}")]")
-        usage+=$(ez_build_usage -o "add" -a "-a|--args" -d "The arguments of control_* function")
+        usage+=$(ez_build_usage -o "add" -a "-a|--arguments" -d "The arguments of control_* function")
         usage+=$(ez_build_usage -o "add" -a "-d|--development" -d "[Flag] Development Workflow: [clean, uninstall, build, test, install_local, clean]")
         usage+=$(ez_build_usage -o "add" -a "-r|--release" -d "[Flag] Release Workflow: [clean, build, test, publish, clean]")
         ez_print_usage "${usage}"; return
     fi
-    local main_args=("-o" "--operations" "-d" "--development" "-r" "--release" "-f" "--flags") operations=() development release args=()
+    local main_args=("-o" "--operations" "-d" "--development" "-r" "--release" "-a" "--arguments") operations=() arguments=() development release
     while [[ -n "${1}" ]]; do
         case "${1}" in
             "-o" | "--operations") shift
                 while [[ -n "${1}" ]]; do
                     if ez_contain "${1}" "${main_args[@]}"; then break; else operations+=("${1}") && shift; fi
                 done ;;
-            "-a" | "--args") shift
+            "-a" | "--arguments") shift
                 while [[ -n "${1}" ]]; do
-                    if ez_contain "${1}" "${main_args[@]}"; then break; else args+=("${1}") && shift; fi
+                    if ez_contain "${1}" "${main_args[@]}"; then break; else arguments+=("${1}") && shift; fi
                 done ;;
             "-d" | "--development") shift; development="True" ;;
             "-r" | "--release") shift; release="True" ;;
@@ -232,7 +259,7 @@ function ez() {
     for opt in "${operations[@]}"; do
         ez_contain "${opt}" "${skips[@]}" && ez_print_log -m "Operation \"${opt}\" is skipped!" && continue
         ez_print_log -m "Operation \"${opt}\" is running ..."
-        if "control_${opt}" "${args[@]}"; then ez_print_log -m "Operation \"${opt}\" complete!"
+        if "control_${opt}" "${arguments[@]}"; then ez_print_log -m "Operation \"${opt}\" complete!"
         else ez_print_log -l "ERROR" -m "Operation \"${opt}\" failed!"; return 2; fi
     done
     ez_print_log -m "Workflow Complete!!!"
