@@ -69,7 +69,15 @@ class SinglyLinkedList(object):
 
     def reverse(self):
         if self.head:
-            self.head = self.algorithm.reverse(self.head, self.head.__dict__[self.next_name])
+            # self.head = self.algorithm.reverse(self.head, self.head.__dict__[self.next_name])
+            previous_node, current_node, next_node = None, self.head, self.head.__dict__[self.next_name]
+            while next_node:
+                current_node.__dict__[self.next_name] = previous_node
+                previous_node = current_node
+                current_node = next_node
+                next_node = next_node.__dict__[self.next_name]
+            self.head = current_node
+
 
 
             

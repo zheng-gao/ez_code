@@ -1,11 +1,7 @@
 import math
 
 
-def binary_search(array, target, is_ascending=True, is_left_most=True):
-    """ is_left_most is used when the array has duplicate entries """
-    if not array:
-        return None
-    begin, end = 0, len(array) - 1
+def _binary_search(array, begin: int, end: int, target, is_ascending=True, is_left_most=True):
     while begin != end:
         mid = begin + (end - begin) / 2
         mid = math.floor(mid) if is_left_most else math.ceil(mid)
@@ -21,5 +17,8 @@ def binary_search(array, target, is_ascending=True, is_left_most=True):
     return begin if array[begin] == target else None
 
 
-def find_rotates(array, is_ascending=True):
-    pass
+def binary_search(array, target, is_ascending=True, is_left_most=True):
+    """ is_left_most is used when the array has duplicate entries """
+    if not array:
+        return None
+    return _binary_search(array, 0, len(array) - 1, target, is_ascending, is_left_most)
