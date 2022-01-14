@@ -3,8 +3,14 @@ from ezcode.array.rotate import rotate
 
 
 def test_binary_search():
+    assert 0 == binary_search(array=[0], target=0)
+    assert 0 == binary_search(array=[0, 1], target=0)
+    assert 1 == binary_search(array=[0, 1], target=1)
+    assert 0 == binary_search(array=[0, 1, 2], target=0)
+    assert 1 == binary_search(array=[0, 1, 2], target=1)
+    assert 2 == binary_search(array=[0, 1, 2], target=2)
     array, target = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 7
-    assert None == binary_search(array=[], target=-1)
+    assert None == binary_search(array=[], target=0)
     assert None == binary_search(array=array, target=-1)
     assert 7 == binary_search(array=array, target=target, is_ascending=True)
     assert 2 == binary_search(array=array[::-1], target=target, is_ascending=False)
