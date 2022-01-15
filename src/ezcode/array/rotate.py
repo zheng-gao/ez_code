@@ -1,7 +1,4 @@
-def swap(array, i, j):
-    tmp = array[i]
-    array[i] = array[j]
-    array[j] = tmp
+from ezcode.array.utils import swap
 
 
 def rotate(array, shifts, is_left_rotate):
