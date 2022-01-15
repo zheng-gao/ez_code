@@ -1,7 +1,7 @@
 from ezcode.array.utils import swap
 
 
-def selected_permutation_size(total_size: int, selection_size: int) -> int:
+def permutation_size(total_size: int, selection_size: int) -> int:
     """ Not for duplicate items: P(N,r) = N!/(N-r)! """
     if selection_size > total_size:
         raise ValueError(f"selection_size:{selection_size} cannot be greater than total_size:{total_size}")
@@ -13,9 +13,9 @@ def selected_permutation_size(total_size: int, selection_size: int) -> int:
     return result
 
 
-def selected_permutations(selection_size: int, items: list) -> list:
+def permutations(selection_size: int, items: list) -> list:
 
-    def _selected_permutations(selection_size: int, items: list, selected_indices: set(), permutation: list, result: list):
+    def _permutations(selection_size: int, items: list, selected_indices: set(), permutation: list, result: list):
         if len(permutation) == selection_size:
             result.append(permutation.copy())
             return
@@ -26,7 +26,7 @@ def selected_permutations(selection_size: int, items: list) -> list:
                     selected_items.add(items[i])   #
                     selected_indices.add(i)
                     permutation.append(items[i])
-                    _selected_permutations(selection_size, items, selected_indices, permutation, result)
+                    _permutations(selection_size, items, selected_indices, permutation, result)
                     permutation.pop()
                     selected_indices.remove(i)
 
@@ -37,14 +37,14 @@ def selected_permutations(selection_size: int, items: list) -> list:
     if selection_size < 0:
         raise ValueError(f"selection_size:{selection_size} cannot be negative")
     result = list()
-    _selected_permutations(selection_size, items, set(), list(), result)
+    _permutations(selection_size, items, set(), list(), result)
     return result
 
 
-def complete_permutations(items: list) -> list:
+def permutations_with_all_items(items: list) -> list:
 
-    """ Equals to selected_permutations(len(items, items)) """
-    def _complete_permutations(items: list, current_index, result: list):
+    """ Equals to permutations(len(items, items)) """
+    def _permutations_with_all_items(items: list, current_index, result: list):
         if current_index == len(items) - 1:
             result.append(items.copy())
             return
@@ -53,7 +53,7 @@ def complete_permutations(items: list) -> list:
             if items[next_index] not in selected_items:  # check for duplicate items
                 selected_items.add(items[next_index])    # 
                 swap(items, current_index, next_index)
-                _complete_permutations(items, current_index + 1, result)
+                _permutations_with_all_items(items, current_index + 1, result)
                 swap(items, current_index, next_index)
 
     if items is None:
@@ -61,6 +61,6 @@ def complete_permutations(items: list) -> list:
     if len(items) == 0:
         return [[]]
     result = list()
-    _complete_permutations(items, 0, result)
+    _permutations_with_all_items(items, 0, result)
     return result
 

@@ -1,5 +1,7 @@
 from ezcode.array.search import binary_search
 from ezcode.array.rotate import rotate
+from ezcode.array.utils import is_copied, copy
+
 
 
 def test_binary_search():
@@ -33,4 +35,25 @@ def test_rotate():
         assert a == b
 
 
+def test_is_copied():
+    assert is_copied(None, None)
+    assert is_copied([], [])
+    assert is_copied([[]], [[]])
+    assert is_copied([[],[1]], [[],[1]])
+    assert is_copied([[],[1, 2], 3], [[],[1, 2], 3])
+    assert not is_copied([], None)
+    assert not is_copied([], [[]])
+    assert not is_copied([1], [[1]])
+    assert not is_copied([[],[1, 2]], [[],[1, 3]])
 
+
+def test_copy():
+    assert is_copied(None, copy(None))
+    assert is_copied([], copy([]))
+    assert is_copied([[]], copy([[]]))
+    assert is_copied([[],[1]], copy([[],[1]]))
+    assert is_copied([[],[1, 2], 3], copy([[],[1, 2],3]))
+    assert not is_copied([], copy(None))
+    assert not is_copied([], copy([[]]))
+    assert not is_copied([1], copy([[1]]))
+    assert not is_copied([[],[1, 2]], copy([[],[1, 3]]))

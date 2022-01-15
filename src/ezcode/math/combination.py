@@ -13,17 +13,22 @@ def combination_size(total_size: int, selection_size: int) -> int:
     return result
 
 
-def all_combinations(items):
-    pass
-
-
-def combinations(items: list, combination_size: int):
-    pass
-    # def _combinations(items, item_i, combination_size, combination, result):
-    #     if ith_item == combination_size:
-    #         result.append(combination.copy())
-    #         return
-    #     for i in range(item_i, len(items)):
-    #         combination.append(items[i])
-    #         _combinations(items, item_i + 1, combination_size, combination, result)
-    #         combination.pop()
+# def combinations(selection_size: int, items: list, ):
+#     # Subset
+#     pass
+#     # def _combinations(items, item_i, combination_size, combination, result):
+#     #     if ith_item == combination_size:
+#     #         result.append(combination.copy())
+#     #         return
+#     #     for i in range(item_i, len(items)):
+#     #         combination.append(items[i])
+#     #         _combinations(items, item_i + 1, combination_size, combination, result)
+#     #         combination.pop()
+# 
+# 
+# def all_combinations(items: list):
+#     """ All subsets """
+#     def _all_combinations(items, selection_size, combination, result):
+#         if selection_size == len(items):
+#             return
+#         result.append(combination.copy())

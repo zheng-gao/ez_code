@@ -14,9 +14,12 @@ def is_copied(array_1, array_2):
             return False
         result = True
         for subarray_1, subarray_2 in zip(array_1, array_2):
-            result = result and is_copied(subarray_1, subarray_1)
+            result &= is_copied(subarray_1, subarray_2)
         return result
     else:
         return False
 
 
+def copy(array: list) -> list:
+    return [copy(subarray) for subarray in array] if type(array) is list else array
+        
