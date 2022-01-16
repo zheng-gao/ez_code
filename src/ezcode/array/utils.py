@@ -23,3 +23,28 @@ def is_copied(array_1, array_2):
 def copy(array: list) -> list:
     return [copy(subarray) for subarray in array] if type(array) is list else array
         
+
+def array_to_string(array, indent: str = "    "):
+    def _array_to_string(array: list, depth: int, result: list):
+        if type(array) is list:
+            no_list_found = True
+            for subarray in array:
+                if type(subarray) is list:
+                    no_list_found = False
+            if no_list_found:
+                result.append(f"{indent * depth}{array},\n")
+            else:
+                result.append(f"{indent * depth}[\n")
+                for subarray in array:
+                    _array_to_string(subarray, depth + 1, result)
+                result.append(f"{indent * depth}]")
+                result.append(",\n" if depth > 0 else "\n")
+        else:
+            result.append(f"{indent * depth}{array},\n")
+    result = list()
+    _array_to_string(array, 0, result)
+    return "".join(result)
+
+
+def print_array(array, indent: str = "    "):
+    print(array_to_string(array, indent))

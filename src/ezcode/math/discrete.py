@@ -63,3 +63,50 @@ def permutations_with_all_items(items: list) -> list:
     _permutations_with_all_items(items, 0, result)
     return result
 
+
+def combination_size(total_size: int, selection_size: int) -> int:
+    """ C(N,r) = C(N,N-r) = A(N,r)/r! = N!/[r! * (N-r)!] """
+    if selection_size > total_size:
+        raise ValueError(f"selection_size:{selection_size} cannot be greater than total_size:{total_size}")
+    if selection_size < 0:
+        raise ValueError(f"selection_size:{selection_size} cannot be negative")
+    result = permutation_size(total_size, selection_size)
+    for i in range(1, selection_size + 1):
+        result //= i
+    return result
+
+
+def combinations(selection_size: int, items: list):
+
+    def _combinations(selection_size: int, items: list, start_index: int, combination: list, result: list):
+        if len(combination) == selection_size:
+            result.append(combination.copy())
+            return
+        selected_items = set()
+        end_index = len(items) - (selection_size - len(combination))  # not enough indices left, terminate recursion early
+        for i in range(start_index, end_index + 1):
+            if items[i] not in selected_items:  # check for duplicate items
+                selected_items.add(items[i])
+                combination.append(items[i])
+                _combinations(selection_size, items, i + 1, combination, result)
+                combination.pop()
+
+    if items is None:
+        return None
+    if selection_size > len(items):
+        raise ValueError(f"selection_size:{selection_size} cannot be greater than len(items):{len(items)}")
+    if selection_size < 0:
+        raise ValueError(f"selection_size:{selection_size} cannot be negative")
+    result = list()
+    _combinations(selection_size, items, 0, list(), result)
+    return result
+
+
+
+
+# def all_combinations(items: list):
+#     """ All subsets """
+#     def _all_combinations(items, selection_size, combination, result):
+#         if selection_size == len(items):
+#             return
+#         result.append(combination.copy())

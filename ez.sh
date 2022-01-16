@@ -166,13 +166,13 @@ function control_install_local() {
 }
 
 function control_install_test() {
-    # https://test.pypi.org/project/eztree
+    # https://test.pypi.org/project/ezcode
     ez_print_log -m "Installing test repo ..."
     pip3 "install" -i "https://test.pypi.org/simple/" "${PROJECT_NAME}" --upgrade
 }
 
 function control_install() {
-    # https://pypi.org/project/eztree
+    # https://pypi.org/project/ezcode
     ez_print_log -m "Installing ${PROJECT_NAME} ..."
     pip3 "install" "${PROJECT_NAME}" --upgrade
 }
@@ -181,14 +181,14 @@ function control_publish_test() {
     ez_print_log -m "Upgrading twine ..."
     python3 -m "pip" "install" --upgrade "twine"
     ez_print_log -m "Publishing test repo ..."
-    python3 -m "twine" "upload" --repository "testpypi" "dist/"*
+    python3 -m "twine" "upload" --verbose --repository "testpypi" "dist/"*
 }
 
 function control_publish() {
     ez_print_log -m "Upgrading twine ..."
     python3 -m "pip" "install" --upgrade "twine"
     ez_print_log -m "Publishing pypi repo ..."
-    python3 -m "twine" "upload" "dist/"*
+    python3 -m "twine" "upload" --verbose "dist/"*
 }
 
 function control_bump() {
@@ -252,7 +252,7 @@ function ez() {
         [[ -z "${operations[*]}" ]] && ez_print_log -l "ERROR" -m "Must select at least one operation if no workflow is selected!" && return 1
     fi
     [[ "${development}" = "True" ]] && operations=("clean" "uninstall" "build" "test" "install_local" "clean")
-    [[ "${release}" = "True" ]] && operations=("clean" "build" "test" "publish" "clean")
+    [[ "${release}" = "True" ]] && operations=("clean" "build" "test" "bump" "publish" "clean")
     for opt in "${operations[@]}"; do
         ez_exclude "${opt}" "${VALID_OPERATIONS[@]}" && ez_print_log -l "ERROR" -m "Invalid operation \"${opt}\"" && return 1
     done

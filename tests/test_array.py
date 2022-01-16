@@ -1,7 +1,30 @@
 from ezcode.array.search import binary_search
 from ezcode.array.rotate import rotate
-from ezcode.array.utils import is_copied, copy
+from ezcode.array.utils import is_copied, copy, array_to_string
 
+
+def test_array_to_string():
+    benchmark = """
+[
+    0,
+    [1],
+    [
+        1,
+        2,
+        [0, 1, 2, 3],
+    ],
+    [],
+    [
+        [
+            [0, 1, 2],
+            0,
+        ],
+        1,
+        2,
+    ],
+]
+"""[1:]
+    assert benchmark == array_to_string([0, [1], [1, 2, [0, 1, 2, 3]], [], [[[0, 1, 2], 0], 1, 2]])
 
 
 def test_binary_search():
@@ -57,3 +80,9 @@ def test_copy():
     assert not is_copied([], copy([[]]))
     assert not is_copied([1], copy([[1]]))
     assert not is_copied([[],[1, 2]], copy([[],[1, 3]]))
+
+
+
+
+
+
