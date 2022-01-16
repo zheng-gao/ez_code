@@ -21,14 +21,13 @@ def permutations(selection_size: int, items: list) -> list:
             return
         selected_items = set()
         for i in range(len(items)):
-            if i not in selected_indices:
-                if items[i] not in selected_items: # check for duplicate items
-                    selected_items.add(items[i])   #
-                    selected_indices.add(i)
-                    permutation.append(items[i])
-                    _permutations(selection_size, items, selected_indices, permutation, result)
-                    permutation.pop()
-                    selected_indices.remove(i)
+            if i not in selected_indices and items[i] not in selected_items:  # check for duplicate indices and duplicate items
+                selected_indices.add(i)
+                selected_items.add(items[i])
+                permutation.append(items[i])
+                _permutations(selection_size, items, selected_indices, permutation, result)
+                permutation.pop()
+                selected_indices.remove(i)
 
     if items is None:
         return None
@@ -51,7 +50,7 @@ def permutations_with_all_items(items: list) -> list:
         selected_items = set()
         for next_index in range(current_index, len(items)):
             if items[next_index] not in selected_items:  # check for duplicate items
-                selected_items.add(items[next_index])    # 
+                selected_items.add(items[next_index])
                 swap(items, current_index, next_index)
                 _permutations_with_all_items(items, current_index + 1, result)
                 swap(items, current_index, next_index)
