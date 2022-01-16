@@ -9,13 +9,13 @@ pip3 install --upgrade ezcode
 https://pypi.org/project/ezcode/#history
 
 
-# Development
+# Development Workflow
 ```
 git clone https://github.com/zheng-gao/ez_code.git && cd ez_code
 ./ez.sh --development
 ```
 
-# Publish Release
+# Release Workflow
 
 ```
 git clone https://github.com/zheng-gao/ez_code.git && cd ez_code
