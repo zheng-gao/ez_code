@@ -235,7 +235,6 @@ Subtree Avg Max: 10.0
     ['C', 'B', 'A'],
     ['C', 'B', 'B'],
 ]
-
 >>> print_array(combinations(items=["A","A","B","B","C"], selection_size=3))
 [
     ['A', 'A', 'B'],
