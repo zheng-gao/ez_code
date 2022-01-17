@@ -207,6 +207,6 @@ Subtree Avg Max: 10.0
 (2)       ┌─(3)─┐ 
          (4)   (5)
 ```
-* Math (src/ezcode/tree/math.md)
+* Math (src/ezcode/math/math.md)
 
 
