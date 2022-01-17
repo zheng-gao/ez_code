@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ezcode.list.const import *
+from ezcode.list.const import DATA_NAME, NEXT_NAME
 from ezcode.list.algorithm import SinglyLinkedListAlgorithm
 
 

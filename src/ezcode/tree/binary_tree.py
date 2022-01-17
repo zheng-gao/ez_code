@@ -4,7 +4,8 @@ import random
 
 from collections import deque
 
-from ezcode.tree.const import *
+from ezcode.tree.const import DATA_NAME, LEFT_NAME, RIGHT_NAME
+from ezcode.tree.const import LEFT_WING, RIGHT_WING, LEFT_WING_HEAD, RIGHT_WING_HEAD, LEFT_WING_TAIL, RIGHT_WING_TAIL
 from ezcode.tree.algorithm import BinaryTreeAlgorithm
 from ezcode.tree.printer import BinaryTreePrinter
 

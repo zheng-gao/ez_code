@@ -1,6 +1,6 @@
 from ezcode.array.utils import is_copied
-from ezcode.math.discrete import permutation_size, permutations, permutations_with_all_items
-from ezcode.math.discrete import combination_size, combinations
+from ezcode.math.discrete import permutation_size, permutations, all_items_permutations
+from ezcode.math.discrete import combination_size, combinations, all_subsets
 
 
 def test_ermutation_size():
@@ -60,9 +60,9 @@ def test_permutations():
 
 
 def test_complete_permutations():
-    assert is_copied(None, permutations_with_all_items(None))
-    assert is_copied([[]], permutations_with_all_items([]))
-    assert is_copied([[1]], permutations_with_all_items([1]))
+    assert is_copied(None, all_items_permutations(None))
+    assert is_copied([[]], all_items_permutations([]))
+    assert is_copied([[1]], all_items_permutations([1]))
     benchmark = [
         [1, 2, 3],
         [1, 3, 2],
@@ -71,13 +71,13 @@ def test_complete_permutations():
         [3, 2, 1],
         [3, 1, 2]
     ]
-    assert is_copied(benchmark, permutations_with_all_items([1, 2, 3]))
+    assert is_copied(benchmark, all_items_permutations([1, 2, 3]))
     benchmark = [
         [1, 1, 2],
         [1, 2, 1],
         [2, 1, 1]
     ]
-    assert is_copied(benchmark, permutations_with_all_items([1, 1, 2]))
+    assert is_copied(benchmark, all_items_permutations([1, 1, 2]))
 
 
 def test_combinations():
@@ -106,7 +106,28 @@ def test_combinations():
     assert is_copied(benchmark, combinations(4, [1, 1, 2, 2, 3]))
 
 
-
+def test_all_subsets():
+    benchmark = [
+        [],
+        [1],
+        [2],
+        [3],
+        [1, 1],
+        [1, 2],
+        [1, 3],
+        [2, 2],
+        [2, 3],
+        [1, 1, 2],
+        [1, 1, 3],
+        [1, 2, 2],
+        [1, 2, 3],
+        [2, 2, 3],
+        [1, 1, 2, 2],
+        [1, 1, 2, 3],
+        [1, 2, 2, 3],
+        [1, 1, 2, 2, 3],
+    ]
+    assert is_copied(benchmark, all_subsets([1, 1, 2, 2, 3]))
 
 
 

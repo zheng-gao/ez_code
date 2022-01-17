@@ -40,7 +40,7 @@ def permutations(selection_size: int, items: list) -> list:
     return result
 
 
-def permutations_with_all_items(items: list) -> list:
+def all_items_permutations(items: list) -> list:
 
     """ Equals to permutations(len(items, items)) """
     def _permutations_with_all_items(items: list, current_index, result: list):
@@ -102,11 +102,30 @@ def combinations(selection_size: int, items: list):
     return result
 
 
+def all_subsets(items: list):
+    """ Equals to combinations(i, items) for i in range(len(items) + 1) """
+    def _all_subsets(items: list, start_index: int, subset: list, result: list):
+        if len(subset) > len(items):
+            return
+        result.append(subset.copy())
+        selected_items = set()
+        for i in range(start_index, len(items)):
+            if items[i] not in selected_items:  # check for duplicate items
+                selected_items.add(items[i])
+                subset.append(items[i])
+                _all_subsets(items, i + 1, subset, result)
+                subset.pop()
+
+    if items is None:
+        return None
+    result = list()
+    _all_subsets(items, 0, list(), result)
+    result.sort(key=lambda x: len(x)) # nice to have
+    return result
 
 
-# def all_combinations(items: list):
-#     """ All subsets """
-#     def _all_combinations(items, selection_size, combination, result):
-#         if selection_size == len(items):
-#             return
-#         result.append(combination.copy())
+
+
+
+
+
