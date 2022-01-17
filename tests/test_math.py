@@ -129,5 +129,16 @@ def test_all_subsets():
     ]
     assert is_copied(benchmark, all_subsets([1, 1, 2, 2, 3]))
 
-
+def test_all_subsets_unique():
+    benchmark = [
+        [],
+        [1],
+        [2],
+        [3],
+        [1, 2],
+        [1, 3],
+        [2, 3],
+        [1, 2, 3],
+    ]
+    assert is_copied(benchmark, all_subsets(items=[1, 2, 3], has_duplicate=False))
 

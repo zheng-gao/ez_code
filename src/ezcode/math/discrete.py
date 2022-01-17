@@ -102,9 +102,10 @@ def combinations(selection_size: int, items: list):
     return result
 
 
-def all_subsets(items: list):
+def all_subsets(items: list, has_duplicate=True):
     """ Equals to combinations(i, items) for i in range(len(items) + 1) """
-    def _all_subsets(items: list, start_index: int, subset: list, result: list):
+
+    def _all_subsets_recursion(items: list, start_index: int, subset: list, result: list):
         if len(subset) > len(items):
             return
         result.append(subset.copy())
@@ -113,13 +114,26 @@ def all_subsets(items: list):
             if items[i] not in selected_items:  # check for duplicate items
                 selected_items.add(items[i])
                 subset.append(items[i])
-                _all_subsets(items, i + 1, subset, result)
+                _all_subsets_recursion(items, i + 1, subset, result)
                 subset.pop()
+
+    def _all_subsets_iteration(items: list, result: list):
+        """ 2^N subsets, Not for duplicate items """
+        number_range = 1 << len(items)
+        for i in range(number_range):
+            subset = list()
+            for shift in range(len(items)):
+                if ((i >> shift) & 1) == 1:
+                    subset.append(items[shift])
+            result.append(subset.copy())
 
     if items is None:
         return None
     result = list()
-    _all_subsets(items, 0, list(), result)
+    if has_duplicate:
+        _all_subsets_recursion(items, 0, list(), result)
+    else:
+        _all_subsets_iteration(items, result)
     result.sort(key=lambda x: len(x)) # nice to have
     return result
 
