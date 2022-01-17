@@ -1,7 +1,8 @@
-# Permutations & Combinations
+# Permutations
+
 ```
 >>> from ezcode.array.utils import print_array
->>> from ezcode.math.discrete import permutations, combinations, all_subsets
+>>> from ezcode.math.discrete import permutations
 >>> print_array(permutations(items=["A","A","B","B","C"], selection_size=3))
 [
     ['A', 'A', 'B'],
@@ -23,6 +24,13 @@
     ['C', 'B', 'A'],
     ['C', 'B', 'B'],
 ]
+```
+
+# Combinations
+
+```
+>>> from ezcode.array.utils import print_array
+>>> from ezcode.math.discrete import combinations, all_subsets
 >>> print_array(combinations(items=["A","A","B","B","C"], selection_size=3))
 [
     ['A', 'A', 'B'],
