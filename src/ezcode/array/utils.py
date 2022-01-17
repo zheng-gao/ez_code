@@ -22,6 +22,17 @@ def is_copied(array_1, array_2):
 
 def copy(array: list) -> list:
     return [copy(subarray) for subarray in array] if type(array) is list else array
+
+
+def delete(array: list, items_to_delete: set):
+    count = 0
+    for index, data in enumerate(array):
+        if data in items_to_delete:
+            count += 1
+        elif count > 0:
+            array[index - count] = data
+    for _ in range(count):
+        array.pop()
         
 
 def array_to_string(array, indent: str = "    "):

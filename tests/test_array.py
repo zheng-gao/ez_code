@@ -1,6 +1,6 @@
 from ezcode.array.search import binary_search
 from ezcode.array.rotate import rotate
-from ezcode.array.utils import is_copied, copy, array_to_string
+from ezcode.array.utils import is_copied, copy, array_to_string, delete
 
 
 def test_array_to_string():
@@ -82,6 +82,10 @@ def test_copy():
     assert not is_copied([[],[1, 2]], copy([[],[1, 3]]))
 
 
+def test_delete():
+    array = [1, 2, 2, 2, 3, 4, 4, 5, 6]
+    delete(array, set([2, 4, 6]))
+    assert is_copied([1, 3, 5], array)
 
 
 
