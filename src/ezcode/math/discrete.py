@@ -14,7 +14,6 @@ def permutation_size(total_size: int, selection_size: int) -> int:
 
 
 def permutations(selection_size: int, items: list) -> list:
-
     def _permutations(selection_size: int, items: list, selected_indices: set(), permutation: list, result: list):
         if len(permutation) == selection_size:
             result.append(permutation.copy())
@@ -28,7 +27,6 @@ def permutations(selection_size: int, items: list) -> list:
                 _permutations(selection_size, items, selected_indices, permutation, result)
                 permutation.pop()
                 selected_indices.remove(i)
-
     if items is None:
         return None
     if selection_size > len(items):
@@ -98,6 +96,7 @@ def combinations(selection_size: int, items: list):
     if selection_size < 0:
         raise ValueError(f"selection_size:{selection_size} cannot be negative")
     result = list()
+    items.sort()  # for duplicate items
     _combinations(selection_size, items, 0, list(), result)
     return result
 
@@ -106,7 +105,7 @@ def all_subsets(items: list, has_duplicate=True):
     """ Equals to combinations(i, items) for i in range(len(items) + 1) """
 
     def _all_subsets_recursion(items: list, start_index: int, subset: list, result: list):
-        if len(subset) > len(items):
+        if start_index > len(items):
             return
         result.append(subset.copy())
         selected_items = set()
@@ -131,6 +130,7 @@ def all_subsets(items: list, has_duplicate=True):
         return None
     result = list()
     if has_duplicate:
+        items.sort()  # for duplicate items
         _all_subsets_recursion(items, 0, list(), result)
     else:
         _all_subsets_iteration(items, result)

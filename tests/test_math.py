@@ -26,37 +26,43 @@ def test_combination_size():
 def test_permutations():
     assert is_copied(None, permutations(0, None))
     assert is_copied([[]], permutations(0, []))
-    assert is_copied([[]], permutations(0, [1, 2, 3]))
+    assert is_copied([[]], permutations(0, [1, 2, 1]))
+    benchmark = [
+        [1, 2],
+        [1, 1],
+        [2, 1],
+    ]
+    assert is_copied(benchmark, permutations(2, [1, 2, 1]))
     benchmark = [
         [1, 2],
         [1, 3],
         [2, 1],
         [2, 3],
         [3, 1],
-        [3, 2]
+        [3, 2],
     ]
     assert is_copied(benchmark, permutations(2, [1, 2, 3]))
     benchmark = [
-        [1, 1, 2],
-        [1, 1, 3],
-        [1, 2, 1],
-        [1, 2, 2],
-        [1, 2, 3],
-        [1, 3, 1],
-        [1, 3, 2],
-        [2, 1, 1],
-        [2, 1, 2],
         [2, 1, 3],
-        [2, 2, 1],
-        [2, 2, 3],
+        [2, 1, 2],
+        [2, 1, 1],
         [2, 3, 1],
         [2, 3, 2],
-        [3, 1, 1],
-        [3, 1, 2],
+        [2, 2, 1],
+        [2, 2, 3],
+        [1, 2, 3],
+        [1, 2, 2],
+        [1, 2, 1],
+        [1, 3, 2],
+        [1, 3, 1],
+        [1, 1, 2],
+        [1, 1, 3],
         [3, 2, 1],
-        [3, 2, 2]
+        [3, 2, 2],
+        [3, 1, 2],
+        [3, 1, 1],
     ]
-    assert is_copied(benchmark, permutations(3, [1, 1, 2, 2, 3]))
+    assert is_copied(benchmark, permutations(3, [2, 1, 3, 2, 1]))
 
 
 def test_complete_permutations():
@@ -69,13 +75,13 @@ def test_complete_permutations():
         [2, 1, 3],
         [2, 3, 1],
         [3, 2, 1],
-        [3, 1, 2]
+        [3, 1, 2],
     ]
     assert is_copied(benchmark, all_items_permutations([1, 2, 3]))
     benchmark = [
         [1, 1, 2],
         [1, 2, 1],
-        [2, 1, 1]
+        [2, 1, 1],
     ]
     assert is_copied(benchmark, all_items_permutations([1, 1, 2]))
 
@@ -85,9 +91,14 @@ def test_combinations():
     assert is_copied([[]], combinations(0, []))
     assert is_copied([[]], combinations(0, [1, 2, 3]))
     benchmark = [
+        [1, 1],
+        [1, 2],
+    ]
+    assert is_copied(benchmark, combinations(2, [1, 2, 1]))
+    benchmark = [
         [1, 2],
         [1, 3],
-        [2, 3]
+        [2, 3],
     ]
     assert is_copied(benchmark, combinations(2, [1, 2, 3]))
     benchmark = [
@@ -97,16 +108,25 @@ def test_combinations():
         [1, 2, 3],
         [2, 2, 3],
     ]
-    assert is_copied(benchmark, combinations(3, [1, 1, 2, 2, 3]))
+    assert is_copied(benchmark, combinations(3, [2, 1, 3, 2, 1]))
     benchmark = [
         [1, 1, 2, 2],
         [1, 1, 2, 3],
         [1, 2, 2, 3],
     ]
-    assert is_copied(benchmark, combinations(4, [1, 1, 2, 2, 3]))
+    assert is_copied(benchmark, combinations(4, [2, 1, 3, 2, 1]))
 
 
 def test_all_subsets():
+    benchmark = [
+        [],
+        [1],
+        [2],
+        [1, 1],
+        [1, 2],
+        [1, 1, 2],
+    ]
+    assert is_copied(benchmark, all_subsets([1, 2, 1]))
     benchmark = [
         [],
         [1],
@@ -127,7 +147,8 @@ def test_all_subsets():
         [1, 2, 2, 3],
         [1, 1, 2, 2, 3],
     ]
-    assert is_copied(benchmark, all_subsets([1, 1, 2, 2, 3]))
+    assert is_copied(benchmark, all_subsets([2, 1, 3, 2, 1]))
+
 
 def test_all_subsets_unique():
     benchmark = [
