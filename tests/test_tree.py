@@ -1,6 +1,6 @@
 import pytest
 
-from fixture.tree import printer, s_root, s_tree, c_tree, s_tree_print, c_tree_print
+from fixture.tree import printer, s_root, s_tree, c_tree, s_tree_print, c_tree_print, trie, trie_print
 
 
 def test_printer():
@@ -61,3 +61,11 @@ def test_deserialization():
     assert s_tree.is_copied(s_tree.deserialize(formatter=int, string=s_tree.serialize()))
     assert c_tree.is_copied(c_tree.deserialize(formatter=int, string=c_tree.serialize()))
 
+
+def test_prefix_tree():
+    assert trie.to_string() == trie_print 
+    assert trie.size() == 3
+    assert trie.longest_common_prefix() == "co"
+    assert trie.contains("cof")
+    assert not trie.contains("cofe")
+    

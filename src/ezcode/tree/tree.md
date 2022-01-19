@@ -183,3 +183,25 @@ Subtree Avg Max: 10.0
 (2)       ┌─(3)─┐ 
          (4)   (5)
 ```
+
+## Prefix Tree
+
+```
+>>> from ezcode.tree.prefix_tree import Trie
+>>> trie = Trie(first_letter="a", alphabet_size=26)
+>>> for word in ["code", "coke", "coffee"]:
+...     trie.add(word)
+... 
+>>> trie.size() 
+3
+>>> trie.print()
+None:3 -> c:3 -> o:3 -> d:1 -> e:1
+None:3 -> c:3 -> o:3 -> f:1 -> f:1 -> e:1 -> e:1
+None:3 -> c:3 -> o:3 -> k:1 -> e:1
+>>> trie.contains("cof")
+True
+>>> trie.contains("cofe")
+False
+>>> trie.longest_common_prefix()
+'co'
+```
