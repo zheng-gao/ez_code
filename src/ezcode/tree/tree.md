@@ -1,4 +1,4 @@
-# Tree
+# Binary Tree
 
 ## Binary Tree Printer
 
@@ -184,27 +184,27 @@ Subtree Avg Max: 10.0
          (4)   (5)
 ```
 
-## Prefix Tree
+# Trie
 
 ```
->>> from ezcode.tree.trie import PrefixTree
->>> prefix_tree = PrefixTree()
+>>> from ezcode.tree.trie import Trie
+>>> trie = Trie()
 >>> for word in ["code", "coke", "coffee"]:
-...     prefix_tree.add(list(word))
+...     trie.add(list(word))
 ... 
->>> prefix_tree.size()
+>>> trie.size()
 3
->>> prefix_tree.print()
+>>> trie.print()
 None:3 -> c:3 -> o:3 -> d:1 -> e:1
 None:3 -> c:3 -> o:3 -> k:1 -> e:1
 None:3 -> c:3 -> o:3 -> f:1 -> f:1 -> e:1 -> e:1
->>> prefix_tree.contains(list("cof"))
+>>> trie.contains(list("cof"))
 True
->>> prefix_tree.contains(list("cofe"))
+>>> trie.contains(list("cofe"))
 False
->>> "".join(prefix_tree.longest_common_prefix())
+>>> "".join(trie.longest_common_prefix())
 'co'
->>> for s_list in prefix_tree.prefix_wildcard(list("co")):
+>>> for s_list in trie.prefix_wildcard(list("co")):
 ...     print("".join(s_list))
 ... 
 code

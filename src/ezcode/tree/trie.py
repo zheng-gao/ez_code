@@ -1,5 +1,5 @@
 
-class PrefixTree:
+class Trie:
     class Node:
         def __init__(self, data=None, count=1):
             self.data = data

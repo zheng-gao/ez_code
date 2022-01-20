@@ -1,5 +1,5 @@
 from ezcode.tree.binary_tree import BinaryTree
-from ezcode.tree.trie import PrefixTree
+from ezcode.tree.trie import Trie
 from ezcode.tree.printer import BinaryTreePrinter
 
 
@@ -34,10 +34,10 @@ c_tree_print = """
 """[1:]
 
 
-prefix_tree = PrefixTree()
+trie = Trie()
 for word in ["code", "coke", "coffee"]:
-    prefix_tree.add(list(word))
-prefix_tree_print = """
+    trie.add(list(word))
+trie_print = """
 None:3 -> c:3 -> o:3 -> d:1 -> e:1
 None:3 -> c:3 -> o:3 -> k:1 -> e:1
 None:3 -> c:3 -> o:3 -> f:1 -> f:1 -> e:1 -> e:1
