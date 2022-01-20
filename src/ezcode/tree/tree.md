@@ -189,25 +189,26 @@ Subtree Avg Max: 10.0
 ```
 >>> from ezcode.tree.trie import Trie
 >>> trie = Trie()
->>> for word in ["code", "coke", "coffee"]:
+>>> for word in ["today", "tomorrow", "tonight", "tobaco", "tony"]:
 ...     trie.add(list(word))
 ... 
 >>> trie.size()
-3
+5
 >>> trie.print()
-None:3 -> c:3 -> o:3 -> d:1 -> e:1
-None:3 -> c:3 -> o:3 -> k:1 -> e:1
-None:3 -> c:3 -> o:3 -> f:1 -> f:1 -> e:1 -> e:1
->>> trie.contains(list("cof"))
+None:5 -> t:5 -> o:5 -> d:1 -> a:1 -> y:1
+None:5 -> t:5 -> o:5 -> m:1 -> o:1 -> r:1 -> r:1 -> o:1 -> w:1
+None:5 -> t:5 -> o:5 -> n:2 -> i:1 -> g:1 -> h:1 -> t:1
+None:5 -> t:5 -> o:5 -> n:2 -> y:1
+None:5 -> t:5 -> o:5 -> b:1 -> a:1 -> c:1 -> o:1
+>>> trie.contains(list("toni"))
 True
->>> trie.contains(list("cofe"))
+>>> trie.contains(list("tonx"))
 False
 >>> "".join(trie.longest_common_prefix())
-'co'
->>> for s_list in trie.prefix_wildcard(list("co")):
-...     print("".join(s_list))
+'to'
+>>> for word in trie.prefix_wildcard(list("ton")):
+...     print("".join(word))
 ... 
-code
-coke
-coffee
+tonight
+tony
 ```
