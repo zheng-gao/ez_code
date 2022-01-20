@@ -187,21 +187,27 @@ Subtree Avg Max: 10.0
 ## Prefix Tree
 
 ```
->>> from ezcode.tree.prefix_tree import Trie
->>> trie = Trie(first_letter="a", alphabet_size=26)
+>>> from ezcode.tree.trie import PrefixTree
+>>> prefix_tree = PrefixTree()
 >>> for word in ["code", "coke", "coffee"]:
-...     trie.add(word)
+...     prefix_tree.add(list(word))
 ... 
->>> trie.size() 
+>>> prefix_tree.size()
 3
->>> trie.print()
+>>> prefix_tree.print()
 None:3 -> c:3 -> o:3 -> d:1 -> e:1
-None:3 -> c:3 -> o:3 -> f:1 -> f:1 -> e:1 -> e:1
 None:3 -> c:3 -> o:3 -> k:1 -> e:1
->>> trie.contains("cof")
+None:3 -> c:3 -> o:3 -> f:1 -> f:1 -> e:1 -> e:1
+>>> prefix_tree.contains(list("cof"))
 True
->>> trie.contains("cofe")
+>>> prefix_tree.contains(list("cofe"))
 False
->>> trie.longest_common_prefix()
+>>> "".join(prefix_tree.longest_common_prefix())
 'co'
+>>> for s_list in prefix_tree.prefix_wildcard(list("co")):
+...     print("".join(s_list))
+... 
+code
+coke
+coffee
 ```

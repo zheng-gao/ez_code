@@ -1,6 +1,7 @@
 import pytest
 
-from fixture.tree import printer, s_root, s_tree, c_tree, s_tree_print, c_tree_print, trie, trie_print
+from ezcode.array.utils import is_copied
+from fixture.tree import printer, s_root, s_tree, c_tree, s_tree_print, c_tree_print, prefix_tree, prefix_tree_print
 
 
 def test_printer():
@@ -63,9 +64,11 @@ def test_deserialization():
 
 
 def test_prefix_tree():
-    assert trie.to_string() == trie_print 
-    assert trie.size() == 3
-    assert trie.longest_common_prefix() == "co"
-    assert trie.contains("cof")
-    assert not trie.contains("cofe")
+    assert prefix_tree.to_string() == prefix_tree_print 
+    assert prefix_tree.size() == 3
+    assert prefix_tree.longest_common_prefix() == list("co")
+    assert prefix_tree.contains("cof")
+    assert not prefix_tree.contains("cofe")
+    assert is_copied(prefix_tree.prefix_wildcard(list("co")), [list("code"), list("coke"), list("coffee")])
+
     
