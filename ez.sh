@@ -192,6 +192,9 @@ function control_publish() {
 }
 
 function control_bump() {
+    if git "diff" "${BASE_DIRECTORY}/setup.py" | grep "version=" | grep "^+\|^-"; then
+        ez_print_log -m "Found unstaged version change, skip version bump!" && return 0
+    fi
     local version=$(cat "${BASE_DIRECTORY}/setup.py" | grep "version=" | sed "s/[^0-9.]*\([0-9.]*\).*/\1/") new_version
     local major=$(echo "${version}" | cut -d "." -f 1)
     local minor=$(echo "${version}" | cut -d "." -f 2)
@@ -252,7 +255,7 @@ function ez() {
         [[ -z "${operations[*]}" ]] && ez_print_log -l "ERROR" -m "Must select at least one operation if no workflow is selected!" && return 1
     fi
     [[ "${development}" = "True" ]] && operations=("clean" "uninstall" "build" "test" "install_local" "clean")
-    [[ "${release}" = "True" ]] && operations=("clean" "build" "test" "bump" "publish" "clean")
+    [[ "${release}" = "True" ]] && operations=("clean" "bump" "build" "test" "publish" "clean")
     for opt in "${operations[@]}"; do
         ez_exclude "${opt}" "${VALID_OPERATIONS[@]}" && ez_print_log -l "ERROR" -m "Invalid operation \"${opt}\"" && return 1
     done
