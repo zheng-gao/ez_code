@@ -204,6 +204,10 @@ None:5 -> t:5 -> o:5 -> b:1 -> a:1 -> c:1 -> o:1
 True
 >>> trie.contains(list("tonx"))
 False
+>>> trie.contains(list("toni"), strict=True)
+False
+>>> trie.contains(list("tony"), strict=True)
+True
 >>> "".join(trie.longest_common_prefix())
 'to'
 >>> for word in trie.prefix_wildcard(list("ton")):

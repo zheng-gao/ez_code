@@ -67,8 +67,10 @@ def test_prefix_tree():
     assert trie.to_string() == trie_print 
     assert trie.size() == 3
     assert trie.longest_common_prefix() == list("co")
-    assert trie.contains("cof")
-    assert not trie.contains("cofe")
+    assert trie.contains(list("cof"))
+    assert not trie.contains(list("cofe"))
+    assert trie.contains(list("coffee"), strict=True)
+    assert not trie.contains(list("cof"), strict=True)
     assert is_copied(trie.prefix_wildcard(list("co")), [list("code"), list("coke"), list("coffee")])
 
     

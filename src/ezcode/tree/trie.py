@@ -4,6 +4,7 @@ class Trie:
         def __init__(self, data=None, count=1):
             self.data = data
             self.count = count
+            self.is_end = False
             self.children = None  # {data: Node}
 
     def __init__(self):
@@ -50,8 +51,9 @@ class Trie:
                     node.children = dict()
                 node.children[data] = new_node
                 node = new_node
+        node.is_end = True
 
-    def contains(self, prefix: list):
+    def contains(self, prefix: list, strict=False):
         if not prefix:
             raise ValueError(f"prefix cannot be empty")
         node = self.root
@@ -59,6 +61,8 @@ class Trie:
             node = self.get_child(node, data)
             if not node:
                 return False
+        if strict:
+            return node.is_end
         return True
 
     def longest_common_prefix(self):
