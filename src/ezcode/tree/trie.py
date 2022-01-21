@@ -8,7 +8,11 @@ class Trie:
             self.children = None  # {data: Node}
 
     def __init__(self):
-        self.root = self.Node(count=0)
+        self.root = self.Node(data="^", count=0)
+
+    def clear(self):
+        if self.root.count > 0:
+            self.root = self.Node(data="^", count=0)
 
     def get_child(self, node, data):
         if not node.children or data not in node.children:
@@ -19,15 +23,20 @@ class Trie:
         return self.root.count
 
     def to_string(self):
+
         def _to_string_pre_order(node, str_list, result):
             if node:
-                str_list.append(f"{node.data}:{node.count}")
+                if node.is_end:
+                    str_list.append(f"{node.data}:{node.count}:$")
+                else:
+                    str_list.append(f"{node.data}:{node.count}")
                 if not node.children:
                     result.append(" -> ".join(str_list))
                 else:
                     for child_node in node.children.values():
                         _to_string_pre_order(child_node, str_list, result)
                 str_list.pop()
+
         result = list()
         _to_string_pre_order(self.root, list(), result)
         return "\n".join(result) + "\n"
@@ -36,8 +45,8 @@ class Trie:
         print(self.to_string(), end="")
 
     def add(self, prefix: list):
-        if not prefix:
-            raise ValueError(f"prefix cannot be empty")
+        if prefix is None:
+            raise ValueError(f"prefix cannot be None")
         node = self.root
         node.count += 1
         for data in prefix:
@@ -54,8 +63,8 @@ class Trie:
         node.is_end = True
 
     def contains(self, prefix: list, strict=False):
-        if not prefix:
-            raise ValueError(f"prefix cannot be empty")
+        if prefix is None:
+            raise ValueError(f"prefix cannot be None")
         node = self.root
         for data in prefix:
             node = self.get_child(node, data)
@@ -78,23 +87,40 @@ class Trie:
             node = next_node
         return prefix
 
-    def prefix_wildcard(self, prefix: list):
+    def prefix_wildcard(self, prefix: list = None):
+
         def _prefix_wildcard_pre_order(node, data_list, result):
             if node:
                 if node != self.root:
                     data_list.append(node.data)
-                if not node.children:
+                if node.is_end:
                     result.append(data_list.copy())
-                else:
+                if node.children:
                     for child_node in node.children.values():
                         _prefix_wildcard_pre_order(child_node, data_list, result)
-                data_list.pop()
-        node = self.root
-        for data in prefix:
-            node = self.get_child(node, data)
-            if not node:
-                return None
+                if len(data_list) > 0:
+                    data_list.pop()
+
         result = list()
-        _prefix_wildcard_pre_order(node, prefix[:-1:].copy(), result)
+        if not prefix:
+            _prefix_wildcard_pre_order(self.root, list(), result)
+        else:
+            node = self.root
+            for data in prefix:
+                node = self.get_child(node, data)
+                if not node:
+                    return None
+            _prefix_wildcard_pre_order(node, list(prefix)[:-1:].copy(), result)
         return result   
+
+
+class SuffixTrie(Trie):
+    def __init__(self, data_list: list = None):
+        super(SuffixTrie, self).__init__()
+        self.build(data_list)
+
+    def build(self, data_list: list):
+        self.clear()
+        for i in range(len(data_list)):
+            self.add(data_list[i:])
 

@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as file_handler:
 
 setuptools.setup(
     name="ezcode",                                  # This is the name of the package
-    version="0.0.12",                               # The initial release version
+    version="0.0.13",                               # The initial release version
     author="Zheng Gao",                             # Full name of the author
     description="Easy Algorithm & Data Structure",
     url="https://github.com/zheng-gao/ez_code",

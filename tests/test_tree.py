@@ -1,7 +1,8 @@
 import pytest
 
 from ezcode.array.utils import is_copied
-from fixture.tree import printer, s_root, s_tree, c_tree, s_tree_print, c_tree_print, trie, trie_print
+from fixture.tree import printer, s_root, s_tree, c_tree, s_tree_print, c_tree_print
+from fixture.tree import trie, trie_print, suffix_trie, suffix_trie_print
 
 
 def test_printer():
@@ -63,14 +64,19 @@ def test_deserialization():
     assert c_tree.is_copied(c_tree.deserialize(formatter=int, string=c_tree.serialize()))
 
 
-def test_prefix_tree():
+def test_trie():
     assert trie.to_string() == trie_print 
-    assert trie.size() == 3
+    assert trie.size() == 4
     assert trie.longest_common_prefix() == list("co")
-    assert trie.contains(list("cof"))
-    assert not trie.contains(list("cofe"))
-    assert trie.contains(list("coffee"), strict=True)
-    assert not trie.contains(list("cof"), strict=True)
-    assert is_copied(trie.prefix_wildcard(list("co")), [list("code"), list("coke"), list("coffee")])
+    assert trie.contains("cof")
+    assert not trie.contains("cofe")
+    assert trie.contains("coffee", strict=True)
+    assert not trie.contains("cof", strict=True)
+    assert is_copied(trie.prefix_wildcard(list("co")), [list("cod"), list("code"), list("coke"), list("coffee")])
+
+
+def test_suffix_trie():
+    assert suffix_trie.to_string() == suffix_trie_print
+
 
     
