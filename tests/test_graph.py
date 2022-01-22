@@ -1,9 +1,9 @@
 from ezcode.array.utils import is_copied
-from fixture.graph import dag, dag_print, non_dag
+from fixture.graph import dag, dag_string, non_dag
 
 
-def test_graph_to_string():
-    assert dag.to_string() == dag_print
+def test_graph_string():
+    assert str(dag) == dag_string
 
 
 def test_topological_order():

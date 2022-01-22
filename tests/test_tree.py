@@ -1,13 +1,13 @@
 import pytest
 
 from ezcode.array.utils import is_copied
-from fixture.tree import printer, s_root, s_tree, c_tree, s_tree_print, c_tree_print
-from fixture.tree import trie, trie_print, suffix_trie, suffix_trie_print
+from fixture.tree import printer, s_root, s_tree, c_tree, s_tree_string, c_tree_string
+from fixture.tree import trie, trie_string, suffix_trie, suffix_trie_string
 
 
 def test_printer():
-    assert s_tree_print == printer.to_string(s_tree.root)
-    assert c_tree_print == printer.to_string(c_tree.root)
+    assert s_tree_string == printer.to_string(s_tree.root)
+    assert c_tree_string == printer.to_string(c_tree.root)
 
 
 def test_traversals():
@@ -65,7 +65,7 @@ def test_deserialization():
 
 
 def test_trie():
-    assert trie.to_string() == trie_print 
+    assert str(trie) == trie_string 
     assert trie.size() == 4
     assert trie.longest_common_prefix() == list("co")
     assert trie.contains("cof")
@@ -76,7 +76,7 @@ def test_trie():
 
 
 def test_suffix_trie():
-    assert suffix_trie.to_string() == suffix_trie_print
+    assert str(suffix_trie) == suffix_trie_string
 
 
     

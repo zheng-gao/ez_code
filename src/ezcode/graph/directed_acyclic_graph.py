@@ -43,7 +43,7 @@ class ActivityOnVertexGraph:
             self.node_id_index_map[node_id] = index
             index += 1
 
-    def to_string(self, column_size=2, mark="*"):
+    def __str__(self, column_size=2, mark="*"):
         def get_cell(column_size, item=""):
             return str(item) + " " * (column_size - len(str(item)))
         matrix = self.generate_matrix()
@@ -63,7 +63,7 @@ class ActivityOnVertexGraph:
         return output
 
     def print(self):
-        print(self.to_string(), end="")
+        print(self, end="")
 
     def generate_matrix(self):
         matrix = [[False] * self.size() for _ in range(self.size())]

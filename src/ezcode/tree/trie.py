@@ -22,7 +22,7 @@ class Trie:
     def size(self):
         return self.root.count
 
-    def to_string(self):
+    def __str__(self):
 
         def _to_string_pre_order(node, str_list, result):
             if node:
@@ -42,7 +42,7 @@ class Trie:
         return "\n".join(result) + "\n"
 
     def print(self):
-        print(self.to_string(), end="")
+        print(self, end="")
 
     def add(self, prefix: list):
         if prefix is None:
