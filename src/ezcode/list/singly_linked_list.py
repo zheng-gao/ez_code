@@ -16,82 +16,138 @@ class SinglyLinkedList(object):
         self.next_name = next_name
         self.algorithm = SinglyLinkedListAlgorithm(data_name, next_name)
 
-    def new_node(self, data):
+    def new_node(self, data=None, next_node=None):
         node = self.FakeNode()
-        node.__dict__ = {self.data_name: data, self.next_name: None}
+        node.__dict__ = {self.data_name: data, self.next_name: next_node}
         return node
+
+    def get_next_node(self, node, steps: int = 1):
+        next_node = node
+        for _ in range(steps):
+            next_node = next_node.__dict__[self.next_name]
+        return next_node
+
+    def set_next_node(self, node, next_node=None):
+        node.__dict__[self.next_name] = next_node
+
+    def get_node_data(self, node):
+        return node.__dict__[self.data_name]
+
+    def move_node_forward(self, node, steps: int = 1):
+        for _ in range(steps):
+            if not node:
+                return False
+            node = self.get_next_node(node)
+        return True
 
     def print(self, reverse=False):
         if reverse:
             self.algorithm.reverse_print(self.head, self.head)
         else:
             node = self.head
-            while node and node.__dict__[self.next_name]:
-                print(f"{node.__dict__[self.data_name]} -> ", end="")
-                node = node.__dict__[self.next_name]
+            while node and self.get_next_node(node):
+                print(f"{self.get_node_data(node)} -> ", end="")
+                self.move_node_forward(node)
             if node:
-                print(f"{node.__dict__[self.data_name]} -> ", end="")
+                print(f"{self.get_node_data(node)} -> ", end="")
             print("None")
 
     def to_array(self):
-        array = list()
-        node = self.head
+        array, node = list(), self.head
         while node:
-            array.append(node.__dict__[self.data_name])
-            node = node.next
+            array.append(self.get_node_data(node))
+            self.move_node_forward(node)
         return array
 
     def copy(self):
         if not self.head:
             return None
-        other_head = self.new_node(self.head.__dict__[self.data_name])
+        other_head = self.new_node(data=self.get_node_data(self.head))
         other_node = other_head
-        self_node = self.head.__dict__[self.next_name]
+        self_node = self.get_next_node(self.head)
         while self_node:
-            other_node.__dict__[self.next_name] = self.new_node(self_node.__dict__[self.data_name])
-            self_node = self_node.__dict__[self.next_name]
-            other_node = other_node.__dict__[self.next_name]
+            self.set_next_node(node=other_node, next_node=self.new_node(self.get_node_data(self_node)))
+            self.move_node_forward(self_node)
+            self.move_node_forward(other_node)
         return SinglyLinkedList(other_head, self.data_name, self.next_name)
 
     def is_copied(self, other_list: SinglyLinkedList) -> bool:
         other_head = other_list.head
         if self.head:
-            self_node = self.head
-            other_node = other_head
+            self_node, other_node = self.head, other_head
             while self_node:
-                if self_node.__dict__[self.data_name] != other_node.__dict__[self.data_name]:
+                if self.get_node_data(self_node) != self.get_node_data(other_node):
                     return False
-                self_node = self_node.__dict__[self.next_name]
-                other_node = other_node.__dict__[self.next_name]
+                self.move_node_forward(self_node)
+                self.move_node_forward(other_node)
             return True
         else:
             return other_head == None
 
     def reverse(self):
         if self.head:
-            # self.head = self.algorithm.reverse(self.head, self.head.__dict__[self.next_name])
-            previous_node, current_node, next_node = None, self.head, self.head.__dict__[self.next_name]
+            # self.head = self.algorithm.reverse(self.head, self.get_next_node(self.head))
+            previous_node, current_node, next_node = None, self.head, self.get_next_node(self.head)
             while next_node:
-                current_node.__dict__[self.next_name] = previous_node
+                self.set_next_node(node=current_node, next_node=previous_node)
                 previous_node = current_node
                 current_node = next_node
-                next_node = next_node.__dict__[self.next_name]
+                self.move_node_forward(next_node)
             self.head = current_node
 
     def delete(self, data):
-        previous_node, current_node = self.new_node(), self.head
-        previous_node.next = current_node
-        new_head = previous_node
+        previous_node, current_node = self.new_node(next_node=self.head), self.head
+        fake_head = previous_node
         while current_node:
-            if current_node.data == data:
-                previous_node.next = current_node.next
+            if data == self.node_data(current_node):
+                self.set_next_node(node=previous_node, next_node=self.get_next_node(current_node))
             else:
                 previous_node = current_node
-            current_node = current_node.next
-        self.head = new_head.next
+            self.move_node_forward(current_node)
+        self.head = self.get_next_node(fake_head)
 
+    def delete_nth_from_end(self, n: int):
+        fake_head = self.new_node(next_node=head)
+        if n >= 1:
+            fast_node, slow_node = self.head, fake_head
+            if not self.move_node_forward(fast_node, n):  # move fast node n steps
+                return
+            while fast_node:
+                self.move_node_forward(fast_node)
+                self.move_node_forward(slow_node)
+            self.set_next_node(node=slow_node, next_node=self.get_next_node(slow_node, 2))
+        self.set_next_node(node=self.head, next_node=self.get_next_node(fake_head))
 
-
+    def swap_pairs(self):
+        if self.head and self.get_next_node(self.head):
+            # We need 3 nodes to swap a pair of nodes (second, third)
+            # first second third
+            #   |      |     |
+            #  fake    n1 -> n2 -> n3 -> n4 -> ...
+            fake_head = self.new_node()
+            first, second, third = fake_head, self.head, self.get_next_node(self.head)
+            while third:
+                self.set_next_node(node=first, next_node=third)
+                self.set_next_node(node=second, next_node=self.get_next_node(third))
+                self.set_next_node(node=third, next_node=second)
+                # first second third
+                #   |      |     |
+                #  fake    n1 <- n2    n3 -> n4 -> ...  
+                #   |------|-----^     ^ 
+                #          |-----------|
+                third = self.get_next_node(second)
+                # first       second third
+                #   |           |     |
+                # fake -> n2 -> n1 -> n3 -> n4 -> ...
+                if not third or not self.get_next_node(third):
+                    break
+                first = second
+                second = third
+                self.move_node_forward(third)
+                #             first second third
+                #               |     |     |
+                # fake -> n2 -> n1 -> n3 -> n4 -> ...
+            self.head = self.get_next_node(fake_head)
 
 
 
