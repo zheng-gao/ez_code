@@ -78,7 +78,25 @@ class SinglyLinkedList(object):
                 next_node = next_node.__dict__[self.next_name]
             self.head = current_node
 
+    def delete(self, data):
+        previous_node, current_node = self.new_node(), self.head
+        previous_node.next = current_node
+        new_head = previous_node
+        while current_node:
+            if current_node.data == data:
+                previous_node.next = current_node.next
+            else:
+                previous_node = current_node
+            current_node = current_node.next
+        self.head = new_head.next
 
 
-            
+
+
+
+
+
+
+
+
 
