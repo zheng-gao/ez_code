@@ -15,6 +15,14 @@ class SinglyLinkedList(object):
         self.data_name = data_name
         self.next_name = next_name
         self.algorithm = SinglyLinkedListAlgorithm(data_name, next_name)
+        self.size = self.calculate_size()
+
+    def calculate_size(self) -> int:
+        size = 0
+        while self.head:
+            self.move_node_forward(self.head)
+            size += 1
+        return size
 
     def new_node(self, data=None, next_node=None):
         node = self.FakeNode()
@@ -148,6 +156,17 @@ class SinglyLinkedList(object):
                 #               |     |     |
                 # fake -> n2 -> n1 -> n3 -> n4 -> ...
             self.head = self.get_next_node(fake_head)
+
+    def get_intersection_head(self, other_list: SinglyLinkedList):
+        size_delta = self.size - other_list.size
+        long_head, short_head = (self.head, other_list.head) if size_delta > 0 else (other_list.head, self.head)
+        self.move_node_forward(node=long_head, setps=abs(size_delta))
+        while short_head and short_head != long_head:
+            self.move_node_forward(short_head)
+            self.move_node_forward(long_head)
+        return short_head
+
+
 
 
 
