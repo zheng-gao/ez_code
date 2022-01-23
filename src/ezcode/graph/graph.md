@@ -4,17 +4,18 @@
 
 ```
 >>> from ezcode.graph.directed_acyclic_graph import ActivityOnVertexGraph
->>> dependencies = [("c", "a"), ("b", "e"), ("a", "d"), ("c", "e"), ("d", "b")]
+>>> dependencies = [("c", "a"), ("b", "f"), ("e", None), ("a", "d"), ("c", "f"), ("d", "b"), ("f", "e")]
 >>> aov_graph = ActivityOnVertexGraph(dependencies)
 >>> aov_graph.print()
-  a b c d e 
-a       *   
-b         * 
-c *       * 
-d   *       
-e 
+  a b c d e f 
+a       *     
+b           * 
+c *         * 
+d   *         
+e             
+f         *   
 >>> print(aov_graph.topological_order())
-['e', 'b', 'd', 'a', 'c']
+['e', 'f', 'b', 'd', 'a', 'c']
 >>> aov_graph.is_directed_acyclic_graph()
 True
 >>> circular_dependencies = [("a", "b"), ("b", "a")]

@@ -7,7 +7,7 @@ def test_graph_string():
 
 
 def test_topological_order():
-    assert is_copied(dag.topological_order(), ["e", "b", "d", "a", "c"])
+    assert is_copied(dag.topological_order(), ["e", "f", "b", "d", "a", "c"])
 
 
 def test_is_directed_acyclic_graph():

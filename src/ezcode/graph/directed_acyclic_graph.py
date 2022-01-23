@@ -11,8 +11,8 @@ class ActivityOnVertexGraph:
 
     def __init__(self, from_to_list=None):
         self.nodes = None  # dict(node_id, Node)
-        self.sorted_node_ids = None
-        self.node_id_index_map = None
+        self.sorted_node_ids = None       # for print
+        self.node_id_index_map = None     # for print
         if from_to_list:
             self.build(from_to_list=from_to_list)
 
@@ -24,18 +24,25 @@ class ActivityOnVertexGraph:
             self.nodes = dict()
         for from_to_pair in from_to_list:
             from_id, to_id = from_to_pair
-            if from_id not in self.nodes:
-                self.nodes[from_id] = self.Node(node_id=from_id)
-            from_node = self.nodes[from_id]
-            if to_id not in self.nodes:
-                self.nodes[to_id] = self.Node(node_id=to_id)
-            to_node = self.nodes[to_id] 
-            if not from_node.to_nodes:
-                from_node.to_nodes = set()
-            from_node.to_nodes.add(to_node)
-            if not to_node.from_nodes:
-                to_node.from_nodes = set()
-            to_node.from_nodes.add(from_node)
+            if from_id:
+                if from_id not in self.nodes:
+                    self.nodes[from_id] = self.Node(node_id=from_id)
+                from_node = self.nodes[from_id]
+            else:
+                from_node = None
+            if to_id:
+                if to_id not in self.nodes:
+                    self.nodes[to_id] = self.Node(node_id=to_id)
+                to_node = self.nodes[to_id]
+            else:
+                to_node = None
+            if from_node and to_node:
+                if not from_node.to_nodes:
+                    from_node.to_nodes = set()
+                from_node.to_nodes.add(to_node)
+                if not to_node.from_nodes:
+                    to_node.from_nodes = set()
+                to_node.from_nodes.add(from_node)
         # For print
         self.sorted_node_ids = sorted(self.nodes.keys())
         self.node_id_index_map, index = dict(), 0
