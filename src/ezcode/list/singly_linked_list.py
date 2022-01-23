@@ -18,9 +18,9 @@ class SinglyLinkedList(object):
         self.size = self.calculate_size()
 
     def calculate_size(self) -> int:
-        size = 0
-        while self.head:
-            self.move_node_forward(self.head)
+        size, node = 0, self.head
+        while node:
+            node = self.get_next_node(node)
             size += 1
         return size
 
@@ -41,13 +41,6 @@ class SinglyLinkedList(object):
     def get_node_data(self, node):
         return node.__dict__[self.data_name]
 
-    def move_node_forward(self, node, steps: int = 1):
-        for _ in range(steps):
-            if not node:
-                return False
-            node = self.get_next_node(node)
-        return True
-
     def print(self, reverse=False):
         if reverse:
             self.algorithm.reverse_print(self.head, self.head)
@@ -55,7 +48,7 @@ class SinglyLinkedList(object):
             node = self.head
             while node and self.get_next_node(node):
                 print(f"{self.get_node_data(node)} -> ", end="")
-                self.move_node_forward(node)
+                node = self.get_next_node(node)
             if node:
                 print(f"{self.get_node_data(node)} -> ", end="")
             print("None")
@@ -64,7 +57,7 @@ class SinglyLinkedList(object):
         array, node = list(), self.head
         while node:
             array.append(self.get_node_data(node))
-            self.move_node_forward(node)
+            node = self.get_next_node(node)
         return array
 
     def copy(self):
@@ -75,8 +68,8 @@ class SinglyLinkedList(object):
         self_node = self.get_next_node(self.head)
         while self_node:
             self.set_next_node(node=other_node, next_node=self.new_node(self.get_node_data(self_node)))
-            self.move_node_forward(self_node)
-            self.move_node_forward(other_node)
+            self_node = self.get_next_node(self_node)
+            other_node = self.get_next_node(other_node)
         return SinglyLinkedList(other_head, self.data_name, self.next_name)
 
     def is_copied(self, other_list: SinglyLinkedList) -> bool:
@@ -86,8 +79,8 @@ class SinglyLinkedList(object):
             while self_node:
                 if self.get_node_data(self_node) != self.get_node_data(other_node):
                     return False
-                self.move_node_forward(self_node)
-                self.move_node_forward(other_node)
+                self_node = self.get_next_node(self_node)
+                other_node = self.get_next_node(other_node)
             return True
         else:
             return other_head == None
@@ -100,7 +93,7 @@ class SinglyLinkedList(object):
                 self.set_next_node(node=current_node, next_node=previous_node)
                 previous_node = current_node
                 current_node = next_node
-                self.move_node_forward(next_node)
+                next_node = self.get_next_node(next_node)
             self.head = current_node
 
     def delete(self, data):
@@ -111,18 +104,20 @@ class SinglyLinkedList(object):
                 self.set_next_node(node=previous_node, next_node=self.get_next_node(current_node))
             else:
                 previous_node = current_node
-            self.move_node_forward(current_node)
+            current_node = self.get_next_node(current_node)
         self.head = self.get_next_node(fake_head)
 
     def delete_nth_from_end(self, n: int):
         fake_head = self.new_node(next_node=head)
         if n >= 1:
             fast_node, slow_node = self.head, fake_head
-            if not self.move_node_forward(fast_node, n):  # move fast node n steps
-                return
+            for _ in range(n):  # move fast node n steps
+                if not fast_node:
+                    return
+                fast_node = self.get_next_node(fast_node)
             while fast_node:
-                self.move_node_forward(fast_node)
-                self.move_node_forward(slow_node)
+                fast_node = self.get_next_node(fast_node)
+                slow_node = self.get_next_node(slow_node)
             self.set_next_node(node=slow_node, next_node=self.get_next_node(slow_node, 2))
         self.set_next_node(node=self.head, next_node=self.get_next_node(fake_head))
 
@@ -149,9 +144,7 @@ class SinglyLinkedList(object):
                 # fake -> n2 -> n1 -> n3 -> n4 -> ...
                 if not third or not self.get_next_node(third):
                     break
-                first = second
-                second = third
-                self.move_node_forward(third)
+                first, second, third = second, third, self.get_next_node(third)
                 #             first second third
                 #               |     |     |
                 # fake -> n2 -> n1 -> n3 -> n4 -> ...
@@ -160,17 +153,17 @@ class SinglyLinkedList(object):
     def get_intersection_head(self, other_list: SinglyLinkedList):
         size_delta = self.size - other_list.size
         long_list_node, short_list_node = (self.head, other_list.head) if size_delta > 0 else (other_list.head, self.head)
-        self.move_node_forward(node=long_list_node, setps=abs(size_delta))
+        long_list_node = self.get_next_node(node=long_list_node, steps=abs(size_delta))
         while short_list_node and short_list_node != long_list_node:
-            self.move_node_forward(short_list_node)
-            self.move_node_forward(long_list_node)
+            short_list_node = self.get_next_node(short_list_node)
+            long_list_node = self.get_next_node(long_list_node)
         return short_list_node
 
     def has_cycle(self):
         fast_node, slow_node = self.head, self.head
         while fast_node and self.get_next_node(fast_node):
-            self.move_node_forward(fast_node, 2)
-            self.move_node_forward(slow_node, 1)
+            fast_node = self.get_next_node(self.get_next_node(fast_node))
+            slow_node = self.get_next_node(slow_node)
             if fast_node == slow_node:
                 return True
         return False

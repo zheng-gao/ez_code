@@ -78,8 +78,7 @@ class BinaryTreePrinter:
         if node is None:
             return 0
         data_str_len = len(str(node.__dict__[self.data_name])) + len(self.left_wing_head) + len(self.right_wing_head) + len(self.left_wing_tail) + len(self.right_wing_tail)
-        if data_str_len > self.max_data_string_length:
-            self.max_data_string_length = data_str_len
+        self.max_data_string_length = max(data_str_len, self.max_data_string_length)
         left_depth = self._collect_tree_info(node.__dict__[self.left_name]) if node.__dict__[self.left_name] is not None else 0
         right_depth = self._collect_tree_info(node.__dict__[self.right_name]) if node.__dict__[self.right_name] is not None else 0
         return max(left_depth, right_depth) + 1
@@ -96,9 +95,7 @@ class BinaryTreePrinter:
         """
         queue = deque()
         queue.append(BinaryTreePrinter.IndexedNode(1, node))
-        depth = 1
-        children_found = 0
-        children_left = 1
+        children_found, children_left, depth = 0, 1, 1
         line_to_print = list(" " * last_line_string_length)  # we have to make it a list because string is immutable
         while len(queue) > 0:
             indexed_node = queue.popleft()
@@ -119,8 +116,7 @@ class BinaryTreePrinter:
 
     def to_string(self, node, trim_left=True, trim_right=True):
         self._make_char_map(node)
-        start_print_index = 0
-        end_print_index = len(self.char_map[0])
+        start_print_index, end_print_index = 0, len(self.char_map[0])
         if trim_left:  # trim left blank
             for line in self.char_map:
                 last_non_blank_index_from_begin = 0
