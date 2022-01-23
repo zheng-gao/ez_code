@@ -159,12 +159,21 @@ class SinglyLinkedList(object):
 
     def get_intersection_head(self, other_list: SinglyLinkedList):
         size_delta = self.size - other_list.size
-        long_head, short_head = (self.head, other_list.head) if size_delta > 0 else (other_list.head, self.head)
-        self.move_node_forward(node=long_head, setps=abs(size_delta))
-        while short_head and short_head != long_head:
-            self.move_node_forward(short_head)
-            self.move_node_forward(long_head)
-        return short_head
+        long_list_node, short_list_node = (self.head, other_list.head) if size_delta > 0 else (other_list.head, self.head)
+        self.move_node_forward(node=long_list_node, setps=abs(size_delta))
+        while short_list_node and short_list_node != long_list_node:
+            self.move_node_forward(short_list_node)
+            self.move_node_forward(long_list_node)
+        return short_list_node
+
+    def has_cycle(self):
+        fast_node, slow_node = self.head, self.head
+        while fast_node and self.get_next_node(fast_node):
+            self.move_node_forward(fast_node, 2)
+            self.move_node_forward(slow_node, 1)
+            if fast_node == slow_node:
+                return True
+        return False
 
 
 
