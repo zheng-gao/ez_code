@@ -58,4 +58,4 @@ def array_to_string(array, indent: str = "    "):
 
 
 def print_array(array, indent: str = "    "):
-    print(array_to_string(array, indent))
+    print(array_to_string(array, indent), end="")
