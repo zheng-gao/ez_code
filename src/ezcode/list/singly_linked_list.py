@@ -168,6 +168,31 @@ class SinglyLinkedList(object):
                 return True
         return False
 
+    def get_cycle_entrance(self):
+        #   ┌─────── A ───────┐┌──── B ────┐
+        #  n1 -> n2 -> ... -> n3 -> ... -> n4 <- meeting point
+        #                   ┌ ^            | ─┐   circle perimeter = C
+        #                   │ |            v  │
+        #                   │ n6 <- ... <- n5 │
+        #                   └───── C - B ─────┘
+        # When the fast meets the slow, the fast has walked N rounds in the circle, where N > 1 
+        # (A + B) * 2 = A + B + C * N, since the fast is 2 times faster than the slow 
+        # A + B = C * N, where B < C
+        # A = (C - B) + C * (N - 1)
+        # C - B is the length from the meeting point (n4) to the entering point (n3)
+        # so if one pointer start from head and another start from the meeting point at the same speed
+        # they will meet at the entering point and the one in the circle will walk n - 1 rounds
+        fast_node, slow_node = self.head, self.head
+        while fast_node and self.get_next_node(fast_node):
+            fast_node = self.get_next_node(self.get_next_node(fast_node)) # 2 times faster
+            slow_node = self.get_next_node(slow_node)
+            if fast_node == slow_node:
+                slow_node = self.head
+                while slow_node != fast_node:
+                    fast_node = self.get_next_node(fast_node) # same speed as slow
+                    slow_node = self.get_next_node(slow_node)
+                return slow_node
+        return None
 
 
 
