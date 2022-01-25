@@ -152,7 +152,7 @@ class RandomBinaryTree(BinaryTree):
         data_name: str = DATA_NAME, left_name: str = LEFT_NAME, right_name: str = RIGHT_NAME,
         size: int = 0, lower_bound: int = 0, upper_bound: int = 0
     ):
-        super(RandomBinaryTree, self).__init__(None, data_name, left_name, right_name)
+        super().__init__(None, data_name, left_name, right_name)
         self.size = size
         self.lower_bound = lower_bound
         self.upper_bound = upper_bound

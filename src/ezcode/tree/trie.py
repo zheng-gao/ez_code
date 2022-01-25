@@ -116,7 +116,7 @@ class Trie:
 
 class SuffixTrie(Trie):
     def __init__(self, data_list: list = None):
-        super(SuffixTrie, self).__init__()
+        super().__init__()
         self.build(data_list)
 
     def build(self, data_list: list):

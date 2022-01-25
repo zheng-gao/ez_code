@@ -1,4 +1,4 @@
-from ezcode.list.singly_linked_list import SinglyLinkedList
+from ezcode.list.linked_list import SinglyLinkedList
 
 
 class Node:
@@ -16,3 +16,4 @@ s_head_reversed = Node(9, Node(8, Node(7, Node(6, Node(5, Node(4, Node(3, Node(2
 s_list = SinglyLinkedList(head=s_head, data_name="v", next_name="n")
 s_list_copied = SinglyLinkedList(head=s_head_copied, data_name="v", next_name="n")
 s_list_reversed = SinglyLinkedList(head=s_head_reversed, data_name="v", next_name="n")
+

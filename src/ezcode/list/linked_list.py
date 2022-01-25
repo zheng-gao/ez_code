@@ -1,44 +1,60 @@
 from __future__ import annotations
 
-from ezcode.list.const import DATA_NAME, NEXT_NAME, FORWARD_LINK, BACKWARD_LINK
-from ezcode.list.algorithm import SinglyLinkedListAlgorithm
-from ezcode.list.printer import SinglyLinkedListPrinter
+from ezcode.list.const import DATA_NAME, NEXT_NAME, PREV_NAME, FORWARD_LINK, BACKWARD_LINK, BIDIRECTION_LINK
+from ezcode.list.algorithm import SinglyLinkedListAlgorithm, DoublyLinkedListAlgorithm
+from ezcode.list.printer import SinglyLinkedListPrinter, DoublyLinkedListPrinter
 
 
 class SinglyLinkedList(object):
     def __init__(self, head=None, data_name: str = DATA_NAME, next_name: str = NEXT_NAME):
         self.head = head
         self.algorithm = SinglyLinkedListAlgorithm(data_name, next_name)
+        self.size = self.calculate_size()
 
-    def add_to_head(self, data):
-        new_node = self.algorithm.new_node(data=data)
-        self.algorithm.set_next(node=new_node, next_node=self.head)
-        self.head = new_node
+    def __len__(self):
+        return self.size
 
-    def peak_head(self):
-        if not self.head:
-            raise IndexError("Peak at an empty list")
-        return self.algorithm.get_data(self.head)
-
-    def pop_head(self):
-        if not self.head:
-            raise IndexError("Pop an empty list")
-        node = self.head
-        self.algorithm.set_next(node=self.head, next_node=self.algorithm.get_next(self.head))
-        return node
+    def __str__(self):
+        return self.to_string()
 
     def calculate_size(self) -> int:
+        """ O(N) """
         size, node = 0, self.head
         while node:
             size, node = size + 1, self.algorithm.get_next(node)
         return size
 
-    def to_string(self, reverse=False, forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK):
+    def to_string(self, reverse=False, include_end=True,
+        forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK
+    ):
         printer = SinglyLinkedListPrinter(self.algorithm, forward_link, backward_link)
-        printer.to_string(self.head, reverse)
+        printer.to_string(self.head, reverse, include_end)
 
-    def print(self, reverse=False, forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK):
-        print(self.to_string(reverse, forward_link, backward_link))
+    def print(self, reverse=False, include_end=True,
+        forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK
+    ):
+        print(self.to_string(reverse, include_end, forward_link, backward_link))
+
+    def add_to_head(self, data):
+        """ O(1) """
+        new_node = self.algorithm.new_node(data=data, next_node=self.head)
+        self.head = new_node
+        self.size += 1
+
+    def peek_head(self):
+        """ O(1) """
+        if not self.head:
+            raise IndexError("Peek head at an empty list")
+        return self.algorithm.get_data(self.head)
+
+    def pop_head(self):
+        """ O(1) """
+        if not self.head:
+            raise IndexError("Pop head from an empty list")
+        data = self.algorithm.get_data(self.head)
+        self.head = self.algorithm.get_next(self.head)
+        self.size -= 1
+        return data
 
     def to_array(self):
         array, node = list(), self.head
@@ -54,7 +70,10 @@ class SinglyLinkedList(object):
         other_node = other_head
         self_node = self.algorithm.get_next(self.head)
         while self_node:
-            self.algorithm.set_next(node=other_node, next_node=self.algorithm.new_node(self.algorithm.get_data(self_node)))
+            self.algorithm.set_next(
+                node=other_node,
+                next_node=self.algorithm.new_node(self.algorithm.get_data(self_node))
+            )
             self_node = self.algorithm.get_next(self_node)
             other_node = self.algorithm.get_next(other_node)
         return SinglyLinkedList(other_head, self.algorithm.data_name, self.algorithm.next_name)
@@ -82,20 +101,24 @@ class SinglyLinkedList(object):
                 next_node = self.algorithm.get_next(next_node)
             self.head = current_node
 
-    def delete(self, data):
+    def delete(self, data_set: set):
+        """ O(N) """
         previous_node, current_node = self.algorithm.new_node(next_node=self.head), self.head
-        fake_head = previous_node
+        fake_head, count = previous_node, 0
         while current_node:
-            if data == self.node_data(current_node):
+            if self.node_data(current_node) in data_set:
                 self.algorithm.set_next(node=previous_node, next_node=self.algorithm.get_next(current_node))
+                count += 1
             else:
                 previous_node = current_node
             current_node = self.algorithm.get_next(current_node)
         self.head = self.algorithm.get_next(fake_head)
+        self.size -= count
 
-    def delete_nth_from_end(self, n: int):
-        fake_head = self.algorithm.new_node(next_node=head)
-        if n >= 1:
+    def delete_nth_from_end(self, n: int = 1):
+        """ O(N) """
+        if n >= 1 and n <= self.size:
+            fake_head = self.algorithm.new_node(next_node=head)
             fast_node, slow_node = self.head, fake_head
             for _ in range(n):  # move fast node n steps
                 if not fast_node:
@@ -105,7 +128,10 @@ class SinglyLinkedList(object):
                 fast_node = self.algorithm.get_next(fast_node)
                 slow_node = self.algorithm.get_next(slow_node)
             self.algorithm.set_next(node=slow_node, next_node=self.algorithm.get_next(slow_node, 2))
-        self.algorithm.set_next(node=self.head, next_node=self.algorithm.get_next(fake_head))
+            self.algorithm.set_next(node=self.head, next_node=self.algorithm.get_next(fake_head))
+            self.size -= 1
+        else:
+            raise IndexError(f"n = {n} is out of range [1, {self.size}]")
 
     def swap_pairs_of_nodes(self):
         if self.head and self.algorithm.get_next(self.head):
@@ -137,7 +163,7 @@ class SinglyLinkedList(object):
             self.head = self.algorithm.get_next(fake_head)
 
     def get_intersection_head(self, other_list: SinglyLinkedList):
-        size_delta = self.calculate_size() - other_list.calculate_size()
+        size_delta = self.size - other_list.size
         long_list_node, short_list_node = (self.head, other_list.head) if size_delta > 0 else (other_list.head, self.head)
         long_list_node = self.algorithm.get_next(node=long_list_node, steps=abs(size_delta))
         while short_list_node and short_list_node != long_list_node:
@@ -182,10 +208,94 @@ class SinglyLinkedList(object):
         return None
 
 
+class DoublyLinkedList:
+    def __init__(self, head=None, tail=None, data_name: str = DATA_NAME, next_name: str = NEXT_NAME, prev_name: str = PREV_NAME):
+        self.head = head
+        self.tail = tail
+        self.algorithm = DoublyLinkedListAlgorithm(data_name, next_name, prev_name)
+        self.size = self.calculate_size(set_tail=(tail is None))
 
+    def __len__(self):
+        return self.size
 
+    def __str__(self):
+        return self.to_string()
 
+    def calculate_size(self, set_tail=False) -> int:
+        """ O(N) """
+        size, node = 0, self.head
+        while node:
+            if set_tail and not self.algorithm.has_next(node):
+                self.tail = node
+            size, node = size + 1, self.algorithm.get_next(node)
+        return size
 
+    def to_string(self, include_end=True,
+        forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK, bidirection_link: str = BIDIRECTION_LINK
+    ):
+        printer = DoublyLinkedListPrinter(self.algorithm, forward_link, backward_link, bidirection_link)
+        printer.to_string(self.head, include_end)
 
+    def print(self, include_end=True,
+        forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK, bidirection_link: str = BIDIRECTION_LINK
+    ):
+        print(self.to_string(include_end, forward_link, backward_link, bidirection_link))
 
+    def add_to_head(self, data):
+        """ O(1) """
+        new_node = self.algorithm.new_node(data=data, next_node=self.head)
+        if self.head:
+            self.algorithm.set_prev(node=self.head, prev_node=new_node)
+        else:
+            self.tail = new_node
+        self.head = new_node
+        self.size += 1
+
+    def add_to_tail(self, data):
+        """ O(1) """
+        new_node = self.algorithm.new_node(data=data, prev_node=self.tail)
+        if self.tail:
+            self.algorithm.set_next(node=self.tail, next_node=new_node)
+        else:
+            self.head = new_node
+        self.tail = new_node
+        self.size += 1
+
+    def peek_head(self):
+        """ O(1) """
+        if not self.head:
+            raise IndexError("Peek head at an empty list")
+        return self.algorithm.get_data(self.head)
+
+    def peek_tail(self):
+        """ O(1) """
+        if not self.tail:
+            raise IndexError("Peek tail at an empty list")
+        return self.algorithm.get_data(self.tail)
+
+    def pop_head(self):
+        """ O(1) """
+        if not self.head:
+            raise IndexError("Pop head from an empty list")
+        data = self.algorithm.get_data(self.head)
+        self.head = self.algorithm.get_next(self.head)
+        if self.head:
+            self.algorithm.set_prev(node=self.head, prev_node=None)
+        else:
+            self.tail = None
+        self.size -= 1
+        return data
+
+    def pop_tail(self):
+        """ O(1) """
+        if not self.tail:
+            raise IndexError("Pop tail from an empty list")
+        data = self.algorithm.get_data(self.tail)
+        self.tail = self.algorithm.get_prev(self.tail)
+        if self.tail:
+            self.algorithm.set_next(node=self.tail, next_node=None)
+        else:
+            self.head = None
+        self.size -= 1
+        return data
 
