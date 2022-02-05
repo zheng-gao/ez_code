@@ -1,6 +1,7 @@
 from ezcode.array.search import binary_search
 from ezcode.array.rotate import rotate
 from ezcode.array.utils import is_copied, copy, array_to_string, delete
+from ezcode.array.lcs import longest_common_subsequence, longest_common_subarray
 
 
 def test_array_to_string():
@@ -88,5 +89,10 @@ def test_delete():
     assert is_copied([1, 3, 5], array)
 
 
+def test_longest_common_subsequence():
+    assert "BCBA" == "".join(longest_common_subsequence(list("ABCBDAB"), list("BDCABA")))
 
+
+def test_longest_common_subarray():
+    assert "AB" == "".join(longest_common_subarray(list("ABCBDAB"), list("BDCABA")))
 

@@ -23,6 +23,7 @@ git clone https://github.com/zheng-gao/ez_code.git && cd ez_code
 ```
 
 # Contents
+* [Array](src/ezcode/array/array.md)
 * [Tree](src/ezcode/tree/tree.md)
 * [Graph](src/ezcode/graph/graph.md)
 * [Math](src/ezcode/math/math.md)
