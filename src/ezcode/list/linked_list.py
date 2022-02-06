@@ -243,22 +243,34 @@ class DoublyLinkedList:
 
     def add_to_head(self, data):
         """ O(1) """
-        new_node = self.algorithm.new_node(data=data, next_node=self.head)
+        new_node = self.algorithm.new_node(data=data)
+        self.add_node_to_head(new_node)
+
+    def add_node_to_head(self, node):
+        """ O(1) """
+        self.algorithm.set_next(node=node, next_node=self.head)
+        self.algorithm.set_prev(node=node, prev_node=None)
         if self.head:
-            self.algorithm.set_prev(node=self.head, prev_node=new_node)
+            self.algorithm.set_prev(node=self.head, prev_node=node)
         else:
-            self.tail = new_node
-        self.head = new_node
+            self.tail = node
+        self.head = node
         self.size += 1
 
     def add_to_tail(self, data):
         """ O(1) """
         new_node = self.algorithm.new_node(data=data, prev_node=self.tail)
+        self.add_node_to_tail(new_node)
+
+    def add_node_to_tail(self, node):
+        """ O(1) """
+        self.algorithm.set_next(node=node, next_node=None)
+        self.algorithm.set_prev(node=node, prev_node=self.tail)
         if self.tail:
-            self.algorithm.set_next(node=self.tail, next_node=new_node)
+            self.algorithm.set_next(node=self.tail, next_node=node)
         else:
-            self.head = new_node
-        self.tail = new_node
+            self.head = node
+        self.tail = node
         self.size += 1
 
     def peek_head(self):
@@ -298,4 +310,26 @@ class DoublyLinkedList:
             self.head = None
         self.size -= 1
         return data
+
+    def detach_node(self, node):
+        if node == self.head:
+            self.pop_head()
+        elif node == self.tail:
+            self.pop_tail()
+        else:
+            prev_node = self.algorithm.get_prev(node)
+            next_node = self.algorithm.get_next(node)
+            self.algorithm.set_next(node=prev_node, next_node=next_node)
+            self.algorithm.set_prev(node=next_node, prev_node=prev_node)
+            self.size -= 1
+
+    
+
+
+
+
+
+
+
+
 

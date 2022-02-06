@@ -37,6 +37,9 @@ class SinglyLinkedListAlgorithm:
     def get_data(self, node):
         return node.__dict__[self.data_name]
 
+    def set_data(self, node, data):
+        node.__dict__[self.data_name] = data
+
     def reverse(self, previous_node, current_node):
         """ head = reverse(head, head.next) """
         if current_node:
@@ -103,4 +106,7 @@ class DoublyLinkedListAlgorithm:
 
     def get_data(self, node):
         return node.__dict__[self.data_name]
+
+    def set_data(self, node, data):
+        node.__dict__[self.data_name] = data
 
