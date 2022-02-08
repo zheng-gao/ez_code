@@ -79,7 +79,7 @@ def test_min_max_stack():
         assert max_stack.get_max() == max_data
 
 
-def test_monontic_queue():
+def test_monontonic_queue():
     mq = MonotonicQueue(is_increasing=True)
     for data, benchmark in zip([5, 3, 1, 2, 4], [5, 3, 1, 1, 1]):
         mq.push(data)
