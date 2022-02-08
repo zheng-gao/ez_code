@@ -1,5 +1,5 @@
 from ezcode.list.stack import Stack
-from ezcode.list.queue import Queue
+from ezcode.list.queue import Queue, MonotonicQueue
 from ezcode.list.lru_cache import LRUCache
 from fixture.list import s_list, s_list_copied, s_list_reversed
 
@@ -62,3 +62,14 @@ def test_lru_cache():
     assert lru_cache.get(1) == None
     assert lru_cache.get(3) == 33
     assert lru_cache.get(5) == 5
+
+
+def test_monontic_queue():
+    mq = MonotonicQueue(is_increasing=True)
+    for data, benchmark in zip([5, 3, 1, 2, 4], [5, 3, 1, 1, 1]):
+        mq.push(data)
+        assert mq.peek() == benchmark
+    mq = MonotonicQueue(is_increasing=False)
+    for data, benchmark in zip([5, 3, 1, 2, 4], [5, 5, 5, 5, 5]):
+        mq.push(data)
+        assert mq.peek() == benchmark

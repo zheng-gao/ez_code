@@ -52,7 +52,6 @@ class DoublyLinkedListPrinter:
             node = self.algorithm.get_prev(node)
         return f"None{self.backward_link}{string}" if include_end else string
 
-
     def print(self, node, include_end=True):
         print(self.to_string(node, include_end))
 

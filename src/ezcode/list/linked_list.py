@@ -28,7 +28,7 @@ class SinglyLinkedList(object):
         forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK
     ):
         printer = SinglyLinkedListPrinter(self.algorithm, forward_link, backward_link)
-        printer.to_string(self.head, reverse, include_end)
+        return printer.to_string(self.head, reverse, include_end)
 
     def print(self, reverse=False, include_end=True,
         forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK
@@ -234,7 +234,7 @@ class DoublyLinkedList:
         forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK, bidirection_link: str = BIDIRECTION_LINK
     ):
         printer = DoublyLinkedListPrinter(self.algorithm, forward_link, backward_link, bidirection_link)
-        printer.to_string(self.head, include_end)
+        return printer.to_string(self.head, include_end)
 
     def print(self, include_end=True,
         forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK, bidirection_link: str = BIDIRECTION_LINK
@@ -322,14 +322,4 @@ class DoublyLinkedList:
             self.algorithm.set_next(node=prev_node, next_node=next_node)
             self.algorithm.set_prev(node=next_node, prev_node=prev_node)
             self.size -= 1
-
-    
-
-
-
-
-
-
-
-
 
