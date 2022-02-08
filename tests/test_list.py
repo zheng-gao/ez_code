@@ -1,4 +1,4 @@
-from ezcode.list.stack import Stack
+from ezcode.list.stack import Stack, MinStack, MaxStack
 from ezcode.list.queue import Queue, MonotonicQueue
 from ezcode.list.lru_cache import LRUCache
 from fixture.list import s_list, s_list_copied, s_list_reversed
@@ -62,6 +62,21 @@ def test_lru_cache():
     assert lru_cache.get(1) == None
     assert lru_cache.get(3) == 33
     assert lru_cache.get(5) == 5
+
+
+def test_min_max_stack():
+    min_stack = MinStack()
+    max_stack = MaxStack()
+    for data, min_data, max_data in zip([2, 1, 3, 5, 4], [2, 1, 1, 1, 1], [2, 2, 3, 5, 5]):
+        min_stack.push(data)
+        max_stack.push(data)
+        assert min_stack.get_min() == min_data
+        assert max_stack.get_max() == max_data
+    for min_data, max_data in zip([1, 1, 1, 2], [5, 3, 2, 2]):
+        min_stack.pop()
+        max_stack.pop()
+        assert min_stack.get_min() == min_data
+        assert max_stack.get_max() == max_data
 
 
 def test_monontic_queue():
