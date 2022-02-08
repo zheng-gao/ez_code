@@ -195,6 +195,9 @@ function control_bump() {
     if git "diff" "${BASE_DIRECTORY}/setup.py" | grep "version=" | grep "^+\|^-"; then
         ez_print_log -m "Found unstaged version change, skip version bump!" && return 0
     fi
+    if git "diff" --staged "${BASE_DIRECTORY}/setup.py" | grep "version=" | grep "^+\|^-"; then
+        ez_print_log -m "Found uncommitted version change, skip version bump!" && return 0
+    fi
     local version=$(cat "${BASE_DIRECTORY}/setup.py" | grep "version=" | sed "s/[^0-9.]*\([0-9.]*\).*/\1/") new_version
     local major=$(echo "${version}" | cut -d "." -f 1)
     local minor=$(echo "${version}" | cut -d "." -f 2)
