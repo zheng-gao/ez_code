@@ -12,3 +12,34 @@ One
 >>> print(cache.get(2))
 None
 ```
+
+## Monotonic Queue
+
+### Monotonic Increasing Queue
+```
+>>> from ezcode.list.queue import MonotonicQueue
+>>> mq = MonotonicQueue()
+>>> for number in [5, 3, 1, 2, 4]:
+...     mq.push(number)
+...     print(mq)
+... 
+5
+3
+1
+1 <─ 2
+1 <─ 2 <─ 4
+```
+### Monotonic Decreasing Queue
+```
+>>> from ezcode.list.queue import MonotonicQueue
+>>> mq = MonotonicQueue(is_increasing=False)
+>>> for number in [5, 3, 1, 2, 4]:
+...     mq.push(number)
+...     print(mq)
+... 
+5
+5 <─ 3
+5 <─ 3 <─ 1
+5 <─ 3 <─ 2
+5 <─ 4
+```
