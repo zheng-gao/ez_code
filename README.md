@@ -24,6 +24,7 @@ git clone https://github.com/zheng-gao/ez_code.git && cd ez_code
 
 # Contents
 * [Array](src/ezcode/array/array.md)
+* [Heap](src/ezcode/heap/heap.md)
 * [List](src/ezcode/list/list.md)
 * [Tree](src/ezcode/tree/tree.md)
 * [Graph](src/ezcode/graph/graph.md)
