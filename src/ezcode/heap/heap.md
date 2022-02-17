@@ -10,6 +10,7 @@
 ...     print(min_q.peek(), end=" ")
 ... 
 4 3 3 1 1
+
 >>> while len(min_q) > 0:
 ...     print(min_q.pop(), end=" ")
 ... 
@@ -25,6 +26,7 @@
 ...     print(max_q.peek(), end=" ")
 ... 
 4 4 5 5 5
+
 >>> while len(max_q) > 0:
 ...     print(max_q.pop(), end=" ")
 ... 
