@@ -15,3 +15,11 @@ def test_priority_queue():
         assert max_q.peek() == peek_data
     for pop_data in [5, 4, 3, 2, 1]:
         assert max_q.pop() == pop_data
+
+    min_q = PriorityQueue([4, 3, 5, 1, 2])
+    for pop_data in [1, 2, 3, 4, 5]:
+        assert min_q.pop() == pop_data
+
+    max_q = PriorityQueue([4, 3, 5, 1, 2], is_min=False)
+    for pop_data in [5, 4, 3, 2, 1]:
+        assert max_q.pop() == pop_data

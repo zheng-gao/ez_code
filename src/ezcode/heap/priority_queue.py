@@ -2,9 +2,16 @@ import heapq
 
 
 class PriorityQueue:
-    def __init__(self, is_min=True):
+    def __init__(self, data: list = None, is_min=True):
         self.is_min = is_min
-        self.list = list()
+        if data:
+            if self.is_min:
+                self.list = data.copy()
+            else:
+                self.list = [d * -1 for d in data]
+            heapq.heapify(self.list)
+        else:
+            self.list = list()
 
     def __len__(self):
         return len(self.list)
