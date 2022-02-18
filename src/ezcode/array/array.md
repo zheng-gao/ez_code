@@ -103,6 +103,9 @@ F in min_map: False
 (3, 'C')
 (4, 'D')
 (6, 'B')
+
+>>> print(PriorityMap({"A": 1, "B": 2, "C": 3}))
+[(1, 'A'), (2, 'B'), (3, 'C')]
 ```
 
 ### Max Priority Map
@@ -141,4 +144,7 @@ F in max_map: False
 (3, 'C')
 (1, 'A')
 (0, 'E')
+
+>>> print(PriorityMap({"A": 1, "B": 2, "C": 3}, min_heap=False))
+[(3, 'C'), (1, 'A'), (2, 'B')]
 ```
