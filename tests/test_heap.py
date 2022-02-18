@@ -2,24 +2,28 @@ from ezcode.heap.priority_queue import PriorityQueue
 
 
 def test_priority_queue():
+    push_list = [(4, "D"), (3, "C"), (5, "E"), (1, "A"), (2, "B")]
+
     min_q = PriorityQueue()
-    for data, peek_data in zip([4, 3, 5, 1, 2], [4, 3, 3, 1, 1]):
-        min_q.push(data)
+    min_peek_list = [(4, "D"), (3, "C"), (3, "C"), (1, "A"), (1, "A")]
+    min_pop_list = [(1, "A"), (2, "B"), (3, "C"), (4, "D"), (5, "E")]
+    for push_data, peek_data in zip(push_list, min_peek_list):
+        min_q.push(push_data)
         assert min_q.peek() == peek_data
-    for pop_data in [1, 2, 3, 4, 5]:
+    for pop_data in min_pop_list:
+        assert min_q.pop() == pop_data
+    min_q = PriorityQueue(push_list)
+    for pop_data in min_pop_list:
         assert min_q.pop() == pop_data
 
-    max_q = PriorityQueue(is_min=False)
-    for data, peek_data in zip([4, 3, 5, 1, 2], [4, 4, 5, 5, 5]):
-        max_q.push(data)
+    max_q = PriorityQueue(min_heap=False)
+    max_peek_list = [(4, "D"), (4, "D"), (5, "E"), (5, "E"), (5, "E")]
+    max_pop_list = [(5, "E"), (4, "D"), (3, "C"), (2, "B"), (1, "A")]
+    for push_data, peek_data in zip(push_list, max_peek_list):
+        max_q.push(push_data)
         assert max_q.peek() == peek_data
-    for pop_data in [5, 4, 3, 2, 1]:
+    for pop_data in max_pop_list:
         assert max_q.pop() == pop_data
-
-    min_q = PriorityQueue([4, 3, 5, 1, 2])
-    for pop_data in [1, 2, 3, 4, 5]:
-        assert min_q.pop() == pop_data
-
-    max_q = PriorityQueue([4, 3, 5, 1, 2], is_min=False)
-    for pop_data in [5, 4, 3, 2, 1]:
+    max_q = PriorityQueue(push_list, min_heap=False)
+    for pop_data in max_pop_list:
         assert max_q.pop() == pop_data

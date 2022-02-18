@@ -5,30 +5,46 @@
 ```
 >>> from ezcode.heap.priority_queue import PriorityQueue
 >>> min_q = PriorityQueue()
->>> for data in [4, 3, 5, 1, 2]:
+>>> for data in [(4, "D"), (3, "C"), (5, "E"), (1, "A"), (2, "B")]:
 ...     min_q.push(data)
-...     print(min_q.peek(), end=" ")
+...     print(min_q.peek())
 ... 
-4 3 3 1 1
+(4, 'D')
+(3, 'C')
+(3, 'C')
+(1, 'A')
+(1, 'A')
 
 >>> while len(min_q) > 0:
-...     print(min_q.pop(), end=" ")
+...     print(min_q.pop())
 ... 
-1 2 3 4 5
+(1, 'A')
+(2, 'B')
+(3, 'C')
+(4, 'D')
+(5, 'E')
 ```
 
 ### Max P-Queue
 
 ```
->>> max_q = PriorityQueue(is_min=False)
->>> for data in [4, 3, 5, 1, 2]:
+>>> max_q = PriorityQueue(min_heap=False)
+>>> for data in [(4, "D"), (3, "C"), (5, "E"), (1, "A"), (2, "B")]:
 ...     max_q.push(data)
-...     print(max_q.peek(), end=" ")
+...     print(max_q.peek())
 ... 
-4 4 5 5 5
+(4, 'D')
+(4, 'D')
+(5, 'E')
+(5, 'E')
+(5, 'E')
 
 >>> while len(max_q) > 0:
-...     print(max_q.pop(), end=" ")
+...     print(max_q.pop())
 ... 
-5 4 3 2 1
+(5, 'E')
+(4, 'D')
+(3, 'C')
+(2, 'B')
+(1, 'A')
 ```
