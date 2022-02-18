@@ -3,9 +3,9 @@
 ## Topological Sort
 
 ```
->>> from ezcode.graph.directed_acyclic_graph import ActivityOnVertexGraph
+>>> from ezcode.graph.directed import DirectedGraph
 >>> dependencies = [("c", "a"), ("b", "f"), ("e", None), ("a", "d"), ("c", "f"), ("d", "b"), ("f", "e")]
->>> aov_graph = ActivityOnVertexGraph(dependencies)
+>>> aov_graph = DirectedGraph(dependencies)
 >>> aov_graph.print()
   a b c d e f 
 a       *     
@@ -19,6 +19,6 @@ f         *
 >>> aov_graph.is_directed_acyclic_graph()
 True
 >>> circular_dependencies = [("a", "b"), ("b", "a")]
->>> ActivityOnVertexGraph(circular_dependencies).is_directed_acyclic_graph()
+>>> DirectedGraph(circular_dependencies).is_directed_acyclic_graph()
 False
 ```
