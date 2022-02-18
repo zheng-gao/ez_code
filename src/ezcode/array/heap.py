@@ -38,10 +38,13 @@ class PriorityQueue:
 
 
 class PriorityMap:
-    def __init__(self, min_heap: bool = True):
+    def __init__(self, map: dict = None, min_heap: bool = True):
         self.min_heap = min_heap
         self.heap = list() # (priority, key)
         self.map = dict() # <key, heap_index>
+        if map:
+            for key, priority in map.items():
+                self.push(priority, key)
 
     def __len__(self):
         return len(self.heap)
@@ -68,11 +71,12 @@ class PriorityMap:
         """ O(logN) """
         priority, key = priority_key[0] if type(priority_key[0]) is tuple else (priority_key[0], priority_key[1])
         if key in self:
-            raise KeyError(f"{key} exist!")
-        self.heap.append((priority, key))
-        index = len(self.heap) - 1
-        self.map[key] = index
-        self._sift_down(index)
+            self.update(priority, key)
+        else:
+            self.heap.append((priority, key))
+            index = len(self.heap) - 1
+            self.map[key] = index
+            self._sift_down(index)
 
     def pop(self):
         """ O(logN) """
@@ -98,11 +102,12 @@ class PriorityMap:
             raise KeyError(f"{key} not found")
         index = self.map[key]
         old_item = self.heap[index]
-        self.heap[index] = (priority, key)
-        if (self.min_heap and priority < old_item[0]) or (not self.min_heap and priority > old_item[0]):
-            self._sift_down(index)
-        else:
-            self._sift_up(index)
+        if old_item[0] != priority:
+            self.heap[index] = (priority, key)
+            if (self.min_heap and priority < old_item[0]) or (not self.min_heap and priority > old_item[0]):
+                self._sift_down(index)  # python sift down is from leaf to root
+            else:
+                self._sift_up(index)  # python sift up is from root to leaf
 
     def _sift_down(self, index: int):
         """ python sift down is from leaf to root, O(logN) """
@@ -126,20 +131,17 @@ class PriorityMap:
         left_index = (index << 1) + 1
         while left_index <= end_index:
             right_index = left_index + 1
-            if right_index > end_index:
-                child_index = left_index
-            else:
+            child_index = left_index
+            if right_index <= end_index:
                 left_child, right_child = self.heap[left_index], self.heap[right_index]
-                if (self.min_heap and left_child[0] < right_child[0]) or (not self.min_heap and left_child[0] > right_child[0]):
-                    child_index = left_index
-                else:
+                if (self.min_heap and right_child[0] < left_child[0]) or (not self.min_heap and right_child[0] > left_child[0]):
                     child_index = right_index
             child = self.heap[child_index]
             if (self.min_heap and child[0] < new_item[0]) or (not self.min_heap and child[0] > new_item[0]):
                 self.heap[index] = child
                 self.map[child[1]] = index
                 index = child_index
-                left_index = index << 1 + 1
+                left_index = (index << 1) + 1
             else:
                 break
         self.heap[index] = new_item

@@ -145,6 +145,11 @@ def test_priority_map():
     min_pop_list = [(0, "C"), (1, "A"), (2, "B"), (3, "E"), (4, "D")]
     for pop_data in min_pop_list:
         assert min_map.pop() == pop_data
+    min_map = PriorityMap({"D": 4, "C": 3, "E": 5, "A": 1, "B": 2})
+    min_pop_list = [(1, "A"), (2, "B"), (3, "C"), (4, "D"), (5, "E")]
+    for pop_data in min_pop_list:
+        assert min_map.pop() == pop_data
+
 
     max_map = PriorityMap(min_heap=False)
     max_peek_list = [(4, "D"), (4, "D"), (5, "E"), (5, "E"), (5, "E")]
@@ -162,7 +167,10 @@ def test_priority_map():
     max_pop_list = [(6, "B"), (5, "E"), (4, "D"), (1, "A"), (0, "C")]
     for pop_data in max_pop_list:
         assert max_map.pop() == pop_data
-
+    max_map = PriorityMap({"D": 4, "C": 3, "E": 5, "A": 1, "B": 2}, min_heap=False)
+    max_pop_list = [(5, "E"), (4, "D"), (3, "C"), (2, "B"), (1, "A")]
+    for pop_data in max_pop_list:
+        assert max_map.pop() == pop_data
 
 
 
