@@ -63,10 +63,9 @@ class DirectedGraph:
                 dst_node.src_nodes.add(src_node)
         # For print
         self.sorted_node_ids = sorted(self.nodes.keys())
-        self.node_id_index_map, index = dict(), 0
-        for node_id in self.sorted_node_ids:
+        self.node_id_index_map = dict()
+        for index, node_id in enumerate(self.sorted_node_ids):
             self.node_id_index_map[node_id] = index
-            index += 1
 
     def print(self):
         print(self, end="")
