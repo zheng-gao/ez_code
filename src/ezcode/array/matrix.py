@@ -6,7 +6,6 @@ def init_matrix(row: int, col: int, init=None) -> list[list]:
 
 class MatrixIterator:
     def __init__(self, matrix: List[list], row: int = 0, col: int = 0, direction: str="horizontal"):
-        """ direction: horizontal, vertical, ascending-diagonal, descending-diagonal """
         self.matrix = matrix
         self.row_len = len(matrix)
         self.col_len = len(matrix[0])
@@ -14,6 +13,8 @@ class MatrixIterator:
         self.col = col
         self.direction = direction
         self.valid_directions = {"horizontal", "vertical", "ascending-diagonal", "descending-diagonal"}
+        if direction not in self.valid_directions:
+            raise ValueError(f"Invalid direction \"{self.direction}\", choose from {self.valid_directions}")
 
     def __iter__(self):
         return self
@@ -35,12 +36,10 @@ class MatrixIterator:
                 self.row -= 1
                 self.col += 1
                 return data
-        elif self.direction == "descending-diagonal":
+        else:  # "descending-diagonal"
             if self.row < self.row_len and self.col < self.col_len:
                 data = self.matrix[self.row][self.col]
                 self.row += 1
                 self.col += 1
                 return data
-        else:
-            raise ValueError(f"Invalid direction \"{self.direction}\", choose from {self.valid_directions}")
         raise StopIteration
