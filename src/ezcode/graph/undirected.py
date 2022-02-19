@@ -1,4 +1,5 @@
 from typing import List
+from ezcode.array.heap import PriorityMap
 
 
 class UndirectedGraph:
@@ -16,7 +17,7 @@ class UndirectedGraph:
 
     def build(self, edges: List[list], weights: list = None):
         if weights is None:
-            weights = [None] * len(edges)
+            weights = [1] * len(edges)
         for (n1, n2), weight in zip(edges, weights):
             if n1 not in self.nodes:
                 self.nodes[n1] = dict()
@@ -31,7 +32,7 @@ class UndirectedGraph:
 
     def __str__(self):
         def get_cell(cell_size, item=""):
-            if item is None and not self.is_weighted:
+            if item == 1 and not self.is_weighted:
                 item = self.mark
             return str(item) + (" " * (cell_size - len(str(item))))
 
@@ -42,7 +43,7 @@ class UndirectedGraph:
             for edges in self.nodes.values():
                 for weight in edges.values():
                      max_cell_size = max(max_cell_size, len(str(weight)))
-        max_cell_size += 1  # Add one space
+        max_cell_size += 2  # Add two spaces in between
         output = get_cell(max_cell_size)
         for node_id in self.sorted_node_ids:
             output += get_cell(max_cell_size, node_id)
@@ -58,3 +59,17 @@ class UndirectedGraph:
 
     def print(self):
         print(self, end="")
+
+    def dijkstra(self, src_node_id, dst_node_id, self_loop_value=0, path_value_init=float("inf"), path_value_func=lambda a, b: a + b, min_heap=True):
+        path_values, visited, candidates = dict(), set(), PriorityMap({src_node_id:self_loop_value}, min_heap=min_heap)
+        for node_id in self.nodes.keys():
+            path_values[node_id] = self_loop_value if node_id == src_node_id else path_value_init
+        while len(candidates) > 0:
+            top_path_value, top_node_id = candidates.pop()
+            visited.add(top_node_id)
+            for node_id, weight in self.nodes[top_node_id].items():
+                if node_id not in visited:
+                    min_max_func = min if min_heap else max
+                    path_values[node_id] = min_max_func(path_values[node_id], path_value_func(top_path_value, weight))
+                    candidates.push(path_values[node_id], node_id)
+        return path_values[dst_node_id]
