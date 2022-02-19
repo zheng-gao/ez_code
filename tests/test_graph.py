@@ -28,6 +28,8 @@ E        *  *
     graph = UndirectedGraph(
         edges=[["A","B"],["A","C"],["B","C"],["B","D"],["C","D"],["C","E"],["D","E"]])
     assert graph_str == str(graph)
+    assert 2 == graph.dfs_path_value("A", "E")
+    assert 2 == graph.dfs_path_value("E", "B")
     assert 2 == graph.dijkstra("A", "E")
     assert 2 == graph.dijkstra("E", "B")
 
@@ -45,9 +47,15 @@ E              0.8  0.3
         weights=[0.8, 0.2, 0.5, 0.9, 0.9, 0.8, 0.3])
     assert graph_str == str(graph)
     resolution = 0.0001
+    assert abs(1.0 - graph.dfs_path_value("A", "E")) < resolution
+    assert abs(1.1 - graph.dfs_path_value("A", "D")) < resolution
+    assert abs(1.2 - graph.dfs_path_value("E", "B")) < resolution
+    assert abs(0.5184 - graph.dfs_path_value("A", "E", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)) < resolution
+    assert abs(0.72 - graph.dfs_path_value("A", "D", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)) < resolution
+    assert abs(0.648 - graph.dfs_path_value("E", "B", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)) < resolution
     assert abs(1.0 - graph.dijkstra("A", "E")) < resolution
     assert abs(1.1 - graph.dijkstra("A", "D")) < resolution
     assert abs(1.2 - graph.dijkstra("E", "B")) < resolution
-    assert abs(0.5184 - graph.dijkstra("A", "E", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_heap=False)) < resolution
-    assert abs(0.72 - graph.dijkstra("A", "D", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_heap=False)) < resolution
-    assert abs(0.648 - graph.dijkstra("E", "B", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_heap=False)) < resolution
+    assert abs(0.5184 - graph.dijkstra("A", "E", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)) < resolution
+    assert abs(0.72 - graph.dijkstra("A", "D", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)) < resolution
+    assert abs(0.648 - graph.dijkstra("E", "B", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)) < resolution

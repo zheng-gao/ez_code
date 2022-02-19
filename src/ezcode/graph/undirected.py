@@ -60,8 +60,22 @@ class UndirectedGraph:
     def print(self):
         print(self, end="")
 
-    def dijkstra(self, src_node_id, dst_node_id, self_loop_value=0, path_value_init=float("inf"), path_value_func=lambda a, b: a + b, min_heap=True):
-        path_values, visited, candidates = dict(), set(), PriorityMap({src_node_id:self_loop_value}, min_heap=min_heap)
+    def dfs_path_value(self, src_node_id, dst_node_id, visited = set(), self_loop_value=0, path_value_init=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min):
+        if src_node_id == dst_node_id:
+            return self_loop_value
+        top_path_value = path_value_init
+        for node_id, weight in self.nodes[src_node_id].items():
+            if node_id not in visited:
+                visited.add(node_id)
+                path_value = self.dfs_path_value(node_id, dst_node_id, visited, self_loop_value, path_value_init, path_value_func, min_max_func)
+                visited.remove(node_id)
+                top_path_value = min_max_func(top_path_value, path_value_func(weight, path_value))
+        return top_path_value
+
+    def dijkstra(self, src_node_id, dst_node_id, self_loop_value=0, path_value_init=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min):
+        path_values, visited = dict(), set()
+        min_heap = True if min_max_func == min else False
+        candidates = PriorityMap({src_node_id:self_loop_value}, min_heap=min_heap)
         for node_id in self.nodes.keys():
             path_values[node_id] = self_loop_value if node_id == src_node_id else path_value_init
         while len(candidates) > 0:
@@ -69,7 +83,6 @@ class UndirectedGraph:
             visited.add(top_node_id)
             for node_id, weight in self.nodes[top_node_id].items():
                 if node_id not in visited:
-                    min_max_func = min if min_heap else max
                     path_values[node_id] = min_max_func(path_values[node_id], path_value_func(top_path_value, weight))
                     candidates.push(path_values[node_id], node_id)
         return path_values[dst_node_id]
