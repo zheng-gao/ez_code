@@ -146,7 +146,9 @@ def test_priority_map():
     for pop_data in min_pop_list:
         assert min_map.pop() == pop_data
     min_map = PriorityMap({"D": 4, "C": 3, "E": 5, "A": 1, "B": 2})
-    min_pop_list = [(1, "A"), (2, "B"), (3, "C"), (4, "D"), (5, "E")]
+    min_map.delete("D")
+    min_map.delete("B")
+    min_pop_list = [(1, "A"), (3, "C"), (5, "E")]
     for pop_data in min_pop_list:
         assert min_map.pop() == pop_data
 
@@ -168,7 +170,9 @@ def test_priority_map():
     for pop_data in max_pop_list:
         assert max_map.pop() == pop_data
     max_map = PriorityMap({"D": 4, "C": 3, "E": 5, "A": 1, "B": 2}, min_heap=False)
-    max_pop_list = [(5, "E"), (4, "D"), (3, "C"), (2, "B"), (1, "A")]
+    max_map.delete("D")
+    max_map.delete("B")
+    max_pop_list = [(5, "E"), (3, "C"), (1, "A")]
     for pop_data in max_pop_list:
         assert max_map.pop() == pop_data
 

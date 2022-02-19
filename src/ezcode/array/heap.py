@@ -86,14 +86,26 @@ class PriorityMap:
             del self.map[self.heap[0][1]]
             return self.heap.pop()
         else:
-            heap_top = self.heap[0]
-            heap_tail = self.heap[-1]
-            self.heap[0] = heap_tail
-            self.map[heap_tail[1]] = 0
+            top_item = self.heap[0]
+            tail_item = self.heap[-1]
+            self.heap[0] = tail_item
+            self.map[tail_item[1]] = 0
             self.heap.pop()
-            del self.map[heap_top[1]]
+            del self.map[top_item[1]]
             self._sift_up(0)
-            return heap_top
+            return top_item
+
+    def delete(self, key):
+        """ O(logN) """
+        if key not in self:
+            raise KeyError(f"{key} not found")
+        index = self.map[key]
+        tail_item = self.heap[-1]
+        self.map[tail_item[1]] = index
+        self.heap[index] = tail_item
+        del self.map[key]
+        self.heap.pop()
+        self._sift_up(index)
 
     def update(self, *priority_key):
         """ O(logN) """

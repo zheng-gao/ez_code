@@ -95,12 +95,12 @@ F in min_map: False
 >>> min_map.peek()
 (0, 'E')
 >>> min_map.update((6, "B"))
+>>> min_map.delete("C")
 >>> while len(min_map) > 0:
 ...     min_map.pop()
 ... 
 (0, 'E')
 (1, 'A')
-(3, 'C')
 (4, 'D')
 (6, 'B')
 
@@ -136,12 +136,12 @@ F in max_map: False
 >>> max_map.peek()
 (4, 'D')
 >>> max_map.update((6, "B"))
+>>> min_map.delete("C")
 >>> while len(max_map) > 0:
 ...     max_map.pop()
 ... 
 (6, 'B')
 (4, 'D')
-(3, 'C')
 (1, 'A')
 (0, 'E')
 
