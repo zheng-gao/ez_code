@@ -58,10 +58,3 @@ class UndirectedGraph:
 
     def print(self):
         print(self, end="")
-
-
-
-
-
-graph = UndirectedGraph([[1,2],[2,3],[1,3]])
-print(graph)
