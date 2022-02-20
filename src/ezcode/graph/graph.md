@@ -54,3 +54,26 @@ E              0.8  0.3
 >>> graph.spfa("A", "E", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)
 0.5184000000000001
 ```
+
+## Detect Negative Cycle
+
+```
+>>> from ezcode.graph.undirected import UndirectedGraph
+>>> graph = UndirectedGraph(
+...     edges=[["A","B"],["A","C"],["A","D"],["B","C"],["B","D"],["C","D"]],
+...     weights=[2, 3, 2, -3, 1, 1]
+... )
+>>> print(graph)
+    A   B   C   D   
+A       2   3   2   
+B   2       -3  1   
+C   3   -3      1   
+D   2   1   1    
+
+>>> graph.spfa("A", "B", check_negative_weight=True)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/Users/zgao/Desktop/study/ez_code/src/ezcode/graph/undirected.py", line 114, in spfa
+    raise NegativeCycleExist()
+ezcode.graph.NegativeCycleExist
+```
