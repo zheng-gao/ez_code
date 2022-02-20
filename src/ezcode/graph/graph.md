@@ -25,7 +25,7 @@ False
 
 # Undirected Graph
 
-## Dijkstra Algorithm
+## Shortest Path Algorithm
 
 ```
 >>> from ezcode.graph.undirected import UndirectedGraph
@@ -45,8 +45,12 @@ E              0.8  0.3
 1.0
 >>> graph.dijkstra("A", "E")
 1.0
+>>> graph.spfa("A", "E")
+1.0
 >>> graph.dfs_path_value("A", "E", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)
 0.5184000000000001
 >>> graph.dijkstra("A", "E", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)
+0.5184000000000001
+>>> graph.spfa("A", "E", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)
 0.5184000000000001
 ```

@@ -1,4 +1,5 @@
 from typing import List
+from collections import deque
 from ezcode.array.heap import PriorityMap
 
 
@@ -73,6 +74,7 @@ class UndirectedGraph:
         return top_path_value
 
     def dijkstra(self, src_node_id, dst_node_id, self_loop_value=0, path_value_init=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min):
+        """ Positive Weight Only """
         path_values, visited = dict(), set()
         min_heap = True if min_max_func == min else False
         candidates = PriorityMap({src_node_id:self_loop_value}, min_heap=min_heap)
@@ -81,8 +83,46 @@ class UndirectedGraph:
         while len(candidates) > 0:
             top_path_value, top_node_id = candidates.pop()
             visited.add(top_node_id)
-            for node_id, weight in self.nodes[top_node_id].items():
-                if node_id not in visited:
-                    path_values[node_id] = min_max_func(path_values[node_id], path_value_func(top_path_value, weight))
-                    candidates.push(path_values[node_id], node_id)
+            for relax_node_id, weight in self.nodes[top_node_id].items():
+                if relax_node_id not in visited:
+                    path_values[relax_node_id] = min_max_func(path_values[relax_node_id], path_value_func(top_path_value, weight))
+                    candidates.push(path_values[relax_node_id], relax_node_id)
         return path_values[dst_node_id]
+
+    def spfa(self, src_node_id, dst_node_id, self_loop_value=0, path_value_init=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min):
+        """ Improved Bellman Ford Algorithm: can handle Negative Weight and detect Negative Cycle """
+        path_values, queue, queue_set = dict(), deque([src_node_id]), set([src_node_id])
+        for node_id in self.nodes.keys():
+            path_values[node_id] = self_loop_value if node_id == src_node_id else path_value_init
+        while len(queue) > 0:
+            node_id = queue.popleft()
+            queue_set.remove(node_id)
+            for relax_node_id, weight in self.nodes[node_id].items():
+                new_path_value = path_value_func(path_values[node_id], weight)
+                if (min_max_func == min and new_path_value < path_values[relax_node_id]) or (min_max_func == max and new_path_value > path_values[relax_node_id]):
+                    path_values[relax_node_id] = new_path_value
+                    if relax_node_id not in queue_set:
+                        queue.append(relax_node_id)
+                        queue_set.add(relax_node_id)
+        return path_values[dst_node_id]
+
+
+
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

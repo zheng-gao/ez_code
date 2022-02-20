@@ -32,6 +32,8 @@ E        *  *
     assert 2 == graph.dfs_path_value("E", "B")
     assert 2 == graph.dijkstra("A", "E")
     assert 2 == graph.dijkstra("E", "B")
+    assert 2 == graph.spfa("A", "E")
+    assert 2 == graph.spfa("E", "B")
 
 def test_undirected_weighted_graph():
     graph_str = """
@@ -59,3 +61,9 @@ E              0.8  0.3
     assert abs(0.5184 - graph.dijkstra("A", "E", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)) < resolution
     assert abs(0.72 - graph.dijkstra("A", "D", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)) < resolution
     assert abs(0.648 - graph.dijkstra("E", "B", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)) < resolution
+    assert abs(1.0 - graph.spfa("A", "E")) < resolution
+    assert abs(1.1 - graph.spfa("A", "D")) < resolution
+    assert abs(1.2 - graph.spfa("E", "B")) < resolution
+    assert abs(0.5184 - graph.spfa("A", "E", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)) < resolution
+    assert abs(0.72 - graph.spfa("A", "D", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)) < resolution
+    assert abs(0.648 - graph.spfa("E", "B", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)) < resolution
