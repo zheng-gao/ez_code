@@ -1,7 +1,7 @@
 from typing import List
 from collections import deque
 from ezcode.array.heap import PriorityMap
-from ezcode.graph import NegativeCycleExist, PositiveCycleExist
+from ezcode.graph import NegativeCycleExist, PositiveCycleExist, UnweightedGraphExpected
 
 
 class UndirectedGraph:
@@ -62,10 +62,6 @@ class UndirectedGraph:
     def print(self):
         print(self, end="")
 
-    def bfs_path_value(self):
-        """ Only works for unweighted graph """
-        pass
-
     def dfs_path_value(self, src_node_id, dst_node_id, visited = set(), self_loop_value=0, path_value_init=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min):
         if src_node_id == dst_node_id:
             return self_loop_value
@@ -77,6 +73,24 @@ class UndirectedGraph:
                 visited.remove(node_id)
                 top_path_value = min_max_func(top_path_value, path_value_func(weight, path_value))
         return top_path_value
+
+    def bfs_path_value(self, src_node_id, dst_node_id):
+        """ Only works for unweighted graph """
+        if self.is_weighted:
+            raise UnweightedGraphExpected()
+        path_values, queue, visited = dict(), deque([src_node_id]), set([src_node_id])
+        for node_id in self.nodes.keys():
+            path_values[node_id] = 0 if node_id == src_node_id else float("inf")
+        while len(queue) > 0:
+            node_id = queue.popleft()
+            for neighbor_id in self.nodes[node_id].keys():
+                if neighbor_id not in visited:
+                    visited.add(neighbor_id)
+                    queue.append(neighbor_id)
+                    path_values[neighbor_id] = path_values[node_id] + 1
+                    if neighbor_id == dst_node_id:
+                        return path_values[neighbor_id]
+        path_values[dst_node_id]
 
     def dijkstra(self, src_node_id, dst_node_id, self_loop_value=0, path_value_init=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min):
         """ Positive Weight Only: O(V + E*logV). On dense graphs, dijkstra is faster than spfa """

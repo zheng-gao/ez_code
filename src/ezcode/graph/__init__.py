@@ -5,3 +5,7 @@ class NegativeCycleExist(Exception):
 
 class PositiveCycleExist(Exception):
     pass
+
+
+class UnweightedGraphExpected(Exception):
+    pass

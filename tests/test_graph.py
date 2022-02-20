@@ -31,6 +31,8 @@ E        *  *
     assert graph_str == str(graph)
     assert 2 == graph.dfs_path_value("A", "E")
     assert 2 == graph.dfs_path_value("E", "B")
+    assert 2 == graph.bfs_path_value("A", "E")
+    assert 2 == graph.bfs_path_value("E", "B")
     assert 2 == graph.dijkstra("A", "E")
     assert 2 == graph.dijkstra("E", "B")
     assert 2 == graph.spfa("A", "E")
