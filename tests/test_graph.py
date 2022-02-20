@@ -74,7 +74,7 @@ def test_negative_cycle_detection():
         edges=[["A","B"],["A","C"],["A","D"],["B","C"],["B","D"],["C","D"]],
         weights=[2, 3, 2, -3, 1, 1])
     try:
-        graph.spfa("A", "B", check_negative_weight=True)
+        graph.spfa("A", "B", check_cycle=True)
     except NegativeCycleExist:
         assert True
     else:

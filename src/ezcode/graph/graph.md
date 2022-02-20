@@ -70,7 +70,7 @@ B   2       -3  1
 C   3   -3      1   
 D   2   1   1    
 
->>> graph.spfa("A", "B", check_negative_weight=True)
+>>> graph.spfa("A", "B", check_cycle=True)
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
   File "/Users/zgao/Desktop/study/ez_code/src/ezcode/graph/undirected.py", line 114, in spfa

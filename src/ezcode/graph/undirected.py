@@ -1,7 +1,7 @@
 from typing import List
 from collections import deque
 from ezcode.array.heap import PriorityMap
-from ezcode.graph import NegativeCycleExist
+from ezcode.graph import NegativeCycleExist, PositiveCycleExist
 
 
 class UndirectedGraph:
@@ -62,6 +62,10 @@ class UndirectedGraph:
     def print(self):
         print(self, end="")
 
+    def bfs_path_value(self):
+        """ Only works for unweighted graph """
+        pass
+
     def dfs_path_value(self, src_node_id, dst_node_id, visited = set(), self_loop_value=0, path_value_init=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min):
         if src_node_id == dst_node_id:
             return self_loop_value
@@ -90,13 +94,13 @@ class UndirectedGraph:
                     candidates.push(path_values[relax_node_id], relax_node_id)
         return path_values[dst_node_id]
 
-    def spfa(self, src_node_id, dst_node_id, self_loop_value=0, path_value_init=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min, check_negative_weight=False):
+    def spfa(self, src_node_id, dst_node_id, self_loop_value=0, path_value_init=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min, check_cycle=False):
         """ Improved Bellman Ford Algorithm: can handle Negative Weight and detect Negative Cycle: worst case O(V*E), average O(E), sparse graphs O(V^2) """
         path_values, queue, queue_set = dict(), deque([src_node_id]), set([src_node_id])
-        enqueue_counters = dict() if check_negative_weight else None
+        enqueue_counters = dict() if check_cycle else None
         for node_id in self.nodes.keys():
             path_values[node_id] = self_loop_value if node_id == src_node_id else path_value_init
-            if check_negative_weight:
+            if check_cycle:
                 enqueue_counters[node_id] = 1 if node_id == src_node_id else 0
         while len(queue) > 0:
             node_id = queue.popleft()
@@ -108,11 +112,17 @@ class UndirectedGraph:
                     if relax_node_id not in queue_set:
                         queue.append(relax_node_id)
                         queue_set.add(relax_node_id)
-                        if check_negative_weight:
+                        if check_cycle:
                             enqueue_counters[relax_node_id] += 1
                             if enqueue_counters[relax_node_id] > len(self.nodes):
-                                raise NegativeCycleExist()
+                                if min_max_func == min:
+                                    raise NegativeCycleExist()
+                                else:
+                                    raise PositiveCycleExist()
         return path_values[dst_node_id]
+
+    def floyd(self):
+        pass
 
 
 
