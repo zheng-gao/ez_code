@@ -1,0 +1,3 @@
+
+class NegativeCycleExist(Exception):
+    pass

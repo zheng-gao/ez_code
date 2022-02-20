@@ -1,5 +1,6 @@
 from ezcode.array.utils import is_copied
 from fixture.graph import dag, dag_string, non_dag
+from ezcode.graph import NegativeCycleExist
 from ezcode.graph.undirected import UndirectedGraph
 
 
@@ -67,3 +68,14 @@ E              0.8  0.3
     assert abs(0.5184 - graph.spfa("A", "E", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)) < resolution
     assert abs(0.72 - graph.spfa("A", "D", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)) < resolution
     assert abs(0.648 - graph.spfa("E", "B", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)) < resolution
+
+def test_negative_cycle_detection():
+    graph = UndirectedGraph(
+        edges=[["A","B"],["A","C"],["A","D"],["B","C"],["B","D"],["C","D"]],
+        weights=[2, 3, 2, -3, 1, 1])
+    try:
+        graph.spfa("A", "B", check_negative_weight=True)
+    except NegativeCycleExist:
+        assert True
+    else:
+        assert False
