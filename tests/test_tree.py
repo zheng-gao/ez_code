@@ -1,8 +1,6 @@
-import pytest
-
-from ezcode.array.utils import is_copied
 from fixture.tree import printer, s_root, s_tree, c_tree, s_tree_string, c_tree_string
 from fixture.tree import trie, trie_string, suffix_trie, suffix_trie_string
+from fixture.utils import check_list_copy
 
 
 def test_printer():
@@ -72,7 +70,7 @@ def test_trie():
     assert not trie.contains("cofe")
     assert trie.contains("coffee", strict=True)
     assert not trie.contains("cof", strict=True)
-    assert is_copied(trie.prefix_wildcard(list("co")), [list("cod"), list("code"), list("coke"), list("coffee")])
+    assert check_list_copy(trie.prefix_wildcard(list("co")), [list("cod"), list("code"), list("coke"), list("coffee")])
 
 
 def test_suffix_trie():

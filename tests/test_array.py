@@ -1,8 +1,9 @@
 from ezcode.array.heap import PriorityQueue, PriorityMap
 from ezcode.array.search import binary_search
 from ezcode.array.rotate import rotate
-from ezcode.array.utils import is_copied, copy, array_to_string, delete
+from ezcode.array.utils import copy, array_to_string, delete
 from ezcode.array.lcs import longest_common_subsequence, longest_common_subarray
+from fixture.utils import check_list_copy
 
 
 def test_array_to_string():
@@ -60,34 +61,34 @@ def test_rotate():
         assert a == b
 
 
-def test_is_copied():
-    assert is_copied(None, None)
-    assert is_copied([], [])
-    assert is_copied([[]], [[]])
-    assert is_copied([[],[1]], [[],[1]])
-    assert is_copied([[],[1, 2], 3], [[],[1, 2], 3])
-    assert not is_copied([], None)
-    assert not is_copied([], [[]])
-    assert not is_copied([1], [[1]])
-    assert not is_copied([[],[1, 2]], [[],[1, 3]])
+def test_check_list_copy():
+    assert check_list_copy(None, None)
+    assert check_list_copy([], [])
+    assert check_list_copy([[]], [[]])
+    assert check_list_copy([[],[1]], [[],[1]])
+    assert check_list_copy([[],[1, 2], 3], [[],[1, 2], 3])
+    assert not check_list_copy([], None)
+    assert not check_list_copy([], [[]])
+    assert not check_list_copy([1], [[1]])
+    assert not check_list_copy([[],[1, 2]], [[],[1, 3]])
 
 
 def test_copy():
-    assert is_copied(None, copy(None))
-    assert is_copied([], copy([]))
-    assert is_copied([[]], copy([[]]))
-    assert is_copied([[],[1]], copy([[],[1]]))
-    assert is_copied([[],[1, 2], 3], copy([[],[1, 2],3]))
-    assert not is_copied([], copy(None))
-    assert not is_copied([], copy([[]]))
-    assert not is_copied([1], copy([[1]]))
-    assert not is_copied([[],[1, 2]], copy([[],[1, 3]]))
+    assert check_list_copy(None, copy(None))
+    assert check_list_copy([], copy([]))
+    assert check_list_copy([[]], copy([[]]))
+    assert check_list_copy([[],[1]], copy([[],[1]]))
+    assert check_list_copy([[],[1, 2], 3], copy([[],[1, 2],3]))
+    assert not check_list_copy([], copy(None))
+    assert not check_list_copy([], copy([[]]))
+    assert not check_list_copy([1], copy([[1]]))
+    assert not check_list_copy([[],[1, 2]], copy([[],[1, 3]]))
 
 
 def test_delete():
     array = [1, 2, 2, 2, 3, 4, 4, 5, 6]
     delete(array, set([2, 4, 6]))
-    assert is_copied([1, 3, 5], array)
+    assert check_list_copy([1, 3, 5], array)
 
 
 def test_longest_common_subsequence():
