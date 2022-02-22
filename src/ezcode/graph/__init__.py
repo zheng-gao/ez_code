@@ -139,7 +139,7 @@ class Graph:
             for n2 in self.nodes.keys():
                 if n1 == n2:
                     adjacent_matrix[n1][n2] = self_loop_value
-                elif n2 in self.nodes[n1]:
+                elif n2 in self.get_edges(node_id=n1, is_outgoing=True):
                     adjacent_matrix[n1][n2] = self.get_weight(n1, n2, is_outgoing=True)
                 else:
                     adjacent_matrix[n1][n2] = path_value_init

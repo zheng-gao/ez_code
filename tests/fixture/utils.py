@@ -4,7 +4,7 @@ def check_list_copy(list_1, list_2, resolution=None):
         if resolution is None:
             return list_1 == list_2
         else:
-            return abs(list_1 - list_2) < resolution
+            return abs(list_1 - list_2) <= resolution
     elif type(list_1) is list and type(list_2) is list:
         if len(list_1) != len(list_2):
             return False
