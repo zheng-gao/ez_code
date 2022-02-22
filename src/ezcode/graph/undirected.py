@@ -1,66 +1,44 @@
 from typing import List
 from collections import deque
 from ezcode.array.heap import PriorityMap
-from ezcode.graph import NegativeCycleExist, PositiveCycleExist, UnweightedGraphExpected
+from ezcode.graph import Graph, NegativeCycleExist, PositiveCycleExist, UnweightedGraphExpected
 
 
-class UndirectedGraph:
-    def __init__(self, edges: List[list] = None, weights: list = None):
-        self.nodes = dict()  # <node_id, <node_id, weight>>
-        self.is_weighted: bool = weights is not None
-        self.sorted_node_ids: list = None     # for print
-        self.node_id_index_map: dict = None   # for print
-        self.mark = "*"                       # for print
+class UndirectedGraph(Graph):
+    def __init__(self, edges: List[list] = None, weights: list = None, mark: str = "*"):
+        super().__init__(is_weighted=(weights is not None), mark=mark)
+        # self.nodes = {node_id, {node_id, weight}}
         if edges:
             self.build(edges=edges, weights=weights)
-
-    def __len__(self):
-        return len(self.nodes)
 
     def build(self, edges: List[list], weights: list = None):
         if weights is None:
             weights = [1] * len(edges)
         for (n1, n2), weight in zip(edges, weights):
-            if n1 not in self.nodes:
-                self.nodes[n1] = dict()
-            if n2 not in self.nodes:
-                self.nodes[n2] = dict()
-            self.nodes[n1][n2] = self.nodes[n2][n1] = weight
+            if n1 is not None and n2 is not None:
+                if n1 not in self.nodes:
+                    self.nodes[n1] = dict()
+                if n2 not in self.nodes:
+                    self.nodes[n2] = dict()
+                self.nodes[n1][n2] = self.nodes[n2][n1] = weight
+            elif n1 is not None:
+                if n1 not in self.nodes:
+                    self.nodes[n1] = dict()
+            elif n2 is not None:
+                if n2 not in self.nodes:
+                    self.nodes[n2] = dict()
         # For print
         self.sorted_node_ids = sorted(self.nodes.keys())
         self.node_id_index_map = dict()
         for index, node_id in enumerate(self.sorted_node_ids):
             self.node_id_index_map[node_id] = index
+            self.cell_size = max(self.cell_size, len(str(node_id)))
+        for weight in weights:
+            self.cell_size = max(self.cell_size, len(str(weight)))
+        self.cell_size += 2  # Add two spaces in between
 
-    def __str__(self):
-        def get_cell(cell_size, item=""):
-            if item == 1 and not self.is_weighted:
-                item = self.mark
-            return str(item) + (" " * (cell_size - len(str(item))))
-
-        max_cell_size = 0
-        for node_id in self.sorted_node_ids:
-            max_cell_size = max(max_cell_size, len(str(node_id)))
-        if self.is_weighted:
-            for edges in self.nodes.values():
-                for weight in edges.values():
-                     max_cell_size = max(max_cell_size, len(str(weight)))
-        max_cell_size += 2  # Add two spaces in between
-        output = get_cell(max_cell_size)
-        for node_id in self.sorted_node_ids:
-            output += get_cell(max_cell_size, node_id)
-        output += "\n"
-        for row in range(len(self)):
-            n1 = self.sorted_node_ids[row]
-            output += get_cell(max_cell_size, n1)
-            for col in range(len(self)):
-                n2 = self.sorted_node_ids[col]
-                output += get_cell(max_cell_size, self.nodes[n1][n2]) if n2 in self.nodes[n1] else get_cell(max_cell_size)
-            output += "\n"
-        return output
-
-    def print(self):
-        print(self, end="")
+    def get_weight(self, incoming, outgoing):
+        return self.nodes[incoming][outgoing] if outgoing in self.nodes[incoming] else None
 
     def dfs_path_value(self, src_node_id, dst_node_id, visited = set(), self_loop_value=0, path_value_init=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min):
         if src_node_id == dst_node_id:

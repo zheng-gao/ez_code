@@ -16,10 +16,10 @@ e
 f         *   
 >>> print(aov_graph.topological_order())
 ['e', 'f', 'b', 'd', 'a', 'c']
->>> aov_graph.is_directed_acyclic_graph()
+>>> aov_graph.is_acyclic_graph()
 True
 >>> circular_dependencies = [("a", "b"), ("b", "a")]
->>> DirectedGraph(circular_dependencies).is_directed_acyclic_graph()
+>>> DirectedGraph(circular_dependencies).is_acyclic_graph()
 False
 ```
 

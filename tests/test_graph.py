@@ -12,9 +12,9 @@ def test_topological_order():
     assert check_list_copy(dag.topological_order(), ["e", "f", "b", "d", "a", "c"])
 
 
-def test_is_directed_acyclic_graph():
-    assert dag.is_directed_acyclic_graph()
-    assert not non_dag.is_directed_acyclic_graph()
+def test_is_acyclic_graph():
+    assert dag.is_acyclic_graph()
+    assert not non_dag.is_acyclic_graph()
 
 
 def test_undirected_graph():
