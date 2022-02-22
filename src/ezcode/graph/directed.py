@@ -1,6 +1,6 @@
 from collections import deque
-from typing import List
 from ezcode.graph import Graph
+from typing import List
 
 
 class DirectedGraph(Graph):
@@ -36,8 +36,8 @@ class DirectedGraph(Graph):
             self.cell_size = max(self.cell_size, len(str(weight)))
         self.cell_size += 2  # Add two spaces in between
 
-    def get_weight(self, incoming, outgoing):
-        return self.nodes[incoming]["o"][outgoing] if outgoing in self.nodes[incoming]["o"] else None
+    def get_edges(self, node_id, is_outgoing: bool = True):
+        return self.nodes[node_id]["o"] if is_outgoing else self.nodes[node_id]["i"]
 
     def copy_nodes(self):
         new_nodes = dict()
@@ -67,8 +67,3 @@ class DirectedGraph(Graph):
 
     def is_acyclic_graph(self):
         return len(self.topological_order()) == len(self)
-
-
-            
-
-
