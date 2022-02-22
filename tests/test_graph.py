@@ -190,12 +190,12 @@ f                       0.4
     assert check_dict_copy(graph.floyd(), benchmark_1, resolution=resolution)
 
     benchmark_2 = {
-        'a': {'a': 1,    'b': 0.8,   'c': 0.512, 'd': 0.64, 'e': 0, 'f': 0.3072},
-        'b': {'a': 0.48, 'b': 1,     'c': 0.64,  'd': 0.8,  'e': 0, 'f': 0.384 },
-        'c': {'a': 0.5,  'b': 0.7,   'c': 1,     'd': 0.56, 'e': 0, 'f': 0.6   },
-        'd': {'a': 0.6,  'b': 0.56,  'c': 0.8,   'd': 1,    'e': 0, 'f': 0.48  },
-        'e': {'a': 0,    'b': 0,     'c': 0,     'd': 0,    'e': 1, 'f': 0     },
-        'f': {'a': 0.24, 'b': 0.224, 'c': 0.32,  'd': 0.4,  'e': 0, 'f': 1     }
+        "a": {"a": 1,    "b": 0.8,   "c": 0.512, "d": 0.64, "e": 0, "f": 0.3072},
+        "b": {"a": 0.48, "b": 1,     "c": 0.64,  "d": 0.8,  "e": 0, "f": 0.384 },
+        "c": {"a": 0.5,  "b": 0.7,   "c": 1,     "d": 0.56, "e": 0, "f": 0.6   },
+        "d": {"a": 0.6,  "b": 0.56,  "c": 0.8,   "d": 1,    "e": 0, "f": 0.48  },
+        "e": {"a": 0,    "b": 0,     "c": 0,     "d": 0,    "e": 1, "f": 0     },
+        "f": {"a": 0.24, "b": 0.224, "c": 0.32,  "d": 0.4,  "e": 0, "f": 1     }
     }
     for n1, benchmark in benchmark_2.items():
         assert check_dict_copy(graph.dijkstra(n1, self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max), benchmark, resolution=resolution)
