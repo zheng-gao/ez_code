@@ -4,6 +4,8 @@ def check_list_copy(list_1, list_2, resolution=None):
         if resolution is None:
             return list_1 == list_2
         else:
+            if list_1 == float("inf") and list_2 == float("inf"):
+                return True
             return abs(list_1 - list_2) <= resolution
     elif type(list_1) is list and type(list_2) is list:
         if len(list_1) != len(list_2):
@@ -30,6 +32,7 @@ def check_dict_copy(dict_1, dict_2, resolution=None):
                     if value_1 != value_2:
                         return False
                 else:
-                    if abs(value_1 - value_2) > resolution:
-                        return False
+                    if value_1 != float("inf") or value_2 != float("inf"):
+                        if abs(value_1 - value_2) > resolution:
+                            return False
     return True
