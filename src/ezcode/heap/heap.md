@@ -149,7 +149,6 @@ F in max_map: False
 ...         queue.push(random_int)
 ...         print(f"[{t.name}-{t.native_id}] Pushed {random_int}")
 ... 
->>> 
 >>> def consume(queue):
 ...     t = current_thread()
 ...     while True:
@@ -157,7 +156,6 @@ F in max_map: False
 ...         data = queue.pop()
 ...         print(f"[{t.name}-{t.native_id}] Poped {data}")
 ... 
->>> 
 >>> queue = BlockingPriorityQueue()
 >>> producers = [Thread(target=produce, args=(queue, 5), name="Producer") for _ in range(1)]
 >>> consumers = [Thread(target=consume, args=(queue,), name="Consumer") for _ in range(1)]
