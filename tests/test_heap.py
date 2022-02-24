@@ -1,4 +1,4 @@
-from ezcode.heap import PriorityQueue, PriorityMap
+from ezcode.heap import PriorityQueue, PriorityMap, BlockingPriorityQueue
 
 
 def test_priority_queue():
@@ -142,8 +142,15 @@ def test_heap_custom_comparator():
         assert max_map.pop() == pop_data
 
 
+def test_blocking_priority_queue():
+    blocking_min_queue = BlockingPriorityQueue()
+    for push_data, peek_data in zip([4, 3, 1, 5, 2], [4, 3, 1, 1, 1]):
+        blocking_min_queue.push(push_data)
+        assert blocking_min_queue.peek() == peek_data
+    for pop_data in [1, 2, 3, 4, 5]:
+        assert blocking_min_queue.pop() == pop_data
 
-
+    
 
 
 

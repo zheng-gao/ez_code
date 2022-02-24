@@ -131,3 +131,58 @@ F in max_map: False
 >>> print(PriorityMap({"A": 1, "B": 2, "C": 3}, min_heap=False))
 [(3, 'C'), (1, 'A'), (2, 'B')]
 ```
+
+## BlockingPriorityQueue
+
+```
+>>> from random import randrange
+>>> from threading import Thread, current_thread
+>>> from multiprocessing.pool import ThreadPool
+>>> from ezcode.heap import BlockingPriorityQueue
+>>> 
+>>> 
+>>> def produce(queue, stop):
+...     t = current_thread()
+...     for _ in range(stop):
+...         random_int = randrange(stop)
+...         print(f"[{t.name}-{t.native_id}] Pushing {random_int}")
+...         queue.push(random_int)
+...         print(f"[{t.name}-{t.native_id}] Pushed {random_int}")
+... 
+>>> 
+>>> def consume(queue):
+...     t = current_thread()
+...     while True:
+...         print(f"[{t.name}-{t.native_id}] Try Poping ...")
+...         data = queue.pop()
+...         print(f"[{t.name}-{t.native_id}] Poped {data}")
+... 
+>>> 
+>>> queue = BlockingPriorityQueue()
+>>> producers = [Thread(target=produce, args=(queue, 5), name="Producer") for _ in range(1)]
+>>> consumers = [Thread(target=consume, args=(queue,), name="Consumer") for _ in range(1)]
+>>> for t in consumers + producers:
+...     t.start()
+... 
+[Consumer-1259272] Try Poping ...
+[Producer-1259273] Pushing 4
+[Producer-1259273] Pushed 4
+[Consumer-1259272] Poped 4
+[Producer-1259273] Pushing 2
+[Consumer-1259272] Try Poping ...
+[Consumer-1259272] Poped 2
+[Consumer-1259272] Try Poping ...
+[Producer-1259273] Pushed 2
+[Producer-1259273] Pushing 1
+[Producer-1259273] Pushed 1
+[Producer-1259273] Pushing 3
+[Producer-1259273] Pushed 3
+[Producer-1259273] Pushing 3
+[Producer-1259273] Pushed 3
+[Consumer-1259272] Poped 1
+[Consumer-1259272] Try Poping ...
+[Consumer-1259272] Poped 3
+[Consumer-1259272] Try Poping ...
+[Consumer-1259272] Poped 3
+[Consumer-1259272] Try Poping ...
+```

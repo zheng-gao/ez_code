@@ -235,8 +235,8 @@ class BlockingPriorityQueue:
         self.priority_queue = PriorityQueue(min_heap=min_heap)
         self.max_size = max_size
         self.lock = threading.Lock()
-        self.push_condition = threading.Condition()
-        self.pop_condition = threading.Condition()
+        self.write_condition = threading.Condition()
+        self.read_condition = threading.Condition()
         if max_size is not None and max_size < 0:
             raise ValueError(f"Negative queue size found: {max_size}")
 
@@ -252,12 +252,16 @@ class BlockingPriorityQueue:
         condition.notify()
         condition.release()
 
+    @staticmethod
+    def _wait(condition, timeout=None):
+        condition.acquire()
+        condition.wait(timeout=timeout)
+        condition.release()
+
     def push(self, item, block: bool = True, timeout: int = None):
         if self.max_size is not None and len(self) > self.max_size:
             if block:  # Block and wait till not full
-                self.push_condition.acquire()
-                self.push_condition.wait(timeout=timeout)
-                self.push_condition.release()
+                BlockingPriorityQueue._wait(self.write_condition, timeout)
         self.lock.acquire()
         try:
             if self.max_size is not None and len(self.priority_queue) > self.max_size:
@@ -266,14 +270,12 @@ class BlockingPriorityQueue:
             self.priority_queue.push(item)
         finally:
             self.lock.release()
-        BlockingPriorityQueue._notify(self.pop_condition)
+        BlockingPriorityQueue._notify(self.read_condition)
 
     def peek(self, block: bool = True, timeout: int = None):
         if len(self) == 0:
             if block:  # Block and wait till not empty
-                self.condition.acquire()
-                self.condition.wait(timeout=timeout)
-                self.condition.release()
+                BlockingPriorityQueue._wait(self.read_condition, timeout)
         self.lock.acquire()
         try:
             item = self.priority_queue.peek()
@@ -284,15 +286,13 @@ class BlockingPriorityQueue:
     def pop(self, block: bool = True, timeout: int = None):
         if len(self) == 0:
             if block:  # Block and wait till not empty
-                self.condition.acquire()
-                self.condition.wait(timeout=timeout)
-                self.condition.release()
+                BlockingPriorityQueue._wait(self.read_condition, timeout)
         self.lock.acquire()
         try:
             item = self.priority_queue.pop()
         finally:
             self.lock.release()
-        BlockingPriorityQueue._notify(self.push_condition)
+        BlockingPriorityQueue._notify(self.write_condition)
         return item
 
 
