@@ -17,15 +17,15 @@ class Stack:
     def push(self, data):
         self.singly_linked_list.add_to_head(data)
 
-    def pop(self):
-        if len(self) == 0:
-            raise IndexError("Pop from an empty stack")
-        return self.singly_linked_list.pop_head()
-
     def peek(self):
         if len(self) == 0:
             raise IndexError("Peek at an empty stack")
         return self.singly_linked_list.peek_head()
+
+    def pop(self):
+        if len(self) == 0:
+            raise IndexError("Pop from an empty stack")
+        return self.singly_linked_list.pop_head()
 
 
 class MinStack:

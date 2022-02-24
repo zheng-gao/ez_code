@@ -22,15 +22,15 @@ class Queue:
     def push(self, data):
         self.doubly_linked_list.add_to_tail(data)
 
-    def pop(self):
-        if len(self) == 0:
-            raise IndexError("Pop from an empty queue")
-        return self.doubly_linked_list.pop_head()
-
     def peek(self):
         if len(self) == 0:
             raise IndexError("Peek at an empty queue")
         return self.doubly_linked_list.peek_head()
+
+    def pop(self):
+        if len(self) == 0:
+            raise IndexError("Pop from an empty queue")
+        return self.doubly_linked_list.pop_head()
 
 
 class MonotonicQueue(Queue):
