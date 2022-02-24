@@ -69,6 +69,17 @@ class PriorityQueue:
             raise IndexError("Peek at an empty queue")
         return self.heap[0][0] if len(self.heap[0]) == 1 else self.heap[0]  # priority / priority, key
 
+    def top_n(self, n: int = None) -> list():
+        copy = PriorityQueue(min_heap=self.min_heap)
+        copy.heap = self.heap.copy()
+        top_n_list, count = list(), 0
+        while len(copy) > 0:
+            if n is not None and count >= n:
+                break
+            top_n_list.append(copy.pop())
+            count += 1
+        return top_n_list
+
     def pop(self):
         """ O(logN) """
         if len(self) <= 0:
@@ -138,6 +149,18 @@ class PriorityMap(PriorityQueue):
         if len(self) <= 0:
             raise IndexError("Peek at an empty queue")
         return self.heap[0]
+
+    def top_n(self, n: int = None) -> list():
+        copy = PriorityMap(min_heap=self.min_heap)
+        copy.heap = self.heap.copy()
+        copy.map = self.map.copy()
+        top_n_list, count = list(), 0
+        while len(copy) > 0:
+            if n is not None and count >= n:
+                break
+            top_n_list.append(copy.pop())
+            count += 1
+        return top_n_list
 
     def push(self, *priority_n_key):
         """ O(logN) """
