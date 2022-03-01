@@ -24,11 +24,12 @@ def delete(array: list, items_to_delete: set):
 def array_to_string(array, indent: str = "    "):
     def _array_to_string(array: list, depth: int, result: list):
         if type(array) is list:
-            no_list_found = True
+            subarray_found = False
             for subarray in array:
                 if type(subarray) is list:
-                    no_list_found = False
-            if no_list_found:
+                    subarray_found = True
+                    break
+            if not subarray_found:
                 result.append(f"{indent * depth}{array},\n")
             else:
                 result.append(f"{indent * depth}[\n")
@@ -38,6 +39,7 @@ def array_to_string(array, indent: str = "    "):
                 result.append(",\n" if depth > 0 else "\n")
         else:
             result.append(f"{indent * depth}{array},\n")
+
     result = list()
     _array_to_string(array, 0, result)
     return "".join(result)
