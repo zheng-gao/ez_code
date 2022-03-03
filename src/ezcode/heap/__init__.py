@@ -253,70 +253,70 @@ class PriorityMap(PriorityQueue):
         self.map[new_item[1]] = index
 
 
-class BlockingPriorityQueue:
-    def __init__(self, max_size: int = None, min_heap: bool = True):
-        self.priority_queue = PriorityQueue(min_heap=min_heap)
-        self.max_size = max_size
-        self.lock = threading.Lock()  # one lock for all the operations: len(), push(), peek(), pop(). Only one operation is allowed at a time
-        self.write_condition = threading.Condition()
-        self.read_condition = threading.Condition()
-        if max_size is not None and max_size < 0:
-            raise ValueError(f"Negative queue size found: {max_size}")
-
-    def __len__(self):
-        self.lock.acquire()
-        size = len(self.priority_queue)
-        self.lock.release()
-        return size
-
-    @staticmethod
-    def _notify(condition):
-        condition.acquire()
-        condition.notify()
-        condition.release()
-
-    @staticmethod
-    def _wait(condition, timeout=None):
-        condition.acquire()
-        condition.wait(timeout=timeout)
-        condition.release()
-
-    def push(self, item, block: bool = True, timeout: int = None):
-        if self.max_size is not None and len(self) > self.max_size:
-            if block:  # Block and wait till not full
-                BlockingPriorityQueue._wait(self.write_condition, timeout)
-        self.lock.acquire()
-        try:
-            if self.max_size is not None and len(self.priority_queue) > self.max_size:
-                # do not use len(self) since it has already been locked
-                raise IndexError(f"Queue is full")
-            self.priority_queue.push(item)
-        finally:
-            self.lock.release()
-        BlockingPriorityQueue._notify(self.read_condition)
-
-    def peek(self, block: bool = True, timeout: int = None):
-        if len(self) == 0:
-            if block:  # Block and wait till not empty
-                BlockingPriorityQueue._wait(self.read_condition, timeout)
-        self.lock.acquire()
-        try:
-            item = self.priority_queue.peek()
-        finally:
-            self.lock.release()
-        return item
-
-    def pop(self, block: bool = True, timeout: int = None):
-        if len(self) == 0:
-            if block:  # Block and wait till not empty
-                BlockingPriorityQueue._wait(self.read_condition, timeout)
-        self.lock.acquire()
-        try:
-            item = self.priority_queue.pop()
-        finally:
-            self.lock.release()
-        BlockingPriorityQueue._notify(self.write_condition)
-        return item
+# class BlockingPriorityQueue:
+#     def __init__(self, max_size: int = None, min_heap: bool = True):
+#         self.priority_queue = PriorityQueue(min_heap=min_heap)
+#         self.max_size = max_size
+#         self.lock = threading.Lock()  # one lock for all the operations: len(), push(), peek(), pop(). Only one operation is allowed at a time
+#         self.write_condition = threading.Condition()
+#         self.read_condition = threading.Condition()
+#         if max_size is not None and max_size < 0:
+#             raise ValueError(f"Negative queue size found: {max_size}")
+# 
+#     def __len__(self):
+#         self.lock.acquire()
+#         size = len(self.priority_queue)
+#         self.lock.release()
+#         return size
+# 
+#     @staticmethod
+#     def _notify(condition):
+#         condition.acquire()
+#         condition.notify()
+#         condition.release()
+# 
+#     @staticmethod
+#     def _wait(condition, timeout=None):
+#         condition.acquire()
+#         condition.wait(timeout=timeout)
+#         condition.release()
+# 
+#     def push(self, item, block: bool = True, timeout: int = None):
+#         if self.max_size is not None and len(self) > self.max_size:
+#             if block:  # Block and wait till not full
+#                 BlockingPriorityQueue._wait(self.write_condition, timeout)
+#         self.lock.acquire()
+#         try:
+#             if self.max_size is not None and len(self.priority_queue) > self.max_size:
+#                 # do not use len(self) since it has already been locked
+#                 raise IndexError(f"Queue is full")
+#             self.priority_queue.push(item)
+#         finally:
+#             self.lock.release()
+#         BlockingPriorityQueue._notify(self.read_condition)
+# 
+#     def peek(self, block: bool = True, timeout: int = None):
+#         if len(self) == 0:
+#             if block:  # Block and wait till not empty
+#                 BlockingPriorityQueue._wait(self.read_condition, timeout)
+#         self.lock.acquire()
+#         try:
+#             item = self.priority_queue.peek()
+#         finally:
+#             self.lock.release()
+#         return item
+# 
+#     def pop(self, block: bool = True, timeout: int = None):
+#         if len(self) == 0:
+#             if block:  # Block and wait till not empty
+#                 BlockingPriorityQueue._wait(self.read_condition, timeout)
+#         self.lock.acquire()
+#         try:
+#             item = self.priority_queue.pop()
+#         finally:
+#             self.lock.release()
+#         BlockingPriorityQueue._notify(self.write_condition)
+#         return item
 
 
 
