@@ -257,7 +257,7 @@ class BlockingPriorityQueue:
     def __init__(self, max_size: int = None, min_heap: bool = True):
         self.priority_queue = PriorityQueue(min_heap=min_heap)
         self.max_size = max_size
-        self.lock = threading.Lock()
+        self.lock = threading.Lock()  # one lock for all the operations: len(), push(), peek(), pop(). Only one operation is allowed at a time
         self.write_condition = threading.Condition()
         self.read_condition = threading.Condition()
         if max_size is not None and max_size < 0:
