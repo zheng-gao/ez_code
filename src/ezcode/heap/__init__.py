@@ -70,8 +70,10 @@ class PriorityQueue:
         return self.heap[0][0] if len(self.heap[0]) == 1 else self.heap[0]  # priority / priority, key
 
     def top_n(self, n: int = None) -> list():
+        if n is not None and n < 0:
+            raise ValueError(f"top_n does not accept negative input: {n}")
         copy = PriorityQueue(min_heap=self.min_heap)
-        copy.heap = self.heap.copy()
+        copy.heap = self.heap.copy()  # shallow copy
         top_n_list, count = list(), 0
         while len(copy) > 0:
             if n is not None and count >= n:
@@ -151,9 +153,11 @@ class PriorityMap(PriorityQueue):
         return self.heap[0]
 
     def top_n(self, n: int = None) -> list():
+        if n is not None and n < 0:
+            raise ValueError(f"top_n does not accept negative input: {n}")
         copy = PriorityMap(min_heap=self.min_heap)
-        copy.heap = self.heap.copy()
-        copy.map = self.map.copy()
+        copy.heap = self.heap.copy()  # shallow copy
+        copy.map = self.map.copy()    # shallow copy
         top_n_list, count = list(), 0
         while len(copy) > 0:
             if n is not None and count >= n:
