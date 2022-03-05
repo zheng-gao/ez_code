@@ -2,6 +2,7 @@ from ezcode.array.matrix import init_matrix, MatrixIterator
 from ezcode.array.search import binary_search
 from ezcode.array.rotate import rotate
 from ezcode.array.utils import copy, array_to_string, delete
+from ezcode.array.utils import split_list, split_list_generator, chunk_list, chunk_list_generator
 from ezcode.array.lcs import longest_common_subsequence, longest_common_subarray
 from fixture.utils import check_list_copy
 
@@ -38,8 +39,8 @@ def test_binary_search():
     assert 1 == binary_search(array=[0, 1, 2], target=1)
     assert 2 == binary_search(array=[0, 1, 2], target=2)
     array, target = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 7
-    assert None == binary_search(array=[], target=0)
-    assert None == binary_search(array=array, target=-1)
+    assert binary_search(array=[], target=0) is None
+    assert binary_search(array=array, target=-1) is None
     assert 7 == binary_search(array=array, target=target, is_ascending=True)
     assert 2 == binary_search(array=array[::-1], target=target, is_ascending=False)
     array, target = [0, 1, 1, 2, 3, 3, 3, 3, 4, 5, 6, 7, 7, 7, 8, 9, 9], 3
@@ -65,24 +66,24 @@ def test_check_list_copy():
     assert check_list_copy(None, None)
     assert check_list_copy([], [])
     assert check_list_copy([[]], [[]])
-    assert check_list_copy([[],[1]], [[],[1]])
-    assert check_list_copy([[],[1, 2], 3], [[],[1, 2], 3])
+    assert check_list_copy([[], [1]], [[], [1]])
+    assert check_list_copy([[], [1, 2], 3], [[], [1, 2], 3])
     assert not check_list_copy([], None)
     assert not check_list_copy([], [[]])
     assert not check_list_copy([1], [[1]])
-    assert not check_list_copy([[],[1, 2]], [[],[1, 3]])
+    assert not check_list_copy([[], [1, 2]], [[], [1, 3]])
 
 
 def test_copy():
     assert check_list_copy(None, copy(None))
     assert check_list_copy([], copy([]))
     assert check_list_copy([[]], copy([[]]))
-    assert check_list_copy([[],[1]], copy([[],[1]]))
-    assert check_list_copy([[],[1, 2], 3], copy([[],[1, 2],3]))
+    assert check_list_copy([[], [1]], copy([[], [1]]))
+    assert check_list_copy([[], [1, 2], 3], copy([[], [1, 2], 3]))
     assert not check_list_copy([], copy(None))
     assert not check_list_copy([], copy([[]]))
     assert not check_list_copy([1], copy([[1]]))
-    assert not check_list_copy([[],[1, 2]], copy([[],[1, 3]]))
+    assert not check_list_copy([[], [1, 2]], copy([[], [1, 3]]))
 
 
 def test_delete():
@@ -103,10 +104,11 @@ def test_init_matrix():
     class Data:
         def __init__(self, data):
             self.data = data
+
         def __repr__(self):
             return str(self.data)
-    
-    matrix = init_matrix(2, 3, Data(1));
+
+    matrix = init_matrix(2, 3, Data(1))
     matrix[0][0].data = 2
     assert matrix[0][0].data == 2
     assert matrix[0][1].data == 1
@@ -115,7 +117,7 @@ def test_init_matrix():
 
 def test_matrix_iterator():
     size = 4
-    matrix = init_matrix(size, size);
+    matrix = init_matrix(size, size)
     for row in range(size):
         for col in range(size):
             matrix[row][col] = size * row + col
@@ -143,18 +145,73 @@ def test_matrix_iterator():
             assert matrix[row][col] == next(iterator)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+def test_split_chunk_list():
+    array = [1, 2, 3, 4, 5]
+    split_benchmark = [
+        [
+            [1, 2, 3, 4, 5]
+        ],
+        [
+            [1, 2, 3],
+            [4, 5]
+        ],
+        [
+            [1, 2],
+            [3, 4],
+            [5]
+        ],
+        [
+            [1, 2],
+            [3],
+            [4],
+            [5]
+        ],
+        [
+            [1],
+            [2],
+            [3],
+            [4],
+            [5]
+        ]
+    ]
+    for i in array:
+        check_list_copy(split_list(array, i), split_benchmark[i - 1])
+    check_list_copy(split_list(array, 6), split_benchmark[4])
+    for i in array:
+        sub_i = 0
+        for sublist in split_list_generator(array, i):
+            check_list_copy(sublist, split_benchmark[i - 1][sub_i])
+            sub_i += 1
+    chunk_benchmark = [
+        [
+            [1],
+            [2],
+            [3],
+            [4],
+            [5]
+        ],
+        [
+            [1, 2],
+            [3, 4],
+            [5]
+        ],
+        [
+            [1, 2, 3],
+            [4, 5]
+        ],
+        [
+            [1, 2, 3, 4],
+            [5]
+        ],
+        [
+            [1, 2, 3, 4, 5]
+        ]
+    ]
+    for i in array:
+        check_list_copy(chunk_list(array, i), chunk_benchmark[i - 1])
+    check_list_copy(chunk_list(array, 6), chunk_benchmark[4])
+    for i in array:
+        sub_i = 0
+        for sublist in chunk_list_generator(array, i):
+            check_list_copy(sublist, chunk_benchmark[i - 1][sub_i])
+            sub_i += 1

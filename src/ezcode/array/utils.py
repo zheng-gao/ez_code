@@ -47,3 +47,54 @@ def array_to_string(array, indent: str = "    "):
 
 def print_array(array, indent: str = "    "):
     print(array_to_string(array, indent), end="")
+
+
+def split_list(original_list: list, number_of_sublists: int):
+    if number_of_sublists <= 0:
+        raise ValueError(f"The number_of_sublists must be positive: {number_of_sublists}")
+    sublists, sublist = list(), list()
+    sublist_size = len(original_list) // number_of_sublists
+    items_left = len(original_list) % number_of_sublists
+    sizes = [sublist_size] * number_of_sublists
+    for i in range(number_of_sublists):
+        if i < items_left:
+            sizes[i] += 1
+    for item in original_list:
+        if len(sublist) < sizes[len(sublists)]:
+            sublist.append(item)
+        else:
+            sublists.append(sublist)
+            sublist = list([item])
+    if sublist:
+        sublists.append(sublist)
+    return sublists
+
+
+def split_list_generator(original_list: list, number_of_sublists: int):
+    if number_of_sublists <= 0:
+        raise ValueError(f"The number_of_sublists must be positive: {number_of_sublists}")
+    sublists, sublist = 0, list()
+    sublist_size = len(original_list) // number_of_sublists
+    items_left = len(original_list) % number_of_sublists
+    sizes = [sublist_size] * number_of_sublists
+    for i in range(number_of_sublists):
+        if i < items_left:
+            sizes[i] += 1
+    for item in original_list:
+        if len(sublist) < sizes[sublists]:
+            sublist.append(item)
+        else:
+            sublists += 1
+            yield sublist
+            sublist = list([item])
+    if sublist:
+        yield sublist
+
+
+def chunk_list(original_list: list, chunk_size: int):
+    return [original_list[i:(i + chunk_size)] for i in range(0, len(original_list), chunk_size)]
+
+
+def chunk_list_generator(original_list: list, chunk_size: int):
+    for i in range(0, len(original_list), chunk_size):
+        yield original_list[i:(i + chunk_size)]

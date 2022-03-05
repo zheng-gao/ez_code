@@ -4,18 +4,18 @@ from ezcode.tree.printer import BinaryTreePrinter
 
 
 class Node:
-    def __init__(self, v=None, l=None, r=None):
-        self.v = v
-        self.l = l
-        self.r = r
+    def __init__(self, value=None, left=None, right=None):
+        self.value = value
+        self.left = left
+        self.right = right
 
     def __repr__(self):
-        return f"Node({self.v})"
+        return f"Node({self.value})"
 
 
-printer = BinaryTreePrinter(data_name="v", left_name="l", right_name="r")
-s_root = Node(0, Node(1, Node(3, r=Node(7)), Node(4)), Node(2, Node(5, Node(8), Node(9)), Node(6)))
-s_tree = BinaryTree(root=s_root, data_name="v", left_name="l", right_name="r")
+printer = BinaryTreePrinter(data_name="value", left_name="left", right_name="right")
+s_root = Node(0, Node(1, Node(3, right=Node(7)), Node(4)), Node(2, Node(5, Node(8), Node(9)), Node(6)))
+s_tree = BinaryTree(root=s_root, data_name="value", left_name="left", right_name="right")
 s_tree_string = """
        ┌──────────(0)──────────┐       
  ┌────(1)────┐           ┌────(2)────┐ 
@@ -24,8 +24,8 @@ s_tree_string = """
 """[1:]
 
 
-c_root = Node(-2, Node(8, Node(-4, l=Node(-2)), Node(3, l=Node(-1))), Node(-3, l=Node(2, Node(10), Node(7))))
-c_tree = BinaryTree(root=c_root, data_name="v", left_name="l", right_name="r")
+c_root = Node(-2, Node(8, Node(-4, left=Node(-2)), Node(3, left=Node(-1))), Node(-3, left=Node(2, Node(10), Node(7))))
+c_tree = BinaryTree(root=c_root, data_name="value", left_name="left", right_name="right")
 c_tree_string = """
             ┌───────────(-2)────────────┐ 
      ┌─────(8)─────┐             ┌────(-3)

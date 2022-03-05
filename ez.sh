@@ -149,7 +149,7 @@ function control_test() {
     ez_print_log -m "Installing flake8 ..."
     python3 -m "pip" "install" --upgrade "flake8"
     ez_print_log -m "Running flake8 checks ..."
-    if ! python3 -m "flake8" --ignore "E124,E128,E501,W391" "${BASE_DIRECTORY}/src/"; then
+    if ! python3 -m "flake8" --ignore "E124,E128,E501,W391" "${BASE_DIRECTORY}/src"; then
         ez_print_log -l "ERROR" -m "Failed flake8 checks!"; return 1
     fi
     ez_print_log -m "Installing pytest ..."

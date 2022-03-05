@@ -15,7 +15,7 @@ def test_traversals():
 
 
 def test_lowest_common_ancestor():
-    s6, s7, s8 = s_root.r.r, s_root.l.l.r, s_root.r.l.l
+    s6, s7, s8 = s_root.right.right, s_root.left.left.right, s_root.right.left.left
     assert 2 == s_tree.node_data(s_tree.lowest_common_ancestor([s6, s8]))
     assert 0 == s_tree.node_data(s_tree.lowest_common_ancestor([s6, s7, s8]))
 
@@ -33,8 +33,8 @@ def test_depth():
 
 
 def test_is_balanced():
-    assert s_tree.is_balanced() == True
-    assert c_tree.is_balanced() == False
+    assert s_tree.is_balanced() is True
+    assert c_tree.is_balanced() is False
 
 
 def test_max_path_sum():
@@ -63,7 +63,7 @@ def test_deserialization():
 
 
 def test_trie():
-    assert str(trie) == trie_string 
+    assert str(trie) == trie_string
     assert trie.size() == 4
     assert trie.longest_common_prefix() == list("co")
     assert trie.contains("cof")
@@ -76,5 +76,3 @@ def test_trie():
 def test_suffix_trie():
     assert str(suffix_trie) == suffix_trie_string
 
-
-    

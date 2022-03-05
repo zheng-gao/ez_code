@@ -67,7 +67,6 @@ def test_priority_map():
     for pop_data in min_pop_list:
         assert min_map.pop() == pop_data
 
-
     max_map = PriorityMap(min_heap=False)
     max_peek_list = [(4, "D"), (4, "D"), (5, "E"), (5, "E"), (5, "E")]
     for push_data, peek_data in zip(push_list, max_peek_list):
@@ -101,8 +100,8 @@ def test_heap_custom_comparator():
             self.c = c
 
         def check_type(self, other):
-            if not isinstance(other, type(self)): 
-                raise NotImplemented(f"{other} is not type {type(self)}")
+            if not isinstance(other, type(self)):
+                raise NotImplementedError(f"{other} is not type {type(self)}")
 
         def __str__(self):
             return f"({self.a},{self.b},{self.c})"
@@ -127,31 +126,21 @@ def test_heap_custom_comparator():
                 return False
             return self.c < self.c
 
-    push_list = [(Priority(2,2,3), "A"), (Priority(2,1,1), "B"), (Priority(1,1,1), "E"), (Priority(1,1,2), "D"), (Priority(1,1,1), "C")]
+    push_list = [(Priority(2, 2, 3), "A"), (Priority(2, 1, 1), "B"), (Priority(1, 1, 1), "E"), (Priority(1, 1, 2), "D"), (Priority(1, 1, 1), "C")]
 
     min_queue = PriorityQueue(push_list)
-    push_map = {"A": Priority(2,2,3), "B": Priority(2,1,1), "E": Priority(1,1,1), "D": Priority(1,1,2), "C": Priority(1,1,1)}
+    push_map = {"A": Priority(2, 2, 3), "B": Priority(2, 1, 1), "E": Priority(1, 1, 1), "D": Priority(1, 1, 2), "C": Priority(1, 1, 1)}
     min_map = PriorityMap(push_map)
-    min_pop_list = [(Priority(1,1,1), "E"), (Priority(1,1,1), "C"), (Priority(1,1,2), "D"), (Priority(2,1,1), "B"), (Priority(2,2,3), "A")]
+    min_pop_list = [(Priority(1, 1, 1), "E"), (Priority(1, 1, 1), "C"), (Priority(1, 1, 2), "D"), (Priority(2, 1, 1), "B"), (Priority(2, 2, 3), "A")]
     for pop_data in min_pop_list:
         assert min_queue.pop() == pop_data
         assert min_map.pop() == pop_data
 
     max_queue = PriorityQueue(push_list, min_heap=False)
-    max_pop_list = [(Priority(2,2,3), "A"), (Priority(2,1,1), "B"), (Priority(1,1,2), "D"), (Priority(1,1,1), "E"), (Priority(1,1,1), "C")]
+    max_pop_list = [(Priority(2, 2, 3), "A"), (Priority(2, 1, 1), "B"), (Priority(1, 1, 2), "D"), (Priority(1, 1, 1), "E"), (Priority(1, 1, 1), "C")]
     max_map = PriorityMap(min_heap=False)
     for push_data in push_list:
         max_map.push(push_data)
     for pop_data in max_pop_list:
         assert max_queue.pop() == pop_data
         assert max_map.pop() == pop_data
-
-
-    
-
-
-
-
-
-
-
