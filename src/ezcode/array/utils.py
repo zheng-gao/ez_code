@@ -92,9 +92,13 @@ def split_list_generator(original_list: list, number_of_sublists: int):
 
 
 def chunk_list(original_list: list, chunk_size: int):
+    if chunk_size <= 0:
+        raise ValueError(f"The chunk_size must be positive: {chunk_size}")
     return [original_list[i:(i + chunk_size)] for i in range(0, len(original_list), chunk_size)]
 
 
 def chunk_list_generator(original_list: list, chunk_size: int):
+    if chunk_size <= 0:
+        raise ValueError(f"The chunk_size must be positive: {chunk_size}")
     for i in range(0, len(original_list), chunk_size):
         yield original_list[i:(i + chunk_size)]
