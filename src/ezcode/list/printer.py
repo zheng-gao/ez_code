@@ -1,4 +1,4 @@
-from ezcode.list.const import DATA_NAME, NEXT_NAME, FORWARD_LINK, BACKWARD_LINK, BIDIRECTION_LINK
+from ezcode.list.const import FORWARD_LINK, BACKWARD_LINK, BIDIRECTION_LINK
 from ezcode.list.algorithm import SinglyLinkedListAlgorithm, DoublyLinkedListAlgorithm
 
 
@@ -20,7 +20,7 @@ class SinglyLinkedListPrinter:
             node = self.algorithm.get_next(node)
         new_string = f"{self.algorithm.get_data(node)}"
         if include_end:
-            return  "None" + link + new_string + string if reverse else string + new_string + link + "None"
+            return "None" + link + new_string + string if reverse else string + new_string + link + "None"
         else:
             return new_string + string if reverse else string + new_string
 
@@ -30,7 +30,8 @@ class SinglyLinkedListPrinter:
 
 class DoublyLinkedListPrinter:
     def __init__(self, algorithm: DoublyLinkedListAlgorithm,
-        forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK, bidirection_link: str = BIDIRECTION_LINK):
+        forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK, bidirection_link: str = BIDIRECTION_LINK
+    ):
         self.algorithm = algorithm
         self.forward_link = forward_link
         self.backward_link = backward_link

@@ -14,7 +14,7 @@ class BinaryTree(object):
 
     class FakeNode(object):
         def __init__(self):
-           pass
+            pass
 
     def __init__(self, root=None, data_name: str = DATA_NAME, left_name: str = LEFT_NAME, right_name: str = RIGHT_NAME):
         self.root = root
@@ -27,7 +27,7 @@ class BinaryTree(object):
         node = self.FakeNode()
         node.__dict__ = {self.data_name: data, self.left_name: None, self.right_name: None}
         return node
-    
+
     def node_data(self, node):
         return node.__dict__[self.data_name]
 
@@ -145,7 +145,7 @@ class BinaryTree(object):
                 other_queue.append(other_node.__dict__[self.left_name])
                 other_queue.append(other_node.__dict__[self.right_name])
         return BinaryTree(other_root, self.data_name, self.left_name, self.right_name)
-        
+
 
 class RandomBinaryTree(BinaryTree):
     def __init__(self,

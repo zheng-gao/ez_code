@@ -89,7 +89,7 @@ class SinglyLinkedList(object):
                 other_node = self.algorithm.get_next(other_node)
             return True
         else:
-            return other_head == None
+            return other_head is None
 
     def reverse(self):
         if self.head:
@@ -118,7 +118,7 @@ class SinglyLinkedList(object):
     def delete_nth_from_end(self, n: int = 1):
         """ O(N) """
         if n >= 1 and n <= self.size:
-            fake_head = self.algorithm.new_node(next_node=head)
+            fake_head = self.algorithm.new_node(next_node=self.head)
             fast_node, slow_node = self.head, fake_head
             for _ in range(n):  # move fast node n steps
                 if not fast_node:
@@ -147,8 +147,8 @@ class SinglyLinkedList(object):
                 self.algorithm.set_next(node=third, next_node=second)
                 # first second third
                 #   |      |     |
-                #  fake    n1 <- n2    n3 -> n4 -> ...  
-                #   |------|-----^     ^ 
+                #  fake    n1 <- n2    n3 -> n4 -> ...
+                #   |------|-----^     ^
                 #          |-----------|
                 third = self.algorithm.get_next(second)
                 # first       second third
@@ -188,8 +188,8 @@ class SinglyLinkedList(object):
         #                   │ |            v  │   B < C
         #                   │ n6 <- ... <- n5 │
         #                   └───── C - B ─────┘
-        # When the fast meets the slow, the fast has walked N rounds in the circle, where N > 1 
-        # (A + B) * 2 = A + B + C * N, since the fast is 2 times faster than the slow 
+        # When the fast meets the slow, the fast has walked N rounds in the circle, where N > 1
+        # (A + B) * 2 = A + B + C * N, since the fast is 2 times faster than the slow
         # => A + B = C * N
         # => A = (C - B) + C * (N - 1)
         # C - B is the length from the meeting point (n4) to the entering point (n3)
@@ -197,12 +197,12 @@ class SinglyLinkedList(object):
         # they will meet at the entering point and the one in the circle will have walked (N - 1) rounds
         fast_node, slow_node = self.head, self.head
         while fast_node and self.algorithm.get_next(fast_node):
-            fast_node = self.algorithm.get_next(self.algorithm.get_next(fast_node)) # 2 times faster
+            fast_node = self.algorithm.get_next(self.algorithm.get_next(fast_node))  # 2 times faster
             slow_node = self.algorithm.get_next(slow_node)
             if fast_node == slow_node:
                 slow_node = self.head
                 while slow_node != fast_node:
-                    fast_node = self.algorithm.get_next(fast_node) # same speed as slow
+                    fast_node = self.algorithm.get_next(fast_node)  # same speed as slow
                     slow_node = self.algorithm.get_next(slow_node)
                 return slow_node
         return None

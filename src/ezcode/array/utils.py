@@ -19,7 +19,7 @@ def delete(array: list, items_to_delete: set):
             array[index - count] = data
     for _ in range(count):
         array.pop()
-        
+
 
 def array_to_string(array, indent: str = "    "):
     def _array_to_string(array: list, depth: int, result: list):

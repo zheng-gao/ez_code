@@ -1,6 +1,5 @@
 from collections import deque
 from ezcode.heap import PriorityMap
-from typing import List
 
 
 class NegativeCycleExist(Exception):
@@ -58,7 +57,7 @@ class Graph:
     def print(self):
         print(self, end="")
 
-    def dfs_path_value(self, src_node_id, dst_node_id, visited = set(), self_loop_value=0, path_value_init=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min):
+    def dfs_path_value(self, src_node_id, dst_node_id, visited=set(), self_loop_value=0, path_value_init=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min):
         if src_node_id == dst_node_id:
             return self_loop_value
         top_path_value = path_value_init
@@ -92,7 +91,7 @@ class Graph:
         """ Positive Weight Only: O(V + E*logV). On dense graphs, dijkstra is faster than spfa """
         path_values, visited = dict(), set()
         min_heap = True if min_max_func == min else False
-        candidates = PriorityMap({src_node_id:self_loop_value}, min_heap=min_heap)
+        candidates = PriorityMap({src_node_id: self_loop_value}, min_heap=min_heap)
         for node_id in self.nodes.keys():
             path_values[node_id] = self_loop_value if node_id == src_node_id else path_value_init
         while len(candidates) > 0:

@@ -22,7 +22,7 @@ class BinaryTreeAlgorithm:
             self.pre_order(root.__dict__[self.left_name], result)
             result.append(root.__dict__[self.data_name])
             self.pre_order(root.__dict__[self.right_name], result)
-    
+
     def post_order(self, root, result: list):
         if root is not None:
             self.pre_order(root.__dict__[self.left_name], result)
@@ -41,7 +41,7 @@ class BinaryTreeAlgorithm:
         right_sum_extremum, right_sum = self.subtree_sum_extremum(root.__dict__[self.right_name], extremum_func)
         my_sum = left_sum + right_sum + root.__dict__[self.data_name]
         return extremum_func(my_sum, left_sum_extremum, right_sum_extremum), my_sum
-    
+
     def subtree_avg_extremum(self, root, extremum_func):
         if root is None:
             return 0, 0, 0
@@ -51,7 +51,7 @@ class BinaryTreeAlgorithm:
         my_size = left_size + right_size + 1
         my_average = my_sum / my_size
         return extremum_func(my_average, left_avg_extremum, right_avg_extremum), my_sum, my_size
-    
+
     def lowest_common_ancestor(self, root, node_1, node_2):
         if root is None or root == node_1 or root == node_2:
             return root
@@ -69,7 +69,7 @@ class BinaryTreeAlgorithm:
         left_balanced, left_depth = self.is_balanced(root.__dict__[self.left_name])
         right_balanced, right_depth = self.is_balanced(root.__dict__[self.right_name])
         return left_balanced and right_balanced and abs(left_depth - right_depth) <= 1, max(left_depth, right_depth) + 1
-    
+
     def is_copied(self, root_1, root_2):
         if not root_1 and not root_2:
             return True
@@ -77,19 +77,12 @@ class BinaryTreeAlgorithm:
             return False
         if root_1.__dict__[self.data_name] != root_2.__dict__[self.data_name]:
             return False
-        return self.is_copied(root_1.__dict__[self.left_name], root_2.__dict__[self.left_name]) and \
-               self.is_copied(root_1.__dict__[self.right_name], root_2.__dict__[self.right_name])
-    
+        return self.is_copied(root_1.__dict__[self.left_name], root_2.__dict__[self.left_name]) and self.is_copied(root_1.__dict__[self.right_name], root_2.__dict__[self.right_name])
+
     def max_path_sum(self, root):
         if root is None:
             return -sys.maxsize, 0  # path sum max，max half + node value
         left_max, l_half = self.max_path_sum(root.__dict__[self.left_name])  # left path max, left non-negative max half
         right_max, r_half = self.max_path_sum(root.__dict__[self.right_name])  # right path max, right non-negative max half
-        return max(left_max, right_max, root.__dict__[self.data_name] + l_half + r_half), \
-               max(root.__dict__[self.data_name] + max(l_half, r_half), 0)
+        return max(left_max, right_max, root.__dict__[self.data_name] + l_half + r_half), max(root.__dict__[self.data_name] + max(l_half, r_half), 0)
 
-
-
-
-
-    

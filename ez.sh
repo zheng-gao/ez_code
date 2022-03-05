@@ -19,7 +19,6 @@ REQUIRED_COMMANDS+=("touch")
 REQUIRED_COMMANDS+=("git")
 # Python Command
 REQUIRED_COMMANDS+=("python3")
-REQUIRED_COMMANDS+=("pip3")
 
 # Verify the required commands
 function command_exist() {
@@ -147,34 +146,40 @@ function control_build() {
 
 function control_test() {
     # https://docs.pytest.org/en/latest/
+    ez_print_log -m "Installing flake8 ..."
+    python3 -m "pip" "install" --upgrade "flake8"
+    ez_print_log -m "Running flake8 checks ..."
+    if ! python3 -m "flake8" --ignore "E124,E128,E501,W391" "${BASE_DIRECTORY}/src/"; then
+        ez_print_log -l "ERROR" -m "Failed flake8 checks!"; return 1
+    fi
     ez_print_log -m "Installing pytest ..."
-    pip3 "install" "pytest" --upgrade
+    python3 -m "pip" "install" --upgrade "pytest"
     ez_print_log -m "Installing pytest-srcpaths ..."
-    pip3 "install" "pytest-srcpaths" --upgrade
+    python3 -m "pip" "install" --upgrade "pytest-srcpaths"
     ez_print_log -m "Running tests ..."
     pytest -vv
 }
 
 function control_uninstall() {
     ez_print_log -m "Uninstalling ${PROJECT_NAME} ..."
-    pip3 "uninstall" "${PROJECT_NAME}" -y
+    python3 -m "pip" "uninstall" "${PROJECT_NAME}" -y
 }
 
 function control_install_local() {
     ez_print_log -m "Installing local build ..."
-    pip3 "install" --editable "${BASE_DIRECTORY}"
+    python3 -m "pip" "install" --editable "${BASE_DIRECTORY}"
 }
 
 function control_install_test() {
     # https://test.pypi.org/project/ezcode
     ez_print_log -m "Installing test repo ..."
-    pip3 "install" -i "https://test.pypi.org/simple/" "${PROJECT_NAME}" --upgrade
+    python3 -m "pip" "install" -i "https://test.pypi.org/simple/" "${PROJECT_NAME}" --upgrade
 }
 
 function control_install() {
     # https://pypi.org/project/ezcode
     ez_print_log -m "Installing ${PROJECT_NAME} ..."
-    pip3 "install" "${PROJECT_NAME}" --upgrade
+    python3 -m "pip" "install" "${PROJECT_NAME}" --upgrade
 }
 
 function control_publish_test() {

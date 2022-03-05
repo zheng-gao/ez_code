@@ -1,42 +1,43 @@
-# import heapq
-# 
-# 
-# class PriorityQueue:
-#     def __init__(self, data: list = None, min_heap: bool = True):
-#         self.min_heap = min_heap
-#         self.heap = data.copy() if data else list()  # (priority, key)
-#         if self.min_heap:
-#             heapq.heapify(self.heap)
-#         else:
-#             heapq._heapify_max(self.heap)
-# 
-#     def __len__(self):
-#         return len(self.heap)
-# 
-#     def __str__(self):
-#         return str(self.heap)
-# 
-#     def peek(self):
-#         """ O(1) """
-#         if len(self) <= 0:
-#             raise IndexError("Peek at an empty queue")
-#         return self.heap[0]
-# 
-#     def push(self, data):
-#         """ O(logN) """
-#         if self.min_heap:
-#             heapq.heappush(self.heap, data)
-#         else:
-#             self.heap.append(data)
-#             heapq._siftdown_max(self.heap, 0, len(self.heap) - 1)  # python siftdown is from leaf to root
-# 
-#     def pop(self):
-#         """ O(logN) """
-#         if len(self) <= 0:
-#             raise IndexError("Pop on an empty queue")
-#         return heapq.heappop(self.heap) if self.min_heap else heapq._heappop_max(self.heap)
-import time
-import threading
+"""
+import heapq
+
+
+class PriorityQueue:
+    def __init__(self, data: list = None, min_heap: bool = True):
+        self.min_heap = min_heap
+        self.heap = data.copy() if data else list()  # (priority, key)
+        if self.min_heap:
+            heapq.heapify(self.heap)
+        else:
+            heapq._heapify_max(self.heap)
+
+    def __len__(self):
+        return len(self.heap)
+
+    def __str__(self):
+        return str(self.heap)
+
+    def peek(self):
+        # O(1)
+        if len(self) <= 0:
+            raise IndexError("Peek at an empty queue")
+        return self.heap[0]
+
+    def push(self, data):
+        # O(logN)
+        if self.min_heap:
+            heapq.heappush(self.heap, data)
+        else:
+            self.heap.append(data)
+            heapq._siftdown_max(self.heap, 0, len(self.heap) - 1)  # python siftdown is from leaf to root
+
+    def pop(self):
+        # O(logN)
+        if len(self) <= 0:
+            raise IndexError("Pop on an empty queue")
+        return heapq.heappop(self.heap) if self.min_heap else heapq._heappop_max(self.heap)
+"""
+# import threading
 
 
 class PriorityQueue:
@@ -132,7 +133,7 @@ class PriorityQueue:
 class PriorityMap(PriorityQueue):
     def __init__(self, init_map: dict = None, min_heap: bool = True):
         super().__init__(min_heap=min_heap)
-        self.map = dict() # <key, heap_index>
+        self.map = dict()  # <key, heap_index>
         if init_map is not None:
             for key, priority in init_map.items():
                 self.push(priority, key)
@@ -257,71 +258,71 @@ class PriorityMap(PriorityQueue):
         self.map[new_item[1]] = index
 
 
-# class BlockingPriorityQueue:
-#     def __init__(self, max_size: int = None, min_heap: bool = True):
-#         self.priority_queue = PriorityQueue(min_heap=min_heap)
-#         self.max_size = max_size
-#         self.lock = threading.Lock()  # one lock for all the operations: len(), push(), peek(), pop(). Only one operation is allowed at a time
-#         self.write_condition = threading.Condition()
-#         self.read_condition = threading.Condition()
-#         if max_size is not None and max_size < 0:
-#             raise ValueError(f"Negative queue size found: {max_size}")
-# 
-#     def __len__(self):
-#         self.lock.acquire()
-#         size = len(self.priority_queue)
-#         self.lock.release()
-#         return size
-# 
-#     @staticmethod
-#     def _notify(condition):
-#         condition.acquire()
-#         condition.notify()
-#         condition.release()
-# 
-#     @staticmethod
-#     def _wait(condition, timeout=None):
-#         condition.acquire()
-#         condition.wait(timeout=timeout)
-#         condition.release()
-# 
-#     def push(self, item, block: bool = True, timeout: int = None):
-#         if self.max_size is not None and len(self) > self.max_size:
-#             if block:  # Block and wait till not full
-#                 BlockingPriorityQueue._wait(self.write_condition, timeout)
-#         self.lock.acquire()
-#         try:
-#             if self.max_size is not None and len(self.priority_queue) > self.max_size:
-#                 # do not use len(self) since it has already been locked
-#                 raise IndexError(f"Queue is full")
-#             self.priority_queue.push(item)
-#         finally:
-#             self.lock.release()
-#         BlockingPriorityQueue._notify(self.read_condition)
-# 
-#     def peek(self, block: bool = True, timeout: int = None):
-#         if len(self) == 0:
-#             if block:  # Block and wait till not empty
-#                 BlockingPriorityQueue._wait(self.read_condition, timeout)
-#         self.lock.acquire()
-#         try:
-#             item = self.priority_queue.peek()
-#         finally:
-#             self.lock.release()
-#         return item
-# 
-#     def pop(self, block: bool = True, timeout: int = None):
-#         if len(self) == 0:
-#             if block:  # Block and wait till not empty
-#                 BlockingPriorityQueue._wait(self.read_condition, timeout)
-#         self.lock.acquire()
-#         try:
-#             item = self.priority_queue.pop()
-#         finally:
-#             self.lock.release()
-#         BlockingPriorityQueue._notify(self.write_condition)
-#         return item
+"""
+class BlockingPriorityQueue:
+    def __init__(self, max_size: int = None, min_heap: bool = True):
+        self.priority_queue = PriorityQueue(min_heap=min_heap)
+        self.max_size = max_size
+        self.lock = threading.Lock()  # one lock for all the operations: len(), push(), peek(), pop(). Only one operation is allowed at a time
+        self.write_condition = threading.Condition()
+        self.read_condition = threading.Condition()
+        if max_size is not None and max_size < 0:
+            raise ValueError(f"Negative queue size found: {max_size}")
 
+    def __len__(self):
+        self.lock.acquire()
+        size = len(self.priority_queue)
+        self.lock.release()
+        return size
 
+    @staticmethod
+    def _notify(condition):
+        condition.acquire()
+        condition.notify()
+        condition.release()
+
+    @staticmethod
+    def _wait(condition, timeout=None):
+        condition.acquire()
+        condition.wait(timeout=timeout)
+        condition.release()
+
+    def push(self, item, block: bool = True, timeout: int = None):
+        if self.max_size is not None and len(self) > self.max_size:
+            if block:  # Block and wait till not full
+                BlockingPriorityQueue._wait(self.write_condition, timeout)
+        self.lock.acquire()
+        try:
+            if self.max_size is not None and len(self.priority_queue) > self.max_size:
+                # do not use len(self) since it has already been locked
+                raise IndexError(f"Queue is full")
+            self.priority_queue.push(item)
+        finally:
+            self.lock.release()
+        BlockingPriorityQueue._notify(self.read_condition)
+
+    def peek(self, block: bool = True, timeout: int = None):
+        if len(self) == 0:
+            if block:  # Block and wait till not empty
+                BlockingPriorityQueue._wait(self.read_condition, timeout)
+        self.lock.acquire()
+        try:
+            item = self.priority_queue.peek()
+        finally:
+            self.lock.release()
+        return item
+
+    def pop(self, block: bool = True, timeout: int = None):
+        if len(self) == 0:
+            if block:  # Block and wait till not empty
+                BlockingPriorityQueue._wait(self.read_condition, timeout)
+        self.lock.acquire()
+        try:
+            item = self.priority_queue.pop()
+        finally:
+            self.lock.release()
+        BlockingPriorityQueue._notify(self.write_condition)
+        return item
+"""
 
 

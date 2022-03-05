@@ -46,7 +46,7 @@ class Trie:
 
     def add(self, prefix: list):
         if prefix is None:
-            raise ValueError(f"prefix cannot be None")
+            raise ValueError("prefix cannot be None")
         node = self.root
         node.count += 1
         for data in prefix:
@@ -64,7 +64,7 @@ class Trie:
 
     def contains(self, prefix: list, strict=False):
         if prefix is None:
-            raise ValueError(f"prefix cannot be None")
+            raise ValueError("prefix cannot be None")
         node = self.root
         for data in prefix:
             node = self.get_child(node, data)
@@ -111,7 +111,7 @@ class Trie:
                 if not node:
                     return None
             _prefix_wildcard_pre_order(node, list(prefix)[:-1:].copy(), result)
-        return result   
+        return result
 
 
 class SuffixTrie(Trie):

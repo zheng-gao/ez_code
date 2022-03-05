@@ -4,7 +4,7 @@ from ezcode.list.const import DATA_NAME, NEXT_NAME, PREV_NAME
 class SinglyLinkedListAlgorithm:
     class FakeNode(object):
         def __init__(self):
-           pass
+            pass
 
     def __init__(self, data_name: str = DATA_NAME, next_name: str = NEXT_NAME):
         self.data_name = data_name
@@ -42,19 +42,18 @@ class SinglyLinkedListAlgorithm:
 
     def reverse(self, previous_node, current_node):
         """ head = reverse(head, head.next) """
-        if current_node:
-            head = self.reverse(current, self.get_next(current))
-            self.set_next(node=current, next_node=previous)
-            self.set_next(node=previous, next_node=None)
-            return head
-        else:
-            return previous
+        if not current_node:
+            return previous_node
+        head = self.reverse(current_node, self.get_next(current_node))
+        self.set_next(node=current_node, next_node=previous_node)
+        self.set_next(node=previous_node, next_node=None)
+        return head
 
 
 class DoublyLinkedListAlgorithm:
     class FakeNode(object):
         def __init__(self):
-           pass
+            pass
 
     def __init__(self, data_name: str = DATA_NAME, next_name: str = NEXT_NAME, prev_name: str = PREV_NAME):
         self.data_name = data_name

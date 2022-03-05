@@ -6,7 +6,7 @@ class LRUCache:
         self.capacity = capacity
         self.cache = dict()  # value = Node
         self.doubly_linked_list = DoublyLinkedList()
-        
+
     def get(self, key):
         if key not in self.cache:
             return None

@@ -7,7 +7,7 @@ def init_matrix(row: int, col: int, init=None) -> list[list]:
 
 
 class MatrixIterator:
-    def __init__(self, matrix: List[list], row: int = 0, col: int = 0, direction: str="horizontal"):
+    def __init__(self, matrix: List[list], row: int = 0, col: int = 0, direction: str = "horizontal"):
         self.matrix = matrix
         self.row, self.row_min, self.row_max = row, 0, len(matrix) - 1
         self.col, self.col_min, self.col_max = col, 0, len(matrix[0]) - 1

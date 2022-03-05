@@ -132,12 +132,6 @@ def all_subsets(items: list, has_duplicate=True):
         _all_subsets_recursion(items, 0, list(), result)
     else:
         _all_subsets_iteration(items, result)
-    result.sort(key=lambda x: len(x)) # nice to have
+    result.sort(key=lambda x: len(x))  # nice to have
     return result
-
-
-
-
-
-
 

@@ -1,6 +1,4 @@
 import math
-import random
-import sys
 
 from collections import deque
 from ezcode.tree.const import DATA_NAME, LEFT_NAME, RIGHT_NAME
@@ -24,7 +22,7 @@ class BinaryTreePrinter:
         self.right_name = right_name
         self.left_wing = left_wing
         self.right_wing = right_wing
-        self.left_wing_head = left_wing_head 
+        self.left_wing_head = left_wing_head
         self.right_wing_head = right_wing_head
         self.left_wing_tail = left_wing_tail
         self.right_wing_tail = right_wing_tail
@@ -44,13 +42,12 @@ class BinaryTreePrinter:
         right wing tail: >
         ---<ABC>--
         """
-        pre_padding_length = math.ceil((self.max_data_string_length - len(str(node.__dict__[self.data_name]))) / 2) # even length padding more, use larger mid index
+        pre_padding_length = math.ceil((self.max_data_string_length - len(str(node.__dict__[self.data_name]))) / 2)  # even length padding more, use larger mid index
         post_padding_length = self.max_data_string_length - len(str(node.__dict__[self.data_name])) - pre_padding_length
         pre_padding_char = " " * len(self.left_wing) if is_last_line or node.__dict__[self.left_name] is None else self.left_wing
         post_padding_char = " " * len(self.right_wing) if is_last_line or node.__dict__[self.right_name] is None else self.right_wing
         pre_padding_string = f"{pre_padding_char * (pre_padding_length - 1)}{self.left_wing_tail}"
         post_padding_string = f"{self.right_wing_tail}{post_padding_char * (post_padding_length - 1)}"
-        
         return f"{pre_padding_string}{str(node.__dict__[self.data_name])}{post_padding_string}"
 
     def _set_data_string(self, line_to_print, indexed_node, depth):
@@ -89,7 +86,7 @@ class BinaryTreePrinter:
             return
         self.tree_depth = self._collect_tree_info(node)
         last_line_data_count = pow(2, self.tree_depth - 1)
-        last_line_string_length = last_line_data_count * (self.max_data_string_length + 1) - 1 # +one space in between
+        last_line_string_length = last_line_data_count * (self.max_data_string_length + 1) - 1  # +one space in between
         """
         [PrePadding][LeftWingTail][Data][RightWingTail][PostPadding][SPACE][PrePadding][LeftWingTail][Data][RightWingTail][PostPadding][SPACE]...
         """
