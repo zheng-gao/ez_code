@@ -62,8 +62,9 @@ class Graph:
                       Undirected  Directed  Weighted  Negative Weight  Negative Loop  Topology   Space      Time
     dfs                   yes       yes       yes        yes              no           1 to 1     O(V)      O(V!)
     bfs                   yes       yes       no         no               no           1 to N     O(V)      O(E)
-    dijkstra              yes       yes       yes        no               no           1 to N     O(VlogV)  O(V+ElogV) using fabonacci heap
-    spfa (bellman-ford)   yes       yes       yes        yes            Can Detect     1 to N     O(V)      O(kE) k is the average times of a node enter the queue, k < 2 in sparse graph
+    dijkstra              yes       yes       yes        no               no           1 to N     O(VlogV)  O(V+ElogV) using fabonacci heap, otherwise O(V^2)
+    bellman-ford          yes       yes       yes        yes             Find          1 to N               O(VE)
+    spfa                  yes       yes       yes        yes            Detect         1 to N     O(V)      O(VE)
     floyd                 yes       yes       yes        yes              no           N to N     O(V^2)    O(V^3)
 
     Notes:
