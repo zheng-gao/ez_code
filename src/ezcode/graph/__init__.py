@@ -63,12 +63,13 @@ class Graph:
     dfs                   yes       yes       yes        yes              no           1 to 1     O(V)      O(V!)
     bfs                   yes       yes       no         no               no           1 to N     O(V)      O(E)
     dijkstra              yes       yes       yes        no               no           1 to N     O(VlogV)  O(V+ElogV) using fabonacci heap, otherwise O(V^2)
-    bellman-ford          yes       yes       yes        yes             Find          1 to N               O(VE)
+    bellman-ford          yes       yes       yes        yes             Find          1 to N               O(kE) on sparse graph, O(VE) for dense graph
     spfa                  yes       yes       yes        yes            Detect         1 to N     O(V)      O(VE)
     floyd                 yes       yes       yes        yes              no           N to N     O(V^2)    O(V^3)
 
     Notes:
-    dijkstra/spfa are good for sparse graph, in dense graph the time complexity can be O(V^2)
+    dijkstra/spfa are good for sparse graph
+    on dense graph, dijkstra is faster than spfa 
     """
 
     def dfs_path_value(self, src_node_id, dst_node_id, visited=set(), self_loop_value=0, path_value_init=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min):
@@ -118,7 +119,7 @@ class Graph:
         return path_values
 
     def spfa(self, src_node_id, self_loop_value=0, path_value_init=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min, check_cycle=False):
-        """ Improved Bellman Ford Algorithm: can handle Negative Weight and detect Negative Cycle: worst case O(V*E), average O(E), sparse graphs O(V^2) """
+        """ Improved Bellman Ford Algorithm: can handle Negative Weight and detect Negative Cycle: worst case O(V*E), sparse graphs O(kE), dense graph O(VE) """
         path_values, queue, queue_set = dict(), deque([src_node_id]), set([src_node_id])
         enqueue_counters = dict() if check_cycle else None
         for node_id in self.nodes.keys():
