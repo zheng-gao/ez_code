@@ -69,7 +69,7 @@ class Graph:
 
     Notes:
     dijkstra/spfa are good for sparse graph
-    on dense graph, dijkstra is faster than spfa 
+    on dense graph, dijkstra is faster than spfa
     """
 
     def dfs_path_value(self, src_node_id, dst_node_id, visited=set(), self_loop_value=0, path_value_init=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min):
@@ -157,7 +157,7 @@ class Graph:
                     adjacent_matrix[n1][n2] = self.get_weight(n1, n2, is_outgoing=True)
                 else:
                     adjacent_matrix[n1][n2] = path_value_init
-        for relax in self.nodes.keys():
+        for relax in self.nodes.keys():  # relax must be at the first loop, src and dst loops can swap. 
             for src in self.nodes.keys():
                 for dst in self.nodes.keys():
                     relaxed_path_value = path_value_func(adjacent_matrix[src][relax], adjacent_matrix[relax][dst])
