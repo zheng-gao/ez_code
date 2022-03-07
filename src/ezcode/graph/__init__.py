@@ -157,7 +157,7 @@ class Graph:
                     adjacent_matrix[n1][n2] = self.get_weight(n1, n2, is_outgoing=True)
                 else:
                     adjacent_matrix[n1][n2] = path_value_init
-        for relax in self.nodes.keys():  # relax must be at the first loop, src and dst loops can swap. 
+        for relax in self.nodes.keys():  # relax must be at the first loop, src and dst loops can swap.
             for src in self.nodes.keys():
                 for dst in self.nodes.keys():
                     relaxed_path_value = path_value_func(adjacent_matrix[src][relax], adjacent_matrix[relax][dst])
