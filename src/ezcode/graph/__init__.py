@@ -96,7 +96,7 @@ class Graph:
                     visited.add(neighbor_id)
                     queue.append(neighbor_id)
                     path_values[neighbor_id] = path_values[node_id] + 1
-                    if dst_node_id is not None and neighbor_id == dst_node_id:
+                    if dst_node_id is not None and neighbor_id == dst_node_id:  # return early if the destination node is given
                         return path_values[neighbor_id]
         return path_values[neighbor_id] if dst_node_id is not None else path_values
 
