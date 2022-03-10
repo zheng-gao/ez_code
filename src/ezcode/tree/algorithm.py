@@ -1,5 +1,5 @@
 import sys
-
+from collections import deque
 from ezcode.tree.const import DATA_NAME, LEFT_NAME, RIGHT_NAME
 
 
@@ -28,6 +28,29 @@ class BinaryTreeAlgorithm:
             self.pre_order(root.__dict__[self.left_name], result)
             self.pre_order(root.__dict__[self.right_name], result)
             result.append(root.__dict__[self.data_name])
+
+    def level_order(self, root, result: list = list(), left_most_nodes=False):
+        if root is not None:
+            queue = deque([root])
+            nodes_on_current_level, nodes_on_next_level = 1, 0
+            level_begin, level = True, 0
+            while len(queue) > 0:
+                node = queue.popleft()
+                if not left_most_nodes or level_begin:
+                    result.append(node.__dict__[self.data_name])
+                    level_begin = False
+                nodes_on_current_level -= 1
+                if node.__dict__[self.left_name]:
+                    queue.append(node.__dict__[self.left_name])
+                    nodes_on_next_level += 1
+                if node.__dict__[self.right_name]:
+                    queue.append(node.__dict__[self.right_name])
+                    nodes_on_next_level += 1
+                if nodes_on_current_level == 0:
+                    nodes_on_current_level = nodes_on_next_level
+                    nodes_on_next_level, level_begin, level = 0, True, level + 1
+            return level
+        return 0
 
     def depth(self, root):
         if root is None:

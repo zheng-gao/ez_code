@@ -50,20 +50,24 @@ class BinaryTree(object):
         return self.algorithm.is_balanced(self.root)[0]
 
     def traversal(self, mode="pre-order"):
+        valid_mode = ["pre-order", "in-order", "post-order", "level-order"]
         result = list()
-        if mode not in ["pre-order", "in-order", "post-order"]:
-            raise ValueError(f"mode = \"{mode}\" is not supported, please choose from [\"pre-order\", \"in-order\", \"post-order\"]")
+        if mode not in valid_mode:
+            raise ValueError(f"mode \"{mode}\" is not supported, please choose from {valid_mode}")
         elif mode == "pre-order":
             self.algorithm.pre_order(self.root, result)
         elif mode == "in-order":
             self.algorithm.in_order(self.root, result)
         elif mode == "post-order":
             self.algorithm.post_order(self.root, result)
+        elif mode == "level-order":
+            self.algorithm.level_order(self.root, result)
         return result
 
     def subtree(self, mode="sum-min"):
-        if mode not in ["sum-min", "sum-max", "avg-min", "avg-max"]:
-            raise ValueError(f"mode = \"{mode}\" is not supported, please choose from [\"sum-min\", \"sum-max\", \"avg-min\", \"avg-max\"]")
+        valid_mode = ["sum-min", "sum-max", "avg-min", "avg-max"]
+        if mode not in valid_mode:
+            raise ValueError(f"mode \"{mode}\" is not supported, please choose from {valid_mode}")
         elif mode == "sum-min":
             return self.algorithm.subtree_sum_extremum(self.root, min)[0]
         elif mode == "sum-max":

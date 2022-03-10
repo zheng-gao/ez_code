@@ -56,14 +56,15 @@
 (3)─┐       (4)       ┌─(5)─┐       (6)
    (7)               (8)   (9)         
      
->>> print(f" Pre-Order: {tree.traversal('pre-order')}")
->>> print(f"  In-Order: {tree.traversal('in-order')}")
->>> print(f"Post-Order: {tree.traversal('post-order')}")
+>>> print(f"  Pre-Order: {tree.traversal('pre-order')}")
+>>> print(f"   In-Order: {tree.traversal('in-order')}")
+>>> print(f" Post-Order: {tree.traversal('post-order')}")
+>>> print(f"Level-Order: {tree.traversal('level-order')}")
 
- Pre-Order: [0, 1, 3, 7, 4, 2, 5, 8, 9, 6]
-  In-Order: [1, 3, 7, 4, 0, 2, 5, 8, 9, 6]
-Post-Order: [1, 3, 7, 4, 2, 5, 8, 9, 6, 0]
-
+  Pre-Order: [0, 1, 3, 7, 4, 2, 5, 8, 9, 6]
+   In-Order: [1, 3, 7, 4, 0, 2, 5, 8, 9, 6]
+ Post-Order: [1, 3, 7, 4, 2, 5, 8, 9, 6, 0]
+Level-Order: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 ```
 
 ### Lowest Common Ancestor

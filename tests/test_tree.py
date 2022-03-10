@@ -9,10 +9,13 @@ def test_printer():
 
 
 def test_traversals():
-    assert [0, 1, 3, 7, 4, 2, 5, 8, 9, 6] == s_tree.traversal('pre-order')
-    assert [1, 3, 7, 4, 0, 2, 5, 8, 9, 6] == s_tree.traversal('in-order')
-    assert [1, 3, 7, 4, 2, 5, 8, 9, 6, 0] == s_tree.traversal('post-order')
-
+    assert [0, 1, 3, 7, 4, 2, 5, 8, 9, 6] == s_tree.traversal("pre-order")
+    assert [1, 3, 7, 4, 0, 2, 5, 8, 9, 6] == s_tree.traversal("in-order")
+    assert [1, 3, 7, 4, 2, 5, 8, 9, 6, 0] == s_tree.traversal("post-order")
+    assert [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] == s_tree.traversal("level-order")
+    level_order_left_most_nodes = list()
+    s_tree.algorithm.level_order(s_tree.root, level_order_left_most_nodes, left_most_nodes=True)
+    assert [0, 1, 3, 7] == level_order_left_most_nodes
 
 def test_lowest_common_ancestor():
     s6, s7, s8 = s_root.right.right, s_root.left.left.right, s_root.right.left.left
@@ -29,7 +32,9 @@ def test_subtree_stats():
 
 def test_depth():
     assert s_tree.depth() == 4
+    assert s_tree.algorithm.level_order(s_tree.root) == 4
     assert c_tree.depth() == 4
+    assert c_tree.algorithm.level_order(c_tree.root) == 4
 
 
 def test_is_balanced():
