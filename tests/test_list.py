@@ -1,26 +1,80 @@
+from ezcode.list.linked_list import SinglyLinkedList
 from ezcode.list.stack import Stack, MinStack, MaxStack
 from ezcode.list.queue import Queue, MonotonicQueue
 from ezcode.list.lru_cache import LRUCache
-from fixture.list import s_list, s_list_copied, s_list_reversed
+from fixture.utils import check_list_copy
 
 
-def test_print():
-    pass
+class Node:
+    def __init__(self, v=None, n=None):
+        self.v = v
+        self.n = n
+
+    def __repr__(self):
+        return f"Node({self.v})"
 
 
-def test_is_copied():
-    assert s_list.is_copied(s_list_copied)
-
-
-def test_copy():
-    assert s_list.copy().is_copied(s_list_copied)
-    assert not s_list.is_copied(s_list_reversed)
-
-
-def test_reverse():
-    reversed_list = s_list.copy()
-    reversed_list.reverse()
-    assert reversed_list.is_copied(s_list_reversed)
+def test_list_basics():
+    list_0 = SinglyLinkedList(head=None, data_name="v", next_name="n")
+    list_0_copy = SinglyLinkedList(head=None, data_name="v", next_name="n")
+    list_0_reverse = SinglyLinkedList(head=None, data_name="v", next_name="n")
+    list_1 = SinglyLinkedList(head=Node(1), data_name="v", next_name="n")
+    list_1_copy = SinglyLinkedList(head=Node(1), data_name="v", next_name="n")
+    list_1_reverse = SinglyLinkedList(head=Node(1), data_name="v", next_name="n")
+    list_2 = SinglyLinkedList(head=Node(1, Node(2)), data_name="v", next_name="n")
+    list_2_copy = SinglyLinkedList(head=Node(1, Node(2)), data_name="v", next_name="n")
+    list_2_reverse = SinglyLinkedList(head=Node(2, Node(1)), data_name="v", next_name="n")
+    list_3 = SinglyLinkedList(head=Node(1, Node(2, Node(3))), data_name="v", next_name="n")
+    list_3_copy = SinglyLinkedList(head=Node(1, Node(2, Node(3))), data_name="v", next_name="n")
+    list_3_reverse = SinglyLinkedList(head=Node(3, Node(2, Node(1))), data_name="v", next_name="n")
+    assert list_0_copy == list_0
+    assert list_1_copy == list_1
+    assert list_2_copy == list_2
+    assert list_3_copy == list_3
+    assert list_0.copy() == list_0_copy
+    assert list_1.copy() == list_1_copy
+    assert list_2.copy() == list_2_copy
+    assert list_3.copy() == list_3_copy
+    assert not list_0 == list_1
+    assert not list_1 == list_2
+    assert not list_2 == list_3
+    assert not list_3 == list_0
+    assert str(list_0) == "None"
+    assert str(list_1) == "1 ─> None"
+    assert str(list_2) == "1 ─> 2 ─> None"
+    assert str(list_3) == "1 ─> 2 ─> 3 ─> None"
+    assert check_list_copy(list_0.to_array(), [])
+    assert check_list_copy(list_1.to_array(), [1])
+    assert check_list_copy(list_2.to_array(), [1, 2])
+    assert check_list_copy(list_3.to_array(), [1, 2, 3])
+    list_0_reverse.reverse()
+    assert list_0_copy == list_0_reverse
+    list_1_reverse.reverse()
+    assert list_1_copy == list_1_reverse
+    list_2_reverse.reverse()
+    assert list_2_copy == list_2_reverse
+    list_3_reverse.reverse()
+    assert list_3_copy == list_3_reverse
+    try:
+        list_0.peek_head() == 0
+    except IndexError as e:
+        assert e.args[0] == "Peek head at an empty SinglyLinkedList"
+    else:
+        assert False
+    list_1.peek_head() == 1
+    list_2.peek_head() == 2
+    list_3.peek_head() == 3
+    list_3_copy.pop_head() == list_2_copy
+    list_2_copy.pop_head() == list_1_copy
+    list_1_copy.pop_head() == list_0_copy
+    try:
+        list_0.pop_head()
+    except IndexError as e:
+        assert e.args[0] == "Pop head from an empty SinglyLinkedList"
+    else:
+        assert False
+    list_3.delete(set([2, 3])) == list_1
+    list_2.delete(set([1, 2])) == list_0
 
 
 def test_queue():

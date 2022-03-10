@@ -18,18 +18,18 @@ class SinglyLinkedListAlgorithm:
     def has_next(self, node, steps: int = 1) -> bool:
         if not node:
             return False
-        next_node = node
         for _ in range(steps):
-            next_node = next_node.__dict__[self.next_name]
-            if not next_node:
+            node = node.__dict__[self.next_name]
+            if not node:
                 return False
         return True
 
     def get_next(self, node, steps: int = 1):
-        next_node = node
         for _ in range(steps):
-            next_node = next_node.__dict__[self.next_name]
-        return next_node
+            if node is None:
+                return None
+            node = node.__dict__[self.next_name]
+        return node
 
     def set_next(self, node, next_node=None):
         node.__dict__[self.next_name] = next_node

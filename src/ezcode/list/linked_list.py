@@ -17,6 +17,37 @@ class SinglyLinkedList(object):
     def __str__(self):
         return self.to_string()
 
+    def __eq__(self, other_list: SinglyLinkedList) -> bool:
+        if not isinstance(other_list, type(self)):
+            return False
+        if self.head:
+            self_node, other_node = self.head, other_list.head
+            while self_node:
+                if not other_node:
+                    return False
+                if self.algorithm.get_data(self_node) != self.algorithm.get_data(other_node):
+                    return False
+                self_node = self.algorithm.get_next(self_node)
+                other_node = self.algorithm.get_next(other_node)
+            return other_node is None
+        else:
+            return other_list.head is None
+
+    def copy(self):
+        if not self.head:
+            return SinglyLinkedList(data_name=self.algorithm.data_name, next_name=self.algorithm.next_name)
+        other_head = self.algorithm.new_node(data=self.algorithm.get_data(self.head))
+        other_node = other_head
+        self_node = self.algorithm.get_next(self.head)
+        while self_node:
+            self.algorithm.set_next(
+                node=other_node,
+                next_node=self.algorithm.new_node(self.algorithm.get_data(self_node))
+            )
+            self_node = self.algorithm.get_next(self_node)
+            other_node = self.algorithm.get_next(other_node)
+        return SinglyLinkedList(other_head, self.algorithm.data_name, self.algorithm.next_name)
+
     def calculate_size(self) -> int:
         """ O(N) """
         size, node = 0, self.head
@@ -44,13 +75,13 @@ class SinglyLinkedList(object):
     def peek_head(self):
         """ O(1) """
         if not self.head:
-            raise IndexError("Peek head at an empty list")
+            raise IndexError("Peek head at an empty SinglyLinkedList")
         return self.algorithm.get_data(self.head)
 
     def pop_head(self):
         """ O(1) """
         if not self.head:
-            raise IndexError("Pop head from an empty list")
+            raise IndexError("Pop head from an empty SinglyLinkedList")
         data = self.algorithm.get_data(self.head)
         self.head = self.algorithm.get_next(self.head)
         self.size -= 1
@@ -63,34 +94,6 @@ class SinglyLinkedList(object):
             node = self.algorithm.get_next(node)
         return array
 
-    def copy(self):
-        if not self.head:
-            return None
-        other_head = self.algorithm.new_node(data=self.algorithm.get_data(self.head))
-        other_node = other_head
-        self_node = self.algorithm.get_next(self.head)
-        while self_node:
-            self.algorithm.set_next(
-                node=other_node,
-                next_node=self.algorithm.new_node(self.algorithm.get_data(self_node))
-            )
-            self_node = self.algorithm.get_next(self_node)
-            other_node = self.algorithm.get_next(other_node)
-        return SinglyLinkedList(other_head, self.algorithm.data_name, self.algorithm.next_name)
-
-    def is_copied(self, other_list: SinglyLinkedList) -> bool:
-        other_head = other_list.head
-        if self.head:
-            self_node, other_node = self.head, other_head
-            while self_node:
-                if self.algorithm.get_data(self_node) != self.algorithm.get_data(other_node):
-                    return False
-                self_node = self.algorithm.get_next(self_node)
-                other_node = self.algorithm.get_next(other_node)
-            return True
-        else:
-            return other_head is None
-
     def reverse(self):
         if self.head:
             previous_node, current_node, next_node = None, self.head, self.algorithm.get_next(self.head)
@@ -99,6 +102,7 @@ class SinglyLinkedList(object):
                 previous_node = current_node
                 current_node = next_node
                 next_node = self.algorithm.get_next(next_node)
+            self.algorithm.set_next(node=current_node, next_node=previous_node)
             self.head = current_node
 
     def delete(self, data_set: set):
@@ -106,7 +110,7 @@ class SinglyLinkedList(object):
         previous_node, current_node = self.algorithm.new_node(next_node=self.head), self.head
         fake_head, count = previous_node, 0
         while current_node:
-            if self.node_data(current_node) in data_set:
+            if self.algorithm.get_data(current_node) in data_set:
                 self.algorithm.set_next(node=previous_node, next_node=self.algorithm.get_next(current_node))
                 count += 1
             else:
@@ -276,19 +280,19 @@ class DoublyLinkedList:
     def peek_head(self):
         """ O(1) """
         if not self.head:
-            raise IndexError("Peek head at an empty list")
+            raise IndexError("Peek head at an empty DoublyLinkedList")
         return self.algorithm.get_data(self.head)
 
     def peek_tail(self):
         """ O(1) """
         if not self.tail:
-            raise IndexError("Peek tail at an empty list")
+            raise IndexError("Peek tail at an empty DoublyLinkedList")
         return self.algorithm.get_data(self.tail)
 
     def pop_head(self):
         """ O(1) """
         if not self.head:
-            raise IndexError("Pop head from an empty list")
+            raise IndexError("Pop head from an empty DoublyLinkedList")
         data = self.algorithm.get_data(self.head)
         self.head = self.algorithm.get_next(self.head)
         if self.head:
@@ -301,7 +305,7 @@ class DoublyLinkedList:
     def pop_tail(self):
         """ O(1) """
         if not self.tail:
-            raise IndexError("Pop tail from an empty list")
+            raise IndexError("Pop tail from an empty DoublyLinkedList")
         data = self.algorithm.get_data(self.tail)
         self.tail = self.algorithm.get_prev(self.tail)
         if self.tail:
