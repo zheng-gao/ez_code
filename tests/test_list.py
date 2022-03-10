@@ -14,7 +14,7 @@ class Node:
         return f"Node({self.v})"
 
 
-def test_list_basics():
+def test_singly_linked_list_basics():
     list_0 = SinglyLinkedList(head=None, data_name="v", next_name="n")
     list_0_copy = SinglyLinkedList(head=None, data_name="v", next_name="n")
     list_0_reverse = SinglyLinkedList(head=None, data_name="v", next_name="n")
