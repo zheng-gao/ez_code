@@ -157,7 +157,7 @@ function control_test() {
     ez_print_log -m "Installing pytest-srcpaths ..."
     python3 -m "pip" "install" --upgrade "pytest-srcpaths"
     ez_print_log -m "Running tests ..."
-    pytest -vv
+    pytest -vv "${BASE_DIRECTORY}/tests/${1}"
 }
 
 function control_uninstall() {
