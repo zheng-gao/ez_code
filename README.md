@@ -23,10 +23,12 @@ git clone https://github.com/zheng-gao/ez_code.git && cd ez_code
 ```
 
 # Unit Test
+### Run all the tests
 ```
-# Run all tests
 ./ez.sh --operations test
-# Run one test
+```
+### Run a single test
+```
 ./ez.sh --operations test --arguments test_array.py::test_binary_search
 ```
 
