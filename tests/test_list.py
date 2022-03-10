@@ -47,13 +47,25 @@ def test_list_basics():
     assert check_list_copy(list_1.to_array(), [1])
     assert check_list_copy(list_2.to_array(), [1, 2])
     assert check_list_copy(list_3.to_array(), [1, 2, 3])
-    list_0_reverse.reverse()
+    list_0_reverse_copy = list_0_reverse.copy()
+    list_1_reverse_copy = list_1_reverse.copy()
+    list_2_reverse_copy = list_2_reverse.copy()
+    list_3_reverse_copy = list_3_reverse.copy()
+    list_0_reverse_copy.reverse()
+    list_1_reverse_copy.reverse()
+    list_2_reverse_copy.reverse()
+    list_3_reverse_copy.reverse()
+    assert list_0_copy == list_0_reverse_copy
+    assert list_1_copy == list_1_reverse_copy
+    assert list_2_copy == list_2_reverse_copy
+    assert list_3_copy == list_3_reverse_copy
+    list_0_reverse.head = list_0_reverse.algorithm.reverse(list_0_reverse.head, list_0_reverse.algorithm.get_next(list_0_reverse.head))
+    list_1_reverse.head = list_1_reverse.algorithm.reverse(list_1_reverse.head, list_1_reverse.algorithm.get_next(list_1_reverse.head))
+    list_2_reverse.head = list_2_reverse.algorithm.reverse(list_2_reverse.head, list_2_reverse.algorithm.get_next(list_2_reverse.head))
+    list_3_reverse.head = list_3_reverse.algorithm.reverse(list_3_reverse.head, list_3_reverse.algorithm.get_next(list_3_reverse.head))
     assert list_0_copy == list_0_reverse
-    list_1_reverse.reverse()
     assert list_1_copy == list_1_reverse
-    list_2_reverse.reverse()
     assert list_2_copy == list_2_reverse
-    list_3_reverse.reverse()
     assert list_3_copy == list_3_reverse
     try:
         list_0.peek_head() == 0

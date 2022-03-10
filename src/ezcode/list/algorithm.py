@@ -41,7 +41,7 @@ class SinglyLinkedListAlgorithm:
         node.__dict__[self.data_name] = data
 
     def reverse(self, previous_node, current_node):
-        """ head = reverse(head, head.next) """
+        """ head = reverse(head, self.get_next(head)) """
         if not current_node:
             return previous_node
         head = self.reverse(current_node, self.get_next(current_node))
