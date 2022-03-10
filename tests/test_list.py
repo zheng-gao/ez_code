@@ -89,6 +89,37 @@ def test_singly_linked_list_basics():
     list_2.delete(set([1, 2])) == list_0
 
 
+def test_reverse_sublist():
+    lists = [
+        SinglyLinkedList(head=Node(0), data_name="v", next_name="n"),
+        SinglyLinkedList(head=Node(0, Node(1)), data_name="v", next_name="n"),
+        SinglyLinkedList(head=Node(0, Node(1, Node(2))), data_name="v", next_name="n"),
+        SinglyLinkedList(head=Node(0, Node(1, Node(2, Node(3)))), data_name="v", next_name="n"),
+        SinglyLinkedList(head=Node(0, Node(1, Node(2, Node(3, Node(4))))), data_name="v", next_name="n"),
+        SinglyLinkedList(head=Node(0, Node(1, Node(2, Node(3, Node(4, Node(5)))))), data_name="v", next_name="n"),
+        SinglyLinkedList(head=Node(0, Node(1, Node(2, Node(3, Node(4, Node(5, Node(6))))))), data_name="v", next_name="n"),
+        SinglyLinkedList(head=Node(0, Node(1, Node(2, Node(3, Node(4, Node(5, Node(6, Node(7)))))))), data_name="v", next_name="n"),
+    ]
+    for list_orig in lists:
+        list_orig.print()
+        for i in range(len(list_orig)):
+            list_orig_copy = list_orig.copy()
+            list_orig_copy.reverse(start_index=i)
+            assert check_list_copy(list_orig_copy.to_array(), [x for x in range(i)] + [x for x in range(len(list_orig) - 1, i - 1, -1)])
+            list_orig_copy = list_orig.copy()
+            list_orig_copy.reverse(end_index=i)
+            assert check_list_copy(list_orig_copy.to_array(), [x for x in range(i, -1, -1)] + [x for x in range(i + 1, len(list_orig))])
+            sublist_length = len(list_orig) // 2
+            if sublist_length > 0 and i <= len(list_orig) - sublist_length:
+                start, end = i, i + sublist_length - 1
+                list_orig_copy = list_orig.copy()
+                list_orig_copy.reverse(start_index=start, end_index=end)
+                assert check_list_copy(
+                    list_orig_copy.to_array(),
+                    [x for x in range(start)] + [x for x in range(end, start - 1, -1)] + [x for x in range(end + 1, len(list_orig))]
+                )
+
+
 def test_queue():
     queue = Queue()
     for i in range(3):

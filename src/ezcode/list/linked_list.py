@@ -3,6 +3,7 @@ from __future__ import annotations
 from ezcode.list.const import DATA_NAME, NEXT_NAME, PREV_NAME, FORWARD_LINK, BACKWARD_LINK, BIDIRECTION_LINK
 from ezcode.list.algorithm import SinglyLinkedListAlgorithm, DoublyLinkedListAlgorithm
 from ezcode.list.printer import SinglyLinkedListPrinter, DoublyLinkedListPrinter
+from ezcode.utils import validate_non_negative_range
 
 
 class SinglyLinkedList(object):
@@ -94,16 +95,50 @@ class SinglyLinkedList(object):
             node = self.algorithm.get_next(node)
         return array
 
-    def reverse(self):
-        if self.head:
-            previous_node, current_node, next_node = None, self.head, self.algorithm.get_next(self.head)
-            while next_node:
+    def reverse(self, start_index: int = None, end_index: int = None):
+        if start_index is None and end_index is None:
+            if self.head:
+                previous_node, current_node, next_node = None, self.head, self.algorithm.get_next(self.head)
+                while next_node:
+                    self.algorithm.set_next(node=current_node, next_node=previous_node)
+                    previous_node = current_node
+                    current_node = next_node
+                    next_node = self.algorithm.get_next(next_node)
                 self.algorithm.set_next(node=current_node, next_node=previous_node)
-                previous_node = current_node
-                current_node = next_node
-                next_node = self.algorithm.get_next(next_node)
-            self.algorithm.set_next(node=current_node, next_node=previous_node)
+                self.head = current_node
+        elif start_index is not None and end_index is not None:
+            self._reverse_sublist(start_index, end_index)
+        elif start_index is not None:
+            self._reverse_sublist(start_index, self.size - 1)
+        else:
+            self._reverse_sublist(0, end_index)
+
+    def _reverse_sublist(self, start_index: int, end_index: int):
+        validate_non_negative_range(start_index, end_index, upper_bound_range=(0, self.size))
+        if not self.head or start_index == end_index:
+            return
+        start_node_prev, start_node, current_node, index = None, None, self.head, 0
+        while current_node:
+            if start_node is None and index == start_index:
+                start_node = current_node
+                index += 1
+                break
+            start_node_prev = current_node
+            current_node = self.algorithm.get_next(current_node)
+            index += 1
+        previous_node, current_node, next_node = None, start_node, self.algorithm.get_next(start_node)
+        while next_node is not None and index <= end_index:  # the tail is end_node.next
+            self.algorithm.set_next(current_node, previous_node)
+            previous_node = current_node
+            current_node = next_node
+            next_node = self.algorithm.get_next(next_node)
+            index += 1
+        self.algorithm.set_next(current_node, previous_node)
+        self.algorithm.set_next(start_node, next_node)
+        if start_node_prev is None:
             self.head = current_node
+        else:
+            self.algorithm.set_next(start_node_prev, current_node)
 
     def delete(self, data_set: set):
         """ O(N) """
