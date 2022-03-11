@@ -66,7 +66,12 @@ class Backpack:
         return max_value[capacity]
 
     @staticmethod
-    def max_value_unlimited_items(capacity: int, weights: list(), values: list(), iterate_weights_first=True):
+    def max_value_unlimited_items(
+        capacity: int,
+        weights: list(),
+        values: list(),
+        iterate_weights_first=True
+    ):
         """ Similar to rolling row solution, but the two loops can swap the order """
         max_value = [0] * (capacity + 1)
         if iterate_weights_first:
@@ -79,3 +84,57 @@ class Backpack:
                     if c >= weights[i]:
                         max_value[c] = max(max_value[c], max_value[c - weights[i]] + values[i])
         return max_value[capacity]
+
+    @staticmethod
+    def best_value_with_unlimited_items(
+        capacity: int,
+        weights: list(),
+        values: list(),
+        min_max_function=max,
+        no_capacity_init_value=0,
+        iterate_weights_first=True
+    ):
+        """ Similar to rolling row solution, but the two loops can swap the order """
+        backpack_init_value = float("-inf") if min_max_function == max else float("inf")
+        backpack_value = [backpack_init_value for _ in range(capacity + 1)]
+        backpack_value[0] = no_capacity_init_value
+        if iterate_weights_first:
+            for i in range(len(weights)):
+                for c in range(weights[i], capacity + 1):  # Looping forward, so items can be added multiple times
+                    backpack_value[c] = min_max_function(backpack_value[c], backpack_value[c - weights[i]] + values[i])
+        else:
+            for c in range(capacity + 1):  # Looping forward, so items can be added multiple times
+                for i in range(len(weights)):
+                    if c >= weights[i]:
+                        backpack_value[c] = min_max_function(backpack_value[c], backpack_value[c - weights[i]] + values[i])
+        best_value = backpack_value[capacity]
+        return best_value if best_value != backpack_init_value else None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
