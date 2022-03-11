@@ -10,11 +10,9 @@ REQUIRED_COMMANDS+=("date")
 REQUIRED_COMMANDS+=("dirname")
 REQUIRED_COMMANDS+=("grep")
 REQUIRED_COMMANDS+=("mkdir")
-REQUIRED_COMMANDS+=("read")
 REQUIRED_COMMANDS+=("rm")
 REQUIRED_COMMANDS+=("sed")
 REQUIRED_COMMANDS+=("tabs")
-REQUIRED_COMMANDS+=("touch")
 # Git Command
 REQUIRED_COMMANDS+=("git")
 # Python Command
