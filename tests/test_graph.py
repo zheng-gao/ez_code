@@ -87,11 +87,11 @@ E              0.8  0.3
         "E": {"A": 0.5184, "B": 0.648, "C": 0.8,   "D": 0.72, "E": 1     }
     }
     for n1, benchmark in benchmark_2.items():
-        assert check_dict_copy(graph.dijkstra(n1, self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a * b, min_max_func=max), benchmark, resolution=resolution)
-        assert check_dict_copy(graph.spfa(n1, self_loop_value=1, path_value_init=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark, resolution=resolution)
+        assert check_dict_copy(graph.dijkstra(n1, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a,b: a * b, min_max_func=max), benchmark, resolution=resolution)
+        assert check_dict_copy(graph.spfa(n1, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark, resolution=resolution)
         for n2 in benchmark_2.keys():
-            assert check_list_copy(benchmark_2[n1][n2], graph.dfs_path_value(n1, n2, self_loop_value=1, path_value_init=0, path_value_func=lambda a, b: a * b, min_max_func=max), resolution=resolution)
-    assert check_dict_copy(graph.floyd(self_loop_value=1, path_value_init=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark_2, resolution=resolution)
+            assert check_list_copy(benchmark_2[n1][n2], graph.dfs_path_value(n1, n2, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), resolution=resolution)
+    assert check_dict_copy(graph.floyd(self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark_2, resolution=resolution)
 
 
 def test_negative_cycle_detection():
@@ -198,10 +198,10 @@ f                       0.4
         "f": {"a": 0.24, "b": 0.224, "c": 0.32,  "d": 0.4,  "e": 0, "f": 1     }
     }
     for n1, benchmark in benchmark_2.items():
-        assert check_dict_copy(graph.dijkstra(n1, self_loop_value=1, path_value_init=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark, resolution=resolution)
-        assert check_dict_copy(graph.spfa(n1, self_loop_value=1, path_value_init=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark, resolution=resolution)
+        assert check_dict_copy(graph.dijkstra(n1, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark, resolution=resolution)
+        assert check_dict_copy(graph.spfa(n1, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark, resolution=resolution)
         for n2 in benchmark_2.keys():
-            assert check_list_copy(benchmark_2[n1][n2], graph.dfs_path_value(n1, n2, self_loop_value=1, path_value_init=0, path_value_func=lambda a, b: a * b, min_max_func=max), resolution=resolution)
-    assert check_dict_copy(graph.floyd(self_loop_value=1, path_value_init=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark_2, resolution=resolution)
+            assert check_list_copy(benchmark_2[n1][n2], graph.dfs_path_value(n1, n2, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), resolution=resolution)
+    assert check_dict_copy(graph.floyd(self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark_2, resolution=resolution)
 
 

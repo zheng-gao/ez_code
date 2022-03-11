@@ -137,6 +137,8 @@ function control_clean() {
 
 function control_build() {
     # https://packaging.python.org/en/latest/tutorials/packaging-projects/
+    ez_print_log -m "Upgrading pip ..."
+    python3 -m "pip" "install" --upgrade "pip"
     ez_print_log -m "Upgrading build ..."
     python3 -m "pip" "install" --upgrade "build"
     ez_print_log -m "Building ..."

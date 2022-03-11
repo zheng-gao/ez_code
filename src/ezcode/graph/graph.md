@@ -96,11 +96,11 @@ f                       0.4
 ... 
 0, 0.8, 2.4, 1.6, inf, 3.0, 
 
->>> graph.dijkstra("a", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)
+>>> graph.dijkstra("a", self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a,b: a*b, min_max_func=max)
 {'a': 1, 'b': 0.8, 'c': 0.512, 'd': 0.64, 'e': 0, 'f': 0.3072}
->>> graph.spfa("a", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)
+>>> graph.spfa("a", self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a,b: a*b, min_max_func=max)
 {'a': 1, 'b': 0.8, 'c': 0.512, 'd': 0.64, 'e': 0, 'f': 0.3072}
->>> graph.floyd(self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)
+>>> graph.floyd(self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a,b: a*b, min_max_func=max)
 {
     'a': {'a': 1,    'b': 0.8,   'c': 0.512, 'd': 0.64, 'e': 0, 'f': 0.3072},
     'b': {'a': 0.48, 'b': 1,     'c': 0.64,  'd': 0.8,  'e': 0, 'f': 0.384 },
@@ -110,7 +110,7 @@ f                       0.4
     'f': {'a': 0.24, 'b': 0.224, 'c': 0.32,  'd': 0.4,  'e': 0, 'f': 1     }
 }
 >>> for n in ["a", "b", "c", "d", "e", "f"]:
-...     p = graph.dfs_path_value("a", n, self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)
+...     p = graph.dfs_path_value("a", n, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a,b: a*b, min_max_func=max)
 ...     print(p, end=", ")
 ...
 1, 0.8, 0.512, 0.64, 0, 0.3072, 
@@ -185,11 +185,11 @@ E              0.8  0.3
 ... 
 0, 0.7, 0.2, 1.1, 1.0, 
 
->>> graph.dijkstra("A", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)
+>>> graph.dijkstra("A", self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a,b: a*b, min_max_func=max)
 {'A': 1, 'B': 0.8, 'C': 0.648, 'D': 0.72, 'E': 0.5184}
->>> graph.spfa("A", self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)
+>>> graph.spfa("A", self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a,b: a*b, min_max_func=max)
 {'A': 1, 'B': 0.8, 'C': 0.648, 'D': 0.72, 'E': 0.5184}
->>> graph.floyd(self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)
+>>> graph.floyd(self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a,b: a*b, min_max_func=max)
 {
     'A': {'A': 1,      'B': 0.8,   'C': 0.648, 'D': 0.72, 'E': 0.5184},
     'B': {'A': 0.8,    'B': 1,     'C': 0.81,  'D': 0.9,  'E': 0.648 },
@@ -198,7 +198,7 @@ E              0.8  0.3
     'E': {'A': 0.5184, 'B': 0.648, 'C': 0.8,   'D': 0.72, 'E': 1     }
 }
 >>> for n in ["A", "B", "C", "D", "E"]:
-...     p = graph.dfs_path_value("A", n, self_loop_value=1, path_value_init=0, path_value_func=lambda a,b: a*b, min_max_func=max)
+...     p = graph.dfs_path_value("A", n, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a,b: a*b, min_max_func=max)
 ...     print(p, end=", ")
 ... 
 1, 0.8, 0.648, 0.72, 0.5184,

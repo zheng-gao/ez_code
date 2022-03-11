@@ -72,20 +72,21 @@ class Graph:
     on dense graph, dijkstra is faster than spfa
     """
 
-    def dfs_path_value(self, src_node_id, dst_node_id, visited=set(), self_loop_value=0, path_value_init=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min):
+    def dfs_path_value(self, src_node_id, dst_node_id, visited=set(), self_loop_weight=0, disconnected_edge_weight=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min):
+        """ O(V!) """
         if src_node_id == dst_node_id:
-            return self_loop_value
-        top_path_value = path_value_init
+            return self_loop_weight
+        top_path_value = disconnected_edge_weight
         for node_id, weight in self.get_edges(node_id=src_node_id, is_outgoing=True).items():
             if node_id not in visited:
                 visited.add(node_id)
-                path_value = self.dfs_path_value(node_id, dst_node_id, visited, self_loop_value, path_value_init, path_value_func, min_max_func)
+                path_value = self.dfs_path_value(node_id, dst_node_id, visited, self_loop_weight, disconnected_edge_weight, path_value_func, min_max_func)
                 visited.remove(node_id)
                 top_path_value = min_max_func(top_path_value, path_value_func(weight, path_value))
         return top_path_value
 
     def bfs_path_value(self, src_node_id, dst_node_id=None):
-        """ Only works for unweighted graph """
+        """ O(E): Only works for unweighted graph """
         if self.is_weighted:
             raise UnweightedGraphExpected()
         path_values, queue, visited = dict(), deque([src_node_id]), set([src_node_id])
@@ -102,13 +103,13 @@ class Graph:
                         return path_values[neighbor_id]
         return path_values[neighbor_id] if dst_node_id is not None else path_values
 
-    def dijkstra(self, src_node_id, self_loop_value=0, path_value_init=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min):
+    def dijkstra(self, src_node_id, self_loop_weight=0, disconnected_edge_weight=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min):
         """ Positive Weight Only: O(V + E*logV). On dense graphs, dijkstra is faster than spfa """
         path_values, visited = dict(), set()
         min_heap = True if min_max_func == min else False
-        candidates = PriorityMap({src_node_id: self_loop_value}, min_heap=min_heap)
+        candidates = PriorityMap({src_node_id: self_loop_weight}, min_heap=min_heap)
         for node_id in self.nodes.keys():
-            path_values[node_id] = self_loop_value if node_id == src_node_id else path_value_init
+            path_values[node_id] = self_loop_weight if node_id == src_node_id else disconnected_edge_weight
         while len(candidates) > 0:
             top_path_value, top_node_id = candidates.pop()
             visited.add(top_node_id)
@@ -118,12 +119,12 @@ class Graph:
                     candidates.push(path_values[relax_node_id], relax_node_id)
         return path_values
 
-    def spfa(self, src_node_id, self_loop_value=0, path_value_init=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min, check_cycle=False):
+    def spfa(self, src_node_id, self_loop_weight=0, disconnected_edge_weight=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min, check_cycle=False):
         """ Improved Bellman Ford Algorithm: can handle Negative Weight and detect Negative Cycle: worst case O(V*E), sparse graphs O(kE), dense graph O(VE) """
         path_values, queue, queue_set = dict(), deque([src_node_id]), set([src_node_id])
         enqueue_counters = dict() if check_cycle else None
         for node_id in self.nodes.keys():
-            path_values[node_id] = self_loop_value if node_id == src_node_id else path_value_init
+            path_values[node_id] = self_loop_weight if node_id == src_node_id else disconnected_edge_weight
             if check_cycle:
                 enqueue_counters[node_id] = 1 if node_id == src_node_id else 0
         while len(queue) > 0:
@@ -145,18 +146,18 @@ class Graph:
                                     raise PositiveCycleExist()
         return path_values
 
-    def floyd(self, self_loop_value=0, path_value_init=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min):
+    def floyd(self, self_loop_weight=0, disconnected_edge_weight=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min):
         """ Can handle Negative Weight but not Negative cycle: O(V^3) """
         adjacent_matrix = dict()  # <node_id, <node_id, path_value>>
         for n1 in self.nodes.keys():
             adjacent_matrix[n1] = dict()
             for n2 in self.nodes.keys():
                 if n1 == n2:
-                    adjacent_matrix[n1][n2] = self_loop_value
+                    adjacent_matrix[n1][n2] = self_loop_weight
                 elif n2 in self.get_edges(node_id=n1, is_outgoing=True):
                     adjacent_matrix[n1][n2] = self.get_weight(n1, n2, is_outgoing=True)
                 else:
-                    adjacent_matrix[n1][n2] = path_value_init
+                    adjacent_matrix[n1][n2] = disconnected_edge_weight
         for relax in self.nodes.keys():  # relax must be at the first loop, src and dst loops can swap.
             for src in self.nodes.keys():
                 for dst in self.nodes.keys():
