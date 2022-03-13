@@ -21,7 +21,7 @@ def delete(array: list, items_to_delete: set):
         array.pop()
 
 
-def array_to_string(array, indent: str = "    ", cell_size=None):
+def array_to_string(array, indent: str = "    ", cell_size=None, right_alignment=True):
     def _array_to_string(array: list, depth: int, result: list):
         if type(array) is list:
             subarray_found = False
@@ -32,7 +32,13 @@ def array_to_string(array, indent: str = "    ", cell_size=None):
             if not subarray_found:
                 result.append(f"{indent * depth}[")
                 for index, item in enumerate(array):
-                    item_str = str(item).ljust(cell_size, " ") if cell_size else str(item)
+                    if cell_size:
+                        if right_alignment:
+                            item_str = str(item).rjust(cell_size, " ")
+                        else:
+                            item_str = str(item).ljust(cell_size, " ")
+                    else:
+                        item_str = str(item)
                     result.append(item_str)
                     if index < len(array) - 1:
                         result.append(", ")
@@ -61,9 +67,9 @@ def max_item_string_length(array: list):
         return len(str(array))
 
 
-def print_array(array, indent: str = "    ", align=True):
+def print_array(array, indent: str = "    ", align=True, right_alignment=True):
     max_size = max_item_string_length(array) if align else None
-    print(array_to_string(array, indent, max_size), end="")
+    print(array_to_string(array, indent, max_size, right_alignment), end="")
 
 
 def split_list(original_list: list, number_of_sublists: int):

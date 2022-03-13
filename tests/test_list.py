@@ -2,7 +2,7 @@ from ezcode.list.linked_list import SinglyLinkedList
 from ezcode.list.stack import Stack, MinStack, MaxStack
 from ezcode.list.queue import Queue, MonotonicQueue
 from ezcode.list.lru_cache import LRUCache
-from fixture.utils import check_list_copy
+from fixture.utils import equal_list
 
 
 class Node:
@@ -43,10 +43,10 @@ def test_singly_linked_list_basics():
     assert str(list_1) == "1 ─> None"
     assert str(list_2) == "1 ─> 2 ─> None"
     assert str(list_3) == "1 ─> 2 ─> 3 ─> None"
-    assert check_list_copy(list_0.to_array(), [])
-    assert check_list_copy(list_1.to_array(), [1])
-    assert check_list_copy(list_2.to_array(), [1, 2])
-    assert check_list_copy(list_3.to_array(), [1, 2, 3])
+    assert equal_list(list_0.to_array(), [])
+    assert equal_list(list_1.to_array(), [1])
+    assert equal_list(list_2.to_array(), [1, 2])
+    assert equal_list(list_3.to_array(), [1, 2, 3])
     list_0_reverse_copy = list_0_reverse.copy()
     list_1_reverse_copy = list_1_reverse.copy()
     list_2_reverse_copy = list_2_reverse.copy()
@@ -105,16 +105,16 @@ def test_reverse_sublist():
         for i in range(len(list_orig)):
             list_orig_copy = list_orig.copy()
             list_orig_copy.reverse(start_index=i)
-            assert check_list_copy(list_orig_copy.to_array(), [x for x in range(i)] + [x for x in range(len(list_orig) - 1, i - 1, -1)])
+            assert equal_list(list_orig_copy.to_array(), [x for x in range(i)] + [x for x in range(len(list_orig) - 1, i - 1, -1)])
             list_orig_copy = list_orig.copy()
             list_orig_copy.reverse(end_index=i)
-            assert check_list_copy(list_orig_copy.to_array(), [x for x in range(i, -1, -1)] + [x for x in range(i + 1, len(list_orig))])
+            assert equal_list(list_orig_copy.to_array(), [x for x in range(i, -1, -1)] + [x for x in range(i + 1, len(list_orig))])
             sublist_length = len(list_orig) // 2
             if sublist_length > 0 and i <= len(list_orig) - sublist_length:
                 start, end = i, i + sublist_length - 1
                 list_orig_copy = list_orig.copy()
                 list_orig_copy.reverse(start_index=start, end_index=end)
-                assert check_list_copy(
+                assert equal_list(
                     list_orig_copy.to_array(),
                     [x for x in range(start)] + [x for x in range(end, start - 1, -1)] + [x for x in range(end + 1, len(list_orig))]
                 )

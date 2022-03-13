@@ -1,4 +1,4 @@
-from fixture.utils import check_list_copy, check_dict_copy
+from fixture.utils import equal_list, equal_dict
 from ezcode.graph import NegativeCycleExist
 from ezcode.graph.directed import DirectedGraph
 from ezcode.graph.undirected import UndirectedGraph
@@ -34,12 +34,12 @@ E        *  *
     }
     assert graph_str == str(graph)
     for n1, b in benchmark.items():
-        assert check_dict_copy(graph.bfs_path_value(n1), b)
-        assert check_dict_copy(graph.dijkstra(n1), b)
-        assert check_dict_copy(graph.spfa(n1), b)
+        assert equal_dict(graph.bfs_path_value(n1), b)
+        assert equal_dict(graph.dijkstra(n1), b)
+        assert equal_dict(graph.spfa(n1), b)
         for n2 in benchmark.keys():
-            assert check_list_copy(benchmark[n1][n2], graph.dfs_path_value(n1, n2))
-    assert check_dict_copy(graph.floyd(), benchmark)
+            assert equal_list(benchmark[n1][n2], graph.dfs_path_value(n1, n2))
+    assert equal_dict(graph.floyd(), benchmark)
 
 
 def test_undirected_weighted_graph():
@@ -73,11 +73,11 @@ E              0.8  0.3
         "E": {"A": 1.0, "B": 1.2, "C": 0.8, "D": 0.3, "E": 0  }
     }
     for n1, benchmark in benchmark_1.items():
-        assert check_dict_copy(graph.dijkstra(n1), benchmark, resolution=resolution)
-        assert check_dict_copy(graph.spfa(n1), benchmark, resolution=resolution)
+        assert equal_dict(graph.dijkstra(n1), benchmark, resolution=resolution)
+        assert equal_dict(graph.spfa(n1), benchmark, resolution=resolution)
         for n2 in benchmark_1.keys():
-            assert check_list_copy(benchmark_1[n1][n2], graph.dfs_path_value(n1, n2), resolution=resolution)
-    assert check_dict_copy(graph.floyd(), benchmark_1)
+            assert equal_list(benchmark_1[n1][n2], graph.dfs_path_value(n1, n2), resolution=resolution)
+    assert equal_dict(graph.floyd(), benchmark_1)
 
     benchmark_2 = {
         "A": {"A": 1,      "B": 0.8,   "C": 0.648, "D": 0.72, "E": 0.5184},
@@ -87,11 +87,11 @@ E              0.8  0.3
         "E": {"A": 0.5184, "B": 0.648, "C": 0.8,   "D": 0.72, "E": 1     }
     }
     for n1, benchmark in benchmark_2.items():
-        assert check_dict_copy(graph.dijkstra(n1, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a,b: a * b, min_max_func=max), benchmark, resolution=resolution)
-        assert check_dict_copy(graph.spfa(n1, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark, resolution=resolution)
+        assert equal_dict(graph.dijkstra(n1, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a,b: a * b, min_max_func=max), benchmark, resolution=resolution)
+        assert equal_dict(graph.spfa(n1, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark, resolution=resolution)
         for n2 in benchmark_2.keys():
-            assert check_list_copy(benchmark_2[n1][n2], graph.dfs_path_value(n1, n2, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), resolution=resolution)
-    assert check_dict_copy(graph.floyd(self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark_2, resolution=resolution)
+            assert equal_list(benchmark_2[n1][n2], graph.dfs_path_value(n1, n2, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), resolution=resolution)
+    assert equal_dict(graph.floyd(self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark_2, resolution=resolution)
 
 
 def test_negative_cycle_detection():
@@ -125,7 +125,7 @@ f              *
 """[1:]
     graph = DirectedGraph(edges=[("c", "a"), ("b", "f"), ("e", None), ("a", "d"), ("c", "f"), ("d", "b"), ("f", "e")])
     assert graph_str == str(graph)
-    assert check_list_copy(graph.topological_order(), ["e", "f", "b", "d", "a", "c"])
+    assert equal_list(graph.topological_order(), ["e", "f", "b", "d", "a", "c"])
     assert graph.is_acyclic_graph()
     assert not DirectedGraph(edges=[("a", "b"), ("b", "a")]).is_acyclic_graph()
     graph_str = """
@@ -150,12 +150,12 @@ f           *
     }
     assert graph_str == str(graph)
     for n1, b in benchmark.items():
-        assert check_dict_copy(graph.bfs_path_value(n1), b)
-        assert check_dict_copy(graph.dijkstra(n1), b)
-        assert check_dict_copy(graph.spfa(n1), b)
+        assert equal_dict(graph.bfs_path_value(n1), b)
+        assert equal_dict(graph.dijkstra(n1), b)
+        assert equal_dict(graph.spfa(n1), b)
         for n2 in benchmark.keys():
-            assert check_list_copy(benchmark[n1][n2], graph.dfs_path_value(n1, n2))
-    assert check_dict_copy(graph.floyd(), benchmark)
+            assert equal_list(benchmark[n1][n2], graph.dfs_path_value(n1, n2))
+    assert equal_dict(graph.floyd(), benchmark)
 
 
 def test_directed_weighted_graph():
@@ -183,11 +183,11 @@ f                       0.4
         "f": {"a": 1.0, "b": 1.8, "c": 1.2, "d": 0.4, "e": x, "f": 0,   }
     }
     for n1, benchmark in benchmark_1.items():
-        assert check_dict_copy(graph.dijkstra(n1), benchmark, resolution=resolution)
-        assert check_dict_copy(graph.spfa(n1), benchmark, resolution=resolution)
+        assert equal_dict(graph.dijkstra(n1), benchmark, resolution=resolution)
+        assert equal_dict(graph.spfa(n1), benchmark, resolution=resolution)
         for n2 in benchmark_1.keys():
-            assert check_list_copy(benchmark_1[n1][n2], graph.dfs_path_value(n1, n2), resolution=resolution)
-    assert check_dict_copy(graph.floyd(), benchmark_1, resolution=resolution)
+            assert equal_list(benchmark_1[n1][n2], graph.dfs_path_value(n1, n2), resolution=resolution)
+    assert equal_dict(graph.floyd(), benchmark_1, resolution=resolution)
 
     benchmark_2 = {
         "a": {"a": 1,    "b": 0.8,   "c": 0.512, "d": 0.64, "e": 0, "f": 0.3072},
@@ -198,10 +198,10 @@ f                       0.4
         "f": {"a": 0.24, "b": 0.224, "c": 0.32,  "d": 0.4,  "e": 0, "f": 1     }
     }
     for n1, benchmark in benchmark_2.items():
-        assert check_dict_copy(graph.dijkstra(n1, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark, resolution=resolution)
-        assert check_dict_copy(graph.spfa(n1, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark, resolution=resolution)
+        assert equal_dict(graph.dijkstra(n1, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark, resolution=resolution)
+        assert equal_dict(graph.spfa(n1, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark, resolution=resolution)
         for n2 in benchmark_2.keys():
-            assert check_list_copy(benchmark_2[n1][n2], graph.dfs_path_value(n1, n2, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), resolution=resolution)
-    assert check_dict_copy(graph.floyd(self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark_2, resolution=resolution)
+            assert equal_list(benchmark_2[n1][n2], graph.dfs_path_value(n1, n2, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), resolution=resolution)
+    assert equal_dict(graph.floyd(self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark_2, resolution=resolution)
 
 
