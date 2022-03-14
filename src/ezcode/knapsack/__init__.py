@@ -5,7 +5,7 @@ class Knapsack:
         weights: list,
         values: list,
         quantities: list = list(),
-        min_max_function=max,
+        min_max=max,
         zero_capacity_value=0,
         fill_to_capacity=True,
         output_item_list=True
@@ -21,22 +21,14 @@ class Knapsack:
             if len(quantities) != len(weights):
                 raise ValueError(f"The length of quantities {quantities} not match the length of weights {weights}")
             for q in quantities:
-                if q <= 0:
-                    raise ValueError(f"Item quantity must be positive: {quantities}")
-            if min_max_function == max:
-                for v in values:
-                    if v < 0:
-                        raise ValueError(f"Non-reusable item can only have positive value with max function: {values}")
-            if min_max_function == min:
-                for v in values:
-                    if v > 0:
-                        raise ValueError(f"Non-reusable item can only have negative value with min function: {values}")
+                if q < 0:
+                    raise ValueError(f"Item quantity cannot be negative: {quantities}")
             return Knapsack.best_value_with_limited_items_1d(
                 capacity=capacity,
                 weights=weights,
                 values=values,
                 quantities=quantities,
-                min_max_function=min_max_function,
+                min_max=min_max,
                 zero_capacity_value=zero_capacity_value,
                 fill_to_capacity=fill_to_capacity,
                 output_dp_table=False,
@@ -47,7 +39,7 @@ class Knapsack:
                 capacity=capacity,
                 weights=weights,
                 values=values,
-                min_max_function=min_max_function,
+                min_max=min_max,
                 zero_capacity_value=zero_capacity_value,
                 fill_to_capacity=fill_to_capacity,
                 output_dp_table=False,
@@ -59,7 +51,7 @@ class Knapsack:
         capacity: int,
         weights: list,
         values: list,
-        min_max_function=max,
+        min_max=max,
         zero_capacity_value=0,
         fill_to_capacity=True,
         iterate_weights_first=True,
@@ -93,7 +85,7 @@ class Knapsack:
             if the capacity of the bag is not large enough for the item i, max_value[i][c] = max_value[i - 1][c]
             otherwise max_value[i][c] = max( value_without_item_i + value_with_item_i )
         """
-        infinity = float("-inf") if min_max_function == max else float("inf")
+        infinity = float("-inf") if min_max == max else float("inf")
         knapsack_init_value = infinity if fill_to_capacity else zero_capacity_value
         knapsack_value = [[knapsack_init_value for _ in range(capacity + 1)] for _ in range(len(weights))]
         item_lists = None
@@ -116,7 +108,7 @@ class Knapsack:
                     if c < weights[i]:
                         knapsack_value[i][c] = knapsack_value[i - 1][c]
                     else:
-                        knapsack_value[i][c] = min_max_function(knapsack_value[i - 1][c], knapsack_value[i - 1][c - weights[i]] + values[i])
+                        knapsack_value[i][c] = min_max(knapsack_value[i - 1][c], knapsack_value[i - 1][c - weights[i]] + values[i])
                     if output_item_list:
                         if knapsack_value[i][c] == knapsack_init_value:
                             item_lists[i][c] = list()
@@ -130,7 +122,7 @@ class Knapsack:
                     if c < weights[i]:
                         knapsack_value[i][c] = knapsack_value[i - 1][c]
                     else:
-                        knapsack_value[i][c] = min_max_function(knapsack_value[i - 1][c], knapsack_value[i - 1][c - weights[i]] + values[i])
+                        knapsack_value[i][c] = min_max(knapsack_value[i - 1][c], knapsack_value[i - 1][c - weights[i]] + values[i])
                     if output_item_list:
                         if knapsack_value[i][c] == knapsack_init_value:
                             item_lists[i][c] = list()
@@ -154,7 +146,7 @@ class Knapsack:
         weights: list,
         values: list,
         quantities: list = list(),
-        min_max_function=max,
+        min_max=max,
         zero_capacity_value=0,
         fill_to_capacity=True,
         output_dp_table=False,
@@ -170,7 +162,7 @@ class Knapsack:
         if len(quantities) == 0:
             for i in range(len(weights)):
                 quantities.append(1)
-        infinity = float("-inf") if min_max_function == max else float("inf")
+        infinity = float("-inf") if min_max == max else float("inf")
         knapsack_init_value = infinity if fill_to_capacity else zero_capacity_value
         knapsack_value = [knapsack_init_value for _ in range(capacity + 1)]
         knapsack_value[0] = zero_capacity_value
@@ -182,7 +174,7 @@ class Knapsack:
                 # c < weight[i], knapsack_value[c] won't change
                 # Capacity is looping backward, otherwise the item will be put in to the knapsack multiple times
                 for c in range(capacity, weights[i] - 1, -1):
-                    knapsack_value[c] = min_max_function(knapsack_value[c], knapsack_value[c - weights[i]] + values[i])
+                    knapsack_value[c] = min_max(knapsack_value[c], knapsack_value[c - weights[i]] + values[i])
                     if output_item_list:
                         if knapsack_value[c] == knapsack_init_value:
                             item_lists[c] = list()
@@ -191,7 +183,7 @@ class Knapsack:
                 # Another solution
                 # for c in range(capacity, weights[i] - 1, -1):
                 #     for q in range(1, min(quantities[i], c // weights[i]) + 1):
-                #         knapsack_value[c] = min_max_function(knapsack_value[c], knapsack_value[c - q * weights[i]] + q * values[i])
+                #         knapsack_value[c] = min_max(knapsack_value[c], knapsack_value[c - q * weights[i]] + q * values[i])
                 #         if output_item_list:
                 #             if knapsack_value[c] == knapsack_init_value:
                 #                 item_lists[c] = list()
@@ -211,7 +203,7 @@ class Knapsack:
         capacity: int,
         weights: list,
         values: list,
-        min_max_function=max,
+        min_max=max,
         zero_capacity_value=0,
         fill_to_capacity=True,
         iterate_weights_first=True,
@@ -219,7 +211,7 @@ class Knapsack:
         output_item_list=True
     ):
         """ Similar to rolling row solution, but the two loops can swap the order """
-        infinity = float("-inf") if min_max_function == max else float("inf")
+        infinity = float("-inf") if min_max == max else float("inf")
         knapsack_init_value = infinity if fill_to_capacity else zero_capacity_value
         knapsack_value = [knapsack_init_value for _ in range(capacity + 1)]
         knapsack_value[0] = zero_capacity_value
@@ -229,7 +221,7 @@ class Knapsack:
         if iterate_weights_first:
             for i in range(len(weights)):
                 for c in range(weights[i], capacity + 1):  # Looping forward, so items can be added multiple times
-                    knapsack_value[c] = min_max_function(knapsack_value[c], knapsack_value[c - weights[i]] + values[i])
+                    knapsack_value[c] = min_max(knapsack_value[c], knapsack_value[c - weights[i]] + values[i])
                     if output_item_list:
                         if knapsack_value[c] == knapsack_init_value:
                             item_lists[c] = list()
@@ -239,7 +231,7 @@ class Knapsack:
             for c in range(1, capacity + 1):  # Looping forward, so items can be added multiple times
                 for i in range(len(weights)):
                     if c >= weights[i]:  # c < weight[i], knapsack_value[c] won't change
-                        knapsack_value[c] = min_max_function(knapsack_value[c], knapsack_value[c - weights[i]] + values[i])
+                        knapsack_value[c] = min_max(knapsack_value[c], knapsack_value[c - weights[i]] + values[i])
                         if output_item_list:
                             if knapsack_value[c] == knapsack_init_value:
                                 item_lists[c] = list()
@@ -259,14 +251,14 @@ class Knapsack:
         capacity: int,
         weights: list,
         values: list,
-        min_max_function=max,
+        min_max=max,
         zero_capacity_value=0,
         fill_to_capacity=True,
         iterate_weights_first=True,
         output_dp_table=False,
         output_item_list=True
     ):
-        infinity = float("-inf") if min_max_function == max else float("inf")
+        infinity = float("-inf") if min_max == max else float("inf")
         knapsack_init_value = infinity if fill_to_capacity else zero_capacity_value
         knapsack_value = [[knapsack_init_value for _ in range(capacity + 1)] for _ in range(len(weights))]
         item_lists = None
@@ -287,13 +279,13 @@ class Knapsack:
                     # else:
                     #     best_value = knapsack_init_value
                     #     for k in range(1, (c // weights[i]) + 1):
-                    #         best_value = min_max_function(best_value, knapsack_value[i - 1][c - k * weights[i]] + k * values[i])
-                    #     knapsack_value[i][c] = min_max_function(knapsack_value[i - 1][c], best_value)
+                    #         best_value = min_max(best_value, knapsack_value[i - 1][c - k * weights[i]] + k * values[i])
+                    #     knapsack_value[i][c] = min_max(knapsack_value[i - 1][c], best_value)
                     knapsack_value[i][c] = knapsack_value[i - 1][c]
                     if output_item_list:
                         item_lists[i][c] = item_lists[i - 1][c].copy()
                     if c >= weights[i]:
-                        knapsack_value[i][c] = min_max_function(knapsack_value[i][c], knapsack_value[i][c - weights[i]] + values[i])
+                        knapsack_value[i][c] = min_max(knapsack_value[i][c], knapsack_value[i][c - weights[i]] + values[i])
                         if output_item_list:
                             if knapsack_value[i][c] == knapsack_init_value:
                                 item_lists[i][c] = list()
@@ -307,13 +299,13 @@ class Knapsack:
                     # else:
                     #     best_value = knapsack_init_value
                     #     for k in range(1, (c // weights[i]) + 1):
-                    #         best_value = min_max_function(best_value, knapsack_value[i - 1][c - k * weights[i]] + k * values[i])
-                    #     knapsack_value[i][c] = min_max_function(knapsack_value[i - 1][c], best_value)
+                    #         best_value = min_max(best_value, knapsack_value[i - 1][c - k * weights[i]] + k * values[i])
+                    #     knapsack_value[i][c] = min_max(knapsack_value[i - 1][c], best_value)
                     knapsack_value[i][c] = knapsack_value[i - 1][c]
                     if output_item_list:
                         item_lists[i][c] = item_lists[i - 1][c].copy()
                     if c >= weights[i]:
-                        knapsack_value[i][c] = min_max_function(knapsack_value[i][c], knapsack_value[i][c - weights[i]] + values[i])
+                        knapsack_value[i][c] = min_max(knapsack_value[i][c], knapsack_value[i][c - weights[i]] + values[i])
                         if output_item_list:
                             if knapsack_value[i][c] == knapsack_init_value:
                                 item_lists[i][c] = list()
