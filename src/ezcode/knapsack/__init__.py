@@ -2,20 +2,27 @@ class Knapsack:
     @staticmethod
     def best_value(
         capacity: int,
-        weights: list(),
-        values: list(),
+        weights: list,
+        values: list,
+        quantities: list = list(),
         min_max_function=max,
         zero_capacity_value=0,
         fill_to_capacity=True,
-        item_reusable=False,
         output_item_list=True
     ):
         if capacity < 0:
             raise ValueError(f"Capacity cannot be negative: {capacity}")
+        for q in quantities:
+            if q <= 0:
+                raise ValueError(f"Item quantity must be positive: {quantities}")
         for w in weights:
             if w <= 0:
                 raise ValueError(f"Item weight must be positive: {weights}")
-        if not item_reusable:
+        if len(weights) != len(values):
+            raise ValueError(f"The length of weights {weights} not match the length of values {values}")
+        if len(quantities) > 0:
+            if len(quantities) != len(weights):
+                raise ValueError(f"The length of quantities {quantities} not match the length of weights {weights}")
             if min_max_function == max:
                 for v in values:
                     if v < 0:
@@ -24,10 +31,11 @@ class Knapsack:
                 for v in values:
                     if v > 0:
                         raise ValueError(f"Non-reusable item can only have negative value with min function: {values}")
-            return Knapsack.best_value_with_non_reusable_items_1d(
+            return Knapsack.best_value_with_limited_items_1d(
                 capacity=capacity,
                 weights=weights,
                 values=values,
+                quantities=quantities,
                 min_max_function=min_max_function,
                 zero_capacity_value=zero_capacity_value,
                 fill_to_capacity=fill_to_capacity,
@@ -35,7 +43,7 @@ class Knapsack:
                 output_item_list=output_item_list
             )
         else:
-            return Knapsack.best_value_with_reusable_items_1d(
+            return Knapsack.best_value_with_unlimited_items_1d(
                 capacity=capacity,
                 weights=weights,
                 values=values,
@@ -47,10 +55,10 @@ class Knapsack:
             )
 
     @staticmethod
-    def best_value_with_non_reusable_items_2d(
+    def best_value_with_limited_items_2d(
         capacity: int,
-        weights: list(),
-        values: list(),
+        weights: list,
+        values: list,
         min_max_function=max,
         zero_capacity_value=0,
         fill_to_capacity=True,
@@ -141,10 +149,11 @@ class Knapsack:
                 return None if best_value == knapsack_init_value else best_value
 
     @staticmethod
-    def best_value_with_non_reusable_items_1d(
+    def best_value_with_limited_items_1d(
         capacity: int,
-        weights: list(),
-        values: list(),
+        weights: list,
+        values: list,
+        quantities: list = list(),
         min_max_function=max,
         zero_capacity_value=0,
         fill_to_capacity=True,
@@ -158,6 +167,9 @@ class Knapsack:
             Each loop will overwrite the knapsack_value[c]
             Cannot swap loops
         """
+        if len(quantities) == 0:
+            for i in range(len(weights)):
+                quantities.append(1)
         infinity = float("-inf") if min_max_function == max else float("inf")
         knapsack_init_value = infinity if fill_to_capacity else zero_capacity_value
         knapsack_value = [knapsack_init_value for _ in range(capacity + 1)]
@@ -166,15 +178,16 @@ class Knapsack:
         if output_item_list:
             item_lists = [list() for _ in range(capacity + 1)]
         for i in range(len(weights)):  # must loop item weights first, because we are rolling the rows not columns
-            # c < weight[i], knapsack_value[c] won't change
-            # Capacity is looping backward, otherwise the item will be put in to the knapsack multiple times
-            for c in range(capacity, weights[i] - 1, -1):
-                knapsack_value[c] = min_max_function(knapsack_value[c], knapsack_value[c - weights[i]] + values[i])
-                if output_item_list:
-                    if knapsack_value[c] == knapsack_init_value:
-                        item_lists[c] = list()
-                    elif knapsack_value[c] == knapsack_value[c - weights[i]] + values[i]:
-                        item_lists[c] = item_lists[c - weights[i]] + [i]
+            for q in range(1, quantities[i] + 1):
+                # c < q * weight[i], knapsack_value[c] won't change
+                # Capacity is looping backward, otherwise the item will be put in to the knapsack multiple times
+                for c in range(capacity, q * weights[i] - 1, -1):
+                    knapsack_value[c] = min_max_function(knapsack_value[c], knapsack_value[c - q * weights[i]] + q * values[i])
+                    if output_item_list:
+                        if knapsack_value[c] == knapsack_init_value:
+                            item_lists[c] = list()
+                        elif knapsack_value[c] == knapsack_value[c - q * weights[i]] + q * values[i]:
+                            item_lists[c] = item_lists[c - q * weights[i]] + [i] * q
         if output_dp_table:
             return (knapsack_value, item_lists) if output_item_list else knapsack_value
         else:
@@ -185,10 +198,10 @@ class Knapsack:
                 return None if best_value == knapsack_init_value else best_value
 
     @staticmethod
-    def best_value_with_reusable_items_1d(
+    def best_value_with_unlimited_items_1d(
         capacity: int,
-        weights: list(),
-        values: list(),
+        weights: list,
+        values: list,
         min_max_function=max,
         zero_capacity_value=0,
         fill_to_capacity=True,
@@ -233,10 +246,10 @@ class Knapsack:
                 return None if best_value == knapsack_init_value else best_value
 
     @staticmethod
-    def best_value_with_reusable_items_2d(
+    def best_value_with_unlimited_items_2d(
         capacity: int,
-        weights: list(),
-        values: list(),
+        weights: list,
+        values: list,
         min_max_function=max,
         zero_capacity_value=0,
         fill_to_capacity=True,
