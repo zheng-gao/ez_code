@@ -2,7 +2,7 @@
 
 ## Binary Tree Printer
 
-```
+```python
 >>> class Node:
 ...     def __init__(self, v=None, l=None, r=None):
 ...         self.v = v
@@ -22,7 +22,7 @@
 
 ## Random Binary Tree
 
-```
+```python
 >>> from ezcode.tree.binary_tree import RandomBinaryTree
 >>> tree = RandomBinaryTree(size=10, lower_bound=-5, upper_bound=10)
 >>> tree.print()
@@ -45,7 +45,7 @@
 
 ### Traversals
 
-```
+```python
 >>> from ezcode.tree.binary_tree import BinaryTree
 >>> root = Node(0, Node(1, Node(3, r=Node(7)), Node(4)), Node(2, Node(5, Node(8), Node(9)), Node(6)))
 >>> tree = BinaryTree(root, data_name="v", left_name="l", right_name="r")
@@ -69,7 +69,7 @@ Level-Order: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 ### Lowest Common Ancestor
 
-```
+```python
 >>> from ezcode.tree.binary_tree import BinaryTree
 >>> root = Node(0, Node(1, Node(3, r=Node(7)), Node(4)), Node(2, Node(5, Node(8), Node(9)), Node(6)))
 >>> tree = BinaryTree(root, data_name="v", left_name="l", right_name="r")
@@ -89,7 +89,7 @@ Level-Order: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 ### Subtree Stats
 
-```
+```python
 >>> from ezcode.tree.binary_tree import BinaryTree
 >>> root = Node(-2, Node(8, Node(-4, l=Node(-2)), Node(3, l=Node(-1))), Node(-3, l=Node(2, Node(10), Node(7))))
 >>> tree = BinaryTree(root, data_name="v", left_name="l", right_name="r")
@@ -114,7 +114,7 @@ Subtree Avg Max: 10.0
 
 ### Max Path Sum
 
-```
+```python
 >>> from ezcode.tree.binary_tree import BinaryTree
 >>> root = Node(-2, Node(8, Node(-4, l=Node(-2)), Node(3, l=Node(-1))), Node(-3, l=Node(2, Node(10), Node(7))))
 >>> tree = BinaryTree(root, data_name="v", left_name="l", right_name="r")
@@ -131,7 +131,7 @@ Subtree Avg Max: 10.0
 
 ### Depth & Balance
 
-```
+```python
 >>> from ezcode.tree.binary_tree import BinaryTree
 >>> root = Node(0, Node(0, Node(0), Node(0, r=Node(0))), Node(0, Node(0), Node(0, r=Node(0, l=Node(0)))))
 >>> tree = BinaryTree(root, data_name="v", left_name="l", right_name="r")
@@ -161,7 +161,7 @@ Subtree Avg Max: 10.0
 
 ### Serialization & Deserialization
 
-```
+```python
 >>> from ezcode.tree.printer import BinaryTreePrinter
 >>> from ezcode.tree.binary_tree import BinaryTree
 >>> printer = BinaryTreePrinter(data_name="v", left_name="l", right_name="r")
@@ -186,7 +186,7 @@ Subtree Avg Max: 10.0
 ```
 
 # Trie
-```
+```python
 >>> from ezcode.tree.trie import Trie
 >>> trie = Trie()
 >>> for word in ["today", "tomorrow", "tonight", "tobaco", "tod", "tony"]:
@@ -217,7 +217,7 @@ tonight
 tony
 ```
 # Suffix Trie
-```
+```python
 >>> from ezcode.tree.trie import SuffixTrie
 >>> suffix_trie = SuffixTrie("abcab")
 >>> suffix_trie.print()

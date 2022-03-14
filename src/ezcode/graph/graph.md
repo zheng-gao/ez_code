@@ -2,7 +2,7 @@
 
 ## Topological Sort
 
-```
+```python
 >>> from ezcode.graph.directed import DirectedGraph
 >>> dependencies = [("c", "a"), ("b", "f"), ("e", None), ("a", "d"), ("c", "f"), ("d", "b"), ("f", "e")]
 >>> aov_graph = DirectedGraph(dependencies)
@@ -27,7 +27,7 @@ False
 ## Shortest Path Algorithm
 
 ### Unweighted
-```
+```python
 >>> from ezcode.graph.directed import DirectedGraph
 >>> graph = DirectedGraph(edges=[("a","b"),("c","b"),("d","a"),("b","d"),("c","a"),("d","c"),("c","f"),("f","d"),("e",None)])
 >>> print(graph)
@@ -62,7 +62,7 @@ f           *
 ```
 ### Weighted
 
-```
+```python
 >>> from ezcode.graph.directed import DirectedGraph
 >>> graph = DirectedGraph(
 ...     edges=[("a","b"),("c","b"),("d","a"),("b","d"),("c","a"),("d","c"),("c","f"),("f","d"),("e",None)],
@@ -122,7 +122,7 @@ f                       0.4
 
 ### Unweighted
 
-```
+```python
 >>> from ezcode.graph.undirected import UndirectedGraph
 >>> graph = UndirectedGraph(edges=[["A","B"],["A","C"],["B","C"],["B","D"],["C","D"],["C","E"],["D","E"]])
 >>> print(graph)
@@ -156,7 +156,7 @@ E        *  *
 
 ### Weighted
 
-```
+```python
 >>> from ezcode.graph.undirected import UndirectedGraph
 >>> graph = UndirectedGraph(edges=[["A","B"],["A","C"],["B","C"],["B","D"],["C","D"],["C","E"],["D","E"]], weights=[0.8, 0.2, 0.5, 0.9, 0.9, 0.8, 0.3])
 >>> print(graph)
@@ -206,7 +206,7 @@ E              0.8  0.3
 
 ## Detect Negative Cycle
 
-```
+```python
 >>> from ezcode.graph.directed import DirectedGraph
 >>> graph = DirectedGraph(
 ...     edges=[["A","B"],["B","C"],["C","D"],["D","B"]],

@@ -12,17 +12,17 @@ class Knapsack:
     ):
         if capacity < 0:
             raise ValueError(f"Capacity cannot be negative: {capacity}")
-        for q in quantities:
-            if q <= 0:
-                raise ValueError(f"Item quantity must be positive: {quantities}")
         for w in weights:
             if w <= 0:
                 raise ValueError(f"Item weight must be positive: {weights}")
         if len(weights) != len(values):
             raise ValueError(f"The length of weights {weights} not match the length of values {values}")
-        if len(quantities) > 0:
+        if quantities:
             if len(quantities) != len(weights):
                 raise ValueError(f"The length of quantities {quantities} not match the length of weights {weights}")
+            for q in quantities:
+                if q <= 0:
+                    raise ValueError(f"Item quantity must be positive: {quantities}")
             if min_max_function == max:
                 for v in values:
                     if v < 0:
@@ -178,16 +178,25 @@ class Knapsack:
         if output_item_list:
             item_lists = [list() for _ in range(capacity + 1)]
         for i in range(len(weights)):  # must loop item weights first, because we are rolling the rows not columns
-            for q in range(1, quantities[i] + 1):
-                # c < q * weight[i], knapsack_value[c] won't change
+            for q in range(1, quantities[i] + 1):  # it is same as flatten the items: weights=[2,3] quantities=[1,2] ==> weights=[2, 3, 3]
+                # c < weight[i], knapsack_value[c] won't change
                 # Capacity is looping backward, otherwise the item will be put in to the knapsack multiple times
-                for c in range(capacity, q * weights[i] - 1, -1):
-                    knapsack_value[c] = min_max_function(knapsack_value[c], knapsack_value[c - q * weights[i]] + q * values[i])
+                for c in range(capacity, weights[i] - 1, -1):
+                    knapsack_value[c] = min_max_function(knapsack_value[c], knapsack_value[c - weights[i]] + values[i])
                     if output_item_list:
                         if knapsack_value[c] == knapsack_init_value:
                             item_lists[c] = list()
-                        elif knapsack_value[c] == knapsack_value[c - q * weights[i]] + q * values[i]:
-                            item_lists[c] = item_lists[c - q * weights[i]] + [i] * q
+                        elif knapsack_value[c] == knapsack_value[c - weights[i]] + values[i]:
+                            item_lists[c] = item_lists[c - weights[i]] + [i]
+                # Another solution
+                # for c in range(capacity, weights[i] - 1, -1):
+                #     for q in range(1, min(quantities[i], c // weights[i]) + 1):
+                #         knapsack_value[c] = min_max_function(knapsack_value[c], knapsack_value[c - q * weights[i]] + q * values[i])
+                #         if output_item_list:
+                #             if knapsack_value[c] == knapsack_init_value:
+                #                 item_lists[c] = list()
+                #             elif knapsack_value[c] == knapsack_value[c - q * weights[i]] + q * values[i]:
+                #                 item_lists[c] = item_lists[c - q * weights[i]] + [i] * q
         if output_dp_table:
             return (knapsack_value, item_lists) if output_item_list else knapsack_value
         else:

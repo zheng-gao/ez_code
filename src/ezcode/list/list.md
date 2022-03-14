@@ -1,6 +1,6 @@
 ## SinglyLinkedList
 
-```
+```python
 >>> from ezcode.list.linked_list import SinglyLinkedList
 >>> class Node:
 ...     def __init__(self, v=None, n=None):
@@ -27,7 +27,7 @@
 
 ## LRU Cache
 
-```
+```python
 >>> from ezcode.list.lru_cache import LRUCache
 >>> cache = LRUCache(capacity=3)
 >>> cache.put(key=1, value="One")
@@ -43,7 +43,7 @@ None
 ## Monotonic Queue
 
 ### Monotonic Increasing Queue
-```
+```python
 >>> from ezcode.list.queue import MonotonicQueue
 >>> mq = MonotonicQueue()
 >>> for number in [5, 3, 1, 2, 4]:
@@ -57,7 +57,7 @@ None
 1 <─ 2 <─ 4
 ```
 ### Monotonic Decreasing Queue
-```
+```python
 >>> from ezcode.list.queue import MonotonicQueue
 >>> mq = MonotonicQueue(is_increasing=False)
 >>> for number in [5, 3, 1, 2, 4]:

@@ -2,7 +2,7 @@
 
 ### Min Priority Queue
 
-```
+```python
 >>> from ezcode.heap.priority_queue import PriorityQueue
 >>> min_pq = PriorityQueue()
 >>> for data in [(4, "D"), (3, "C"), (5, "E"), (1, "A"), (2, "B")]:
@@ -27,7 +27,7 @@
 
 ### Max Priority Queue
 
-```
+```python
 >>> max_pq = PriorityQueue(min_heap=False)
 >>> for data in [(4, "D"), (3, "C"), (5, "E"), (1, "A"), (2, "B")]:
 ...     max_pq.push(data)
@@ -53,7 +53,7 @@
 
 ### Min Priority Map
 
-```
+```python
 >>> from ezcode.array.heap import PriorityMap
 >>> min_map = PriorityMap()
 >>> for data in [(4, "D"), (3, "C"), (5, "E"), (1, "A"), (2, "B")]:
@@ -93,7 +93,7 @@ F in min_map: False
 
 ### Max Priority Map
 
-```
+```python
 >>> from ezcode.array.heap import PriorityMap
 >>> max_map = PriorityMap(min_heap=False)
 >>> for data in [(4, "D"), (3, "C"), (5, "E"), (1, "A"), (2, "B")]:
@@ -134,7 +134,7 @@ F in max_map: False
 
 ## BlockingPriorityQueue
 
-```
+```python
 >>> from random import randrange
 >>> from threading import Thread, current_thread
 >>> from multiprocessing.pool import ThreadPool

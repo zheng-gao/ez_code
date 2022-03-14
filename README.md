@@ -1,6 +1,6 @@
 # Installation
 
-```
+```bash
 pip3 install --upgrade ezcode
 ```
 
@@ -10,25 +10,25 @@ https://pypi.org/project/ezcode/#history
 
 
 # Development Workflow
-```
+```bash
 git clone https://github.com/zheng-gao/ez_code.git && cd ez_code
 ./ez.sh --development
 ```
 
 # Release Workflow
 
-```
+```bash
 git clone https://github.com/zheng-gao/ez_code.git && cd ez_code
 ./ez.sh --release
 ```
 
 # Unit Test
 ### Run all the tests
-```
+```bash
 ./ez.sh --operations test
 ```
 ### Run a single test
-```
+```bash
 ./ez.sh --operations test --arguments test_array.py::test_binary_search
 ```
 
