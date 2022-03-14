@@ -1,8 +1,8 @@
 # Knapsack
 
 ## Question I
-Given n items with weight W<sub>i</sub><br>
-How full can you fill a knapsack with capacity C.?<br>
+Given n items with weight <strong><em>W<sub>i</sub></em></strong><br>
+How full can you fill a knapsack with capacity <strong><em>C</em></strong>?<br>
 (e.g. capacity = 10, weights = \[3, 4, 8, 5\])
 ```python
 >>> from ezcode.knapsack import Knapsack
@@ -17,8 +17,8 @@ Explanation:
 We can fill this knapsack to weight 9 with item\[1\] (weight: 4) and item\[3\] (weight: 5)
 
 ## Question II
-Given n items with weight W<sub>i</sub> and value V<sub>i</sub>.<br>
-What's the maximum value can you put into a knapsack with capacity C?<br>
+Given n items with weight <strong><em>W<sub>i</sub></em></strong> and value <strong><em>V<sub>i</sub></em></strong>.<br>
+What's the maximum value can you put into a knapsack with capacity <strong><em>C</em></strong>?<br>
 (e.g. capacity = 10, weights = \[2, 3, 5, 7\], values = \[1, 5, 2, 4\])
 ```python
 >>> from ezcode.knapsack import Knapsack
@@ -33,8 +33,8 @@ Explanation:
 The maximum we can get is 9 with item\[1\] (weight: 3, value: 5) and item\[3\] (weight: 7, value: 4)
 
 ## Question III
-Given n items with weight W<sub>i</sub>, value V<sub>i</sub> and quantity Q<sub>i<sub>.<br>
-What's the maximum value can you put into a knapsack with capacity C?<br>
+Given n items with weight <strong><em>W<sub>i</sub></em></strong>, value <strong><em>V<sub>i</sub></em></strong> and quantity <strong><em>Q<sub>i</sub></em></strong>.<br>
+What's the maximum value can you put into a knapsack with capacity <strong><em>C</em></strong>?<br>
 (e.g. capacity = 8, weights = \[3, 2\], values = \[30, 20\], quantities=\[1, 6\])
 ```python
 >>> from ezcode.knapsack import Knapsack
@@ -49,7 +49,7 @@ Explanation:
 The maximum we can get is 80 with 4 item\[1\] (weight: 2, value: 20)
 
 ## Question IV
-Given n items with weight W<sub>i</sub>, value V<sub>i</sub> and unlimited quantity.<br>
+Given n items with weight <strong><em>W<sub>i</sub></em></strong>, value <strong><em>V<sub>i</sub></em></strong> and unlimited quantity.<br>
 What's the maximum value can you put into a knapsack with capacity C?<br>
 (e.g. capacity = 10, weights = \[2, 3, 5, 7\], values = \[1, 5, 2, 4\])
 ```python
@@ -65,7 +65,7 @@ Explanation:
 The maximum we can get is 15 with 3 item[1] (weight: 3, value: 5)
 
 ## Question V
-Given n items with weight W<sub>i</sub><br>
+Given n items with weight <strong><em>W<sub>i</sub></em></strong><br>
 Can you exactly fill a knapsack with capacity C.?<br>
 (e.g. capacity = 13, weights = \[3, 4, 9, 5\] or \[3, 2, 9, 5\])
 ```python
