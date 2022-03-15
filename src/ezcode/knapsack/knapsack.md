@@ -142,7 +142,7 @@ The maximum we can get is 15 with 3 item[1] (size: 3, value: 5)
 
 ### Once
 Given items with size <strong><em>S<sub>i</sub></em></strong>, value <strong><em>V<sub>i</sub></em></strong> and each item can only be used once.<br>
-If you could exactly fill a knapsack with capacity <strong><em>C</em></strong>, what's the minimum number of items and minimum value can you have?
+If you could exactly fill a knapsack with capacity <strong><em>C</em></strong>, what's the minimum number of items and minimum value can you have?<br>
 (e.g. capacity = 10, sizes = \[2, 3, 5, 7\], values = \[1, 5, 2, 4\])
 ```python
 >>> from ezcode.knapsack import Knapsack
@@ -168,7 +168,7 @@ Explanation:
 
 ### Multiple
 Given items with size <strong><em>S<sub>i</sub></em></strong>, value <strong><em>V<sub>i</sub></em></strong> and quantity <strong><em>Q<sub>i</sub></em></strong>.<br>
-If you could exactly fill a knapsack with capacity <strong><em>C</em></strong>, what's the minimum number of items and minimum value can you have?
+If you could exactly fill a knapsack with capacity <strong><em>C</em></strong>, what's the minimum number of items and minimum value can you have?<br>
 (e.g. capacity = 13, sizes = \[3, 2, 9, 5\] or \[7, 11, 9, 5\], values = \[1, 5, 2, 4\], quantities = \[2, 3, 3, 2\])
 ```python
 >>> from ezcode.knapsack import Knapsack
@@ -194,7 +194,7 @@ Explanation:
 
 ### Unlimited
 Given items with size <strong><em>S<sub>i</sub></em></strong>, value <strong><em>V<sub>i</sub></em></strong> and unlimited quantity of each item.<br>
-If you could exactly fill a knapsack with capacity <strong><em>C</em></strong>, what's the minimum number of items and minimum value can you have?
+If you could exactly fill a knapsack with capacity <strong><em>C</em></strong>, what's the minimum number of items and minimum value can you have?<br>
 (e.g. capacity = 10, sizes = \[2, 3, 5, 7\], values = \[1, 5, 2, 4\])
 (e.g. capacity = 13, sizes = \[3, 2, 9, 5\] or \[7, 11, 9, 5\], values = \[1, 5, 2, 4\])
 ```python
@@ -223,7 +223,7 @@ Explanation:
 
 ### Once
 Given items with size <strong><em>S<sub>i</sub></em></strong> and each item can only be used once.<br>
-How many ways can you exactly fill a knapsack with capacity <strong><em>C</em></strong>.
+How many ways can you exactly fill a knapsack with capacity <strong><em>C</em></strong>.<br>
 (e.g. capacity = 10, sizes = \[2, 3, 5, 7\])
 ```python
 >>> from ezcode.knapsack import Knapsack
@@ -243,7 +243,7 @@ Explanation:
 
 ### Multiple
 Given items with size <strong><em>S<sub>i</sub></em></strong>, value <strong><em>V<sub>i</sub></em></strong> and quantity <strong><em>Q<sub>i</sub></em></strong>.<br>
-How many ways can you exactly fill a knapsack with capacity <strong><em>C</em></strong>.
+How many ways can you exactly fill a knapsack with capacity <strong><em>C</em></strong>.<br>
 (e.g. capacity = 13, sizes = \[3, 2, 4, 5\] or \[7, 11, 9, 5\], quantities = \[2, 1, 1, 2\])
 ```python
 >>> from ezcode.knapsack import Knapsack
@@ -263,7 +263,7 @@ Explanation:
 
 ### Unlimited
 Given items with size <strong><em>S<sub>i</sub></em></strong>, value <strong><em>V<sub>i</sub></em></strong> and unlimited quantity of each item.<br>
-How many ways can you exactly fill a knapsack with capacity <strong><em>C</em></strong>.
+How many ways can you exactly fill a knapsack with capacity <strong><em>C</em></strong>.<br>
 (e.g. capacity = 13, sizes = \[3, 4, 5\] or \[7, 9, 5\])
 ```python
 >>> from ezcode.knapsack import Knapsack
