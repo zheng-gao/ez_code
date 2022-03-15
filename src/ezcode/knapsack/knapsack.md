@@ -2,7 +2,7 @@
 
 ## Question I. How full can you fill a knapsack?
 
-### Once
+### One
 Given items with size <strong><em>S<sub>i</sub></em></strong> and each item can only be used once.<br>
 How full can you fill a knapsack with capacity <strong><em>C</em></strong>?<br>
 (e.g. capacity = 10, sizes = \[3, 4, 8, 5\])
@@ -43,7 +43,7 @@ We can fill this knapsack to size 11 with 1 item\[0\] (size: 3) and 4 item\[2\] 
 
 ## Question II. Can you fill to the capacity?
 
-### Once
+### One
 Given items with size <strong><em>S<sub>i</sub></em></strong> and each item can only be used once.<br>
 Can you exactly fill a knapsack with capacity <strong><em>C</em></strong>?<br>
 (e.g. capacity = 13, sizes = \[3, 4, 9, 5\] or \[3, 2, 9, 5\])
@@ -99,7 +99,7 @@ Explanation:
 
 ## Question III. What's the maximum value can you make?
 
-### Once
+### One
 Given items with size <strong><em>S<sub>i</sub></em></strong>, value <strong><em>V<sub>i</sub></em></strong> and each item can only be used once.<br>
 What's the maximum value can you put into a knapsack with capacity <strong><em>C</em></strong>?<br>
 (e.g. capacity = 10, sizes = \[2, 3, 5, 7\], values = \[1, 5, 2, 4\])
@@ -140,7 +140,7 @@ The maximum we can get is 15 with 3 item[1] (size: 3, value: 5)
 
 ## Question IV. What's the min items and min value can you have when you fill to the capacity?
 
-### Once
+### One
 Given items with size <strong><em>S<sub>i</sub></em></strong>, value <strong><em>V<sub>i</sub></em></strong> and each item can only be used once.<br>
 If you could exactly fill a knapsack with capacity <strong><em>C</em></strong>, what's the minimum number of items and minimum value can you have?<br>
 (e.g. capacity = 10, sizes = \[2, 3, 5, 7\], values = \[1, 5, 2, 4\])
@@ -221,7 +221,7 @@ Explanation:
 
 ## Question V. Find all combinations of items that can fill to the capacity
 
-### Once
+### One
 Given items with size <strong><em>S<sub>i</sub></em></strong> and each item can only be used once.<br>
 How many ways can you exactly fill a knapsack with capacity <strong><em>C</em></strong>.<br>
 (e.g. capacity = 10, sizes = \[2, 3, 5, 7\])
