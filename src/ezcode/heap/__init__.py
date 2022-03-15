@@ -81,7 +81,7 @@ class PriorityQueue:
                 break
             top_n_list.append(copy.pop())
             count += 1
-        return top_n_list
+        return top_n_list  # [priority / priority, key]
 
     def pop(self):
         """ O(logN) """
@@ -151,7 +151,7 @@ class PriorityMap(PriorityQueue):
         """ O(1) """
         if len(self) <= 0:
             raise IndexError("Peek at an empty queue")
-        return self.heap[0]
+        return self.heap[0]  # priority, key
 
     def top_n(self, n: int = None) -> list():
         if n is not None and n < 0:
@@ -165,7 +165,7 @@ class PriorityMap(PriorityQueue):
                 break
             top_n_list.append(copy.pop())
             count += 1
-        return top_n_list
+        return top_n_list  # [priority / priority, key]
 
     def push(self, *priority_n_key):
         """ O(logN) """
