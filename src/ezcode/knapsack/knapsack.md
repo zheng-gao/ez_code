@@ -236,9 +236,9 @@ How many ways can you exactly fill a knapsack with capacity <strong><em>C</em></
 (0, None)
 ```
 Explanation:
-1. There are 2 combinations of items can fill to capacity 10:
-   [item[0] (size: 2), item[1] (size: 3), item[2] (size: 5)]
-   [item[1] (size: 3), item[3] (size: 7)]
+1. There are 2 combinations of items can fill to capacity 10:<br>
+   [item[0] (size: 2), item[1] (size: 3), item[2] (size: 5)]<br>
+   [item[1] (size: 3), item[3] (size: 7)]<br>
 2. We cannot fill to capacity 10 using the items
 
 ### Multiple
@@ -256,9 +256,9 @@ How many ways can you exactly fill a knapsack with capacity <strong><em>C</em></
 (0, None)
 ```
 Explanation:
-1. There are 2 combinations of items can fill to capacity 13:
-   [2 * item[0] (size: 3), 1 * item[1] (size: 2), 1 * item[3] (size: 5)]
-   [1 * item[0] (size: 3), 2 * item[3] (size: 5)]
+1. There are 2 combinations of items can fill to capacity 13:<br>
+   [2 * item[0] (size: 3), 1 * item[1] (size: 2), 1 * item[3] (size: 5)]<br>
+   [1 * item[0] (size: 3), 2 * item[3] (size: 5)]<br>
 4. We cannot fill to capacity 13 using the items
 
 ### Unlimited
@@ -276,10 +276,10 @@ How many ways can you exactly fill a knapsack with capacity <strong><em>C</em></
 (0, None)
 ```
 Explanation:
-1. There are 3 combinations of items can fill to capacity 10:
-   [3 * item[0] (size: 3), 1 * item[1] (size: 4)]
-   [2 * item[1] (size: 4), 1 * item[2] (size: 5)]
-   [1 * item[0] (size: 3), 2 * item[2] (size: 5)]
+1. There are 3 combinations of items can fill to capacity 10:<br>
+   [3 * item[0] (size: 3), 1 * item[1] (size: 4)]<br>
+   [2 * item[1] (size: 4), 1 * item[2] (size: 5)]<br>
+   [1 * item[0] (size: 3), 2 * item[2] (size: 5)]<br>
 2. We cannot fill to capacity 13 using the items
 
 
