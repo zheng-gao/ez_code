@@ -90,6 +90,10 @@ def test_priority_map():
     for pop_data in max_pop_list:
         assert max_map.pop() == pop_data
 
+    pm = PriorityMap({"k0":5, "k1":3})
+    pm.delete("k0")
+    assert pm.peek() == (3, "k1")
+
 
 def test_heap_custom_comparator():
 

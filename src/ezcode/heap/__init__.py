@@ -198,12 +198,17 @@ class PriorityMap(PriorityQueue):
         if key not in self:
             raise KeyError(f"{key} not found")
         index = self.map[key]
-        tail_item = self.heap[-1]
-        self.map[tail_item[1]] = index
-        self.heap[index] = tail_item
-        del self.map[key]
-        self.heap.pop()
-        self._sift_up(index)
+        if index == len(self.heap) - 1:  # the key to delete is at the end of heap
+            del self.map[key]
+            return self.heap.pop()  # priority / priority, key
+        else:
+            tail_item = self.heap[-1]
+            self.map[tail_item[1]] = index
+            self.heap[index] = tail_item
+            del self.map[key]
+            item = self.heap.pop()
+            self._sift_up(index)
+            return item  # priority / priority, key
 
     def update(self, *priority_n_key):
         """ O(logN) """
