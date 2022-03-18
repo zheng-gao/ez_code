@@ -141,9 +141,9 @@ class Graph:
                             enqueue_counters[relax_node_id] += 1
                             if enqueue_counters[relax_node_id] > len(self.nodes):
                                 if min_max_func == min:
-                                    raise NegativeCycleExist()
+                                    raise NegativeCycleExist(f"node-id \"{relax_node_id}\"")
                                 else:
-                                    raise PositiveCycleExist()
+                                    raise PositiveCycleExist(f"node-id \"{relax_node_id}\"")
         return path_values
 
     def floyd(self, self_loop_weight=0, disconnected_edge_weight=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min):
