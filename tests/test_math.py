@@ -1,5 +1,6 @@
 from ezcode.math.discrete import permutation_size, permutations, all_items_permutations
 from ezcode.math.discrete import combination_size, combinations, all_subsets
+from ezcode.math.calculator import calculate
 from fixture.utils import equal_list
 
 
@@ -162,4 +163,32 @@ def test_all_subsets_unique():
         [1, 2, 3],
     ]
     assert equal_list(benchmark, all_subsets(items=[1, 2, 3], has_duplicate=False))
+
+
+def test_calculator():
+    assert calculate("-2/-1+√4!*((-1+5)-2)/2") == 6.898979485566356
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -61,3 +61,20 @@
     ['A', 'A', 'B', 'B', 'C'],
 ]
 ```
+
+# Calculator
+```python
+>>> from ezcode.math.calculator import infix_notation_to_reverse_polish_notation
+>>> from ezcode.math.calculator import evaluate_reverse_polish_notation
+>>> from ezcode.math.calculator import calculate
+>>> arithmetic_expression = "-2/-1 + √4! * ((-1 + 5)-2)/2"
+>>> rpn = infix_notation_to_reverse_polish_notation(arithmetic_expression)
+>>> print(rpn)
+[-2, -1, '/', 4, '!', '√', -1, 5, '+', 2, '-', '*', 2, '/', '+']
+
+>>> evaluate_reverse_polish_notation(rpn)
+6.898979485566356
+
+>>> calculate(arithmetic_expression)
+6.898979485566356
+```
