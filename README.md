@@ -37,6 +37,7 @@ git clone https://github.com/zheng-gao/ez_code.git && cd ez_code
 * [Heap](src/ezcode/heap/heap.md)
 * [Knapsack](src/ezcode/knapsack/knapsack.md)
 * [List](src/ezcode/list/list.md)
+* [Matrix](src/ezcode/matrix/matrix.md)
 * [Tree](src/ezcode/tree/tree.md)
 * [Graph](src/ezcode/graph/graph.md)
 * [Math](src/ezcode/math/math.md)

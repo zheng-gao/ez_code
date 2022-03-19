@@ -1,5 +1,7 @@
 from ezcode.math.discrete import permutation_size, permutations, all_items_permutations
 from ezcode.math.discrete import combination_size, combinations, all_subsets
+from ezcode.math.calculator import infix_notation_to_reverse_polish_notation
+from ezcode.math.calculator import evaluate_reverse_polish_notation
 from ezcode.math.calculator import calculate
 from fixture.utils import equal_list
 
@@ -166,7 +168,11 @@ def test_all_subsets_unique():
 
 
 def test_calculator():
-    assert calculate("-2/-1+√4!*((-1+5)-2)/2") == 6.898979485566356
+    arithmetic_expression = "-2/-1 + √4!^2*((-1 + 5) -2)*4/ 2^2"
+    rpn = infix_notation_to_reverse_polish_notation(arithmetic_expression)
+    assert rpn == [-2, -1, '/', 4, '!', '√', 2, '^', -1, 5, '+', 2, '-', '*', 4, '*', 2, 2, '^', '/', '+']
+    assert evaluate_reverse_polish_notation(rpn) == 49.99999999999999
+    assert calculate(arithmetic_expression) == 49.99999999999999
 
 
 
