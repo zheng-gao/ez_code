@@ -22,20 +22,32 @@ class Square:
         "\033[0m",     # Reset  4
     ]
 
-    def __init__(self, state, size: int = 2):
+    characters = [
+        ". ",  # 0 - Void
+        "@ ",  # 1 - Obstacle
+        "+ ",  # 2 - Path
+        "S ",  # 3 - Searched
+    ]
+
+    def __init__(self, state, size: int = 2, text_only=False):
         self.state = state
         self.size = size
+        self.text_only = text_only
 
     def __str__(self):
+        if self.text_only:
+            return Square.characters[self.state.value]
         return Square.colors[self.state.value] + " " * self.size + Square.colors[-1]
 
 
 class Maze:
-    def __init__(self, row: int = 10, col: int = 10, obstacle_percentage=0.1):
+    def __init__(self, row: int = 10, col: int = 10, obstacle_percentage=0.1, text_only=False, show_searched=False):
         self.row_len = row
         self.col_len = col
         self.map = [[None for _ in range(col)] for _ in range(row)]
         self.obstacle_percentage = obstacle_percentage
+        self.text_only = text_only
+        self.show_searched = show_searched
 
     def build_map(self):
         obstacles = self.row_len * self.col_len * self.obstacle_percentage
@@ -51,7 +63,7 @@ class Maze:
         for row in range(self.row_len):
             print("    ", end="")
             for col in range(self.col_len):
-                print(Square(state=self.map[row][col]), end="")
+                print(Square(state=self.map[row][col], text_only=self.text_only), end="")
             print()
         print()
 
@@ -109,7 +121,7 @@ class Maze:
             return abs(source[0] - destination[0]) + abs(source[1] - destination[1])
 
         def a_star_shortest_path(source, destination):
-            path, visited, candidates = dict(), set(), PriorityMap(min_heap=True)  # path = {child: parent}
+            path, visited, searched, candidates = dict(), set(), set([source]), PriorityMap(min_heap=True)  # path = {child: parent}
             g_values = {source: 0}                               # g_value: path cost to source
             h_value = manhattan_distance(source, destination)    # h_value: huristic estimate of the path cost to destination
             f_value = g_values[source] + h_value                 # f_value: g_value + h_value
@@ -119,18 +131,23 @@ class Maze:
                 visited.add(node)
                 for neighbor in self.approachable_neighbors(node):
                     if neighbor == destination:
+                        searched.add(neighbor)
                         path[destination] = node
-                        return path
+                        return path, searched
                     elif neighbor not in visited:
+                        searched.add(neighbor)
                         if neighbor not in g_values:
                             g_values[neighbor] = float("inf")
                         g_values[neighbor] = min(g_values[neighbor], g_values[node] + 1)
                         f_value = g_values[neighbor] + manhattan_distance(source, destination)
                         candidates.push(f_value, neighbor)
                         path[neighbor] = node
-            return path
+            return path, searched
 
-        path = a_star_shortest_path(source, destination)
+        path, searched = a_star_shortest_path(source, destination)
+        if self.show_searched:
+            for node in searched:
+                self.map[node[0]][node[1]] = Square.State.Searched
         parent = path[destination]
         self.map[destination[0]][destination[1]] = Square.State.Path
         while parent:
@@ -141,7 +158,7 @@ class Maze:
         self.build_map()
         self.print_map()
         source = self.prompt_for_selection("start point")
-        destination = self.prompt_for_selection("end point")
+        destination = self.prompt_for_selection("  end point")
         self.a_star(source, destination)
         self.print_map()
 
@@ -149,7 +166,9 @@ class Maze:
 parser = argparse.ArgumentParser(description="Maze")
 parser.add_argument("-r", "--row", dest="row", type=int, default=10, help="Number of rows")
 parser.add_argument("-c", "--column", dest="col", type=int, default=10, help="Number of columns")
+parser.add_argument("-t", "--text-only", dest="text_only", action="store_true", default=False, help="Print Map in Text")
+parser.add_argument("-s", "--show-searched-area", dest="show_searched", action="store_true", default=False)
 parser.add_argument("-o", "--obstacles-percentage", dest="op", type=float, default=0.1)
 args = parser.parse_args()
 if __name__ == "__main__":
-    Maze(row=args.row, col=args.col, obstacle_percentage=args.op).run()
+    Maze(row=args.row, col=args.col, obstacle_percentage=args.op, text_only=args.text_only, show_searched=args.show_searched).run()
