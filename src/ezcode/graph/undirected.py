@@ -13,18 +13,12 @@ class UndirectedGraph(Graph):
         if weights is None:
             weights = [1] * len(edges)
         for (n1, n2), weight in zip(edges, weights):
+            if n1 is not None and n1 not in self.nodes:
+                self.nodes[n1] = dict()
+            if n2 is not None and n2 not in self.nodes:
+                self.nodes[n2] = dict()
             if n1 is not None and n2 is not None:
-                if n1 not in self.nodes:
-                    self.nodes[n1] = dict()
-                if n2 not in self.nodes:
-                    self.nodes[n2] = dict()
                 self.nodes[n1][n2] = self.nodes[n2][n1] = weight
-            elif n1 is not None:
-                if n1 not in self.nodes:
-                    self.nodes[n1] = dict()
-            elif n2 is not None:
-                if n2 not in self.nodes:
-                    self.nodes[n2] = dict()
         # For print
         self.sorted_node_ids = sorted(self.nodes.keys())
         self.node_id_index_map = dict()

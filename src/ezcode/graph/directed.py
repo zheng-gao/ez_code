@@ -14,18 +14,12 @@ class DirectedGraph(Graph):
         if weights is None:
             weights = [1] * len(edges)
         for (i, o), weight in zip(edges, weights):
+            if i is not None and i not in self.nodes:
+                self.nodes[i] = {"i": dict(), "o": dict()}
+            if o is not None and o not in self.nodes:
+                self.nodes[o] = {"i": dict(), "o": dict()}
             if i is not None and o is not None:
-                if i not in self.nodes:
-                    self.nodes[i] = {"i": dict(), "o": dict()}
-                if o not in self.nodes:
-                    self.nodes[o] = {"i": dict(), "o": dict()}
                 self.nodes[i]["o"][o] = self.nodes[o]["i"][i] = weight
-            elif i is not None:
-                if i not in self.nodes:
-                    self.nodes[i] = {"i": dict(), "o": dict()}
-            elif o is not None:
-                if o not in self.nodes:
-                    self.nodes[o] = {"i": dict(), "o": dict()}
         # For print
         self.sorted_node_ids = sorted(self.nodes.keys())
         self.node_id_index_map = dict()
