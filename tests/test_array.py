@@ -1,6 +1,6 @@
 from ezcode.array.search import binary_search
 from ezcode.array.rotate import rotate
-from ezcode.array.utils import copy, array_to_string, delete
+from ezcode.array.utils import copy, array_to_string, delete_all
 from ezcode.array.utils import split_list, split_list_generator, chunk_list, chunk_list_generator
 from ezcode.array.lcs import longest_common_subsequence, longest_common_subarray
 from fixture.utils import equal_list
@@ -87,8 +87,8 @@ def test_copy():
 
 def test_delete():
     array = [1, 2, 2, 2, 3, 4, 4, 5, 6]
-    delete(array, set([2, 4, 6]))
-    assert equal_list([1, 3, 5], array)
+    delete_all(array, set([2, 4, 6]))
+    assert array == [1, 3, 5]
 
 
 def test_longest_common_subsequence():

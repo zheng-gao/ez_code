@@ -10,7 +10,7 @@ def copy(array: list) -> list:
     return [copy(subarray) for subarray in array] if type(array) is list else array
 
 
-def delete(array: list, items_to_delete: set):
+def delete_all(array: list, items_to_delete: set):
     count = 0
     for index, data in enumerate(array):
         if data in items_to_delete:
