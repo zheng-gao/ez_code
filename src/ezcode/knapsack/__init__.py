@@ -1,6 +1,3 @@
-from ezcode.hash import get_hash
-
-
 class Knapsack:
     @staticmethod
     def best_value(
@@ -549,11 +546,10 @@ class Knapsack:
                 if combo_list:
                     combo_set = set()
                     for i, combo in enumerate(combo_list):
-                        combo.sort()
-                        combo_hash = get_hash(combo)
-                        if combo_hash not in combo_set:
+                        t = tuple(combo.sort())
+                        if t not in combo_set:
                             unique_combo_list.append(combo)
-                        combo_set.add(combo_hash)
+                        combo_set.add(t)
                     return (len(unique_combo_list), unique_combo_list)
                 return (best_value, combo_list)
             else:
