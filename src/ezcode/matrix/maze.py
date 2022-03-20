@@ -4,6 +4,7 @@ import random
 import sys
 
 from enum import Enum
+from collections import deque
 from ezcode.heap import PriorityMap
 
 
@@ -44,26 +45,41 @@ class Maze:
     def __init__(self, row: int = 10, col: int = 10, obstacle_percentage=0.1, text_only=False, show_searched=False):
         self.row_len = row
         self.col_len = col
-        self.map = [[None for _ in range(col)] for _ in range(row)]
+        self.maze = None
         self.obstacle_percentage = obstacle_percentage
         self.text_only = text_only
         self.show_searched = show_searched
 
-    def build_map(self):
-        obstacles = self.row_len * self.col_len * self.obstacle_percentage
+    def build_maze(self, maze=None):
+        if maze is None:
+            self.maze = [[None for _ in range(self.col_len)] for _ in range(self.row_len)]
+            obstacles = self.row_len * self.col_len * self.obstacle_percentage
+            for row in range(self.row_len):
+                for col in range(self.col_len):
+                    rand = random.randrange(self.row_len * self.col_len)
+                    self.maze[row][col] = Square.State.Obstacle if rand < obstacles else Square.State.Void
+        else:
+            self.row_len, self.col_len = len(maze), len(maze[0])
+            self.maze = [[None for _ in range(self.col_len)] for _ in range(self.row_len)]
+            for row in range(self.row_len):
+                for col in range(self.col_len):
+                    self.maze[row][col] = Square.State(maze[row][col])
+
+    def copy_maze(self):
+        maze_copy = [[None for _ in range(self.col_len)] for _ in range(self.row_len)]
         for row in range(self.row_len):
             for col in range(self.col_len):
-                rand = random.randrange(self.row_len * self.col_len)
-                self.map[row][col] = Square.State.Obstacle if rand < obstacles else Square.State.Void
+                maze_copy[row][col] = self.maze[row][col]
+        return maze_copy
 
-    def print_map(self, clear=False):
+    def print_maze(self, maze, clear=False):
         if clear:
             os.system("clear")
         print()
-        for row in range(self.row_len):
+        for row in range(len(maze)):
             print("    ", end="")
-            for col in range(self.col_len):
-                print(Square(state=self.map[row][col], text_only=self.text_only), end="")
+            for col in range(len(maze[row])):
+                print(Square(state=maze[row][col], text_only=self.text_only), end="")
             print()
         print()
 
@@ -81,7 +97,7 @@ class Maze:
             raise ValueError(f"[Error] Invalid row: \"{row}\"")
         if col < 0 or col >= self.col_len:
             raise ValueError(f"[Error] Invalid column: \"{col}\"")
-        if self.map[row][col] == Square.State.Obstacle:
+        if self.maze[row][col] == Square.State.Obstacle:
             raise ValueError(f"[Error] [{row}][{col}] is occupied!")
         return (row, col)
 
@@ -96,71 +112,191 @@ class Maze:
     def approachable_neighbors(self, node) -> list:
         row, col = node
         neighbor_list = list()
-        if row > 0 and self.map[row - 1][col] == Square.State.Void:
+        if row > 0 and self.maze[row - 1][col] == Square.State.Void:
             neighbor_list.append((row - 1, col))
-        if col > 0 and self.map[row][col - 1] == Square.State.Void:
+        if col > 0 and self.maze[row][col - 1] == Square.State.Void:
             neighbor_list.append((row, col - 1))
-        if row + 1 < self.row_len and self.map[row + 1][col] == Square.State.Void:
+        if row + 1 < self.row_len and self.maze[row + 1][col] == Square.State.Void:
             neighbor_list.append((row + 1, col))
-        if col + 1 < self.col_len and self.map[row][col + 1] == Square.State.Void:
+        if col + 1 < self.col_len and self.maze[row][col + 1] == Square.State.Void:
             neighbor_list.append((row, col + 1))
         return neighbor_list
 
+    def path_dict_to_path_list(self, path_dict, destination):
+        path_list = list([destination])
+        parent = path_dict[destination]
+        while parent:
+            path_list.append(parent)
+            parent = path_dict[parent] if parent in path_dict else None
+        return path_list[::-1]
+
     # Path finding algorithms
-    def dfs(self, row1, col1, row2, col2):
-        pass
+    def dfs(self, source, destination):
+        """
+            candidates is a Stack
+            searched nodes will not be revisited
+        """
+        path_dict, searched, candidates = dict(), set([source]), list()  # path_dict = {child: parent}
+        candidates.append(source)
+        while len(candidates) > 0:
+            node = candidates.pop()
+            for neighbor in self.approachable_neighbors(node):
+                if neighbor == destination:
+                    searched.add(neighbor)
+                    path_dict[destination] = node
+                    return self.path_dict_to_path_list(path_dict, destination), searched
+                elif neighbor not in searched:
+                    searched.add(neighbor)
+                    candidates.append(neighbor)
+                    path_dict[neighbor] = node
+        return self.path_dict_to_path_list(path_dict, destination), searched
 
-    def bfs(self, row1, col1, row2, col2):
-        pass
+    def bfs(self, source, destination):
+        """
+            candidates is a Queue
+            searched nodes will not be revisited
+        """
+        path_dict, searched, candidates = dict(), set([source]), deque()  # path_dict = {child: parent}
+        candidates.append(source)
+        while len(candidates) > 0:
+            node = candidates.popleft()
+            for neighbor in self.approachable_neighbors(node):
+                if neighbor == destination:
+                    searched.add(neighbor)
+                    path_dict[destination] = node
+                    return self.path_dict_to_path_list(path_dict, destination), searched
+                elif neighbor not in searched:
+                    searched.add(neighbor)
+                    candidates.append(neighbor)
+                    path_dict[neighbor] = node
+        return self.path_dict_to_path_list(path_dict, destination), searched
 
-    def dijkstra(self, row1, col1, row2, col2):
-        pass
+    def dijkstra(self, source, destination):
+        """
+            candidates is a Priority Map
+            searched nodes can be put into candidates again
+        """
+        path_dict, visited, searched, candidates = dict(), set(), set([source]), PriorityMap(min_heap=True)  # path_dict = {child: parent}
+        g_values = {source: 0}                             # g_value: path cost to source
+        candidates.push(0, source)                         # priority = g_value
+        while len(candidates) > 0:
+            _, node = candidates.pop()
+            visited.add(node)
+            for neighbor in self.approachable_neighbors(node):
+                if neighbor == destination:
+                    searched.add(neighbor)
+                    path_dict[destination] = node
+                    return self.path_dict_to_path_list(path_dict, destination), searched
+                elif neighbor not in visited:
+                    searched.add(neighbor)
+                    if neighbor not in g_values:
+                        g_values[neighbor] = float("inf")
+                    g_values[neighbor] = min(g_values[neighbor], g_values[node] + 1)
+                    candidates.push(g_values[neighbor], neighbor)
+                    path_dict[neighbor] = node
+        return self.path_dict_to_path_list(path_dict, destination), searched
 
     def a_star(self, source, destination):
+        """
+            candidates is a Priority Map
+            searched nodes can be put into candidates again
+            h_value = 0, it becomes dijkstra
+            h_value >> g_value, it becomes bfs
+        """
         def manhattan_distance(source, destination):
             return abs(source[0] - destination[0]) + abs(source[1] - destination[1])
 
-        def a_star_shortest_path(source, destination):
-            path, visited, searched, candidates = dict(), set(), set([source]), PriorityMap(min_heap=True)  # path = {child: parent}
-            g_values = {source: 0}                               # g_value: path cost to source
-            h_value = manhattan_distance(source, destination)    # h_value: huristic estimate of the path cost to destination
-            f_value = g_values[source] + h_value                 # f_value: g_value + h_value
-            candidates.push(f_value, source)                     # priority = f_value
-            while len(candidates) > 0:
-                _, node = candidates.pop()
-                visited.add(node)
-                for neighbor in self.approachable_neighbors(node):
-                    if neighbor == destination:
-                        searched.add(neighbor)
-                        path[destination] = node
-                        return path, searched
-                    elif neighbor not in visited:
-                        searched.add(neighbor)
-                        if neighbor not in g_values:
-                            g_values[neighbor] = float("inf")
-                        g_values[neighbor] = min(g_values[neighbor], g_values[node] + 1)
-                        f_value = g_values[neighbor] + manhattan_distance(source, destination)
-                        candidates.push(f_value, neighbor)
-                        path[neighbor] = node
-            return path, searched
+        path_dict, visited, searched, candidates = dict(), set(), set([source]), PriorityMap(min_heap=True)  # path_dict = {child: parent}
+        g_values = {source: 0}                             # g_value: path cost to source
+        h_value = manhattan_distance(source, destination)  # h_value: huristic estimate of the path cost to destination
+        f_value = g_values[source] + h_value               # f_value: g_value + h_value
+        candidates.push(f_value, source)                   # priority = f_value
+        while len(candidates) > 0:
+            _, node = candidates.pop()
+            visited.add(node)
+            for neighbor in self.approachable_neighbors(node):
+                if neighbor == destination:
+                    searched.add(neighbor)
+                    path_dict[destination] = node
+                    return self.path_dict_to_path_list(path_dict, destination), searched
+                elif neighbor not in visited:
+                    searched.add(neighbor)
+                    if neighbor not in g_values:
+                        g_values[neighbor] = float("inf")
+                    g_values[neighbor] = min(g_values[neighbor], g_values[node] + 1)
+                    f_value = g_values[neighbor] + manhattan_distance(source, destination)
+                    candidates.push(f_value, neighbor)
+                    path_dict[neighbor] = node
+        return self.path_dict_to_path_list(path_dict, destination), searched
 
-        path, searched = a_star_shortest_path(source, destination)
+    def update_maze(self, maze, path, searched):
         if self.show_searched:
             for node in searched:
-                self.map[node[0]][node[1]] = Square.State.Searched
-        parent = path[destination]
-        self.map[destination[0]][destination[1]] = Square.State.Path
-        while parent:
-            self.map[parent[0]][parent[1]] = Square.State.Path
-            parent = path[parent] if parent in path else None
+                maze[node[0]][node[1]] = Square.State.Searched
+        for node in path:
+            maze[node[0]][node[1]] = Square.State.Path
+        return maze
 
-    def run(self):
-        self.build_map()
-        self.print_map()
+    def run(self, maze=None):
+        # maze = [
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        # ]
+        # source, destination = (35,29), (33,29)
+        self.build_maze(maze)
+        self.print_maze(self.maze)
         source = self.prompt_for_selection("start point")
         destination = self.prompt_for_selection("  end point")
-        self.a_star(source, destination)
-        self.print_map()
+        path, searched = self.dfs(source, destination)
+        print(f"BFS - path: {len(path)}, searched area: {len(searched)}")
+        self.print_maze(self.update_maze(self.copy_maze(), path, searched))
+        path, searched = self.bfs(source, destination)
+        print(f"DFS - path: {len(path)}, searched area: {len(searched)}")
+        self.print_maze(self.update_maze(self.copy_maze(), path, searched))
+        path, searched = self.dijkstra(source, destination)
+        print(f"Dijkstra - path: {len(path)}, searched area: {len(searched)}")
+        self.print_maze(self.update_maze(self.copy_maze(), path, searched))
+        path, searched = self.a_star(source, destination)
+        print(f"A* - path: {len(path)}, searched area: {len(searched)}")
+        self.print_maze(self.update_maze(self.copy_maze(), path, searched))
 
 
 parser = argparse.ArgumentParser(description="Maze")
