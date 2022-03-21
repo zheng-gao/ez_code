@@ -301,4 +301,11 @@ home
 └── var
     └── tmp
         └── test.txt
+>>> fs.tree("/", 2)
+/
+├── home
+│   ├── user_1
+│   └── user_2
+└── var
+    └── tmp
 ```

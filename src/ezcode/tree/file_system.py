@@ -125,8 +125,10 @@ class FileSystem:
                 raise IsADirectoryError(path)
             node.content = node.content + content if node.content else content
 
-    def tree(self, path: str = ""):
-        def _dfs(inode, last_one):
+    def tree(self, path: str = "", depth: int = None):
+        def _dfs(inode, depth, last_one):
+            if depth is not None and len(last_one) > depth:
+                return
             if len(last_one) > 0:
                 indentation = ""
                 for bar in last_one[:-1]:
@@ -137,15 +139,12 @@ class FileSystem:
             children.sort(key=cmp_to_key(iNode.cmp))
             for i, node in enumerate(children):
                 last_one.append(i == len(children) - 1)
-                _dfs(node, last_one)
+                _dfs(node, depth, last_one)
                 last_one.pop()
 
         if path:
             print(path)
         else:
             self.pwd()
-        _dfs(self.get_inode(path), last_one=list())
-
-
-
+        _dfs(inode=self.get_inode(path), depth=depth, last_one=list())
 
