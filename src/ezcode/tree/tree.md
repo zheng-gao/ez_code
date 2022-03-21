@@ -225,3 +225,80 @@ tony
 ^:5 -> b:2:$ -> c:1 -> a:1 -> b:1:$
 ^:5 -> c:1 -> a:1 -> b:1:$
 ```
+
+## File System
+```python
+>>> from ezcode.tree.file_system import FileSystem
+>>> fs = FileSystem()
+>>> fs.mkdir("/var/tmp", True)
+>>> fs.echo_to("/var/tmp/test.txt", "hello world")
+>>> fs.cd("/var/tmp")
+>>> fs.pwd()
+/var/tmp
+>>> fs.ls()
+[f] test.txt
+>>> fs.cat("test.txt")
+hello world
+>>> fs.cd("../..")
+>>> fs.pwd()
+/
+>>> fs.mkdir("/home")
+>>> for user in ["user_1", "user_2", "user_3"]:
+...     fs.mkdir(f"/home/{user}")
+...     fs.touch(f"/home/{user}/.profile")
+...     fs.echo_to(f"/home/{user}/.profile", f"ID={user}")
+...
+>>> fs.ls("/")
+[d] home
+[d] var
+>>> fs.cd("/home")
+>>> fs.pwd()
+/home
+>>> fs.ls()
+[d] user_1
+[d] user_2
+[d] user_3
+>>> fs.cd("user_1")
+>>> fs.echo_to("test.txt", "hello user_1")
+>>> fs.pwd()
+/home/user_1
+>>> fs.ls()
+[f] .profile
+[f] test.txt
+>>> fs.cat(".profile")
+ID=user_1
+>>> fs.cat("/home/user_3/.profile")
+ID=user_3
+>>> fs.ls("/home/user_3")
+[f] .profile
+>>> fs.rm("/home/user_3")
+>>> fs.cd("..")
+>>> fs.pwd()
+/home
+>>> fs.cat("user_1/test.txt")
+hello user_1
+>>> fs.ls()
+[d] user_1
+[d] user_2
+>>> fs.cd("..")
+>>> fs.pwd()
+/
+>>> fs.tree("home")
+home
+├── user_1
+│   ├── .profile
+│   └── test.txt
+└── user_2
+    └── .profile
+>>> fs.tree()
+/
+├── home
+│   ├── user_1
+│   │   ├── .profile
+│   │   └── test.txt
+│   └── user_2
+│       └── .profile
+└── var
+    └── tmp
+        └── test.txt
+```
