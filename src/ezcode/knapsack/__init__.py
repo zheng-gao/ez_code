@@ -1,3 +1,6 @@
+from typing import Callable
+
+
 class Knapsack:
     @staticmethod
     def best_value(
@@ -5,7 +8,7 @@ class Knapsack:
         sizes: list,
         values: list,
         quantities,
-        min_max=max,
+        min_max: Callable = max,
         zero_capacity_value=0,
         fill_to_capacity=True,
         output_item_list=True
@@ -90,7 +93,7 @@ class Knapsack:
         capacity: int,
         sizes: list,
         values: list,
-        min_max=max,
+        min_max: Callable = max,
         zero_capacity_value=0,
         fill_to_capacity=True,
         iterate_sizes_first=True,
@@ -185,7 +188,7 @@ class Knapsack:
         sizes: list,
         values: list,
         quantities=1,
-        min_max=max,
+        min_max: Callable = max,
         zero_capacity_value=0,
         fill_to_capacity=True,
         output_dp_table=False,
@@ -246,7 +249,7 @@ class Knapsack:
         capacity: int,
         sizes: list,
         values: list,
-        min_max=max,
+        min_max: Callable = max,
         zero_capacity_value=0,
         fill_to_capacity=True,
         iterate_sizes_first=True,
@@ -294,7 +297,7 @@ class Knapsack:
         capacity: int,
         sizes: list,
         values: list,
-        min_max=max,
+        min_max: Callable = max,
         zero_capacity_value=0,
         fill_to_capacity=True,
         iterate_sizes_first=True,

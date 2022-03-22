@@ -1,4 +1,6 @@
 from collections import deque
+from typing import Callable
+
 from ezcode.heap import PriorityMap
 
 
@@ -72,7 +74,7 @@ class Graph:
     on dense graph, dijkstra is faster than spfa
     """
 
-    def dfs_path_value(self, src_node_id, dst_node_id, visited=set(), self_loop_weight=0, disconnected_edge_weight=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min):
+    def dfs_path_value(self, src_node_id, dst_node_id, visited=set(), self_loop_weight=0, disconnected_edge_weight=float("inf"), path_value_func=lambda a, b: a + b, min_max_func: Callable = min):
         """ O(V!) """
         if src_node_id == dst_node_id:
             return self_loop_weight
@@ -103,7 +105,7 @@ class Graph:
                         return path_values[neighbor_id]
         return path_values[neighbor_id] if dst_node_id is not None else path_values
 
-    def dijkstra(self, src_node_id, self_loop_weight=0, disconnected_edge_weight=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min):
+    def dijkstra(self, src_node_id, self_loop_weight=0, disconnected_edge_weight=float("inf"), path_value_func=lambda a, b: a + b, min_max_func: Callable = min):
         """ Positive Weight Only: O(V + E*logV). On dense graphs, dijkstra is faster than spfa """
         path_values, visited = dict(), set()
         min_heap = True if min_max_func == min else False
@@ -119,7 +121,7 @@ class Graph:
                     candidates.push(path_values[relax_node_id], relax_node_id)
         return path_values
 
-    def spfa(self, src_node_id, self_loop_weight=0, disconnected_edge_weight=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min, check_cycle=False):
+    def spfa(self, src_node_id, self_loop_weight=0, disconnected_edge_weight=float("inf"), path_value_func=lambda a, b: a + b, min_max_func: Callable = min, check_cycle=False):
         """ Improved Bellman Ford Algorithm: can handle Negative Weight and detect Negative Cycle: worst case O(V*E), sparse graphs O(kE), dense graph O(VE) """
         path_values, queue, queue_set = dict(), deque([src_node_id]), set([src_node_id])
         enqueue_counters = dict() if check_cycle else None
@@ -146,7 +148,7 @@ class Graph:
                                     raise PositiveCycleExist(f"node-id \"{relax_node_id}\"")
         return path_values
 
-    def floyd(self, self_loop_weight=0, disconnected_edge_weight=float("inf"), path_value_func=lambda a, b: a + b, min_max_func=min):
+    def floyd(self, self_loop_weight=0, disconnected_edge_weight=float("inf"), path_value_func=lambda a, b: a + b, min_max_func: Callable = min):
         """ Can handle Negative Weight but not Negative cycle: O(V^3) """
         adjacent_matrix = dict()  # <node_id, <node_id, path_value>>
         for n1 in self.nodes.keys():
