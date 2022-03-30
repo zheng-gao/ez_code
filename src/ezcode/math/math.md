@@ -24,6 +24,10 @@
     ['C', 'B', 'A'],
     ['C', 'B', 'B'],
 ]
+
+>>> from ezcode.math.discrete import next_lexicographic_permutation
+>>> next_lexicographic_permutation(['A', 'A', 'B'])
+['A', 'B', 'A']
 ```
 
 # Combinations
