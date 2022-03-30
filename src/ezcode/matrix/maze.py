@@ -130,11 +130,30 @@ class Maze:
             parent = path_dict[parent] if parent in path_dict else None
         return path_list[::-1]
 
-    # Path finding algorithms
+    """
+    Path finding algorithms Summary:
+             Shortest Path    Searched Area     f_value
+    bfs         no               larger         h_value >> g_value
+    dfs         yes              largest        N/A
+    dijkstra    yes              larger         h_value =0
+    A*          yes              small          g_value + h_value
+
+    Notes:
+    A* f_value = g_value + h_value
+    The more accurate we can estimate the path length from a node to destination (h_value), the faster A* can run.
+    If h_value = 0, which means we don't give any estimation, it becomes Dijkstra, the lower h_value the more nodes to expand
+    If h_value is the same as real value, A* won't expand any node and only follow the shortest path
+    If h_value is larger than real value, A* won't guarantee the shortest path but it can run faster
+    If h_value >> g_value, which means we trust the heuristic path length, it becomes bfs and does not guarantee the shortest path
+    The heuristic path length must keep the same order as the real ones
+    e.g. if a > b then h_a > h_b
+    """
+
     def dfs(self, source, destination):
         """
             candidates is a Stack
             searched nodes will not be revisited
+            does not guarantee the shortest path
         """
         path_dict, searched, candidates = dict(), set([source]), list()  # path_dict = {child: parent}
         candidates.append(source)
@@ -200,8 +219,8 @@ class Maze:
         """
             candidates is a Priority Map
             searched nodes can be put into candidates again
-            h_value = 0, it becomes dijkstra
-            h_value >> g_value, it becomes bfs
+            h_value = 0, it becomes dijkstra which is slower than A*
+            h_value >> g_value, it becomes bfs which does not guarantee the shortest path
         """
         def manhattan_distance(source, destination):
             return abs(source[0] - destination[0]) + abs(source[1] - destination[1])
