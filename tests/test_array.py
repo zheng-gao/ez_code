@@ -1,6 +1,5 @@
-from ezcode.array.search import binary_search
-from ezcode.array.rotate import rotate
-from ezcode.array.utils import copy, array_to_string, delete_all
+from ezcode.array.search import binary_search, binary_search_range
+from ezcode.array.utils import copy, array_to_string, delete_all, rotate
 from ezcode.array.utils import split_list, split_list_generator, chunk_list, chunk_list_generator
 from ezcode.array.lcs import longest_common_subsequence, longest_common_subarray
 from fixture.utils import equal_list
@@ -42,11 +41,31 @@ def test_binary_search():
     assert binary_search(array=array, target=-1) is None
     assert 7 == binary_search(array=array, target=target, is_ascending=True)
     assert 2 == binary_search(array=array[::-1], target=target, is_ascending=False)
+    assert (7, 7) == binary_search_range(array=array, target=target, is_ascending=True, is_inclusive=True)
+    assert (None, None) == binary_search_range(array=array, target=3.5, is_ascending=True, is_inclusive=True)
+    assert (3, 4) == binary_search_range(array=array, target=3.5, is_ascending=True, is_inclusive=False)
+    assert (9, None) == binary_search_range(array=array, target=10, is_ascending=True, is_inclusive=False)
+    assert (None, 0) == binary_search_range(array=array, target=-1, is_ascending=True, is_inclusive=False)
+    assert (2, 2) == binary_search_range(array=array[::-1], target=target, is_ascending=False, is_inclusive=True)
+    assert (None, None) == binary_search_range(array=array[::-1], target=3.5, is_ascending=False, is_inclusive=True)
+    assert (5, 6) == binary_search_range(array=array[::-1], target=3.5, is_ascending=False, is_inclusive=False)
+    assert (None, 0) == binary_search_range(array=array[::-1], target=10, is_ascending=False, is_inclusive=False)
+    assert (9, None) == binary_search_range(array=array[::-1], target=-1, is_ascending=False, is_inclusive=False)
     array, target = [0, 1, 1, 2, 3, 3, 3, 3, 4, 5, 6, 7, 7, 7, 8, 9, 9], 3
-    assert 4 == binary_search(array=array, target=target, is_ascending=True, is_left_most=True)
-    assert 7 == binary_search(array=array, target=target, is_ascending=True, is_left_most=False)
-    assert 9 == binary_search(array=array[::-1], target=target, is_ascending=False, is_left_most=True)
-    assert 12 == binary_search(array=array[::-1], target=target, is_ascending=False, is_left_most=False)
+    assert 4 == binary_search(array=array, target=target, is_ascending=True, has_duplicates=True, is_left_most=True)
+    assert 7 == binary_search(array=array, target=target, is_ascending=True, has_duplicates=True, is_left_most=False)
+    assert 9 == binary_search(array=array[::-1], target=target, is_ascending=False, has_duplicates=True, is_left_most=True)
+    assert 12 == binary_search(array=array[::-1], target=target, is_ascending=False, has_duplicates=True, is_left_most=False)
+    assert (4, 7) == binary_search_range(array=array, target=target, is_ascending=True, is_inclusive=True)
+    assert (None, None) == binary_search_range(array=array, target=3.5, is_ascending=True, is_inclusive=True)
+    assert (7, 8) == binary_search_range(array=array, target=3.5, is_ascending=True, is_inclusive=False)
+    assert (16, None) == binary_search_range(array=array, target=10, is_ascending=True, is_inclusive=False)
+    assert (None, 0) == binary_search_range(array=array, target=-1, is_ascending=True, is_inclusive=False)
+    assert (9, 12) == binary_search_range(array=array[::-1], target=target, is_ascending=False, is_inclusive=True)
+    assert (None, None) == binary_search_range(array=array[::-1], target=3.5, is_ascending=False, is_inclusive=True)
+    assert (8, 9) == binary_search_range(array=array[::-1], target=3.5, is_ascending=False, is_inclusive=False)
+    assert (None, 0) == binary_search_range(array=array[::-1], target=10, is_ascending=False, is_inclusive=False)
+    assert (16, None) == binary_search_range(array=array[::-1], target=-1, is_ascending=False, is_inclusive=False)
 
 
 def test_rotate():

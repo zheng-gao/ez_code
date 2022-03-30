@@ -1,4 +1,4 @@
-from ezcode.math.discrete import permutation_size, permutations, all_items_permutations
+from ezcode.math.discrete import permutation_size, permutations, all_items_permutations, next_lexicographic_permutation
 from ezcode.math.discrete import combination_size, combinations, all_subsets
 from ezcode.math.calculator import infix_notation_to_reverse_polish_notation
 from ezcode.math.calculator import evaluate_reverse_polish_notation
@@ -24,6 +24,12 @@ def test_combination_size():
     assert combination_size(4, 2) == 6
     assert combination_size(5, 2) == 10
     assert combination_size(5, 3) == 10
+
+
+def test_next_lexicographic_permutation():
+    assert [1, 3, 2] == next_lexicographic_permutation([1, 2, 3])
+    assert [1, 2, 3] == next_lexicographic_permutation([3, 2, 1])
+    assert [1, 5, 1] == next_lexicographic_permutation([1, 1, 5])
 
 
 def test_permutations():

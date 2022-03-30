@@ -1,4 +1,5 @@
-from ezcode.array.utils import swap
+from ezcode.array.utils import swap, reverse
+from ezcode.array.search import binary_search_subarray_exclusive_boundery
 
 
 def permutation_size(total_size: int, selection_size: int) -> int:
@@ -37,6 +38,24 @@ def permutations(selection_size: int, items: list) -> list:
     result = list()
     _permutations(selection_size, items, set(), list(), result)
     return result
+
+
+def next_lexicographic_permutation(items: list, copy=True) -> list:
+    if copy:
+        items = items.copy()
+    begin = -1
+    for i in range(len(items) - 2, -1, -1):
+        if items[i] < items[i + 1]:
+            begin = i
+            break
+    if begin < 0:
+        reverse(items)
+    else:
+        first_greater_from_end = binary_search_subarray_exclusive_boundery(
+            items, begin=begin + 1, end=len(items) - 1, target=items[begin], is_ascending=False, is_smaller=False)
+        swap(items, begin, first_greater_from_end)
+        reverse(items, begin + 1, len(items) - 1)
+    return items
 
 
 def all_items_permutations(items: list) -> list:
