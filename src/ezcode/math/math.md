@@ -66,6 +66,24 @@
 ]
 ```
 
+# Partitions
+
+```python
+>>> from ezcode.array.utils import print_array
+>>> from ezcode.math.discrete import partitions
+>>> print_array(partitions("1234"), align=False)
+[
+    [1234],
+    [1, 234],
+    [1, 2, 34],
+    [1, 2, 3, 4],
+    [1, 23, 4],
+    [12, 34],
+    [12, 3, 4],
+    [123, 4],
+]
+```
+
 # Calculator
 ```python
 >>> from ezcode.math.calculator import infix_notation_to_reverse_polish_notation

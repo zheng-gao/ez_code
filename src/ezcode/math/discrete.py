@@ -154,3 +154,36 @@ def all_subsets(items: list, has_duplicate=True):
     result.sort(key=lambda x: len(x))  # nice to have
     return result
 
+
+def partitions(string: str) -> list:
+    """
+        '1234' -> [
+            ['1', '234'],
+            ['1', '2', '34'],
+            ['1', '2', '3', '4'],
+            ['1', '23', '4'],
+            ['12', '34'],
+            ['12', '3', '4'],
+            ['123', '4']
+        ]
+    """
+    return list(partition_generator(string))
+
+
+def partition_generator(string: str):
+    yield [string]
+    for i in range(1, len(string)):
+        for parts in partition_generator(string[i:]):
+            yield [string[0:i]] + parts
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,5 +1,5 @@
 from ezcode.math.discrete import permutation_size, permutations, all_items_permutations, next_lexicographic_permutation
-from ezcode.math.discrete import combination_size, combinations, all_subsets
+from ezcode.math.discrete import combination_size, combinations, all_subsets, partitions
 from ezcode.math.calculator import infix_notation_to_reverse_polish_notation
 from ezcode.math.calculator import evaluate_reverse_polish_notation
 from ezcode.math.calculator import calculate
@@ -173,14 +173,25 @@ def test_all_subsets_unique():
     assert equal_list(benchmark, all_subsets(items=[1, 2, 3], has_duplicate=False))
 
 
+def test_partition():
+    assert [
+        ['1223'],
+        ['1', '223'],
+        ['1', '2', '23'],
+        ['1', '2', '2', '3'],
+        ['1', '22', '3'],
+        ['12', '23'],
+        ['12', '2', '3'],
+        ['122', '3']
+    ] == partitions("1223")
+
+
 def test_calculator():
     arithmetic_expression = "-2/-1 + √4!^2*((-1 + 5) -2)*4/ 2^2"
     rpn = infix_notation_to_reverse_polish_notation(arithmetic_expression)
     assert rpn == [-2, -1, '/', 4, '!', '√', 2, '^', -1, 5, '+', 2, '-', '*', 4, '*', 2, 2, '^', '/', '+']
     assert evaluate_reverse_polish_notation(rpn) == 49.99999999999999
     assert calculate(arithmetic_expression) == 49.99999999999999
-
-
 
 
 
