@@ -1,5 +1,5 @@
 from ezcode.math.discrete import permutation_size, permutations, all_items_permutations, next_lexicographic_permutation
-from ezcode.math.discrete import combination_size, combinations, all_subsets, partitions
+from ezcode.math.discrete import combination_size, combinations, all_subsets, partitions, enumerations
 from ezcode.math.calculator import infix_notation_to_reverse_polish_notation
 from ezcode.math.calculator import evaluate_reverse_polish_notation
 from ezcode.math.calculator import calculate
@@ -174,16 +174,41 @@ def test_all_subsets_unique():
 
 
 def test_partition():
-    assert [
-        ['1223'],
-        ['1', '223'],
-        ['1', '2', '23'],
-        ['1', '2', '2', '3'],
-        ['1', '22', '3'],
-        ['12', '23'],
-        ['12', '2', '3'],
-        ['122', '3']
-    ] == partitions("1223")
+    benchmark = [
+        [[1, 2, 3, 4]],
+        [[1], [2, 3, 4]],
+        [[1], [2], [3, 4]],
+        [[1], [2], [3], [4]],
+        [[1], [2, 3], [4]],
+        [[1, 2], [3, 4]],
+        [[1, 2], [3], [4]],
+        [[1, 2, 3], [4]]
+    ]
+    assert equal_list(benchmark, partitions([1, 2, 3, 4]))
+
+
+def test_enumerations():
+    item_lists = [
+        ['a', 'b'],
+        ['X', 'Y'],
+        [1, 2, 3],
+    ]
+    benchmark = [
+        ['a', 'X', 1],
+        ['a', 'X', 2],
+        ['a', 'X', 3],
+        ['a', 'Y', 1],
+        ['a', 'Y', 2],
+        ['a', 'Y', 3],
+        ['b', 'X', 1],
+        ['b', 'X', 2],
+        ['b', 'X', 3],
+        ['b', 'Y', 1],
+        ['b', 'Y', 2],
+        ['b', 'Y', 3]
+    ]
+    assert equal_list(benchmark, enumerations(item_lists, recursive=True))
+    assert equal_list(benchmark, enumerations(item_lists, recursive=False))
 
 
 def test_calculator():

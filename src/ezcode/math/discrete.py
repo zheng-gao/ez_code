@@ -155,29 +155,79 @@ def all_subsets(items: list, has_duplicate=True):
     return result
 
 
-def partitions(string: str) -> list:
+def partitions(items: list) -> list:
     """
-        '1234' -> [
-            ['1234'],
-            ['1', '234'],
-            ['1', '2', '34],
-            ['1', '2', '3', '4'],
-            ['1', '23', '4'],
-            ['12', '34'],
-            ['12', '3', '4'],
-            ['123', '4'],
+        [1, 2, 3, 4]
+        =>
+        [
+            [[1, 2, 3, 4]],
+            [[1], [2, 3, 4]],
+            [[1], [2], [3, 4]],
+            [[1], [2], [3], [4]],
+            [[1], [2, 3], [4]],
+            [[1, 2], [3, 4]],
+            [[1, 2], [3], [4]],
+            [[1, 2, 3], [4]]
         ]
     """
-    return list(partition_generator(string))
+    return list(partition_generator(items))
 
 
-def partition_generator(string: str):
-    yield [string]
-    for i in range(1, len(string)):
-        for parts in partition_generator(string[i:]):
-            yield [string[0:i]] + parts
+def partition_generator(items: list):
+    yield [items]
+    for i in range(1, len(items)):
+        for parts in partition_generator(items[i:]):
+            yield [items[0:i]] + parts
 
 
+def enumerations(item_lists: list, recursive=False) -> list:
+    """
+        [
+            ['a', 'b'],
+            ['X', 'Y'],
+            [1, 2, 3],
+        ]
+        =>
+        [
+            ['a', 'X', 1],
+            ['a', 'X', 2],
+            ['a', 'X', 3],
+            ['a', 'Y', 1],
+            ['a', 'Y', 2],
+            ['a', 'Y', 3],
+            ['b', 'X', 1],
+            ['b', 'X', 2],
+            ['b', 'X', 3],
+            ['b', 'Y', 1],
+            ['b', 'Y', 2],
+            ['b', 'Y', 3]
+        ]
+    """
+    def _enumerations(output: list, item_lists: list, item_list: list, index: int):
+        if index == len(item_list):
+            output.append(item_list.copy())
+        else:
+            for item in item_lists[index]:
+                item_list[index] = item
+                _enumerations(output, item_lists, item_list, index + 1)
+    if not item_lists:
+        return list()
+    output = list()
+    if recursive:
+        _enumerations(output, item_lists, [None] * len(item_lists), 0)
+    else:
+        stack = list()
+        for item in item_lists[0][::-1]:
+            stack.append([item])
+        while len(stack) > 0:
+            template = stack.pop()
+            size = len(template)
+            if size == len(item_lists):
+                output.append(template)
+            else:
+                for item in item_lists[size][::-1]:
+                    stack.append(template + [item])
+    return output
 
 
 

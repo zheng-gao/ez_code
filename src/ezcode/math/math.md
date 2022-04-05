@@ -71,16 +71,66 @@
 ```python
 >>> from ezcode.array.utils import print_array
 >>> from ezcode.math.discrete import partitions
->>> print_array(partitions("1234"), align=False)
+>>> print_array(partitions([1, 2, 3, 4]))
 [
-    [1234],
-    [1, 234],
-    [1, 2, 34],
-    [1, 2, 3, 4],
-    [1, 23, 4],
-    [12, 34],
-    [12, 3, 4],
-    [123, 4],
+    [
+        [1, 2, 3, 4],
+    ],
+    [
+        [1],
+        [2, 3, 4],
+    ],
+    [
+        [1],
+        [2],
+        [3, 4],
+    ],
+    [
+        [1],
+        [2],
+        [3],
+        [4],
+    ],
+    [
+        [1],
+        [2, 3],
+        [4],
+    ],
+    [
+        [1, 2],
+        [3, 4],
+    ],
+    [
+        [1, 2],
+        [3],
+        [4],
+    ],
+    [
+        [1, 2, 3],
+        [4],
+    ],
+]
+```
+
+# Enumerations
+
+```python
+>>> from ezcode.array.utils import print_array
+>>> from ezcode.math.discrete import enumerations
+>>> print_array(enumerations([['a', 'b'], ['X', 'Y'], [1, 2, 3]]))
+[
+    [a, X, 1],
+    [a, X, 2],
+    [a, X, 3],
+    [a, Y, 1],
+    [a, Y, 2],
+    [a, Y, 3],
+    [b, X, 1],
+    [b, X, 2],
+    [b, X, 3],
+    [b, Y, 1],
+    [b, Y, 2],
+    [b, Y, 3],
 ]
 ```
 
