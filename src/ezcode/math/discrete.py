@@ -215,16 +215,16 @@ def enumerations(item_lists: list, recursive=False) -> list:
     if recursive:
         _enumerations(output, item_lists, [None] * len(item_lists), 0)
     else:
-        stack = list()
+        stack, item_lists_size = list(), len(item_lists)
         for item in item_lists[0][::-1]:
             stack.append([item])
         while len(stack) > 0:
             template = stack.pop()
-            size = len(template)
-            if size == len(item_lists):
+            template_size = len(template)
+            if template_size == item_lists_size:
                 output.append(template)
             else:
-                for item in item_lists[size][::-1]:
+                for item in item_lists[template_size][::-1]:
                     stack.append(template + [item])
     return output
 
