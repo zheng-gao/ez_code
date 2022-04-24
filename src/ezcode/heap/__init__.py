@@ -12,6 +12,9 @@ class PriorityQueue:
     def __str__(self):
         return str(self.heap)
 
+    def clear(self):
+        self.heap.clear()
+
     def push(self, *priority_n_key):
         """ O(logN) """
         if len(priority_n_key) == 0:
@@ -98,6 +101,10 @@ class PriorityMap(PriorityQueue):
 
     def __contains__(self, key):
         return key in self.map
+
+    def clear(self):
+        super().clear()
+        self.map.clear()
 
     def get_priority(self, key):
         """ O(1) """
