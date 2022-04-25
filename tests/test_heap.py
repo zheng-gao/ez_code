@@ -1,5 +1,5 @@
 from fixture.utils import equal_list
-from ezcode.heap import PriorityQueue, PriorityMap
+from ezcode.heap import PriorityQueue, PriorityMap, PriorityQueueOnPartialArray
 
 
 def test_priority_queue():
@@ -148,3 +148,29 @@ def test_heap_custom_comparator():
     for pop_data in max_pop_list:
         assert max_queue.pop() == pop_data
         assert max_map.pop() == pop_data
+
+
+
+def test_priority_queue_on_partial_array():
+    push_list = [(4, "D"), (3, "C"), (5, "E"), (1, "A"), (2, "B")]
+
+    min_queue = PriorityQueueOnPartialArray(array=[None] * 6, begin=3, min_heap=True)
+    min_peek_list = [(4, "D"), (3, "C"), (3, "C"), (1, "A"), (1, "A")]
+    for push_data, peek_data in zip(push_list, min_peek_list):
+        min_queue.push(push_data)
+        assert min_queue.peek() == peek_data
+    assert min_queue.heap == [None, None, None, (1, "A"), (2, "B"), (5, "E"), (4, "D"), (3, "C")]
+    min_pop_list = [(1, "A"), (2, "B"), (3, "C"), (4, "D"), (5, "E")]
+    for pop_data in min_pop_list:
+        assert min_queue.pop() == pop_data
+
+    max_queue = PriorityQueueOnPartialArray(array=[None] * 6, begin=3, min_heap=False)
+    max_peek_list = [(4, "D"), (4, "D"), (5, "E"), (5, "E"), (5, "E")]
+    for push_data, peek_data in zip(push_list, max_peek_list):
+        max_queue.push(push_data)
+        assert max_queue.peek() == peek_data
+    assert max_queue.heap == [None, None, None, (5, "E"), (3, "C"), (4, "D"), (1, "A"), (2, "B")]
+    max_pop_list = [(5, "E"), (4, "D"), (3, "C"), (2, "B"), (1, "A")]
+    for pop_data in max_pop_list:
+        assert max_queue.pop() == pop_data
+
