@@ -1,4 +1,5 @@
 from ezcode.array.search import binary_search, binary_search_range
+from ezcode.array.sort import quick_sort
 from ezcode.array.utils import copy, array_to_string, delete_all, rotate
 from ezcode.array.utils import split_list, split_list_generator, chunk_list, chunk_list_generator
 from ezcode.array.lcs import longest_common_subsequence, longest_common_subarray
@@ -188,3 +189,25 @@ def test_split_chunk_list():
         for sublist in chunk_list_generator(array, i):
             equal_list(sublist, chunk_benchmark[i - 1][sub_i])
             sub_i += 1
+
+
+def test_quick_sort():
+    data  = [7, 2, 4, 6, 5, 4, 1, 3, 8, 0, 6, 9, 4]
+    quick_sort(data)
+    assert data == [0, 1, 2, 3, 4, 4, 4, 5, 6, 6, 7, 8, 9]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

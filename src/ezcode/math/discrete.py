@@ -209,6 +209,7 @@ def enumerations(item_lists: list, recursive=False) -> list:
             for item in item_lists[index]:
                 item_list[index] = item
                 _enumerations(output, item_lists, item_list, index + 1)
+
     if not item_lists:
         return list()
     output = list()
