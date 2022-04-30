@@ -14,6 +14,7 @@ class DisjointSets:
 
     def union(self, node1, node2):
         """
+            O(logN), amortized O(1)
             return: True merged, False already in the same set
         """
         parent1, parent2 = self.find(node1), self.find(node2)
@@ -29,7 +30,7 @@ class DisjointSets:
         return False
 
     def find(self, node):
-        """ O(logN) on average (amortized) """
+        """ O(logN), amortized O(1) """
         if node in self.parents:
             path_compression = list()
             while node != self.parents[node]:
