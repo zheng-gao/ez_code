@@ -233,12 +233,22 @@ tony
 ```python
 >>> from ezcode.tree.forest import DisjointSets
 >>> ds = DisjointSets(set([0, 1, 2, 3, 4, 5, 6]))
+>>> ds.get_max_set_size()
+1
 >>> len(ds)
 7
 >>> ds.union(3, 4)
+True
 >>> ds.union(1, 0)
+True
 >>> ds.union(4, 1)
+True
+>>> ds.get_max_set_size()
+4
+>>> ds.union(4, 0)
+False
 >>> ds.union(5, 2)
+True
 >>> len(ds)
 3
 >>> ds.is_joint(1, 4)
@@ -250,6 +260,9 @@ False
 >>> ds.get_set_size(1)
 4
 >>> ds.union(2, 3)
+True
+>>> ds.get_max_set_size()
+6
 >>> len(ds)
 2
 >>> ds.is_joint(1, 2)
@@ -257,8 +270,6 @@ True
 >>> ds.is_joint(1, 6)
 False
 >>> ds.get_set_size(2)
-6
->>> ds.get_set_size(1)
 6
 >>> ds.get_set_size(6)
 1
