@@ -226,6 +226,45 @@ tony
 ^:5 -> c:1 -> a:1 -> b:1:$
 ```
 
+
+# Forest
+
+## Disjoint Sets
+```python
+>>> from ezcode.tree.forest import DisjointSets
+>>> ds = DisjointSets(set([0, 1, 2, 3, 4, 5, 6]))
+>>> len(ds)
+7
+>>> ds.union(3, 4)
+>>> ds.union(1, 0)
+>>> ds.union(4, 1)
+>>> ds.union(5, 2)
+>>> len(ds)
+3
+>>> ds.is_joint(1, 4)
+True
+>>> ds.is_joint(1, 2)
+False
+>>> ds.get_set_size(2)
+2
+>>> ds.get_set_size(1)
+4
+>>> ds.union(2, 3)
+>>> len(ds)
+2
+>>> ds.is_joint(1, 2)
+True
+>>> ds.is_joint(1, 6)
+False
+>>> ds.get_set_size(2)
+6
+>>> ds.get_set_size(1)
+6
+>>> ds.get_set_size(6)
+1
+```
+
+
 ## File System
 ```python
 >>> from ezcode.tree.file_system import FileSystem

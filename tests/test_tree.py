@@ -1,3 +1,4 @@
+from ezcode.tree.forest import DisjointSets
 from fixture.tree import printer, s_root, s_tree, c_tree, s_tree_string, c_tree_string
 from fixture.tree import trie, trie_string, suffix_trie, suffix_trie_string
 from fixture.utils import equal_list
@@ -80,4 +81,38 @@ def test_trie():
 
 def test_suffix_trie():
     assert str(suffix_trie) == suffix_trie_string
+
+
+def test_disjoint_sets():
+    ds = DisjointSets(set([0, 1, 2, 3, 4, 5, 6, 7, 8]))
+    assert len(ds) == 9
+    ds.union(3, 4)
+    ds.union(1, 0)
+    ds.union(4, 1)
+    ds.union(5, 2)
+    assert len(ds) == 5
+    assert ds.is_joint(1, 4)
+    assert not ds.is_joint(1, 2)
+    assert ds.get_set_size(2) == 2
+    assert ds.get_set_size(1) == 4
+    ds.union(2, 3)
+    assert len(ds) == 4
+    assert ds.is_joint(1, 2)
+    assert not ds.is_joint(1, 6)
+    assert ds.get_set_size(2) == 6
+    assert ds.get_set_size(1) == 6
+    assert not ds.is_joint(7, 3)
+    ds.union(6, 7)
+    assert len(ds) == 3
+    assert ds.is_joint(6, 7)
+    ds.union(6, 4)
+    assert len(ds) == 2
+    assert ds.is_joint(6, 3)
+    assert ds.get_set_size(2) == 8
+    ds.union(0, 8)
+    assert len(ds) == 1
+    assert ds.get_set_size(0) == 9
+    assert ds.is_joint(5, 8)
+
+
 
