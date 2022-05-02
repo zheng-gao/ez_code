@@ -205,3 +205,59 @@ f                       0.4
     assert equal_dict(graph.floyd(self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark_2, resolution=resolution)
 
 
+def test_eulerian_path():
+    """
+    A ------ C
+    |       /|\
+    |      / | \
+    |     /  |  \
+    |    /   |   E
+    |   /    |  /
+    |  /     | /
+    | /      |/
+    B ------ D
+    """
+    graph = UndirectedGraph(edges=[["A", "B"], ["A", "C"], ["B", "C"], ["B", "D"], ["C", "D"], ["C", "E"], ["D", "E"]])
+    assert graph.eulerian_path(start_node="A") is None
+    assert graph.eulerian_path(start_node="E") is None
+    assert graph.eulerian_path(start_node="D") == ["D", "B", "A", "C", "D", "E", "C", "B"]
+    assert graph.eulerian_path() == ["B", "A", "C", "B", "D", "C", "E", "D"]
+    """
+    A -- B
+    | \
+    |  \
+    D   C
+    """
+    graph = UndirectedGraph(edges=[["A", "B"], ["A", "C"], ["A", "D"]])
+    assert graph.eulerian_path() is None
+    """
+    A <--- B 
+    |      ^
+    |      |
+    v      |
+    D ---> C <--- E
+           |
+           v
+           F
+    """
+    graph = DirectedGraph(edges=[["B", "A"], ["A", "D"], ["D", "C"], ["C", "B"], ["E", "C"], ["C", "F"]])
+    assert graph.eulerian_path(start_node="A") is None
+    assert graph.eulerian_path(start_node="B") is None
+    assert graph.eulerian_path(start_node="C") is None
+    assert graph.eulerian_path(start_node="D") is None
+    assert graph.eulerian_path(start_node="F") is None
+    assert graph.eulerian_path(start_node="E") == ["E", "C", "B", "A", "D", "C", "F"]
+    assert graph.eulerian_path(start_node="E") == graph.eulerian_path()
+    """
+    A <--- B ---> F
+    |      ^
+    |      |
+    v      |
+    D ---> C <--- E
+    """
+    graph = DirectedGraph(edges=[["B", "A"], ["A", "D"], ["D", "C"], ["C", "B"], ["E", "C"], ["B", "F"]])
+    assert graph.eulerian_path() is None 
+
+
+
+

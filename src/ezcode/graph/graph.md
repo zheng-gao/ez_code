@@ -116,6 +116,81 @@ f                       0.4
 1, 0.8, 0.512, 0.64, 0, 0.3072, 
 ```
 
+## Detect Negative Cycle
+
+```python
+>>> from ezcode.graph.directed import DirectedGraph
+>>> graph = DirectedGraph(
+...     edges=[["A","B"],["B","C"],["C","D"],["D","B"]],
+...     weights=[3, 1, -3, 1]
+... )
+>>> print(graph)
+    A   B   C   D   
+A       3           
+B           1       
+C               -3  
+D       1           
+
+>>> graph.spfa("A", check_cycle=True)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/usr/local/lib/python3.9/site-packages/ezcode/graph/__init__.py", line 129, in spfa
+    raise NegativeCycleExist()
+ezcode.graph.NegativeCycleExist
+
+>>> from ezcode.graph.undirected import UndirectedGraph
+>>> graph = UndirectedGraph(
+...     edges=[["A","B"],["A","C"],["A","D"],["B","C"],["B","D"],["C","D"]],
+...     weights=[2, 3, 2, -3, 1, 1]
+... )
+>>> print(graph)
+    A   B   C   D   
+A       2   3   2   
+B   2       -3  1   
+C   3   -3      1   
+D   2   1   1    
+
+>>> graph.spfa("A", check_cycle=True)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/Users/zgao/Desktop/study/ez_code/src/ezcode/graph/undirected.py", line 114, in spfa
+    raise NegativeCycleExist()
+ezcode.graph.NegativeCycleExist
+```
+
+## Eulerian Path
+```python
+    """
+    A <--- B 
+    |      ^
+    |      |
+    v      |
+    D ---> C <--- E
+           |
+           v
+           F
+    """
+>>> from ezcode.graph.directed import DirectedGraph
+>>> graph = DirectedGraph(edges=[["B", "A"], ["A", "D"], ["D", "C"], ["C", "B"], ["E", "C"], ["C", "F"]])
+>>> graph.eulerian_path()
+['E', 'C', 'B', 'A', 'D', 'C', 'F']
+>>> graph.eulerian_path(start_node="E")
+['E', 'C', 'B', 'A', 'D', 'C', 'F']
+>>> graph.eulerian_path(start_node="A") is None
+True
+
+    """
+    A <--- B ---> F
+    |      ^
+    |      |
+    v      |
+    D ---> C <--- E
+    """
+>>> graph = DirectedGraph(edges=[["B", "A"], ["A", "D"], ["D", "C"], ["C", "B"], ["E", "C"], ["B", "F"]])
+>>> graph.eulerian_path() is None
+True
+```
+
 # Undirected Graph
 
 ## Shortest Path Algorithm
@@ -204,44 +279,37 @@ E              0.8  0.3
 1, 0.8, 0.648, 0.72, 0.5184,
 ```
 
-## Detect Negative Cycle
-
+## Eulerian Path
 ```python
->>> from ezcode.graph.directed import DirectedGraph
->>> graph = DirectedGraph(
-...     edges=[["A","B"],["B","C"],["C","D"],["D","B"]],
-...     weights=[3, 1, -3, 1]
-... )
->>> print(graph)
-    A   B   C   D   
-A       3           
-B           1       
-C               -3  
-D       1           
-
->>> graph.spfa("A", check_cycle=True)
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-  File "/usr/local/lib/python3.9/site-packages/ezcode/graph/__init__.py", line 129, in spfa
-    raise NegativeCycleExist()
-ezcode.graph.NegativeCycleExist
-
+    """
+    A ------ C
+    |       /|\
+    |      / | \
+    |     /  |  \
+    |    /   |   E
+    |   /    |  /
+    |  /     | /
+    | /      |/
+    B ------ D
+    """
 >>> from ezcode.graph.undirected import UndirectedGraph
->>> graph = UndirectedGraph(
-...     edges=[["A","B"],["A","C"],["A","D"],["B","C"],["B","D"],["C","D"]],
-...     weights=[2, 3, 2, -3, 1, 1]
-... )
->>> print(graph)
-    A   B   C   D   
-A       2   3   2   
-B   2       -3  1   
-C   3   -3      1   
-D   2   1   1    
+>>> graph = UndirectedGraph(edges=[["A", "B"], ["A", "C"], ["B", "C"], ["B", "D"], ["C", "D"], ["C", "E"], ["D", "E"]])
+>>> graph.eulerian_path()
+['B', 'A', 'C', 'B', 'D', 'C', 'E', 'D']
+>>> graph.eulerian_path(start_node="D")
+['D', 'B', 'A', 'C', 'D', 'E', 'C', 'B']
+>>> graph.eulerian_path(start_node="A") is None
+True
+>>> graph.eulerian_path(start_node="E") is None
+True
 
->>> graph.spfa("A", check_cycle=True)
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-  File "/Users/zgao/Desktop/study/ez_code/src/ezcode/graph/undirected.py", line 114, in spfa
-    raise NegativeCycleExist()
-ezcode.graph.NegativeCycleExist
+    """
+    A -- B
+    | \
+    |  \
+    D   C
+    """
+>>> graph = UndirectedGraph(edges=[["A", "B"], ["A", "C"], ["A", "D"]])
+>>> graph.eulerian_path() is None
+True
 ```

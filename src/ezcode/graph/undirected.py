@@ -31,3 +31,58 @@ class UndirectedGraph(Graph):
 
     def get_edges(self, node_id, is_outgoing: bool = True):
         return self.nodes[node_id]
+
+    def eulerian_path(self, start_node=None):
+        """
+            Eulerian path existence condition:
+            Graph is connected
+            Either every vertex has even degree or excatly two vertices has odd degree
+
+            https://en.wikipedia.org/wiki/Eulerian_path
+            Hierholzer's algorithm
+            Step 1: Find the node that has odd degree
+            Step 2: If no such node exist, you can start from any node
+            Step 3: Do DFS on start node and append the node with no edges to the path
+            Step 4: Reverse the path
+
+            O(V+E)
+        """
+        if start_node is not None and start_node not in self.nodes:
+            raise ValueError(f"Node {start_node} not found in graph")
+        odd_degree_nodes, start_node_id = list(), None
+        for node_id in self.nodes:
+            if len(self.get_edges(node_id)) % 2 == 1:
+                odd_degree_nodes.append(node_id)
+                if len(odd_degree_nodes) > 2:
+                    return None
+            elif start_node_id is None:
+                start_node_id = node_id
+        if len(odd_degree_nodes) == 0:
+            if start_node is not None:
+                start_node_id = start_node
+        elif len(odd_degree_nodes) == 2:
+            if start_node is None:
+                start_node_id = odd_degree_nodes[0]
+            else:
+                if start_node not in odd_degree_nodes:
+                    return None
+                start_node_id = start_node
+        else:
+            return None
+        eulerian_path_nodes, visited_edges = list(), dict()
+
+        def _dfs(node_id):
+            if node_id not in visited_edges:
+                visited_edges[node_id] = set()
+            for next_node_id in self.get_edges(node_id).keys():
+                if next_node_id not in visited_edges:
+                    visited_edges[next_node_id] = set()
+                if next_node_id not in visited_edges[node_id] and node_id not in visited_edges[next_node_id]:
+                    visited_edges[node_id].add(next_node_id)
+                    visited_edges[next_node_id].add(node_id)
+                    _dfs(next_node_id)
+            eulerian_path_nodes.append(node_id)
+
+        _dfs(node_id=start_node_id)
+        return eulerian_path_nodes[::-1]
+

@@ -167,5 +167,28 @@ class Graph:
                     adjacent_matrix[src][dst] = min_max_func(adjacent_matrix[src][dst], relaxed_path_value)
         return adjacent_matrix
 
+    def eulerian_path(self, start_node=None) -> list:
+        """
+            Eulerian path existence condition: Graph is connected
+            For Undirected Graph:
+                Either every vertex has even degree or excatly two vertices has odd degree
+            For Directed Graph:
+                At most one vertex has indegree-outdegree=1 and at most one vertex has outdegree-indegree=1
+                Rest all vertices have equal outdegree and indegree
+
+            https://en.wikipedia.org/wiki/Eulerian_path
+            Hierholzer's algorithm
+            Step 1:
+                Undirected Graph: Find the node that has odd degree as the starting node
+                Directed Graph: Find the node that has outdegree-indegree=1 as the starting node
+            Step 2:
+                If no such node exist, you can start from any node
+            Step 3:
+                Do DFS on start node and append to the path
+
+            O(V+E)
+        """
+        pass
+
 
 
