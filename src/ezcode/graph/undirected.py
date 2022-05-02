@@ -34,7 +34,7 @@ class UndirectedGraph(Graph):
 
     def eulerian_path(self, start_node=None):
         """
-            Eulerian path existence condition:
+            Eulerian path existence condition on Undirected Graph:
             Graph is connected
             Either every vertex has even degree or excatly two vertices has odd degree
 

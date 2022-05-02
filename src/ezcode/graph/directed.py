@@ -64,7 +64,7 @@ class DirectedGraph(Graph):
 
     def eulerian_path(self, start_node=None) -> list:
         """
-            Eulerian path existence condition:
+            Eulerian path existence condition on Directed Graph:
             Graph is connected
             At most 1 vertex has indegree-outdegree=1 (end) and at most 1 vertex has outdegree-indegree=1 (start)
             Rest all vertices have equal outdegree and indegree
