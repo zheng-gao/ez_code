@@ -4,9 +4,10 @@ with open("README.md", "r", encoding="utf-8") as file_handler:
     long_description = file_handler.read()
 
 setuptools.setup(
-    name="ezcode",                                   # This is the name of the package
-    version="0.0.80",                                # The initial release version
-    author="Zheng Gao",                              # Full name of the author
+    name="ezcode",
+    version="0.0.80",
+    author="Zheng Gao",
+    author_email="mail.zheng.gao@gmail.com",
     description="Easy Algorithm & Data Structure",
     url="https://github.com/zheng-gao/ez_code",
     project_urls={
