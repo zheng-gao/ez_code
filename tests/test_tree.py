@@ -1,4 +1,5 @@
 from ezcode.tree.forest import DisjointSets
+from ezcode.tree.binary_tree import SegmentTree
 from fixture.tree import printer, s_root, s_tree, c_tree, s_tree_string, c_tree_string
 from fixture.tree import trie, trie_string, suffix_trie, suffix_trie_string
 from fixture.utils import equal_list
@@ -20,8 +21,8 @@ def test_traversals():
 
 def test_lowest_common_ancestor():
     s6, s7, s8 = s_root.right.right, s_root.left.left.right, s_root.right.left.left
-    assert 2 == s_tree.node_data(s_tree.lowest_common_ancestor([s6, s8]))
-    assert 0 == s_tree.node_data(s_tree.lowest_common_ancestor([s6, s7, s8]))
+    assert 2 == s_tree.get_data(s_tree.lowest_common_ancestor([s6, s8]))
+    assert 0 == s_tree.get_data(s_tree.lowest_common_ancestor([s6, s7, s8]))
 
 
 def test_subtree_stats():
@@ -107,4 +108,10 @@ def test_disjoint_sets():
     assert ds.get_set_size(6) == 1
 
 
+def test_segment_tree():
+    st = SegmentTree(merge=(lambda x,y:x+y))
+    st.build_tree([2, 1, 5, 3, 4])
+    assert st.query(1, 3) == 9
+    st.update(index=2, data=7)
+    assert st.query(1, 3) == 11
 

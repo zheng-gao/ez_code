@@ -1,6 +1,8 @@
 import math
 
 from collections import deque
+from typing import Callable
+
 from ezcode.tree.const import DATA_NAME, LEFT_NAME, RIGHT_NAME
 from ezcode.tree.const import LEFT_WING, RIGHT_WING, LEFT_WING_HEAD, RIGHT_WING_HEAD, LEFT_WING_TAIL, RIGHT_WING_TAIL
 
@@ -15,7 +17,8 @@ class BinaryTreePrinter:
         data_name: str = DATA_NAME, left_name: str = LEFT_NAME, right_name: str = RIGHT_NAME,
         left_wing: str = LEFT_WING, right_wing: str = RIGHT_WING,
         left_wing_head: str = LEFT_WING_HEAD, right_wing_head: str = RIGHT_WING_HEAD,
-        left_wing_tail: str = LEFT_WING_TAIL, right_wing_tail: str = RIGHT_WING_TAIL
+        left_wing_tail: str = LEFT_WING_TAIL, right_wing_tail: str = RIGHT_WING_TAIL,
+        node_to_string: Callable = None
     ):
         self.data_name = data_name
         self.left_name = left_name
@@ -29,6 +32,13 @@ class BinaryTreePrinter:
         self.tree_depth = 0
         self.max_data_string_length = 0
         self.char_map = None
+        self.node_to_string = node_to_string if node_to_string is not None else lambda node: str(node.__dict__[self.data_name])
+
+    def get_left(self, node):
+        return node.__dict__[self.left_name]
+
+    def get_right(self, node):
+        return node.__dict__[self.right_name]
 
     def _align_to_center(self, node, is_last_line):
         """ e.g.
@@ -42,13 +52,13 @@ class BinaryTreePrinter:
         right wing tail: >
         ---<ABC>--
         """
-        pre_padding_length = math.ceil((self.max_data_string_length - len(str(node.__dict__[self.data_name]))) / 2)  # even length padding more, use larger mid index
-        post_padding_length = self.max_data_string_length - len(str(node.__dict__[self.data_name])) - pre_padding_length
-        pre_padding_char = " " * len(self.left_wing) if is_last_line or node.__dict__[self.left_name] is None else self.left_wing
-        post_padding_char = " " * len(self.right_wing) if is_last_line or node.__dict__[self.right_name] is None else self.right_wing
+        pre_padding_length = math.ceil((self.max_data_string_length - len(self.node_to_string(node))) / 2)  # even length padding more, use larger mid index
+        post_padding_length = self.max_data_string_length - len(self.node_to_string(node)) - pre_padding_length
+        pre_padding_char = " " * len(self.left_wing) if is_last_line or self.get_left(node) is None else self.left_wing
+        post_padding_char = " " * len(self.right_wing) if is_last_line or self.get_right(node) is None else self.right_wing
         pre_padding_string = f"{pre_padding_char * (pre_padding_length - 1)}{self.left_wing_tail}"
         post_padding_string = f"{self.right_wing_tail}{post_padding_char * (post_padding_length - 1)}"
-        return f"{pre_padding_string}{str(node.__dict__[self.data_name])}{post_padding_string}"
+        return f"{pre_padding_string}{self.node_to_string(node)}{post_padding_string}"
 
     def _set_data_string(self, line_to_print, indexed_node, depth):
 
@@ -61,11 +71,11 @@ class BinaryTreePrinter:
         start_index = _get_mid_index(depth, indexed_node.index, len(line_to_print)) - int(self.max_data_string_length / 2)
         line_to_print[start_index:(start_index + self.max_data_string_length)] = list(data_string)
         if depth != self.tree_depth:
-            if indexed_node.node.__dict__[self.left_name] is not None:
+            if self.get_left(indexed_node.node) is not None:
                 left_child_mid_index = _get_mid_index(depth + 1, indexed_node.index * 2, len(line_to_print))
                 line_to_print[(left_child_mid_index + 1):start_index] = list(self.left_wing * (start_index - left_child_mid_index - 1))
                 line_to_print[left_child_mid_index] = self.left_wing_head
-            if indexed_node.node.__dict__[self.right_name] is not None:
+            if self.get_right(indexed_node.node) is not None:
                 right_child_mid_index = _get_mid_index(depth + 1, indexed_node.index * 2 + 1, len(line_to_print))
                 line_to_print[(start_index + self.max_data_string_length):right_child_mid_index] = list(self.right_wing * (right_child_mid_index - start_index - self.max_data_string_length))
                 line_to_print[right_child_mid_index] = self.right_wing_head
@@ -74,10 +84,10 @@ class BinaryTreePrinter:
         """ return depth and update max_data_string_length """
         if node is None:
             return 0
-        data_str_len = len(str(node.__dict__[self.data_name])) + len(self.left_wing_head) + len(self.right_wing_head) + len(self.left_wing_tail) + len(self.right_wing_tail)
+        data_str_len = len(self.node_to_string(node)) + len(self.left_wing_head) + len(self.right_wing_head) + len(self.left_wing_tail) + len(self.right_wing_tail)
         self.max_data_string_length = max(data_str_len, self.max_data_string_length)
-        left_depth = self._collect_tree_info(node.__dict__[self.left_name]) if node.__dict__[self.left_name] is not None else 0
-        right_depth = self._collect_tree_info(node.__dict__[self.right_name]) if node.__dict__[self.right_name] is not None else 0
+        left_depth = self._collect_tree_info(self.get_left(node)) if self.get_left(node) is not None else 0
+        right_depth = self._collect_tree_info(self.get_right(node)) if self.get_right(node) is not None else 0
         return max(left_depth, right_depth) + 1
 
     def _make_char_map(self, node):
@@ -98,11 +108,11 @@ class BinaryTreePrinter:
             indexed_node = queue.popleft()
             children_left -= 1
             self._set_data_string(line_to_print, indexed_node, depth)
-            if indexed_node.node.__dict__[self.left_name] is not None:
-                queue.append(BinaryTreePrinter.IndexedNode(int(indexed_node.index * 2), indexed_node.node.__dict__[self.left_name]))
+            if self.get_left(indexed_node.node) is not None:
+                queue.append(BinaryTreePrinter.IndexedNode(int(indexed_node.index * 2), self.get_left(indexed_node.node)))
                 children_found += 1
-            if indexed_node.node.__dict__[self.right_name] is not None:
-                queue.append(BinaryTreePrinter.IndexedNode(int(indexed_node.index * 2) + 1, indexed_node.node.__dict__[self.right_name]))
+            if self.get_right(indexed_node.node) is not None:
+                queue.append(BinaryTreePrinter.IndexedNode(int(indexed_node.index * 2) + 1, self.get_right(indexed_node.node)))
                 children_found += 1
             if children_left == 0:
                 self.char_map.append(line_to_print)

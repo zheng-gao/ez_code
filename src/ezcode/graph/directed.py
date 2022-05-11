@@ -8,9 +8,9 @@ class DirectedGraph(Graph):
         super().__init__(is_weighted=(weights is not None), mark=mark)
         # self.nodes = {node_id: {"i": {node_id: weight}, "o": {node_id: weight}}
         if edges:
-            self.build(edges=edges, weights=weights)
+            self.build_graph(edges=edges, weights=weights)
 
-    def build(self, edges: List[list], weights: list = None):
+    def build_graph(self, edges: List[list], weights: list = None):
         if weights is None:
             weights = [1] * len(edges)
         for (i, o), weight in zip(edges, weights):
