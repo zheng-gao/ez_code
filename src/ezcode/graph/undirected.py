@@ -32,6 +32,14 @@ class UndirectedGraph(Graph):
     def get_edges(self, node_id, is_outgoing: bool = True):
         return self.nodes[node_id]
 
+    def copy_nodes(self) -> dict:
+        new_nodes = dict()
+        for node_id, edges in self.nodes.items():
+            new_nodes[node_id] = dict()
+            for next_node_id, weight in edges.items():
+                new_nodes[node_id][next_node_id] = weight
+        return new_nodes
+
     def eulerian_path(self, start_node=None):
         """
             Eulerian path existence condition on Undirected Graph:
@@ -85,4 +93,19 @@ class UndirectedGraph(Graph):
 
         _dfs(node_id=start_node_id)
         return eulerian_path_nodes[::-1]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

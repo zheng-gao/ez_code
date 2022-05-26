@@ -62,6 +62,9 @@ class Graph:
     def print(self):
         print(self, end="")
 
+    def copy_nodes(self) -> dict:
+        pass
+
     """
     Shortest Path Algorithm Summary:
                       Undirected  Directed  Weighted  Negative Weight  Negative Loop  Topology   Space      Time

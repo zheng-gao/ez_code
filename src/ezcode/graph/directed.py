@@ -33,7 +33,7 @@ class DirectedGraph(Graph):
     def get_edges(self, node_id, is_outgoing: bool = True):
         return self.nodes[node_id]["o"] if is_outgoing else self.nodes[node_id]["i"]
 
-    def copy_nodes(self):
+    def copy_nodes(self) -> dict:
         new_nodes = dict()
         for node_id, edges in self.nodes.items():
             new_nodes[node_id] = {"i": dict(), "o": dict()}
@@ -117,4 +117,32 @@ class DirectedGraph(Graph):
 
         _dfs(node_id=start_node_id)
         return eulerian_path_nodes[::-1]
+
+    """
+    Maximum Flow Algorithm
+
+    Ford Fulkerson: O(F * |E|) where F is the maximum flow and the E is the number of edges
+    1. Find an augmenting path
+    2. Remove the flow value of the augmenting path from graph, adding inverse edges
+    """
+    # def ford_fulkerson(self, src_node_id, dst_node_id):
+    #     nodes = self.copy_nodes()
+    #     def dfs_find_augmenting_path(node_id, flow, visited_nodes: set):
+    #         if node_id = dst_node_id:
+    #             return flow
+    #         for outgoing_node_id, weight in nodes[node_id]["o"].items():
+    #             if outgoing_node_id not in visited_nodes:
+    #                 visited_nodes.add(outgoing_node_id)
+    #                 if weight > 0:
+    #                     flow = dfs_find_augmenting_path(outgoing_node_id, min(flow, weight), visited_nodes)
+    #                     if flow > 0:
+    #                         nodes[node_id]["o"][outgoing_node_id] = weight - flow
+    #                         # inverse edges: nodes[]
+    #                         return flow
+    #                 visited_nodes.remove(outgoing_node_id)
+    #         return 0
+
+
+
+
 
