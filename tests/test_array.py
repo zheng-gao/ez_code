@@ -1,3 +1,4 @@
+from ezcode.array.rmq import SparseTable
 from ezcode.array.search import binary_search, binary_search_range
 from ezcode.array.sort import quick_sort
 from ezcode.array.utils import copy, array_to_string, delete_all, rotate
@@ -202,8 +203,21 @@ def test_quick_sort():
 
 
 
-
-
+def test_rmq():
+    st = SparseTable(merge=max, data_list=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    assert st.rmq(6, 9) == 9
+    assert st.rmq(2, 6) == 6
+    assert st.rmq(2, 8) == 8
+    st = SparseTable(merge=min)
+    st.build_table(data_list=[3, 2, 4, 5, 6, 8, 1, 9, 7, 0])
+    assert st.rmq(0, 3) == 2
+    assert st.rmq(2, 8) == 1
+    assert st.rmq(3, 7) == 1
+    assert st.rmq(4, 7) == 1
+    assert st.rmq(7, 9) == 0
+    assert st.rmq(7, 8) == 7
+    assert st.rmq(0, 9) == 0
+    assert st.rmq(2, 4) == 4
 
 
 

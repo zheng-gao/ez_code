@@ -91,3 +91,7 @@ def binary_search_range(array, target, is_ascending=True, is_inclusive=True) -> 
             upper_bound = binary_search_exclusive_boundery(array, target, is_ascending, is_smaller=True)
     return lower_bound, upper_bound
 
+
+
+
+
