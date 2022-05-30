@@ -5,10 +5,12 @@ from typing import Callable
 
 class SparseTable:
     """
-        Offline
-        Preprocess Time: O(NlogN)
-        Range Query Time: O(1)
-        Space: O(NlogN)
+                            Sparse Table      Segment Tree
+        Data            :   No Data Update    Can Update Data, No Data Insert/Delete
+        Merge           :   Min/Max Only      Min, Max, Sum, ... lambda x,y
+        Space           :   O(NlogN)          O(N)
+        Preprocess Time :   O(NlogN)          O(N)
+        Range Query Time:   O(1)              O(logN)
     """
     def __init__(self, merge: Callable = max, data_list: list = None):
         self.merge = merge  # min/max only, not work for sum, since the sub-queries are overlapped
