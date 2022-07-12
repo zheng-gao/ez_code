@@ -25,3 +25,24 @@ def print_matrix(matrix: list, right_alignment=True):
     print()
 
 
+def print_spiral(row, col, char="X"):
+    grids = [[" "] * col for _ in range(row)]
+    rings = min(math.ceil(row / 2), math.ceil(col / 2))
+    for ring in range(rings):
+        if ring % 2 == 0:
+            for c in range(ring - 2, col - ring):
+                if c >= 0:
+                    grids[ring][c] = char
+            for c in range(ring, col - ring):
+                if ring < rings - 1 or c == col - ring - 1:
+                    grids[row - ring - 1][c] = char
+    for ring in range(rings):
+        if ring % 2 == 0:
+            for r in range(ring + 2, row - ring):
+                grids[r][ring] = char
+            for r in range(ring, row - ring):
+                grids[r][col - ring - 1] = char
+    for line in grids:
+        for grid in line:
+            print(grid, end="")
+        print()
