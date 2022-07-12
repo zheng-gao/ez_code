@@ -39,7 +39,8 @@ def print_spiral(row, col, char="X"):
     for ring in range(rings):
         if ring % 2 == 0:
             for r in range(ring + 2, row - ring):
-                grids[r][ring] = char
+                if ring < rings - 1 or r == row - ring - 1:
+                    grids[r][ring] = char
             for r in range(ring, row - ring):
                 grids[r][col - ring - 1] = char
     for line in grids:
