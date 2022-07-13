@@ -29,12 +29,15 @@ for cmd in "${REQUIRED_COMMANDS[@]}"; do command_exist "${cmd}"; done
 # -------------------------------------- Global Variables --------------------------------------- #
 ###################################################################################################
 if [[ "${0}" != "-bash" ]]; then
-    # Put all global variables in this block in order to make "source ./control.sh" work
-    PROJECT_NAME="ezcode"
     BASE_DIRECTORY="$(dirname "${0}")"
 else
     BASE_DIRECTORY="."
 fi
+
+# Put all global variables in this block in order to make "source ./control.sh" work
+PROJECT_NAME="ezcode"
+CODE_DIRECTORY="${BASE_DIRECTORY}/src"
+TEST_DIRECTORY="${BASE_DIRECTORY}/tests"
 
 ###################################################################################################
 # ------------------------------------- Mini EZ-Bash Library ------------------------------------ #
@@ -149,7 +152,7 @@ function control_test() {
     ez_print_log -m "Installing flake8 ..."
     python3 -m "pip" "install" --upgrade "flake8" --user
     ez_print_log -m "Running flake8 checks ..."
-    if ! python3 -m "flake8" --ignore "E124,E128,E501,W391" "${BASE_DIRECTORY}/src"; then
+    if ! python3 -m "flake8" --ignore "E124,E128,E501,W391" "${CODE_DIRECTORY}"; then
         ez_print_log -l "ERROR" -m "Failed flake8 checks!"; return 1
     fi
     ez_print_log -m "Installing pytest ..."
@@ -157,7 +160,7 @@ function control_test() {
     ez_print_log -m "Installing pytest-srcpaths ..."
     python3 -m "pip" "install" --upgrade "pytest-srcpaths" --user
     ez_print_log -m "Running tests ..."
-    pytest -vv "${BASE_DIRECTORY}/tests/${1}"
+    pytest -vv "${TEST_DIRECTORY}/${1}"
 }
 
 function control_uninstall() {
