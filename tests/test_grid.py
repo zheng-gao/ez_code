@@ -110,6 +110,7 @@ def test_grid_path_finding_algorithm():
     for t in tests:
         assert equal_paths(grid.backtracking(t["source"], t["destination"], t["valid_values"]), t["benchmark"])
         assert in_paths(grid.dijkstra(t["source"], t["destination"], t["valid_values"]), t["benchmark"])
+        assert in_paths(grid.a_star(t["source"], t["destination"], t["valid_values"]), t["benchmark"])
 
 
 

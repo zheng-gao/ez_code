@@ -153,3 +153,48 @@ class Grid:
                         path_dict[neighbor] = closest_node
         return self.path_dict_to_path_list(path_dict, destination)
 
+    def a_star(self,
+        source: tuple[int, int],
+        destination: tuple[int, int],
+        valid_values: set = None,
+        offsets: set = None
+    ) -> list[tuple[int, int]]:
+        """
+            candidates is a Priority Map
+            searched nodes can be put into candidates again
+            h_value = 0, it becomes dijkstra which is slower than A*
+            h_value >> g_value, it becomes bfs which does not guarantee the shortest path
+        """
+        if source == destination:
+            return list([source])
+
+        def manhattan_distance(source, destination):
+            return abs(source[0] - destination[0]) + abs(source[1] - destination[1])
+
+        path_dict, visited, searched = dict(), set(), set([source])
+        candidates = PriorityMap(min_heap=True)            # path_dict = {child: parent}
+        g_values = {source: 0}                             # g_value: path cost to source
+        h_value = manhattan_distance(source, destination)  # h_value: huristic estimate of the path cost to destination
+        f_value = g_values[source] + h_value               # f_value: g_value + h_value
+        candidates.push(f_value, source)                   # priority = f_value
+        while len(candidates) > 0:
+            _, closest_node = candidates.pop()
+            visited.add(closest_node)
+            for neighbor in self.neighbors(closest_node, valid_values, offsets):
+                if neighbor not in visited:
+                    # searched.add(neighbor)
+                    if neighbor not in g_values:
+                        g_values[neighbor] = float("inf")
+                    if g_values[closest_node] + 1 < g_values[neighbor]:
+                        g_values[neighbor] = g_values[closest_node] + 1
+                        f_value = g_values[neighbor] + manhattan_distance(neighbor, destination)
+                        candidates.push(f_value, neighbor)
+                        path_dict[neighbor] = closest_node
+        return self.path_dict_to_path_list(path_dict, destination)
+
+
+
+
+
+
+
