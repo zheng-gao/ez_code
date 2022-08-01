@@ -173,6 +173,7 @@ class Maze:
         """
             candidates is a Queue
             searched nodes will not be revisited
+            does not guarantee the shortest path
         """
         path_dict, searched, candidates = dict(), set([source]), deque()  # path_dict = {child: parent}
         candidates.append(source)

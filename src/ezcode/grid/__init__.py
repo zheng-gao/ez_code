@@ -1,4 +1,7 @@
+from collections import deque
 from copy import deepcopy
+
+from ezcode.heap import PriorityMap
 
 
 def init_grid(row: int, col: int, init=None) -> list[list]:
@@ -93,7 +96,7 @@ class Grid:
         destination: tuple[int, int],
         valid_values: set = None,
         offsets: set = None
-    ) -> list[tuple[int, int]]:
+    ) -> list[list[tuple[int, int]]]:
         visited, path, shortest_paths = set([source]), list([source]), list()
 
         def _backtracking(node: tuple[int, int]):
@@ -113,5 +116,40 @@ class Grid:
         _backtracking(source)
         return shortest_paths
 
+    def path_dict_to_path_list(self, path_dict: dict, destination: tuple[int, int]):
+        path, parent = deque([destination]), path_dict[destination]
+        while parent:
+            path.appendleft(parent)
+            parent = path_dict[parent] if parent in path_dict else None
+        return list(path)
 
+    def dijkstra(self,
+        source: tuple[int, int],
+        destination: tuple[int, int],
+        valid_values: set = None,
+        offsets: set = None
+    ) -> list[tuple[int, int]]:
+        """
+            candidates is a Priority Map
+            searched nodes can be put into candidates again
+        """
+        if source == destination:
+            return list([source])
+        path_dict, visited, searched = dict(), set(), set([source])  # path_dict = {child: parent}
+        candidates = PriorityMap(min_heap=True)  
+        g_values = {source: 0}                                       # g_value: path cost to source
+        candidates.push(0, source)                                   # priority = g_value
+        while len(candidates) > 0:
+            _, closest_node = candidates.pop()
+            visited.add(closest_node)
+            for neighbor in self.neighbors(closest_node, valid_values, offsets):
+                if neighbor not in visited:
+                    # searched.add(neighbor)
+                    if neighbor not in g_values:
+                        g_values[neighbor] = float("inf")
+                    if g_values[closest_node] + 1 < g_values[neighbor]:
+                        g_values[neighbor] = g_values[closest_node] + 1
+                        candidates.push(g_values[neighbor], neighbor)
+                        path_dict[neighbor] = closest_node
+        return self.path_dict_to_path_list(path_dict, destination)
 

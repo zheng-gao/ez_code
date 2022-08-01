@@ -60,6 +60,12 @@ def test_grid_path_finding_algorithm():
                 return False
         return True
 
+    def in_paths(path, paths):
+        for p in paths:
+            if p == path:
+                return True
+        return False
+
     grid = Grid(
         [
             [1, 1, 1, 1, 1, 0, 0],
@@ -69,43 +75,41 @@ def test_grid_path_finding_algorithm():
             [1, 1, 1, 1, 0, 0, 0]
         ]
     )
-    assert equal_paths(
-        [
-            [(1, 2), (1, 1), (2, 1), (3, 1), (3, 2)]
-        ],
-        grid.backtracking(source=(1, 2), destination=(3, 2), valid_values=set([0]))
-    )
-    assert equal_paths(
-        [
-            [(1, 2), (1, 3), (1, 4), (2, 4), (3, 4)]
-        ],
-        grid.backtracking(source=(1, 2), destination=(3, 4), valid_values=set([0]))
-    )
-    assert equal_paths(
-        [
-            [(3, 4), (2, 4), (1, 4), (1, 5), (0, 5)]
-        ],
-        grid.backtracking(source=(3, 4), destination=(0, 5), valid_values=set([0]))
-    )
-    assert equal_paths(
-        [
-            [(3, 4), (2, 4), (1, 4), (1, 5), (0, 5), (0, 6)],
-            [(3, 4), (2, 4), (1, 4), (1, 5), (1, 6), (0, 6)],
-            [(3, 4), (3, 5), (3, 6), (2, 6), (1, 6), (0, 6)]
-        ],
-        grid.backtracking(source=(3, 4), destination=(0, 6), valid_values=set([0]))
-    )
-    assert equal_paths(
-        [
-            [(1, 4), (2, 4), (3, 4), (4, 4), (4, 5), (4, 6)],
-            [(1, 4), (2, 4), (3, 4), (3, 5), (4, 5), (4, 6)],
-            [(1, 4), (2, 4), (3, 4), (3, 5), (3, 6), (4, 6)],
-            [(1, 4), (1, 5), (1, 6), (2, 6), (3, 6), (4, 6)],
-
-        ],
-        grid.backtracking(source=(1, 4), destination=(4, 6), valid_values=set([0]))
-    )
-
+    valid_values = set([0])
+    tests = [
+        {
+            "benchmark": [[(1, 2), (1, 1), (2, 1), (3, 1), (3, 2)]],
+            "source": (1, 2), "destination": (3, 2), "valid_values": set([0])
+        },
+        {
+            "benchmark": [[(1, 2), (1, 3), (1, 4), (2, 4), (3, 4)]],
+            "source": (1, 2), "destination": (3, 4), "valid_values": set([0])
+        },
+        {
+            "benchmark": [[(3, 4), (2, 4), (1, 4), (1, 5), (0, 5)]],
+            "source": (3, 4), "destination": (0, 5), "valid_values": set([0])
+        },
+        {
+            "benchmark": [
+                [(3, 4), (2, 4), (1, 4), (1, 5), (0, 5), (0, 6)],
+                [(3, 4), (2, 4), (1, 4), (1, 5), (1, 6), (0, 6)],
+                [(3, 4), (3, 5), (3, 6), (2, 6), (1, 6), (0, 6)]
+            ],
+            "source": (3, 4), "destination": (0, 6), "valid_values": set([0])
+        },
+        {
+            "benchmark": [
+                [(1, 4), (2, 4), (3, 4), (4, 4), (4, 5), (4, 6)],
+                [(1, 4), (2, 4), (3, 4), (3, 5), (4, 5), (4, 6)],
+                [(1, 4), (2, 4), (3, 4), (3, 5), (3, 6), (4, 6)],
+                [(1, 4), (1, 5), (1, 6), (2, 6), (3, 6), (4, 6)]
+            ],
+            "source": (1, 4), "destination": (4, 6), "valid_values": set([0])
+        }
+    ]
+    for t in tests:
+        assert equal_paths(grid.backtracking(t["source"], t["destination"], t["valid_values"]), t["benchmark"])
+        assert in_paths(grid.dijkstra(t["source"], t["destination"], t["valid_values"]), t["benchmark"])
 
 
 
