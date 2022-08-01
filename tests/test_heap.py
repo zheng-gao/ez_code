@@ -1,16 +1,15 @@
-from fixture.utils import equal_list
 from ezcode.heap import PriorityQueue, PriorityMap, PriorityQueueOnPartialArray
 
 
 def test_priority_queue():
     min_queue = PriorityQueue([4, 3, 5, 1, 2])
-    assert equal_list(min_queue.top_n(3), [1, 2, 3])
-    assert equal_list(min_queue.top_n(), [1, 2, 3, 4, 5])
+    assert min_queue.top_n(3) == [1, 2, 3]
+    assert min_queue.top_n() == [1, 2, 3, 4, 5]
     for pop_data in [1, 2, 3, 4, 5]:
         assert min_queue.pop() == pop_data
     max_queue = PriorityQueue([4, 3, 5, 1, 2], min_heap=False)
-    assert equal_list(max_queue.top_n(3), [5, 4, 3])
-    assert equal_list(max_queue.top_n(), [5, 4, 3, 2, 1])
+    assert max_queue.top_n(3) == [5, 4, 3]
+    assert max_queue.top_n() == [5, 4, 3, 2, 1]
     for pop_data in [5, 4, 3, 2, 1]:
         assert max_queue.pop() == pop_data
 

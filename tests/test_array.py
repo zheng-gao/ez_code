@@ -4,7 +4,6 @@ from ezcode.array.sort import quick_sort
 from ezcode.array.utils import copy, array_to_string, delete_all, rotate
 from ezcode.array.utils import split_list, split_list_generator, chunk_list, chunk_list_generator
 from ezcode.array.lcs import longest_common_subsequence, longest_common_subarray
-from fixture.utils import equal_list
 
 
 def test_array_to_string():
@@ -82,28 +81,16 @@ def test_rotate():
         assert a == b
 
 
-def test_equal_list():
-    assert equal_list(None, None)
-    assert equal_list([], [])
-    assert equal_list([[]], [[]])
-    assert equal_list([[], [1]], [[], [1]])
-    assert equal_list([[], [1, 2], 3], [[], [1, 2], 3])
-    assert not equal_list([], None)
-    assert not equal_list([], [[]])
-    assert not equal_list([1], [[1]])
-    assert not equal_list([[], [1, 2]], [[], [1, 3]])
-
-
 def test_copy():
-    assert equal_list(None, copy(None))
-    assert equal_list([], copy([]))
-    assert equal_list([[]], copy([[]]))
-    assert equal_list([[], [1]], copy([[], [1]]))
-    assert equal_list([[], [1, 2], 3], copy([[], [1, 2], 3]))
-    assert not equal_list([], copy(None))
-    assert not equal_list([], copy([[]]))
-    assert not equal_list([1], copy([[1]]))
-    assert not equal_list([[], [1, 2]], copy([[], [1, 3]]))
+    assert None == copy(None)
+    assert [] == copy([])
+    assert [[]] == copy([[]])
+    assert [[], [1]] == copy([[], [1]])
+    assert [[], [1, 2], 3] == copy([[], [1, 2], 3])
+    assert [] != copy(None)
+    assert [] != copy([[]])
+    assert [1] != copy([[1]])
+    assert [[], [1, 2]] != copy([[], [1, 3]])
 
 
 def test_delete():
@@ -150,12 +137,12 @@ def test_split_chunk_list():
         ]
     ]
     for i in array:
-        equal_list(split_list(array, i), split_benchmark[i - 1])
-    equal_list(split_list(array, 6), split_benchmark[4])
+        split_list(array, i) == split_benchmark[i - 1]
+    split_list(array, 6) == split_benchmark[4]
     for i in array:
         sub_i = 0
         for sublist in split_list_generator(array, i):
-            equal_list(sublist, split_benchmark[i - 1][sub_i])
+            sublist == split_benchmark[i - 1][sub_i]
             sub_i += 1
     chunk_benchmark = [
         [
@@ -183,12 +170,12 @@ def test_split_chunk_list():
         ]
     ]
     for i in array:
-        equal_list(chunk_list(array, i), chunk_benchmark[i - 1])
-    equal_list(chunk_list(array, 6), chunk_benchmark[4])
+        chunk_list(array, i) == chunk_benchmark[i - 1]
+    chunk_list(array, 6) == chunk_benchmark[4]
     for i in array:
         sub_i = 0
         for sublist in chunk_list_generator(array, i):
-            equal_list(sublist, chunk_benchmark[i - 1][sub_i])
+            sublist == chunk_benchmark[i - 1][sub_i]
             sub_i += 1
 
 

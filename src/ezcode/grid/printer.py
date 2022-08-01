@@ -1,13 +1,13 @@
 import math
 
 
-def print_matrix(matrix: list, right_alignment=True):
-    def _find_column_max_length(matrix: list):
+def print_grid(grid: list, right_alignment=True):
+    def _find_column_max_length(grid: list):
         col_max = list()
-        for col in range(len(matrix[0])):
+        for col in range(len(grid[0])):
             max_length = 0
-            for row in range(len(matrix)):
-                max_length = max(max_length, len(str(matrix[row][col])))
+            for row in range(len(grid)):
+                max_length = max(max_length, len(str(grid[row][col])))
             col_max.append(max_length)
         return col_max
 
@@ -17,11 +17,11 @@ def print_matrix(matrix: list, right_alignment=True):
         else:
             return string.ljust(cell_size, " ")
 
-    col_max = _find_column_max_length(matrix)
+    col_max = _find_column_max_length(grid)
     print()
-    for row in range(len(matrix)):
-        for col in range(len(matrix[row])):
-            print(_get_cell(str(matrix[row][col]), col_max[col], True), end=", ")
+    for row in range(len(grid)):
+        for col in range(len(grid[row])):
+            print(_get_cell(str(grid[row][col]), col_max[col], True), end=", ")
         print()
     print()
 

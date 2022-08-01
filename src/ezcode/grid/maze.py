@@ -109,16 +109,16 @@ class Maze:
             except ValueError as e:
                 print(e)
 
-    def approachable_neighbors(self, node) -> list:
+    def accessible_neighbors(self, node, accessible_states: set = set([Square.State.Void])) -> list:
         row, col = node
         neighbor_list = list()
-        if row > 0 and self.maze[row - 1][col] == Square.State.Void:
+        if row > 0 and self.maze[row - 1][col] in accessible_states:
             neighbor_list.append((row - 1, col))
-        if col > 0 and self.maze[row][col - 1] == Square.State.Void:
+        if col > 0 and self.maze[row][col - 1] in accessible_states:
             neighbor_list.append((row, col - 1))
-        if row + 1 < self.row_len and self.maze[row + 1][col] == Square.State.Void:
+        if row + 1 < self.row_len and self.maze[row + 1][col] in accessible_states:
             neighbor_list.append((row + 1, col))
-        if col + 1 < self.col_len and self.maze[row][col + 1] == Square.State.Void:
+        if col + 1 < self.col_len and self.maze[row][col + 1] in accessible_states:
             neighbor_list.append((row, col + 1))
         return neighbor_list
 
@@ -134,7 +134,7 @@ class Maze:
     Path finding algorithms Summary:
              Shortest Path    Searched Area     f_value
     bfs         no               larger         h_value >> g_value
-    dfs         yes              largest        N/A
+    dfs         no               largest        N/A
     dijkstra    yes              larger         h_value =0
     A*          yes              small          g_value + h_value
 
@@ -159,15 +159,14 @@ class Maze:
         candidates.append(source)
         while len(candidates) > 0:
             node = candidates.pop()
-            for neighbor in self.approachable_neighbors(node):
-                if neighbor == destination:
+            for neighbor in self.accessible_neighbors(node):
+                if neighbor not in searched:
                     searched.add(neighbor)
-                    path_dict[destination] = node
-                    return self.path_dict_to_path_list(path_dict, destination), searched
-                elif neighbor not in searched:
-                    searched.add(neighbor)
-                    candidates.append(neighbor)
                     path_dict[neighbor] = node
+                    if neighbor == destination:
+                        return self.path_dict_to_path_list(path_dict, destination), searched
+                    else:
+                        candidates.append(neighbor)
         return self.path_dict_to_path_list(path_dict, destination), searched
 
     def bfs(self, source, destination):
@@ -179,15 +178,14 @@ class Maze:
         candidates.append(source)
         while len(candidates) > 0:
             node = candidates.popleft()
-            for neighbor in self.approachable_neighbors(node):
-                if neighbor == destination:
+            for neighbor in self.accessible_neighbors(node):
+                if neighbor not in searched:
                     searched.add(neighbor)
-                    path_dict[destination] = node
-                    return self.path_dict_to_path_list(path_dict, destination), searched
-                elif neighbor not in searched:
-                    searched.add(neighbor)
-                    candidates.append(neighbor)
                     path_dict[neighbor] = node
+                    if neighbor == destination:
+                        return self.path_dict_to_path_list(path_dict, destination), searched
+                    else:
+                        candidates.append(neighbor)
         return self.path_dict_to_path_list(path_dict, destination), searched
 
     def dijkstra(self, source, destination):
@@ -201,7 +199,7 @@ class Maze:
         while len(candidates) > 0:
             _, node = candidates.pop()
             visited.add(node)
-            for neighbor in self.approachable_neighbors(node):
+            for neighbor in self.accessible_neighbors(node):
                 if neighbor == destination:
                     searched.add(neighbor)
                     path_dict[destination] = node
@@ -233,7 +231,7 @@ class Maze:
         while len(candidates) > 0:
             _, node = candidates.pop()
             visited.add(node)
-            for neighbor in self.approachable_neighbors(node):
+            for neighbor in self.accessible_neighbors(node):
                 if neighbor == destination:
                     searched.add(neighbor)
                     path_dict[destination] = node
@@ -318,12 +316,12 @@ class Maze:
         self.print_maze(self.update_maze(self.copy_maze(), path, searched))
 
 
-parser = argparse.ArgumentParser(description="Maze")
-parser.add_argument("-r", "--row", dest="row", type=int, default=10, help="Number of rows")
-parser.add_argument("-c", "--column", dest="col", type=int, default=10, help="Number of columns")
-parser.add_argument("-t", "--text-only", dest="text_only", action="store_true", default=False, help="Print Map in Text")
-parser.add_argument("-s", "--show-searched-area", dest="show_searched", action="store_true", default=False)
-parser.add_argument("-o", "--obstacles-percentage", dest="op", type=float, default=0.1)
-args = parser.parse_args()
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Maze")
+    parser.add_argument("-r", "--row", dest="row", type=int, default=10, help="Number of rows")
+    parser.add_argument("-c", "--column", dest="col", type=int, default=10, help="Number of columns")
+    parser.add_argument("-t", "--text-only", dest="text_only", action="store_true", default=False, help="Print Map in Text")
+    parser.add_argument("-s", "--show-searched-area", dest="show_searched", action="store_true", default=False)
+    parser.add_argument("-o", "--obstacles-percentage", dest="op", type=float, default=0.1)
+    args = parser.parse_args()
     Maze(row=args.row, col=args.col, obstacle_percentage=args.op, text_only=args.text_only, show_searched=args.show_searched).run()

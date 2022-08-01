@@ -2,7 +2,6 @@ from ezcode.tree.forest import DisjointSets
 from ezcode.tree.binary_tree import SegmentTree
 from fixture.tree import printer, s_root, s_tree, c_tree, s_tree_string, c_tree_string
 from fixture.tree import trie, trie_string, suffix_trie, suffix_trie_string
-from fixture.utils import equal_list
 
 
 def test_printer():
@@ -77,7 +76,7 @@ def test_trie():
     assert not trie.contains("cofe")
     assert trie.contains("coffee", strict=True)
     assert not trie.contains("cof", strict=True)
-    assert equal_list(trie.prefix_wildcard(list("co")), [list("cod"), list("code"), list("coke"), list("coffee")])
+    assert trie.prefix_wildcard(list("co")) == [list("cod"), list("code"), list("coke"), list("coffee")]
 
 
 def test_suffix_trie():
