@@ -222,7 +222,8 @@ class Grid:
         source: tuple[int, int],
         destination: tuple[int, int],
         valid_values: set = None,
-        offsets: set = None
+        offsets: set = None,
+        distance: str = "manhattan"
     ) -> list[tuple[int, int]]:
         """
             candidates is a Priority Map
@@ -236,10 +237,10 @@ class Grid:
             return list([source])
         path_dict, visited = dict(), set()  # path_dict = {child: parent}
         candidates = PriorityMap(min_heap=True)
-        g_values = {source: 0}                             # g_value: path cost to source
-        h_value = self.distance(source, destination, "manhattan")  # h_value: huristic estimate of the path cost to destination
-        f_value = g_values[source] + h_value               # f_value: g_value + h_value
-        candidates.push(f_value, source)                   # priority = f_value
+        g_values = {source: 0}                                  # g_value: path cost to source
+        h_value = self.distance(source, destination, distance)  # h_value: huristic estimate of the path cost to destination
+        f_value = g_values[source] + h_value                    # f_value: g_value + h_value
+        candidates.push(f_value, source)                        # priority = f_value
         while len(candidates) > 0:
             _, closest_node = candidates.pop()
             visited.add(closest_node)                                # <-------------| visit node after poping from candidates
