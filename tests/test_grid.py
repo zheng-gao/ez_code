@@ -61,6 +61,8 @@ def test_grid_path_finding_algorithm():
         return True
 
     def in_paths(path, paths):
+        if not paths:
+            return not path
         for p in paths:
             if p == path:
                 return True
@@ -72,11 +74,40 @@ def test_grid_path_finding_algorithm():
             [1, 0, 0, 0, 0, 0, 0],
             [1, 0, 1, 1, 0, 1, 0],
             [1, 0, 0, 0, 0, 0, 0],
-            [1, 1, 1, 1, 0, 0, 0]
+            [1, 1, 1, 1, 0, 0, 0],
+            [1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 0, 1, 1, 1, 0]
         ]
     )
-    valid_values = set([0])
     tests = [
+        {   # source is out of range
+            "benchmark": [],
+            "source": (0, 9), "destination": (2, 2), "valid_values": set([1])
+        },
+        {   # destination is out of range
+            "benchmark": [],
+            "source": (1, 1), "destination": (9, 2), "valid_values": set([0])
+        },
+        {   # source & destination are both in valid cells but not connected
+            "benchmark": [],
+            "source": (0, 0), "destination": (2, 2), "valid_values": set([1])
+        },
+        {   # source & destination both are invalid
+            "benchmark": [],
+            "source": (1, 2), "destination": (3, 2), "valid_values": set([1])
+        },
+        {   # source is invalid, destination is valid
+            "benchmark": [],
+            "source": (2, 2), "destination": (2, 4), "valid_values": set([0])
+        },
+        {   # source is valid, destination is invalid
+            "benchmark": [],
+            "source": (1, 2), "destination": (2, 5), "valid_values": set([0])
+        }, 
+        {
+            "benchmark": [[(2, 4)]],
+            "source": (2, 4), "destination": (2, 4), "valid_values": set([0])
+        }, 
         {
             "benchmark": [[(1, 2), (1, 1), (2, 1), (3, 1), (3, 2)]],
             "source": (1, 2), "destination": (3, 2), "valid_values": set([0])
@@ -107,10 +138,23 @@ def test_grid_path_finding_algorithm():
             "source": (1, 4), "destination": (4, 6), "valid_values": set([0])
         }
     ]
-    for t in tests:
-        assert equal_paths(grid.backtracking(t["source"], t["destination"], t["valid_values"]), t["benchmark"])
+    dfs_benchmarks = {
+        7: [(1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (2, 6), (3, 6), (3, 5), (3, 4), (3, 3), (3, 2)],
+        8: [(1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (2, 6), (3, 6), (3, 5), (3, 4)],
+        9: [(3, 4), (3, 5), (3, 6), (2, 6), (1, 6), (1, 5), (0, 5)]
+    }
+    for i, t in enumerate(tests):
+        assert in_paths(grid.bfs(t["source"], t["destination"], t["valid_values"]), t["benchmark"])
         assert in_paths(grid.dijkstra(t["source"], t["destination"], t["valid_values"]), t["benchmark"])
         assert in_paths(grid.a_star(t["source"], t["destination"], t["valid_values"]), t["benchmark"])
+        assert equal_paths(grid.dfs_backtracking(t["source"], t["destination"], t["valid_values"]), t["benchmark"])
+        if i in [7, 8, 9]:
+            # Found a path but not the shortest one
+            assert grid.dfs(t["source"], t["destination"], t["valid_values"]) == dfs_benchmarks[i]
+        else:
+            assert in_paths(grid.dfs(t["source"], t["destination"], t["valid_values"]), t["benchmark"])
+
+
 
 
 

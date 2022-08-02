@@ -56,30 +56,34 @@ class Grid:
     def __contains__(self, node: tuple[int, int]):
         return self.row_min <= node[0] and self.row_max >= node[0] and self.col_min <= node[1] and self.col_max >= node[1]
 
-    def sum(self, n1: tuple[int, int], n2: tuple[int, int]) -> tuple[int, int]:
+    def node_sum(self, n1: tuple[int, int], n2: tuple[int, int]) -> tuple[int, int]:
         return n1[0] + n2[0], n1[1] + n2[1]
+
+    def distance(self, n1, n2, method="manhattan"):
+        if method == "manhattan":
+            return abs(n1[0] - n2[0]) + abs(n1[1] - n2[1])
 
     def value(self, node: tuple[int, int]):
         return self.grid[node[0]][node[1]]
 
     def neighbors(self, node: tuple[int, int], valid_values: set = None, offsets: set = None) -> list[tuple[int, int]]:
-        output = list()
+        valid_neighbors = list()
         if offsets is None:
             offsets = self.offsets
         for offset in offsets:
-            neighbor = self.sum(node, offset)
+            neighbor = self.node_sum(node, offset)
             if neighbor in self and (valid_values is None or self.value(neighbor) in valid_values):
-                output.append(neighbor)
-        return output
+                valid_neighbors.append(neighbor)
+        return valid_neighbors
 
     """
     Path finding algorithms Summary:
-                    Shortest Path     All S-Path     Searched Area    f_value
-    bfs             no                no             larger           h_value >> g_value
-    dfs             no                no             largest          N/A
-    backtracking    yes               yes            largest
-    dijkstra        yes               no             larger           h_value =0
-    A*              yes               no             small            g_value + h_value
+                        Shortest    Paths     Searched Area    f_value
+    dfs                 no          1         largest          N/A
+    dfs_backtracking    yes         All       largest
+    bfs                 yes         1         larger           h_value >> g_value
+    dijkstra            yes         1         larger           h_value =0
+    A*                  yes         1         small            g_value + h_value
 
     Notes:
     A* f_value = g_value + h_value
@@ -91,13 +95,15 @@ class Grid:
     The heuristic path length must keep the same order as the real ones
     e.g. if a > b then h_a > h_b
     """
-    def backtracking(self,
+    def dfs_backtracking(self,
         source: tuple[int, int],
         destination: tuple[int, int],
         valid_values: set = None,
         offsets: set = None
     ) -> list[list[tuple[int, int]]]:
-        visited, path, shortest_paths = set([source]), list([source]), list()
+        if source not in self or destination not in self or self.value(source) not in valid_values or self.value(destination) not in valid_values:
+            return list()
+        shortest_paths, path, visited = list(), list([source]), set([source])
 
         def _backtracking(node: tuple[int, int]):
             if node == destination:
@@ -116,12 +122,70 @@ class Grid:
         _backtracking(source)
         return shortest_paths
 
-    def path_dict_to_path_list(self, path_dict: dict, destination: tuple[int, int]):
+    def path_dict_to_path_list(self, path_dict: dict, destination: tuple[int, int]) -> list[tuple[int, int]]:
+        if destination not in path_dict:
+            return None
         path, parent = deque([destination]), path_dict[destination]
         while parent:
             path.appendleft(parent)
             parent = path_dict[parent] if parent in path_dict else None
         return list(path)
+
+    def dfs(self,
+        source: tuple[int, int],
+        destination: tuple[int, int],
+        valid_values: set = None,
+        offsets: set = None
+    ) -> list[tuple[int, int]]:
+        """
+            candidates is a Stack
+            searched nodes will not be revisited
+            does not guarantee the shortest path
+        """
+        if source not in self or destination not in self or self.value(source) not in valid_values or self.value(destination) not in valid_values:
+            return None
+        if source == destination:
+            return list([source])
+        path_dict, visited = dict(), set([source])  # path_dict = {child: parent}
+        candidates = list([source])  # stack
+        while len(candidates) > 0:
+            closest_node = candidates.pop()
+            for neighbor in self.neighbors(closest_node, valid_values, offsets):
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    path_dict[neighbor] = closest_node
+                    if neighbor == destination:
+                        return self.path_dict_to_path_list(path_dict, destination)
+                    candidates.append(neighbor)
+        return None
+
+    def bfs(self,
+        source: tuple[int, int],
+        destination: tuple[int, int],
+        valid_values: set = None,
+        offsets: set = None
+    ) -> list[tuple[int, int]]:
+        """
+            candidates is a Queue
+            searched nodes will not be revisited
+            guarantee the shortest path
+        """
+        if source not in self or destination not in self or self.value(source) not in valid_values or self.value(destination) not in valid_values:
+            return None
+        if source == destination:
+            return list([source])
+        path_dict, visited = dict(), set([source])  # path_dict = {child: parent}
+        candidates = deque([source])  # queue
+        while len(candidates) > 0:
+            closest_node = candidates.popleft()
+            for neighbor in self.neighbors(closest_node, valid_values, offsets):
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    path_dict[neighbor] = closest_node
+                    if neighbor == destination:
+                        return self.path_dict_to_path_list(path_dict, destination)
+                    candidates.append(neighbor)
+        return None
 
     def dijkstra(self,
         source: tuple[int, int],
@@ -133,18 +197,19 @@ class Grid:
             candidates is a Priority Map
             searched nodes can be put into candidates again
         """
+        if source not in self or destination not in self or self.value(source) not in valid_values or self.value(destination) not in valid_values:
+            return None
         if source == destination:
             return list([source])
-        path_dict, visited, searched = dict(), set(), set([source])  # path_dict = {child: parent}
+        path_dict, visited = dict(), set()  # path_dict = {child: parent}
         candidates = PriorityMap(min_heap=True)  
         g_values = {source: 0}                                       # g_value: path cost to source
         candidates.push(0, source)                                   # priority = g_value
         while len(candidates) > 0:
             _, closest_node = candidates.pop()
-            visited.add(closest_node)
-            for neighbor in self.neighbors(closest_node, valid_values, offsets):
-                if neighbor not in visited:
-                    # searched.add(neighbor)
+            visited.add(closest_node)                                # <-------------| visit node after poping from candidates
+            for neighbor in self.neighbors(closest_node, valid_values, offsets):  #  | 
+                if neighbor not in visited:                          # <-------------| searched neighbor can be updated again
                     if neighbor not in g_values:
                         g_values[neighbor] = float("inf")
                     if g_values[closest_node] + 1 < g_values[neighbor]:
@@ -165,29 +230,26 @@ class Grid:
             h_value = 0, it becomes dijkstra which is slower than A*
             h_value >> g_value, it becomes bfs which does not guarantee the shortest path
         """
+        if source not in self or destination not in self or self.value(source) not in valid_values or self.value(destination) not in valid_values:
+            return None
         if source == destination:
             return list([source])
-
-        def manhattan_distance(source, destination):
-            return abs(source[0] - destination[0]) + abs(source[1] - destination[1])
-
-        path_dict, visited, searched = dict(), set(), set([source])
-        candidates = PriorityMap(min_heap=True)            # path_dict = {child: parent}
+        path_dict, visited = dict(), set()  # path_dict = {child: parent}
+        candidates = PriorityMap(min_heap=True)
         g_values = {source: 0}                             # g_value: path cost to source
-        h_value = manhattan_distance(source, destination)  # h_value: huristic estimate of the path cost to destination
+        h_value = self.distance(source, destination, "manhattan")  # h_value: huristic estimate of the path cost to destination
         f_value = g_values[source] + h_value               # f_value: g_value + h_value
         candidates.push(f_value, source)                   # priority = f_value
         while len(candidates) > 0:
             _, closest_node = candidates.pop()
-            visited.add(closest_node)
-            for neighbor in self.neighbors(closest_node, valid_values, offsets):
-                if neighbor not in visited:
-                    # searched.add(neighbor)
+            visited.add(closest_node)                                # <-------------| visit node after poping from candidates
+            for neighbor in self.neighbors(closest_node, valid_values, offsets):  #  | 
+                if neighbor not in visited:                          # <-------------| searched neighbor can be updated again                 
                     if neighbor not in g_values:
                         g_values[neighbor] = float("inf")
                     if g_values[closest_node] + 1 < g_values[neighbor]:
                         g_values[neighbor] = g_values[closest_node] + 1
-                        f_value = g_values[neighbor] + manhattan_distance(neighbor, destination)
+                        f_value = g_values[neighbor] + self.distance(neighbor, destination)
                         candidates.push(f_value, neighbor)
                         path_dict[neighbor] = closest_node
         return self.path_dict_to_path_list(path_dict, destination)

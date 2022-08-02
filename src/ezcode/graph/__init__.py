@@ -69,7 +69,8 @@ class Graph:
     Shortest Path Algorithm Summary:
                       Undirected  Directed  Weighted  Negative Weight  Negative Loop  Topology   Space      Time
     bfs                   yes       yes       no         no               no           1 to N     O(V)      O(E)
-    dfs                   yes       yes       yes        yes              no           1 to 1     O(V)      O(V!)
+    dfs (not shortest)    yes       yes       yes        yes              no           1 to 1     O(V)      O(E)
+    dfs_backtracking      yes       yes       yes        yes              no           1 to 1     O(V)      O(V!)
     dijkstra              yes       yes       yes        no               no           1 to N     O(VlogV)  O(V+ElogV) using fabonacci heap, otherwise O(V^2)
     bellman-ford          yes       yes       yes        yes             Find          1 to N               O(kE) on sparse graph, O(VE) for dense graph
     spfa                  yes       yes       yes        yes            Detect         1 to N     O(V)      O(VE)
