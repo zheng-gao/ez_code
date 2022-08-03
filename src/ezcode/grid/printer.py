@@ -1,7 +1,7 @@
 import math
 
 
-def print_grid(grid: list, right_alignment=True):
+def print_grid(grid: list[list], right_alignment: bool = True):
     def _find_column_max_length(grid: list):
         col_max = list()
         for col in range(len(grid[0])):
@@ -26,7 +26,7 @@ def print_grid(grid: list, right_alignment=True):
     print()
 
 
-def print_spiral(row, col, char="X"):
+def print_spiral(row: int, col: int, char: str = "X"):
     grids = [[" "] * col for _ in range(row)]
     rings = min(math.ceil(row / 2), math.ceil(col / 2))
     for ring in range(rings):
@@ -48,3 +48,5 @@ def print_spiral(row, col, char="X"):
         for grid in line:
             print(grid, end="")
         print()
+
+

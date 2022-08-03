@@ -2,6 +2,7 @@ from collections import deque
 from copy import deepcopy
 
 from ezcode.heap import PriorityMap
+from ezcode.utils.color import colored_square
 
 
 def init_grid(row: int, col: int, init=None) -> list[list]:
@@ -54,7 +55,7 @@ class Grid:
         self.offsets = set([(-1, 0), (1, 0), (0, -1), (0, 1)])  # Up, Down, Left, Right
 
     def __contains__(self, node: tuple[int, int]):
-        return self.row_min <= node[0] and self.row_max >= node[0] and self.col_min <= node[1] and self.col_max >= node[1]
+        return self.row_min <= node[0] and node[0] <= self.row_max and self.col_min <= node[1] and node[1] <= self.col_max
 
     def node_sum(self, n1: tuple[int, int], n2: tuple[int, int]) -> tuple[int, int]:
         return n1[0] + n2[0], n1[1] + n2[1]
@@ -237,9 +238,64 @@ class Grid:
                             return self.path_dict_to_path_list(path_dict, destination)
         return self.path_dict_to_path_list(path_dict, destination)
 
+    def print(self, value_color: dict = None, layers: list[dict] = None):
+        """
+            e.g.
+            layers is list of {value, nodes}
+            layers = [
+                {"value": 5, "nodes": [(1,2), (1,3), (2,3), ...]},
+                {"value": 1, "nodes": [(1,3), (1,4), (1,5), ...]},
+                ...
+            ]
+            value_color = {
+                0: "White",
+                1: "Red",
+                2: "Green",
+                3: "Yellow",
+                ...
+            }
+        """
+        grid = deepcopy(self.grid)
+        if layers:
+            for layer in layers:
+                for node in layer["nodes"]:
+                    grid[node[0]][node[1]] = layer["value"]
+        for row in range(self.row_min, self.row_max + 1):
+            for col in range(self.col_min, self.col_max + 1):
+                if value_color is None:
+                    print(grid[row][col], end="")
+                else:
+                    print(colored_square(value_color[grid[row][col]]), end="")
+            print()
 
 
 
+"""
+from ezcode.grid import Grid
+grid = Grid(
+    [
+        [1, 1, 1, 1, 1, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0],
+        [1, 0, 1, 1, 0, 1, 0],
+        [1, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 1, 0, 0, 0],
+        [1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 0, 1, 1, 1, 0]
+    ]
+)
 
+grid.print()
+color_config = {0: "White", 1: "Red", 2: "Green", 3: "Yellow", 4: "Blue"}
+grid.print(color_config)
+              
+paths = grid.dfs_backtracking(source=(3, 4), destination=(4, 6), valid_values=set([0]))
+
+layers = list()
+for i, p in enumerate(paths):
+    layers.append({"value": i + 2, "nodes": p})
+
+grid.print(value_color=color_config, layers=layers)
+
+"""
 
 
