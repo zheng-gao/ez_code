@@ -34,11 +34,11 @@ E        *  *
     }
     assert graph_str == str(graph)
     for n1, b in benchmark.items():
-        assert graph.bfs_path_value(n1) == b
+        assert graph.bfs(n1) == b
         assert graph.dijkstra(n1) == b
         assert graph.spfa(n1) == b
         for n2 in benchmark.keys():
-            assert benchmark[n1][n2] == graph.dfs_path_value(n1, n2)
+            assert benchmark[n1][n2] == graph.dfs_backtracking(n1, n2)
     assert graph.floyd() == benchmark
 
 
@@ -76,7 +76,7 @@ E              0.8  0.3
         assert equal(graph.dijkstra(n1), benchmark, resolution=resolution)
         assert equal(graph.spfa(n1), benchmark, resolution=resolution)
         for n2 in benchmark_1.keys():
-            assert equal(benchmark_1[n1][n2], graph.dfs_path_value(n1, n2), resolution=resolution)
+            assert equal(benchmark_1[n1][n2], graph.dfs_backtracking(n1, n2), resolution=resolution)
     assert equal(graph.floyd(), benchmark_1)
 
     benchmark_2 = {
@@ -90,7 +90,7 @@ E              0.8  0.3
         assert equal(graph.dijkstra(n1, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a,b: a * b, min_max_func=max), benchmark, resolution=resolution)
         assert equal(graph.spfa(n1, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark, resolution=resolution)
         for n2 in benchmark_2.keys():
-            assert equal(benchmark_2[n1][n2], graph.dfs_path_value(n1, n2, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), resolution=resolution)
+            assert equal(benchmark_2[n1][n2], graph.dfs_backtracking(n1, n2, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), resolution=resolution)
     assert equal(graph.floyd(self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark_2, resolution=resolution)
 
 
@@ -150,11 +150,11 @@ f           *
     }
     assert graph_str == str(graph)
     for n1, b in benchmark.items():
-        assert graph.bfs_path_value(n1) == b
+        assert graph.bfs(n1) == b
         assert graph.dijkstra(n1) == b
         assert graph.spfa(n1) == b
         for n2 in benchmark.keys():
-            assert benchmark[n1][n2] == graph.dfs_path_value(n1, n2)
+            assert benchmark[n1][n2] == graph.dfs_backtracking(n1, n2)
     assert graph.floyd() == benchmark
 
 
@@ -186,7 +186,7 @@ f                       0.4
         assert equal(graph.dijkstra(n1), benchmark, resolution=resolution)
         assert equal(graph.spfa(n1), benchmark, resolution=resolution)
         for n2 in benchmark_1.keys():
-            assert equal(benchmark_1[n1][n2], graph.dfs_path_value(n1, n2), resolution=resolution)
+            assert equal(benchmark_1[n1][n2], graph.dfs_backtracking(n1, n2), resolution=resolution)
     assert equal(graph.floyd(), benchmark_1, resolution=resolution)
 
     benchmark_2 = {
@@ -201,7 +201,7 @@ f                       0.4
         assert equal(graph.dijkstra(n1, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark, resolution=resolution)
         assert equal(graph.spfa(n1, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark, resolution=resolution)
         for n2 in benchmark_2.keys():
-            assert equal(benchmark_2[n1][n2], graph.dfs_path_value(n1, n2, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), resolution=resolution)
+            assert equal(benchmark_2[n1][n2], graph.dfs_backtracking(n1, n2, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), resolution=resolution)
     assert equal(graph.floyd(self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark_2, resolution=resolution)
 
 

@@ -77,11 +77,12 @@ class Graph:
     floyd                 yes       yes       yes        yes              no           N to N     O(V^2)    O(V^3)
 
     Notes:
+    On fixed edge weight (e.g. unweighted graphs, w=1), dijkstra == bfs and both of them can return early
     dijkstra/spfa are good for sparse graph
     on dense graph, dijkstra is faster than spfa
     """
 
-    def dfs_path_value(self, src_node_id, dst_node_id, visited=set(), self_loop_weight=0, disconnected_edge_weight=float("inf"), path_value_func=lambda a, b: a + b, min_max_func: Callable = min):
+    def dfs_backtracking(self, src_node_id, dst_node_id, visited=set(), self_loop_weight=0, disconnected_edge_weight=float("inf"), path_value_func=lambda a, b: a + b, min_max_func: Callable = min):
         """ O(V!) """
         if src_node_id == dst_node_id:
             return self_loop_weight
@@ -89,12 +90,12 @@ class Graph:
         for node_id, weight in self.get_edges(node_id=src_node_id, is_outgoing=True).items():
             if node_id not in visited:
                 visited.add(node_id)
-                path_value = self.dfs_path_value(node_id, dst_node_id, visited, self_loop_weight, disconnected_edge_weight, path_value_func, min_max_func)
+                path_value = self.dfs_backtracking(node_id, dst_node_id, visited, self_loop_weight, disconnected_edge_weight, path_value_func, min_max_func)
                 visited.remove(node_id)
                 top_path_value = min_max_func(top_path_value, path_value_func(weight, path_value))
         return top_path_value
 
-    def bfs_path_value(self, src_node_id, dst_node_id=None):
+    def bfs(self, src_node_id, dst_node_id=None):
         """ O(E): Only works for unweighted graph """
         if self.is_weighted:
             raise UnweightedGraphExpected()

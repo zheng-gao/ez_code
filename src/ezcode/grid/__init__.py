@@ -66,11 +66,9 @@ class Grid:
     def value(self, node: tuple[int, int]):
         return self.grid[node[0]][node[1]]
 
-    def neighbors(self, node: tuple[int, int], valid_values: set = None, offsets: set = None) -> list[tuple[int, int]]:
+    def neighbors(self, node: tuple[int, int], valid_values: set = None) -> list[tuple[int, int]]:
         valid_neighbors = list()
-        if offsets is None:
-            offsets = self.offsets
-        for offset in offsets:
+        for offset in self.offsets:
             neighbor = self.node_sum(node, offset)
             if neighbor in self and (valid_values is None or self.value(neighbor) in valid_values):
                 valid_neighbors.append(neighbor)
@@ -78,29 +76,27 @@ class Grid:
 
     """
     Path finding algorithms Summary:
-                        Shortest    Paths     Searched Area    f_value
-    dfs                 no          1         largest          N/A
-    dfs_backtracking    yes         All       largest
-    bfs                 yes         1         larger           h_value >> g_value
-    dijkstra            yes         1         larger           h_value =0
-    A*                  yes         1         small            g_value + h_value
+                        Shortest                Paths    Time           Topology   f_value
+    dfs                 no                      1        O(E)           1:1        N/A
+    dfs_backtracking    yes                     All      O(V!)          1:1        N/A
+    bfs                 yes (fixed step cost)   1        O(E)           1:N        N/A
+    dijkstra            yes                     1        O(V + ElogV)   1:N        h_value = 0 or g_value >> h_value
+    A*                  yes                     1        O(V + ElogV)   1:N        g_value + h_value
 
     Notes:
+    bfs shortest path only work on fixed step cost
+    on fixed step cost (similar to unweighted graph)
+        1. dijkstra == bfs
+        2. bfs, dijkstra and A* can return early
+
     A* f_value = g_value + h_value
     The more accurate we can estimate the path length from a node to destination (h_value), the faster A* can run.
     If h_value = 0, which means we don't give any estimation, it becomes Dijkstra, the lower h_value the more nodes to expand
     If h_value is the same as real value, A* won't expand any node and only follow the shortest path
     If h_value is larger than real value, A* won't guarantee the shortest path but it can run faster
-    If h_value >> g_value, which means we trust the heuristic path length, it becomes bfs and does not guarantee the shortest path
-    The heuristic path length must keep the same order as the real ones
-    e.g. if a > b then h_a > h_b
+    If h_value >> g_value, which means we trust the heuristic path length
     """
-    def dfs_backtracking(self,
-        source: tuple[int, int],
-        destination: tuple[int, int],
-        valid_values: set = None,
-        offsets: set = None
-    ) -> list[list[tuple[int, int]]]:
+    def dfs_backtracking(self, source: tuple[int, int], destination: tuple[int, int], valid_values: set = None) -> list[list[tuple[int, int]]]:
         if source not in self or destination not in self or self.value(source) not in valid_values or self.value(destination) not in valid_values:
             return list()
         shortest_paths, path, visited = list(), list([source]), set([source])
@@ -111,7 +107,7 @@ class Grid:
                     shortest_paths.clear()
                 shortest_paths.append(path.copy())
                 return
-            for neighbor in self.neighbors(node, valid_values, offsets):
+            for neighbor in self.neighbors(node, valid_values):
                 if neighbor not in visited and (not shortest_paths or len(path) < len(shortest_paths[0])):
                     visited.add(neighbor)
                     path.append(neighbor)
@@ -131,12 +127,7 @@ class Grid:
             parent = path_dict[parent] if parent in path_dict else None
         return list(path)
 
-    def dfs(self,
-        source: tuple[int, int],
-        destination: tuple[int, int],
-        valid_values: set = None,
-        offsets: set = None
-    ) -> list[tuple[int, int]]:
+    def dfs(self, source: tuple[int, int], destination: tuple[int, int], valid_values: set = None) -> list[tuple[int, int]]:
         """
             candidates is a Stack
             searched nodes will not be revisited
@@ -150,7 +141,7 @@ class Grid:
         candidates = list([source])  # stack
         while len(candidates) > 0:
             closest_node = candidates.pop()
-            for neighbor in self.neighbors(closest_node, valid_values, offsets):
+            for neighbor in self.neighbors(closest_node, valid_values):
                 if neighbor not in visited:
                     visited.add(neighbor)
                     path_dict[neighbor] = closest_node
@@ -159,12 +150,7 @@ class Grid:
                     candidates.append(neighbor)
         return None
 
-    def bfs(self,
-        source: tuple[int, int],
-        destination: tuple[int, int],
-        valid_values: set = None,
-        offsets: set = None
-    ) -> list[tuple[int, int]]:
+    def bfs(self, source: tuple[int, int], destination: tuple[int, int], valid_values: set = None) -> list[tuple[int, int]]:
         """
             candidates is a Queue
             searched nodes will not be revisited
@@ -178,7 +164,7 @@ class Grid:
         candidates = deque([source])  # queue
         while len(candidates) > 0:
             closest_node = candidates.popleft()
-            for neighbor in self.neighbors(closest_node, valid_values, offsets):
+            for neighbor in self.neighbors(closest_node, valid_values):
                 if neighbor not in visited:
                     visited.add(neighbor)
                     path_dict[neighbor] = closest_node
@@ -187,12 +173,7 @@ class Grid:
                     candidates.append(neighbor)
         return None
 
-    def dijkstra(self,
-        source: tuple[int, int],
-        destination: tuple[int, int],
-        valid_values: set = None,
-        offsets: set = None
-    ) -> list[tuple[int, int]]:
+    def dijkstra(self, source: tuple[int, int], destination: tuple[int, int], valid_values: set = None) -> list[tuple[int, int]]:
         """
             candidates is a Priority Map
             searched nodes can be put into candidates again
@@ -206,25 +187,22 @@ class Grid:
         g_values = {source: 0}                                       # g_value: path cost to source
         candidates.push(0, source)                                   # priority = g_value
         while len(candidates) > 0:
-            _, closest_node = candidates.pop()
-            visited.add(closest_node)                                # <-------------| visit node after poping from candidates
-            for neighbor in self.neighbors(closest_node, valid_values, offsets):  #  | 
-                if neighbor not in visited:                          # <-------------| searched neighbor can be updated again
+            closest_node = candidates.pop()[1]
+            visited.add(closest_node)                      # <-------------| visit node after poping from candidates
+            for neighbor in self.neighbors(closest_node, valid_values):  #  | 
+                if neighbor not in visited:                # <-------------| searched neighbor can be updated again
                     if neighbor not in g_values:
                         g_values[neighbor] = float("inf")
-                    if g_values[closest_node] + 1 < g_values[neighbor]:
-                        g_values[neighbor] = g_values[closest_node] + 1
-                        candidates.push(g_values[neighbor], neighbor)
+                    distance = g_values[closest_node] + 1  # Fixed step cost == self.distance(closest_node, neighbor, "manhattan") == 1
+                    if distance < g_values[neighbor]:
+                        g_values[neighbor] = distance
+                        candidates.push(distance, neighbor)
                         path_dict[neighbor] = closest_node
+                        if neighbor == destination:  # return early
+                            return self.path_dict_to_path_list(path_dict, destination)
         return self.path_dict_to_path_list(path_dict, destination)
 
-    def a_star(self,
-        source: tuple[int, int],
-        destination: tuple[int, int],
-        valid_values: set = None,
-        offsets: set = None,
-        distance: str = "manhattan"
-    ) -> list[tuple[int, int]]:
+    def a_star(self, source: tuple[int, int], destination: tuple[int, int], valid_values: set = None) -> list[tuple[int, int]]:
         """
             candidates is a Priority Map
             searched nodes can be put into candidates again
@@ -237,22 +215,26 @@ class Grid:
             return list([source])
         path_dict, visited = dict(), set()  # path_dict = {child: parent}
         candidates = PriorityMap(min_heap=True)
-        g_values = {source: 0}                                  # g_value: path cost to source
-        h_value = self.distance(source, destination, distance)  # h_value: huristic estimate of the path cost to destination
-        f_value = g_values[source] + h_value                    # f_value: g_value + h_value
-        candidates.push(f_value, source)                        # priority = f_value
+        g_values = {source: 0}                                     # g_value: path cost to source
+        h_value = self.distance(source, destination, "manhattan")  # h_value: huristic estimate of the path cost to destination
+        f_value = g_values[source] + h_value                       # f_value: g_value + h_value
+        candidates.push(f_value, source)                           # priority = f_value
         while len(candidates) > 0:
-            _, closest_node = candidates.pop()
-            visited.add(closest_node)                                # <-------------| visit node after poping from candidates
-            for neighbor in self.neighbors(closest_node, valid_values, offsets):  #  | 
-                if neighbor not in visited:                          # <-------------| searched neighbor can be updated again                 
+            closest_node = candidates.pop()[1]
+            visited.add(closest_node)                      # <-------------| visit node after poping from candidates
+            for neighbor in self.neighbors(closest_node, valid_values):  #  | 
+                if neighbor not in visited:                # <-------------| searched neighbor can be updated again                 
                     if neighbor not in g_values:
                         g_values[neighbor] = float("inf")
-                    if g_values[closest_node] + 1 < g_values[neighbor]:
-                        g_values[neighbor] = g_values[closest_node] + 1
-                        f_value = g_values[neighbor] + self.distance(neighbor, destination)
+                    distance = g_values[closest_node] + 1  # Fixed step cost == self.distance(closest_node, neighbor, "manhattan") == 1
+                    if distance < g_values[neighbor]:
+                        g_values[neighbor] = distance
+                        h_value = self.distance(neighbor, destination, "manhattan")
+                        f_value = g_values[neighbor] + h_value
                         candidates.push(f_value, neighbor)
                         path_dict[neighbor] = closest_node
+                        if neighbor == destination:  # return early
+                            return self.path_dict_to_path_list(path_dict, destination)
         return self.path_dict_to_path_list(path_dict, destination)
 
 
