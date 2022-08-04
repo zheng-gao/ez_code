@@ -274,21 +274,19 @@ class Grid:
 from ezcode.grid import Grid
 grid = Grid(
     [
-        [1, 1, 1, 1, 1, 0, 0],
-        [1, 0, 0, 0, 0, 0, 0],
-        [0, 0, 1, 1, 0, 1, 0],
-        [1, 0, 0, 0, 0, 0, 0],
-        [0, 0, 1, 1, 0, 0, 0],
-        [0, 0, 0, 0, 0, 1, 1],
-        [0, 1, 1, 0, 0, 1, 0]
+        [1, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 0, 1, 0],
+        [0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 0, 0, 0],
+        [0, 0, 0, 0, 1, 1]
     ]
 )
 
-grid.print()
-value_color = {0: "White", 1: "Red", 2: "Green", 3: "Yellow", 4: "Blue"}
-grid.print(value_color)
 
-source, destination, valid_values = (1, 3), (5, 2), set([0])
+value_color = {0: "White", 1: "Red", 2: "Green", 3: "Yellow", 4: "Blue"}
+source, destination, valid_values = (1, 2), (5, 1), set([0])
+
 path = grid.dfs(source, destination, valid_values)
 grid.print(value_color, [{"value": 3, "nodes": path}, {"value": 4, "nodes": [source, destination]}])
 

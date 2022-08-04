@@ -3,33 +3,27 @@
 >>> from ezcode.grid import Grid
 >>> grid = Grid(
 ...     [
-...         [1, 1, 1, 1, 1, 0, 0],
-...         [1, 0, 0, 0, 0, 0, 0],
-...         [0, 0, 1, 1, 0, 1, 0],
-...         [1, 0, 0, 0, 0, 0, 0],
-...         [0, 0, 1, 1, 0, 0, 0],
-...         [0, 0, 0, 0, 0, 1, 1],
-...         [0, 1, 1, 0, 0, 1, 0]
+...         [1, 1, 1, 1, 0, 0],
+...         [0, 0, 0, 0, 0, 0],
+...         [0, 1, 1, 0, 1, 0],
+...         [0, 0, 0, 0, 0, 0],
+...         [0, 1, 1, 0, 0, 0],
+...         [0, 0, 0, 0, 1, 1]
 ...     ]
 ... )
 >>> 
->>> grid.print()
-
-1111100
-1000000
-0011010
-1000000
-0011000
-0000011
-0110010
-
 >>> value_color = {0: "White", 1: "Red", 2: "Green", 3: "Yellow", 4: "Blue"}
->>> grid.print(value_color)
+>>> source, destination, valid_values = (1, 2), (5, 1), set([0])
+>>> 
+>>> path = grid.dfs(source, destination, valid_values)
+>>> grid.print(value_color, [{"value": 3, "nodes": path}, {"value": 4, "nodes": [source, destination]}])
 ```
-![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)
-![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)
-![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)
-
+![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/ffffff/ffffff.png)![](https://via.placeholder.com/15/ffffff/ffffff.png)<br>
+![](https://via.placeholder.com/15/ffffff/ffffff.png)![](https://via.placeholder.com/15/ffffff/ffffff.png)![](https://via.placeholder.com/15/0000FF/0000FF.png)![](https://via.placeholder.com/15/FFEA00/FFEA00.png)![](https://via.placeholder.com/15/FFEA00/FFEA00.png)![](https://via.placeholder.com/15/FFEA00/FFEA00.png)<br>
+![](https://via.placeholder.com/15/ffffff/ffffff.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/ffffff/ffffff.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/FFEA00/FFEA00.png)<br>
+![](https://via.placeholder.com/15/FFEA00/FFEA00.png)![](https://via.placeholder.com/15/FFEA00/FFEA00.png)![](https://via.placeholder.com/15/FFEA00/FFEA00.png)![](https://via.placeholder.com/15/FFEA00/FFEA00.png)![](https://via.placeholder.com/15/FFEA00/FFEA00.png)![](https://via.placeholder.com/15/FFEA00/FFEA00.png)<br>
+![](https://via.placeholder.com/15/FFEA00/FFEA00.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/ffffff/ffffff.png)![](https://via.placeholder.com/15/ffffff/ffffff.png)![](https://via.placeholder.com/15/ffffff/ffffff.png)<br>
+![](https://via.placeholder.com/15/FFEA00/FFEA00.png)![](https://via.placeholder.com/15/0000FF/0000FF.png)![](https://via.placeholder.com/15/ffffff/ffffff.png)![](https://via.placeholder.com/15/ffffff/ffffff.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)![](https://via.placeholder.com/15/f03c15/f03c15.png)<br>
 
 ```
               
