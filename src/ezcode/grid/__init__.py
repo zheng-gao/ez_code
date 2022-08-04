@@ -260,8 +260,8 @@ class Grid:
             for layer in layers:
                 for node in layer["nodes"]:
                     grid[node[0]][node[1]] = layer["value"]
-        for row in range(self.row_min, self.row_max + 1):
-            for col in range(self.col_min, self.col_max + 1):
+        for row in range(len(grid)):
+            for col in range(len(grid[0])):
                 if value_color is None:
                     print(grid[row][col], end="")
                 else:
