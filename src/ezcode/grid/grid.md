@@ -25,8 +25,10 @@
 
 >>> value_color = {0: "White", 1: "Red", 2: "Green", 3: "Yellow", 4: "Blue"}
 >>> grid.print(value_color)
+```
 ![#f03c15](https://via.placeholder.com/15/f03c15/f03c15.png)
-"\033[107m              \033[0m"
+\033[107m              \033[0m
+```
               
               
               
