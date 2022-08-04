@@ -79,17 +79,17 @@
 >>> i, layers = 2, list()
 >>> for p in paths:
 ...     layers.append({"value": i, "nodes": p})
-...     i += 1
 ... 
->>> layers.append({"value": i, "nodes": [source, destination]})
+>>> layers.append({"value": "S", "nodes": [source]})
+>>> layers.append({"value": "D", "nodes": [destination]})
 >>> grid.print(layers=layers)
 """
 1111100
-1224300
+122S300
 0211310
 1200300
 0211300
-0243311
+02D3311
 0110010
 """         
 ```
