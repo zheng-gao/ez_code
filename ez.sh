@@ -265,8 +265,8 @@ function ez() {
     else
         [[ -z "${operations[*]}" ]] && ez_print_log -l "ERROR" -m "Must select at least one operation if no workflow is selected!" && return 1
     fi
-    [[ "${development}" = "True" ]] && operations=("clean" "uninstall" "build" "test" "install_local" "clean")
-    [[ "${release}" = "True" ]] && operations=("clean" "bump" "build" "test" "publish" "clean")
+    [[ "${development}" = "True" ]] && operations=("clean" "build" "test" "uninstall" "install_local" "clean")
+    [[ "${release}" = "True" ]] && operations=("clean" "bump" "build" "test" "publish" "uninstall" "install" "clean")
     for opt in "${operations[@]}"; do
         ez_exclude "${opt}" "${VALID_OPERATIONS[@]}" && ez_print_log -l "ERROR" -m "Invalid operation \"${opt}\"" && return 1
     done
