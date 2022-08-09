@@ -40,8 +40,6 @@
 ### Connect-5 Validation
 ```python
 >>> from ezcode.grid.iterator import GridIteratorFactory, MinorDiagonalIterator
->>> 
->>> 
 >>> def check(iterator, color, target=5):
 ...     count = 0
 ...     for c in iterator:
@@ -52,19 +50,18 @@
 ... 
 >>> def who_win(grid):
 ...     iterators = [
-...         GridIteratorFactory.get(grid, iterator="horizontal"),
 ...         GridIteratorFactory.get(grid, iterator="major_diagonal"),
 ...         GridIteratorFactory.get(grid, iterator="minor_diagonal")
 ...     ]
 ...     for row in range(len(grid)):
 ...         for color in ['W', 'B']:
-...             for iterator in iterators:
+...             for iterator in iterators + [GridIteratorFactory.get(grid, iterator="horizontal")]:
 ...                 iterator.row, iterator.col = row, 0
 ...                 if check(iterator, color):
 ...                     return color
 ...     for col in range(len(grid[0])):
 ...         for color in ['W', 'B']:
-...             for iterator in iterators:
+...             for iterator in iterators + [GridIteratorFactory.get(grid, iterator="vertical")]:
 ...                 iterator.row = len(grid) - 1 if isinstance(iterator, MinorDiagonalIterator) else 0
 ...                 iterator.col = col
 ...                 if check(iterator, color):
@@ -80,7 +77,6 @@
 ...     [' ', ' ', ' ', ' ', ' ', 'B'],
 ... ]))
 B
-
 >>> print(who_win([
 ...     [' ', 'B', 'W', 'B', ' ', ' '],
 ...     [' ', 'B', 'W', 'B', ' ', 'W'],
