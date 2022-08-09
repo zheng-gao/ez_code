@@ -149,12 +149,12 @@ function control_build() {
 
 function control_test() {
     # https://docs.pytest.org/en/latest/
-    # ez_print_log -m "Installing flake8 ..."
-    # python3 -m "pip" "install" --upgrade "flake8" --user
-    # ez_print_log -m "Running flake8 checks ..."
-    # if ! python3 -m "flake8" --ignore "E124,E128,E501,W391" "${CODE_DIRECTORY}"; then
-    #     ez_print_log -l "ERROR" -m "Failed flake8 checks!"; return 1
-    # fi
+    ez_print_log -m "Installing flake8 ..."
+    python3 -m "pip" "install" --upgrade "flake8" --user
+    ez_print_log -m "Running flake8 checks ..."
+    if ! python3 -m "flake8" --ignore "E124,E128,E501,W391" "${CODE_DIRECTORY}"; then
+        ez_print_log -l "ERROR" -m "Failed flake8 checks!"; return 1
+    fi
     ez_print_log -m "Installing pytest ..."
     python3 -m "pip" "install" --upgrade "pytest" --user
     ez_print_log -m "Installing pytest-srcpaths ..."

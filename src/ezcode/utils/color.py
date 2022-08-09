@@ -1,13 +1,14 @@
 
 Color = {
-    "White":  "\033[107m",
-    "Red":    "\033[41m",
-    "Green":  "\033[42m",
+    "White": "\033[107m",
+    "Red": "\033[41m",
+    "Green": "\033[42m",
     "Yellow": "\033[43m",
-    "Blue":   "\033[44m",
-    "Reset":  "\033[0m",
+    "Blue": "\033[44m",
+    "Reset": "\033[0m",
 }
 
 
 def colored_square(name) -> str:
     return Color[name] + "  " + Color["Reset"]
+

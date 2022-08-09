@@ -29,7 +29,7 @@ def quick_sort(array: list, begin: int = None, end: int = None, reverse: bool = 
         begin = 0
     if end is None:
         end = len(array) - 1
-    if(begin < end):
+    if begin < end:
         pivot_index = partition_with_random_pivot(array, begin, end, reverse)
         quick_sort(array, begin, pivot_index - 1, reverse)
         quick_sort(array, pivot_index + 1, end, reverse)
