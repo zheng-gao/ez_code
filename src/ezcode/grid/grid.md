@@ -1,4 +1,37 @@
-## A* Shortest Path Algorithm
+## Grid Iterator
+```python
+>>> from ezcode.grid.iterator import GridIteratorFactory
+>>> grid = [
+...     [1, 2, 3],
+...     [8, 9, 4],
+...     [7, 6, 5]
+... ]
+>>> itr = GridIteratorFactory.get(grid, 1, 0, iterator="horizontal")
+>>> for data in itr:
+...     print(data, end=" ")
+... 
+8 9 4
+
+>>> itr = GridIteratorFactory.get(grid, 2, 2, iterator="vertical", reverse=True)
+>>> for data in itr:
+...     print(data, end=" ")
+... 
+5 4 3
+
+>>> itr = GridIteratorFactory.get(grid, 0, 0, iterator="spiral")
+>>> for data in itr:
+...     print(data, end=" ")
+... 
+1 2 3 4 5 6 7 8 9
+
+>>> itr = GridIteratorFactory.get(grid, 0, 2, row_end=1, col_end=2, iterator="spiral", reverse=True)
+>>> for data in itr:
+...     print(data, end=" ")
+... 
+3 2 1 8 7 6 5 4
+```
+
+## Path Finder
 ```python
 >>> from ezcode.grid import Grid
 >>> grid = Grid(
