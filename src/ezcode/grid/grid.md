@@ -18,6 +18,18 @@
 ... 
 5 4 3
 
+>>> itr = GridIteratorFactory.get(grid, 0, 0, iterator="major_diagonal")
+>>> for data in itr:
+...     print(data, end=" ")
+... 
+1 9 5
+
+>>> itr = GridIteratorFactory.get(grid, 0, 2, iterator="minor_diagonal", reverse=True)
+>>> for data in itr:
+...     print(data, end=" ")
+... 
+3 9 7
+
 >>> itr = GridIteratorFactory.get(grid, 0, 0, iterator="spiral")
 >>> for data in itr:
 ...     print(data, end=" ")
