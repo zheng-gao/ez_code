@@ -1,15 +1,14 @@
 from ezcode.graph import Graph
-from typing import List
 
 
 class UndirectedGraph(Graph):
-    def __init__(self, edges: List[list] = None, weights: list = None, mark: str = "*"):
+    def __init__(self, edges: list[list] = None, weights: list = None, mark: str = "*"):
         super().__init__(is_weighted=(weights is not None), mark=mark)
         # self.nodes = {node_id, {node_id, weight}}
         if edges:
             self.build_graph(edges=edges, weights=weights)
 
-    def build_graph(self, edges: List[list], weights: list = None):
+    def build_graph(self, edges: list[list], weights: list = None):
         if weights is None:
             weights = [1] * len(edges)
         for (n1, n2), weight in zip(edges, weights):

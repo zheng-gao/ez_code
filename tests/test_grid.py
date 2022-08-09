@@ -1,6 +1,6 @@
 from ezcode.grid.utils import init_grid
 from ezcode.grid.iterator import GridIteratorFactory 
-from ezcode.grid.pathfinder import PathFinder
+from ezcode.grid.pathfinder import GridPathFinder
 
 
 def test_init_grid():
@@ -114,7 +114,7 @@ def test_grid_path_finding_algorithm():
                 return True
         return False
 
-    path_finder = PathFinder(
+    path_finder = GridPathFinder(
         [
             [1, 1, 1, 1, 1, 0, 0],
             [1, 0, 0, 0, 0, 0, 0],

@@ -1,5 +1,5 @@
 from collections import deque
-from typing import Callable, List
+from typing import Callable
 
 from ezcode.heap import PriorityMap
 
@@ -28,7 +28,7 @@ class Graph:
     def __len__(self) -> int:
         return len(self.nodes)
 
-    def build_graph(self, edges: List[list], weights: list = None):
+    def build_graph(self, edges: list[list], weights: list = None):
         pass
 
     def _cell(self, item=None) -> str:

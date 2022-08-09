@@ -5,7 +5,7 @@ from ezcode.heap import PriorityMap
 from ezcode.utils.color import colored_square
 
 
-class PathFinder:
+class GridPathFinder:
     def __init__(self, grid: list[list], row_min: int = None, row_max: int = None, col_min: int = None, col_max: int = None):
         self.grid = grid
         self.row_min = 0 if row_min is None else row_min
