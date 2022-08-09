@@ -34,12 +34,12 @@ class PathFinder:
 
     """
     Path finding algorithms Summary:
-                        Shortest                Paths    Time           Topology   f_value
-    dfs                 no                      1        O(E)           1:1        N/A
-    dfs_backtracking    yes                     All      O(V!)          1:1        N/A
-    bfs                 yes (fixed step cost)   1        O(E)           1:N        N/A
-    dijkstra            yes                     1        O(V + ElogV)   1:N        h_value = 0 or g_value >> h_value
-    A*                  yes                     1        O(V + ElogV)   1:N        g_value + h_value
+                        Shortest                Paths    Time           Space    Topology   f_value
+    dfs                 no                      1        O(E)           O(N)     1:1        N/A
+    dfs_backtracking    yes                     All      O(V!)          O(N)     1:1        N/A
+    bfs                 yes (fixed step cost)   1        O(E)           O(N)     1:N        N/A
+    dijkstra            yes                     1        O(V + ElogV)   O(N)     1:N        h_value = 0 or g_value >> h_value
+    A*                  yes                     1        O(V + ElogV)   O(N)     1:N        g_value + h_value
 
     Notes:
     bfs shortest path only work on fixed step cost
