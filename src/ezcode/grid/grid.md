@@ -6,38 +6,33 @@
 ...     [8, 9, 4],
 ...     [7, 6, 5]
 ... ]
->>> itr = GridIteratorFactory.get(grid, 1, 0, iterator="horizontal")
->>> for data in itr:
+
+>>> for data in GridIteratorFactory.get(grid, 1, 0, iterator="horizontal"):
 ...     print(data, end=" ")
 ... 
 8 9 4
 
->>> itr = GridIteratorFactory.get(grid, 2, 2, iterator="vertical", reverse=True)
->>> for data in itr:
+>>> for data in GridIteratorFactory.get(grid, 2, 2, iterator="vertical", reverse=True):
 ...     print(data, end=" ")
 ... 
 5 4 3
 
->>> itr = GridIteratorFactory.get(grid, 0, 0, iterator="major_diagonal")
->>> for data in itr:
+>>> for data in GridIteratorFactory.get(grid, 0, 0, iterator="major_diagonal"):
 ...     print(data, end=" ")
 ... 
 1 9 5
 
->>> itr = GridIteratorFactory.get(grid, 0, 2, iterator="minor_diagonal", reverse=True)
->>> for data in itr:
+>>> for data in GridIteratorFactory.get(grid, 0, 2, iterator="minor_diagonal", reverse=True):
 ...     print(data, end=" ")
 ... 
 3 9 7
 
->>> itr = GridIteratorFactory.get(grid, 0, 0, iterator="spiral")
->>> for data in itr:
+>>> for data in GridIteratorFactory.get(grid, 0, 0, iterator="spiral"):
 ...     print(data, end=" ")
 ... 
 1 2 3 4 5 6 7 8 9
 
->>> itr = GridIteratorFactory.get(grid, 0, 2, row_end=1, col_end=2, iterator="spiral", reverse=True)
->>> for data in itr:
+>>> for data in GridIteratorFactory.get(grid, 0, 2, row_end=1, col_end=2, iterator="spiral", reverse=True):
 ...     print(data, end=" ")
 ... 
 3 2 1 8 7 6 5 4
