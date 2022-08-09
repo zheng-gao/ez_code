@@ -37,6 +37,60 @@
 ... 
 3 2 1 8 7 6 5 4
 ```
+### Connect-5 Validation
+```python
+>>> from ezcode.grid.iterator import GridIteratorFactory, MinorDiagonalIterator
+>>> 
+>>> 
+>>> def check(iterator, color, target=5):
+...     count = 0
+...     for c in iterator:
+...         count += 1 if c == color else -count
+...         if count == target:
+...             return True
+...     return False
+... 
+>>> def who_win(grid):
+...     iterators = [
+...         GridIteratorFactory.get(grid, iterator="horizontal"),
+...         GridIteratorFactory.get(grid, iterator="major_diagonal"),
+...         GridIteratorFactory.get(grid, iterator="minor_diagonal")
+...     ]
+...     for row in range(len(grid)):
+...         for color in ['W', 'B']:
+...             for iterator in iterators:
+...                 iterator.row, iterator.col = row, 0
+...                 if check(iterator, color):
+...                     return color
+...     for col in range(len(grid[0])):
+...         for color in ['W', 'B']:
+...             for iterator in iterators:
+...                 iterator.row = len(grid) - 1 if isinstance(iterator, MinorDiagonalIterator) else 0
+...                 iterator.col = col
+...                 if check(iterator, color):
+...                     return color
+...     return None
+... 
+>>> print(who_win([
+...     [' ', 'B', ' ', 'W', ' ', ' '],
+...     [' ', 'B', 'W', ' ', ' ', ' '],
+...     [' ', 'W', 'B', ' ', 'W', ' '],
+...     ['B', 'W', 'B', 'B', ' ', ' '],
+...     [' ', 'W', 'W', 'W', 'B', ' '],
+...     [' ', ' ', ' ', ' ', ' ', 'B'],
+... ]))
+B
+
+>>> print(who_win([
+...     [' ', 'B', 'W', 'B', ' ', ' '],
+...     [' ', 'B', 'W', 'B', ' ', 'W'],
+...     ['B', 'W', 'B', 'B', 'W', ' '],
+...     ['B', 'W', 'B', 'W', ' ', ' '],
+...     [' ', 'W', 'W', 'W', 'B', ' '],
+...     [' ', 'W', 'B', ' ', ' ', ' '],
+... ]))
+W
+```
 
 ## Path Finder
 ```python
