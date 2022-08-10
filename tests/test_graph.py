@@ -62,7 +62,15 @@ C    0.2  0.5       0.9  0.8
 D         0.9  0.9       0.3  
 E              0.8  0.3       
 """[1:]
-    graph = UndirectedGraph(edges=[["A", "B"], ["A", "C"], ["B", "C"], ["B", "D"], ["C", "D"], ["C", "E"], ["D", "E"]], weights=[0.8, 0.2, 0.5, 0.9, 0.9, 0.8, 0.3])
+    graph = UndirectedGraph({
+        ("A", "B"): 0.8,
+        ("A", "C"): 0.2,
+        ("B", "C"): 0.5,
+        ("B", "D"): 0.9,
+        ("C", "D"): 0.9,
+        ("C", "E"): 0.8,
+        ("D", "E"): 0.3
+    })
     assert graph_str == str(graph)
     resolution = 0.0001
     benchmark_1 = {

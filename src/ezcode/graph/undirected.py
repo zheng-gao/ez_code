@@ -2,14 +2,20 @@ from ezcode.graph import Graph
 
 
 class UndirectedGraph(Graph):
-    def __init__(self, edges: list[list] = None, weights: list = None, mark: str = "*"):
+    def __init__(self, edge_weight_dict: dict = None, edges: list[list] = None, weights: list = None, mark: str = "*"):
         super().__init__(is_weighted=(weights is not None), mark=mark)
         # self.nodes = {node_id, {node_id, weight}}
-        if edges:
-            self.build_graph(edges=edges, weights=weights)
+        if edge_weight_dict or edges:
+            self.build_graph(edge_weight_dict=edge_weight_dict, edges=edges, weights=weights)
 
-    def build_graph(self, edges: list[list], weights: list = None):
-        if weights is None:
+    def build_graph(self, edge_weight_dict: dict = None, edges: list[list] = None, weights: list = None):
+        if edge_weight_dict:
+            edges, weights = list(), list()
+            for edge, weight in edge_weight_dict.items():
+                edges.append(edge)
+                if weight is not None:
+                    weights.append(weight)
+        if not weights:
             weights = [1] * len(edges)
         for (n1, n2), weight in zip(edges, weights):
             if n1 is not None and n1 not in self.nodes:
@@ -92,19 +98,5 @@ class UndirectedGraph(Graph):
 
         _dfs(node_id=start_node_id)
         return eulerian_path_nodes[::-1]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

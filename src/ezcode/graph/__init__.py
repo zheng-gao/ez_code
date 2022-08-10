@@ -28,7 +28,7 @@ class Graph:
     def __len__(self) -> int:
         return len(self.nodes)
 
-    def build_graph(self, edges: list[list], weights: list = None):
+    def build_graph(self, edge_weight_dict: dict = None, edges: list[list] = None, weights: list = None):
         pass
 
     def _cell(self, item=None) -> str:
