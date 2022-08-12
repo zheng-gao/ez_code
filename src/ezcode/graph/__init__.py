@@ -4,15 +4,15 @@ from typing import Callable
 from ezcode.heap import PriorityMap
 
 
-class NegativeCycleExist(Exception):
+class NegativeCycleExistError(Exception):
     pass
 
 
-class PositiveCycleExist(Exception):
+class PositiveCycleExistError(Exception):
     pass
 
 
-class UnweightedGraphExpected(Exception):
+class UnweightedGraphExpectedError(Exception):
     pass
 
 
@@ -98,7 +98,7 @@ class Graph:
     def bfs(self, src_node_id, dst_node_id=None):
         """ O(E): Only works for unweighted graph """
         if self.is_weighted:
-            raise UnweightedGraphExpected()
+            raise UnweightedGraphExpectedError()
         path_values, queue, visited = dict(), deque([src_node_id]), set([src_node_id])
         for node_id in self.nodes.keys():
             path_values[node_id] = 0 if node_id == src_node_id else float("inf")
@@ -151,9 +151,9 @@ class Graph:
                             enqueue_counters[relax_node_id] += 1
                             if enqueue_counters[relax_node_id] > len(self.nodes):
                                 if min_max_func == min:
-                                    raise NegativeCycleExist(f"node-id \"{relax_node_id}\"")
+                                    raise NegativeCycleExistError(f"node-id \"{relax_node_id}\"")
                                 else:
-                                    raise PositiveCycleExist(f"node-id \"{relax_node_id}\"")
+                                    raise PositiveCycleExistError(f"node-id \"{relax_node_id}\"")
         return path_values
 
     def floyd(self, self_loop_weight=0, disconnected_edge_weight=float("inf"), path_value_func=lambda a, b: a + b, min_max_func: Callable = min):

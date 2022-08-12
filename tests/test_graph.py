@@ -1,5 +1,5 @@
 from ezcode.utils import equal
-from ezcode.graph import NegativeCycleExist
+from ezcode.graph import NegativeCycleExistError
 from ezcode.graph.directed import DirectedGraph
 from ezcode.graph.undirected import UndirectedGraph
 
@@ -106,10 +106,9 @@ def test_negative_cycle_detection():
     graph = UndirectedGraph(edges=[["A", "B"], ["A", "C"], ["A", "D"], ["B", "C"], ["B", "D"], ["C", "D"]], weights=[2, 3, 2, -3, 1, 1])
     try:
         graph.spfa("A", check_cycle=True)
-    except NegativeCycleExist:
-        assert True
-    else:
         assert False
+    except NegativeCycleExistError:
+        assert True
 
 
 def test_directed_graph():

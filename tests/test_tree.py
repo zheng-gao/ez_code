@@ -1,4 +1,4 @@
-from ezcode.tree.forest import DisjointSets
+from ezcode.tree.forest import DisjointSets, DependencyForest, CycleExistError
 from ezcode.tree.binary_tree import SegmentTree
 from fixture.tree import printer, s_root, s_tree, c_tree, s_tree_string, c_tree_string
 from fixture.tree import trie, trie_string, suffix_trie, suffix_trie_string
@@ -113,4 +113,41 @@ def test_segment_tree():
     assert st.query(1, 3) == 9
     st.update(index=2, data=7)
     assert st.query(1, 3) == 11
+
+
+def test_dependency_forest():
+    class Node:
+        def __init__(self, name):
+            self.name = name
+            self.children = set()
+
+        def add(self, node):
+            self.children.add(node)
+            return self
+
+    n = [Node(0), Node(1), Node(2), Node(3), Node(4), Node(5)]
+    n[1].add(n[0])
+    n[2].add(n[0]).add(n[1])
+    n[3].add(n[4])
+    n[4].add(n[1]).add(n[5])
+    n[5].add(n[0]).add(n[2])
+    dt = DependencyForest(n)
+    assert dt.serialize() == n
+    n[2].add(n[4])
+    try:
+        dt.serialize()
+        assert False
+    except CycleExistError:
+        assert True
+
+
+    
+
+
+
+
+
+
+
+
 

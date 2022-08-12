@@ -1,3 +1,4 @@
+from ezcode.array.interval import merge_overlapped_intervals
 from ezcode.array.rmq import SparseTable
 from ezcode.array.search import binary_search, binary_search_range
 from ezcode.array.sort import quick_sort
@@ -188,8 +189,6 @@ def test_quick_sort():
     assert data_2 == [9, 8, 7, 6, 6, 5, 4, 4, 4, 3, 2, 1, 0]
 
 
-
-
 def test_rmq():
     st = SparseTable(merge=max, data_list=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
     assert st.rmq(6, 9) == 9
@@ -207,10 +206,11 @@ def test_rmq():
     assert st.rmq(2, 4) == 4
 
 
-
-
-
-
+def test_merge_overlapped_intervals():
+    assert merge_overlapped_intervals([[1, 2]]) == [[1, 2]]
+    assert merge_overlapped_intervals([[1, 2], [2, 3], [3, 4]]) == [[1, 4]]
+    assert merge_overlapped_intervals([[1, 2], [3, 4], [5, 6]]) == [[1, 2], [3, 4], [5, 6]]
+    assert merge_overlapped_intervals([[3, 4], [1, 2], [2, 5], [7, 9], [10, 11], [6, 8]]) == [[1, 5], [6, 9], [10, 11]]
 
 
 
