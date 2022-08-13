@@ -46,6 +46,10 @@ E        *  *
     assert path_finder.dijkstra("E", "A") == (2, ["E", "C", "A"])
     assert path_finder.spfa("E", "A") == (2, ["E", "C", "A"])
     assert path_finder.backtracking("B", "E") == (2, [["B", "C", "E"], ["B", "D", "E"]])
+    assert path_finder.bfs("B", "B") == (0, ["B"])
+    assert path_finder.dijkstra("B", "B") == (0, ["B"])
+    assert path_finder.spfa("B", "B") == (0, ["B"])
+    assert path_finder.backtracking("B", "B") == (0, [["B"]])
 
 
 def test_undirected_weighted_graph():

@@ -89,6 +89,8 @@ class GraphPathFinder:
         """ O(E): Only works for unweighted graph """
         if self.graph.is_weighted:
             raise UnweightedGraphExpectedError("bfs algorithm only works for unweighted graph")
+        if src_node_id is not None and src_node_id == dst_node_id:
+            return 0, list([src_node_id])
         path_values, path_dict, queue, visited = dict(), dict(), deque([src_node_id]), set([src_node_id])
         for node_id in self.graph.nodes.keys():
             path_values[node_id] = 0 if node_id == src_node_id else float("inf")
@@ -113,6 +115,8 @@ class GraphPathFinder:
         is_min: bool = True
     ):
         """ Positive Weight Only: O(V + E*logV). On dense graphs, dijkstra is faster than spfa """
+        if src_node_id is not None and src_node_id == dst_node_id:
+            return self_loop_weight, list([src_node_id])
         path_values, path_dict, visited = dict(), dict(), set()
         candidates = PriorityMap({src_node_id: self_loop_weight}, min_heap=is_min)
         for node_id in self.graph.nodes.keys():
@@ -141,6 +145,8 @@ class GraphPathFinder:
         check_cycle=False
     ):
         """ Improved Bellman Ford Algorithm: can handle Negative Weight and detect Negative Cycle: worst case O(V*E), sparse graphs O(kE), dense graph O(VE) """
+        if src_node_id is not None and src_node_id == dst_node_id:
+            return self_loop_weight, list([src_node_id])
         path_values, path_dict, queue, queue_set = dict(), dict(), deque([src_node_id]), set([src_node_id])
         enqueue_counters = dict() if check_cycle else None
         for node_id in self.graph.nodes.keys():
