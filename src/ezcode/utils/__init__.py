@@ -1,6 +1,9 @@
 from typing import Tuple
 
 
+infinities = set([float("-inf"), float("inf")])
+
+
 def validate_range(
     lower_bound: int,
     upper_bound: int,
@@ -24,20 +27,11 @@ def validate_non_negative_range(
     validate_range(lower_bound, upper_bound, lower_bound_range, upper_bound_range)
 
 
-def equal_raw(object_1, object_2, resolution=None) -> bool:
-    if resolution is None:
-        return object_1 == object_2
-    else:
-        if object_1 == float("inf") or object_2 == float("inf"):
-            return True
-        return abs(object_1 - object_2) <= resolution
-
-
 def equal(collection_1, collection_2, resolution=None) -> bool:
     collection_type = type(collection_1)
     if collection_type != type(collection_2):
         return False
-    if collection_type is list:
+    if collection_type is list or collection_type is tuple:
         if len(collection_1) != len(collection_2):
             return False
         for item_1, item_2 in zip(collection_1, collection_2):
@@ -60,5 +54,8 @@ def equal(collection_1, collection_2, resolution=None) -> bool:
             if not equal(value_1, collection_2[key], resolution):
                 return False
         return True
+    elif resolution is not None and collection_type is float and collection_1 not in infinities and collection_2 not in infinities:
+        return abs(collection_1 - collection_2) <= resolution
     else:
-        return equal_raw(collection_1, collection_2, resolution)
+        return collection_1 == collection_2
+

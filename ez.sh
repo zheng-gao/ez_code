@@ -139,9 +139,9 @@ function control_clean() {
 function control_build() {
     # https://packaging.python.org/en/latest/tutorials/packaging-projects/
     ez_print_log -m "Upgrading pip ..."
-    python3 -m "pip" "install" --upgrade "pip" --user
+    python3 -m "pip" "install" --user --upgrade "pip"
     ez_print_log -m "Upgrading build ..."
-    python3 -m "pip" "install" --upgrade "build" --user
+    python3 -m "pip" "install" --user --upgrade "build"
     ez_print_log -m "Building ..."
     python3 -m "build"
     # python3 setup.py sdist bdist_wheel
@@ -150,15 +150,15 @@ function control_build() {
 function control_test() {
     # https://docs.pytest.org/en/latest/
     ez_print_log -m "Installing flake8 ..."
-    python3 -m "pip" "install" --upgrade "flake8" --user
+    python3 -m "pip" "install" --user --upgrade "flake8"
     ez_print_log -m "Running flake8 checks ..."
     if ! python3 -m "flake8" --ignore "E124,E128,E501,W391" "${CODE_DIRECTORY}"; then
         ez_print_log -l "ERROR" -m "Failed flake8 checks!"; return 1
     fi
     ez_print_log -m "Installing pytest ..."
-    python3 -m "pip" "install" --upgrade "pytest" --user
+    python3 -m "pip" "install" --user --upgrade "pytest"
     ez_print_log -m "Installing pytest-srcpaths ..."
-    python3 -m "pip" "install" --upgrade "pytest-srcpaths" --user
+    python3 -m "pip" "install" --user --upgrade "pytest-srcpaths"
     ez_print_log -m "Running tests ..."
     [[ -z "${1}" ]] && pytest -vv "${TEST_DIRECTORY}" || pytest -vv "${1}"
 }
@@ -170,31 +170,34 @@ function control_uninstall() {
 
 function control_install_local() {
     ez_print_log -m "Installing local build ..."
-    python3 -m "pip" "install" --editable "${BASE_DIRECTORY}" --user
+    python3 -m "pip" "install" --user --upgrade "setuptools"
+    # python3 -m "pip" "install" --user --editable "${BASE_DIRECTORY}"
+    python3 -m "pip" "install" --editable "${BASE_DIRECTORY}"
+    # python3 "${BASE_DIRECTORY}/setup.py" "install" --user
 }
 
 function control_install_test() {
     # https://test.pypi.org/project/ezcode
     ez_print_log -m "Installing test repo ..."
-    python3 -m "pip" "install" -i "https://test.pypi.org/simple/" "${PROJECT_NAME}" --upgrade --user
+    python3 -m "pip" "install" --user --upgrade --index-url "https://test.pypi.org/simple/" "${PROJECT_NAME}"
 }
 
 function control_install() {
     # https://pypi.org/project/ezcode
     ez_print_log -m "Installing ${PROJECT_NAME} ..."
-    python3 -m "pip" "install" "${PROJECT_NAME}" --upgrade --user
+    python3 -m "pip" "install" --upgrade --user "${PROJECT_NAME}"
 }
 
 function control_publish_test() {
     ez_print_log -m "Upgrading twine ..."
-    python3 -m "pip" "install" --upgrade "twine" --user
+    python3 -m "pip" "install" --user --upgrade "twine"
     ez_print_log -m "Publishing test repo ..."
     python3 -m "twine" "upload" --verbose --repository "testpypi" "dist/"*
 }
 
 function control_publish() {
     ez_print_log -m "Upgrading twine ..."
-    python3 -m "pip" "install" --upgrade "twine" --user
+    python3 -m "pip" "install" --user --upgrade "twine"
     ez_print_log -m "Publishing pypi repo ..."
     python3 -m "twine" "upload" --verbose "dist/"*
 }

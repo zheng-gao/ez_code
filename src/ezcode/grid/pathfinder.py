@@ -36,7 +36,7 @@ class GridPathFinder:
     Path finding algorithms Summary:
                         Shortest                Paths    Time           Space    Topology   f_value
     dfs                 no                      1        O(E)           O(N)     1:1        N/A
-    dfs_backtracking    yes                     All      O(V!)          O(N)     1:1        N/A
+    backtracking        yes                     All      O(V!)          O(N)     1:1        N/A
     bfs                 yes (fixed step cost)   1        O(E)           O(N)     1:N        N/A
     dijkstra            yes                     1        O(V + ElogV)   O(N)     1:N        h_value = 0 or g_value >> h_value
     A*                  yes                     1        O(V + ElogV)   O(N)     1:N        g_value + h_value
@@ -54,7 +54,7 @@ class GridPathFinder:
     If h_value is larger than real value, A* won't guarantee the shortest path but it can run faster
     If h_value >> g_value, which means we trust the heuristic path length
     """
-    def dfs_backtracking(self, source: tuple[int, int], destination: tuple[int, int], valid_values: set = None) -> list[list[tuple[int, int]]]:
+    def backtracking(self, source: tuple[int, int], destination: tuple[int, int], valid_values: set = None) -> list[list[tuple[int, int]]]:
         if source not in self or destination not in self or self.value(source) not in valid_values or self.value(destination) not in valid_values:
             return list()
         shortest_paths, path, visited = list(), list([source]), set([source])
@@ -76,7 +76,7 @@ class GridPathFinder:
         _backtracking(source)
         return shortest_paths
 
-    def path_dict_to_path_list(self, path_dict: dict, destination: tuple[int, int]) -> list[tuple[int, int]]:
+    def path_dict_to_path(self, path_dict: dict, destination: tuple[int, int]) -> list[tuple[int, int]]:
         if destination not in path_dict:
             return None
         path, parent = deque([destination]), path_dict[destination]
@@ -104,7 +104,7 @@ class GridPathFinder:
                     visited.add(neighbor)
                     path_dict[neighbor] = closest_node
                     if neighbor == destination:
-                        return self.path_dict_to_path_list(path_dict, destination)
+                        return self.path_dict_to_path(path_dict, destination)
                     candidates.append(neighbor)
         return None
 
@@ -127,7 +127,7 @@ class GridPathFinder:
                     visited.add(neighbor)
                     path_dict[neighbor] = closest_node
                     if neighbor == destination:
-                        return self.path_dict_to_path_list(path_dict, destination)
+                        return self.path_dict_to_path(path_dict, destination)
                     candidates.append(neighbor)
         return None
 
@@ -157,8 +157,8 @@ class GridPathFinder:
                         candidates.push(distance, neighbor)
                         path_dict[neighbor] = closest_node
                         if neighbor == destination:  # return early
-                            return self.path_dict_to_path_list(path_dict, destination)
-        return self.path_dict_to_path_list(path_dict, destination)
+                            return self.path_dict_to_path(path_dict, destination)
+        return self.path_dict_to_path(path_dict, destination)
 
     def a_star(self, source: tuple[int, int], destination: tuple[int, int], valid_values: set = None) -> list[tuple[int, int]]:
         """
@@ -192,8 +192,8 @@ class GridPathFinder:
                         candidates.push(f_value, neighbor)
                         path_dict[neighbor] = closest_node
                         if neighbor == destination:  # return early
-                            return self.path_dict_to_path_list(path_dict, destination)
-        return self.path_dict_to_path_list(path_dict, destination)
+                            return self.path_dict_to_path(path_dict, destination)
+        return self.path_dict_to_path(path_dict, destination)
 
     def print(self, value_color: dict = None, layers: list[dict] = None):
         """

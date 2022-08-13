@@ -193,7 +193,7 @@ def test_grid_path_finding_algorithm():
         assert in_paths(path_finder.bfs(t["source"], t["destination"], t["valid_values"]), t["benchmark"])
         assert in_paths(path_finder.dijkstra(t["source"], t["destination"], t["valid_values"]), t["benchmark"])
         assert in_paths(path_finder.a_star(t["source"], t["destination"], t["valid_values"]), t["benchmark"])
-        assert equal_paths(path_finder.dfs_backtracking(t["source"], t["destination"], t["valid_values"]), t["benchmark"])
+        assert equal_paths(path_finder.backtracking(t["source"], t["destination"], t["valid_values"]), t["benchmark"])
         if i in [7, 8, 9]:
             # Found a path but not the shortest one
             assert path_finder.dfs(t["source"], t["destination"], t["valid_values"]) == dfs_benchmarks[i]

@@ -1,20 +1,20 @@
 from ezcode.utils import equal
-from ezcode.graph import NegativeCycleExistError
+from ezcode.graph.pathfinder import GraphPathFinder, NegativeCycleExistError, UnweightedGraphExpectedError
 from ezcode.graph.directed import DirectedGraph
 from ezcode.graph.undirected import UndirectedGraph
 
 
-def test_undirected_graph():
+def test_undirected_unweighted_graph():
     """
-    A ------ C
-    |       /|\
-    |      / | \
-    |     /  |  \
-    |    /   |   E
-    |   /    |  /
-    |  /     | /
-    | /      |/
-    B ------ D
+    A ────── C
+    │       ╱│╲
+    │      ╱ │ ╲
+    │     ╱  │  ╲
+    │    ╱   │   E
+    │   ╱    │  ╱
+    │  ╱     │ ╱
+    │ ╱      │╱
+    B ────── D
     """
     graph_str = """
    A  B  C  D  E  
@@ -25,6 +25,9 @@ D     *  *     *
 E        *  *     
 """[1:]
     graph = UndirectedGraph(edges=[["A", "B"], ["A", "C"], ["B", "C"], ["B", "D"], ["C", "D"], ["C", "E"], ["D", "E"]])
+    assert not graph.is_weighted
+    assert graph_str == str(graph)
+    path_finder = GraphPathFinder(graph=graph)
     benchmark = {
         "A": {"A": 0, "B": 1, "C": 1, "D": 2, "E": 2},
         "B": {"A": 1, "B": 0, "C": 1, "D": 1, "E": 2},
@@ -32,27 +35,30 @@ E        *  *
         "D": {"A": 2, "B": 1, "C": 1, "D": 0, "E": 1},
         "E": {"A": 2, "B": 2, "C": 1, "D": 1, "E": 0}
     }
-    assert graph_str == str(graph)
     for n1, b in benchmark.items():
-        assert graph.bfs(n1) == b
-        assert graph.dijkstra(n1) == b
-        assert graph.spfa(n1) == b
+        assert path_finder.bfs(n1) == (None, b)
+        assert path_finder.dijkstra(n1) == (None, b)
+        assert path_finder.spfa(n1) == (None, b)
         for n2 in benchmark.keys():
-            assert benchmark[n1][n2] == graph.dfs_backtracking(n1, n2)
-    assert graph.floyd() == benchmark
+            assert path_finder.backtracking(n1, n2)[0] == benchmark[n1][n2]
+    assert path_finder.floyd() == benchmark
+    assert path_finder.bfs("E", "A") == (2, ["E", "C", "A"])
+    assert path_finder.dijkstra("E", "A") == (2, ["E", "C", "A"])
+    assert path_finder.spfa("E", "A") == (2, ["E", "C", "A"])
+    assert path_finder.backtracking("B", "E") == (2, [["B", "C", "E"], ["B", "D", "E"]])
 
 
 def test_undirected_weighted_graph():
     """
-    A --0.2- C 
-    |       /| \
-    |      / | 0.8
-   0.8    /  |   \
-    |    /  0.9   E
-    |  0.5   |   /
-    |  /     | 0.3
-    | /      | /
-    B --0.9- D
+    A ──0.2─ C 
+    │       ╱│ ╲
+    │      ╱ │ 0.8
+   0.8    ╱  │   ╲
+    │    ╱  0.9   E
+    │  0.5   │   ╱
+    │  ╱     │ 0.3
+    │ ╱      │ ╱
+    B ──0.9─ D
     """
     graph_str = """
      A    B    C    D    E    
@@ -72,6 +78,8 @@ E              0.8  0.3
         ("D", "E"): 0.3
     })
     assert graph_str == str(graph)
+    assert graph.is_weighted
+    path_finder = GraphPathFinder(graph=graph)
     resolution = 0.0001
     benchmark_1 = {
         "A": {"A": 0,   "B": 0.7, "C": 0.2, "D": 1.1, "E": 1.0},
@@ -81,11 +89,14 @@ E              0.8  0.3
         "E": {"A": 1.0, "B": 1.2, "C": 0.8, "D": 0.3, "E": 0  }
     }
     for n1, benchmark in benchmark_1.items():
-        assert equal(graph.dijkstra(n1), benchmark, resolution=resolution)
-        assert equal(graph.spfa(n1), benchmark, resolution=resolution)
+        assert equal(path_finder.dijkstra(n1), (None, benchmark), resolution=resolution)
+        assert equal(path_finder.spfa(n1), (None, benchmark), resolution=resolution)
         for n2 in benchmark_1.keys():
-            assert equal(benchmark_1[n1][n2], graph.dfs_backtracking(n1, n2), resolution=resolution)
-    assert equal(graph.floyd(), benchmark_1)
+            assert equal(benchmark_1[n1][n2], path_finder.backtracking(n1, n2)[0], resolution=resolution)
+    assert equal(path_finder.floyd(), benchmark_1)
+    assert path_finder.dijkstra("B", "E") == (1.2, ["B", "D", "E"])
+    assert path_finder.spfa("B", "E") == (1.2, ["B", "D", "E"])
+    assert path_finder.backtracking("B", "E") == (1.2, [["B", "D", "E"]])
 
     benchmark_2 = {
         "A": {"A": 1,      "B": 0.8,   "C": 0.648, "D": 0.72, "E": 0.5184},
@@ -94,32 +105,41 @@ E              0.8  0.3
         "D": {"A": 0.72,   "B": 0.9,   "C": 0.9,   "D": 1,    "E": 0.72  },
         "E": {"A": 0.5184, "B": 0.648, "C": 0.8,   "D": 0.72, "E": 1     }
     }
+    config = {"self_loop_weight": 1, "disconnected_edge_weight": 0, "path_value_func": (lambda a,b: a * b), "is_min": False}
     for n1, benchmark in benchmark_2.items():
-        assert equal(graph.dijkstra(n1, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a,b: a * b, min_max_func=max), benchmark, resolution=resolution)
-        assert equal(graph.spfa(n1, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark, resolution=resolution)
+        assert equal(path_finder.dijkstra(n1, **config), (None, benchmark), resolution=resolution)
+        assert equal(path_finder.spfa(n1, **config), (None, benchmark), resolution=resolution)
         for n2 in benchmark_2.keys():
-            assert equal(benchmark_2[n1][n2], graph.dfs_backtracking(n1, n2, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), resolution=resolution)
-    assert equal(graph.floyd(self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark_2, resolution=resolution)
-
+            assert equal(benchmark_2[n1][n2], path_finder.backtracking(n1, n2, **config)[0], resolution=resolution)
+    assert equal(path_finder.floyd(**config), benchmark_2, resolution=resolution)
+    assert equal(path_finder.dijkstra("B", "E", **config), (0.648, ["B", "D", "C", "E"]), resolution=resolution)
+    assert equal(path_finder.spfa("B", "E", **config), (0.648, ["B", "D", "C", "E"]), resolution=resolution)
+    assert equal(path_finder.backtracking("B", "E", **config), (0.648, [["B", "D", "C", "E"]]), resolution=resolution)
+    try:
+        path_finder.bfs("B", "E")
+        assert False
+    except UnweightedGraphExpectedError:
+        assert True
 
 def test_negative_cycle_detection():
     graph = UndirectedGraph(edges=[["A", "B"], ["A", "C"], ["A", "D"], ["B", "C"], ["B", "D"], ["C", "D"]], weights=[2, 3, 2, -3, 1, 1])
+    path_finder = GraphPathFinder(graph=graph)
     try:
-        graph.spfa("A", check_cycle=True)
+        path_finder.spfa("A", check_cycle=True)
         assert False
     except NegativeCycleExistError:
         assert True
 
 
-def test_directed_graph():
+def test_directed_unweighted_graph():
     """
-    a <----- c 
-    |        |
-    |        v
-    |        f ---> e
-    |        ^
-    v        |
-    d -----> b
+    a <───── c 
+    │        │
+    │        v
+    │        f ───> e
+    │        ^
+    v        │
+    d ─────> b
     """
     graph_str = """
    a  b  c  d  e  f  
@@ -135,6 +155,21 @@ f              *
     assert graph.topological_order() == ["e", "f", "b", "d", "a", "c"]
     assert graph.is_acyclic_graph()
     assert not DirectedGraph(edges=[("a", "b"), ("b", "a")]).is_acyclic_graph()
+    """
+    ┌──────> c     e
+    │       ╱│╲
+    │      ╱ │ ╲
+    │     ╱  │  ╲
+    │    ╱   │   ╲
+    │   v    v    v
+    │  f     a ──> b
+    │   ╲    ^    ╱
+    │    ╲   │   ╱
+    │     ╲  │  ╱
+    │      ╲ │ ╱
+    │       v│v
+    └─────── d
+    """
     graph_str = """
    a  b  c  d  e  f  
 a     *              
@@ -146,6 +181,8 @@ f           *
 """[1:]
     graph = DirectedGraph(edges=[("a", "b"), ("c", "b"), ("d", "a"), ("b", "d"), ("c", "a"), ("d", "c"), ("c", "f"), ("f", "d"), ("e", None)])
     assert graph_str == str(graph)
+    assert not graph.is_weighted
+    path_finder = GraphPathFinder(graph=graph)
     x = float("inf")
     benchmark = {
         "a": {"a": 0, "b": 1, "c": 3, "d": 2, "e": x, "f": 4},
@@ -157,15 +194,34 @@ f           *
     }
     assert graph_str == str(graph)
     for n1, b in benchmark.items():
-        assert graph.bfs(n1) == b
-        assert graph.dijkstra(n1) == b
-        assert graph.spfa(n1) == b
+        assert path_finder.bfs(n1) == (None, b)
+        assert path_finder.dijkstra(n1) == (None, b)
+        assert path_finder.spfa(n1) == (None, b)
         for n2 in benchmark.keys():
-            assert benchmark[n1][n2] == graph.dfs_backtracking(n1, n2)
-    assert graph.floyd() == benchmark
+            assert benchmark[n1][n2] == path_finder.backtracking(n1, n2)[0]
+    assert path_finder.floyd() == benchmark
+    assert path_finder.bfs("f", "a") == (2, ["f", "d", "a"])
+    assert path_finder.dijkstra("f", "a") == (2, ["f", "d", "a"])
+    assert path_finder.spfa("f", "a") == (2, ["f", "d", "a"])
+    assert path_finder.backtracking("f", "a") == (2, [["f", "d", "a"]])
 
 
 def test_directed_weighted_graph():
+    """
+    ┌──────> c     e
+    │       ╱│╲
+    │    0.6 │ 0.7
+    │     ╱ 0.5 ╲
+    │    ╱   │   ╲
+    │   v    v .8 v
+    │  f     a ──> b
+    │   ╲    ^    ╱
+    │   0.4  │  0.8
+   0.8    ╲ 0.6 ╱
+    │      ╲ │ ╱
+    │       v│v
+    └─────── d
+    """
     graph_str = """
       a     b     c     d     e     f     
 a           0.8                           
@@ -180,6 +236,8 @@ f                       0.4
         weights=[0.8, 0.7, 0.6, 0.8, 0.5, 0.8, 0.6, 0.4, None]
     )
     assert graph_str == str(graph)
+    assert graph.is_weighted
+    path_finder = GraphPathFinder(graph=graph)
     x, resolution = float("inf"), 0.0001
     benchmark_1 = {
         "a": {"a": 0,   "b": 0.8, "c": 2.4, "d": 1.6, "e": x, "f": 3.0, },
@@ -190,11 +248,19 @@ f                       0.4
         "f": {"a": 1.0, "b": 1.8, "c": 1.2, "d": 0.4, "e": x, "f": 0,   }
     }
     for n1, benchmark in benchmark_1.items():
-        assert equal(graph.dijkstra(n1), benchmark, resolution=resolution)
-        assert equal(graph.spfa(n1), benchmark, resolution=resolution)
+        assert equal(path_finder.dijkstra(n1), (None, benchmark), resolution=resolution)
+        assert equal(path_finder.spfa(n1), (None, benchmark), resolution=resolution)
         for n2 in benchmark_1.keys():
-            assert equal(benchmark_1[n1][n2], graph.dfs_backtracking(n1, n2), resolution=resolution)
-    assert equal(graph.floyd(), benchmark_1, resolution=resolution)
+            assert equal(benchmark_1[n1][n2], path_finder.backtracking(n1, n2)[0], resolution=resolution)
+    assert equal(path_finder.floyd(), benchmark_1, resolution=resolution)
+    assert path_finder.dijkstra("f", "b") == (1.8, ["f", "d", "a", "b"])
+    assert path_finder.spfa("f", "b") == (1.8, ["f", "d", "a", "b"])
+    assert path_finder.backtracking("f", "b") == (1.8, [["f", "d", "a", "b"]])
+    try:
+        path_finder.bfs("f", "b")
+        assert False
+    except UnweightedGraphExpectedError:
+        assert True
 
     benchmark_2 = {
         "a": {"a": 1,    "b": 0.8,   "c": 0.512, "d": 0.64, "e": 0, "f": 0.3072},
@@ -204,25 +270,29 @@ f                       0.4
         "e": {"a": 0,    "b": 0,     "c": 0,     "d": 0,    "e": 1, "f": 0     },
         "f": {"a": 0.24, "b": 0.224, "c": 0.32,  "d": 0.4,  "e": 0, "f": 1     }
     }
+    config = {"self_loop_weight": 1, "disconnected_edge_weight": 0, "path_value_func": (lambda a,b: a * b), "is_min": False}
     for n1, benchmark in benchmark_2.items():
-        assert equal(graph.dijkstra(n1, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark, resolution=resolution)
-        assert equal(graph.spfa(n1, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark, resolution=resolution)
+        assert equal(path_finder.dijkstra(n1, **config), (None, benchmark), resolution=resolution)
+        assert equal(path_finder.spfa(n1, **config), (None, benchmark), resolution=resolution)
         for n2 in benchmark_2.keys():
-            assert equal(benchmark_2[n1][n2], graph.dfs_backtracking(n1, n2, self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), resolution=resolution)
-    assert equal(graph.floyd(self_loop_weight=1, disconnected_edge_weight=0, path_value_func=lambda a, b: a * b, min_max_func=max), benchmark_2, resolution=resolution)
+            assert equal(benchmark_2[n1][n2], path_finder.backtracking(n1, n2, **config)[0], resolution=resolution)
+    assert equal(path_finder.floyd(**config), benchmark_2, resolution=resolution)
+    assert equal(path_finder.dijkstra("f", "b", **config), (0.224, ["f", "d", "c", "b"]), resolution=resolution)
+    assert equal(path_finder.spfa("f", "b", **config), (0.224, ["f", "d", "c", "b"]), resolution=resolution)
+    assert equal(path_finder.backtracking("f", "b", **config), (0.224, [["f", "d", "c", "b"]]), resolution=resolution)
 
 
 def test_eulerian_path():
     """
-    A ------ C
-    |       /|\
-    |      / | \
-    |     /  |  \
-    |    /   |   E
-    |   /    |  /
-    |  /     | /
-    | /      |/
-    B ------ D
+    A ────── C
+    │       ╱│╲
+    │      ╱ │ ╲
+    │     ╱  │  ╲
+    │    ╱   │   E
+    │   ╱    │  ╱
+    │  ╱     │ ╱
+    │ ╱      │╱
+    B ────── D
     """
     graph = UndirectedGraph(edges=[["A", "B"], ["A", "C"], ["B", "C"], ["B", "D"], ["C", "D"], ["C", "E"], ["D", "E"]])
     assert graph.eulerian_path(start_node="A") is None
@@ -230,20 +300,20 @@ def test_eulerian_path():
     assert graph.eulerian_path(start_node="D") == ["D", "B", "A", "C", "D", "E", "C", "B"]
     assert graph.eulerian_path() == ["B", "A", "C", "B", "D", "C", "E", "D"]
     """
-    A -- B
-    | \
-    |  \
+    A ── B
+    │ ╲
+    │  ╲
     D   C
     """
     graph = UndirectedGraph(edges=[["A", "B"], ["A", "C"], ["A", "D"]])
     assert graph.eulerian_path() is None
     """
-    A <--- B 
-    |      ^
-    |      |
-    v      |
-    D ---> C <--- E
-           |
+    A <─── B 
+    │      ^
+    │      │
+    v      │
+    D ───> C <─── E
+           │
            v
            F
     """
@@ -256,11 +326,11 @@ def test_eulerian_path():
     assert graph.eulerian_path(start_node="E") == ["E", "C", "B", "A", "D", "C", "F"]
     assert graph.eulerian_path(start_node="E") == graph.eulerian_path()
     """
-    A <--- B ---> F
-    |      ^
-    |      |
-    v      |
-    D ---> C <--- E
+    A <─── B ───> F
+    │      ^
+    │      │
+    v      │
+    D ───> C <─── E
     """
     graph = DirectedGraph(edges=[["B", "A"], ["A", "D"], ["D", "C"], ["C", "B"], ["E", "C"], ["B", "F"]])
     assert graph.eulerian_path() is None 

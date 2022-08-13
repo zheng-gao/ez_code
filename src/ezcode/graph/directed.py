@@ -4,7 +4,15 @@ from ezcode.graph import Graph
 
 class DirectedGraph(Graph):
     def __init__(self, edge_weight_dict: dict = None, edges: list[list] = None, weights: list = None, mark: str = "*"):
-        super().__init__(is_weighted=(weights is not None), mark=mark)
+        if edge_weight_dict is None:
+            is_weighted = weights is not None
+        else:
+            is_weighted = False
+            for weight in edge_weight_dict.values():
+                if weight is not None:
+                    is_weighted = True
+                    break
+        super().__init__(is_weighted=is_weighted, mark=mark)
         # self.nodes = {node_id: {"i": {node_id: weight}, "o": {node_id: weight}}
         if edge_weight_dict or edges:
             self.build_graph(edge_weight_dict=edge_weight_dict, edges=edges, weights=weights)
