@@ -2,6 +2,7 @@ from ezcode.array.interval import merge_overlapped_intervals
 from ezcode.array.rmq import SparseTable
 from ezcode.array.search import binary_search, binary_search_range
 from ezcode.array.sort import quick_sort
+from ezcode.array.subarray import subarrays_with_target_sum
 from ezcode.array.utils import copy, array_to_string, delete_all, rotate
 from ezcode.array.utils import split_list, split_list_generator, chunk_list, chunk_list_generator
 from ezcode.array.lcs import longest_common_subsequence, longest_common_subarray
@@ -211,6 +212,28 @@ def test_merge_overlapped_intervals():
     assert merge_overlapped_intervals([[1, 2], [2, 3], [3, 4]]) == [[1, 4]]
     assert merge_overlapped_intervals([[1, 2], [3, 4], [5, 6]]) == [[1, 2], [3, 4], [5, 6]]
     assert merge_overlapped_intervals([[3, 4], [1, 2], [2, 5], [7, 9], [10, 11], [6, 8]]) == [[1, 5], [6, 9], [10, 11]]
+
+
+def test_subarrays_with_target_sum():
+    array = [3, 5, -1, 2, 6, 3, -4, 5, 7, 9, -2, -3, 6]
+    assert subarrays_with_target_sum(array, 3) == [(0, 0), (5, 5), (11, 12)]
+    assert subarrays_with_target_sum(array, 6) == [(1, 3), (4, 4), (2, 6), (12, 12)]
+    assert subarrays_with_target_sum(array, 11) == [(3, 5), (1, 6), (2, 7), (5, 8), (8, 11)]
+    assert subarrays_with_target_sum(array, 12) == [(1, 4), (3, 7), (7, 8), (6, 11)]
+    assert subarrays_with_target_sum(array, 13) == []
+    assert subarrays_with_target_sum(array, 15) == [(0, 4), (1, 5), (6, 10), (5, 11)]
+    assert subarrays_with_target_sum(array, 17) == [(4, 8), (6, 9), (8, 12)]
+    assert subarrays_with_target_sum(array, 20) == [(5, 9)]
+    assert subarrays_with_target_sum(array, 27) == [(2, 9), (1, 11), (4, 12)]
+
+
+
+
+
+
+
+
+
 
 
 
