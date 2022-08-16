@@ -3,8 +3,7 @@ import random
 
 class RandomGenerator:
     def __init__(self, weights: list):
-        self.sum,  = 0
-         = list()
+        self.sum, self.cumulative_sum = 0, list()
         for weight in weights:
             self.sum += weight
             self.cumulative_sum.append(self.sum)
