@@ -75,7 +75,7 @@ def binary_search_subarray_exclusive_boundery(array: list, begin: int, end: int,
                 else:
                     begin = mid + 1
         else:
-            if is_smaller:   
+            if is_smaller:
                 if array[mid] < target:
                     exclusive_boundery_index = mid
                     end = mid - 1
