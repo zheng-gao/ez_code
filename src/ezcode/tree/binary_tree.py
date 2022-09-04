@@ -171,6 +171,36 @@ class BinaryTree(object):
                 other_queue.append(self.get_right(other_node))
         return BinaryTree(other_root, self.data_name, self.left_name, self.right_name)
 
+    def delete_bst_node(self, data):
+        # self.root = self.algorithm.delete_bst_node(self.root, data)
+        parent, node = None, self.root
+        while node is not None:
+            if data < self.get_data(node):
+                parent = node
+                node = self.get_left(node)
+            elif data > self.get_data(node):
+                parent = node
+                node = self.get_right(node)
+            else:
+                if self.get_right(node) is None:
+                    if parent is None:
+                        self.root = self.get_left(node)
+                    elif node == self.get_left(parent):
+                        self.set_left(parent, left=self.get_left(node))
+                    else:  # node == self.get_right(parent)
+                        self.set_right(parent, right=self.get_right(node))
+                else:  # left_most only have the right child
+                    parent, left_most = node, self.get_right(node)
+                    while left_most is not None and self.get_left(left_most) is not None:
+                        parent = left_most
+                        left_most = self.get_left(left_most)
+                    self.set_data(node, self.get_data(left_most))  # swap data then delete left_most
+                    if left_most == self.get_right(node):
+                        self.set_right(parent, right=self.get_right(left_most))
+                    else:
+                        self.set_left(parent, left=self.get_right(left_most))
+                break
+
 
 class RandomBinaryTree(BinaryTree):
     def __init__(self,

@@ -122,6 +122,8 @@ class BinaryTreePrinter:
                 depth += 1
 
     def to_string(self, node, trim_left=True, trim_right=True):
+        if node is None:
+            return "None\n"
         self._make_char_map(node)
         start_print_index, end_print_index = 0, len(self.char_map[0])
         if trim_left:  # trim left blank
