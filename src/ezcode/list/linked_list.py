@@ -287,14 +287,15 @@ class DoublyLinkedList:
 
     def add_node_to_head(self, node):
         """ O(1) """
-        self.algorithm.set_next(node=node, next_node=self.head)
-        self.algorithm.set_prev(node=node, prev_node=None)
-        if self.head:
-            self.algorithm.set_prev(node=self.head, prev_node=node)
-        else:
-            self.tail = node
-        self.head = node
-        self.size += 1
+        if node is not None:
+            self.algorithm.set_next(node=node, next_node=self.head)
+            self.algorithm.set_prev(node=node, prev_node=None)
+            if self.head:
+                self.algorithm.set_prev(node=self.head, prev_node=node)
+            else:
+                self.tail = node
+            self.head = node
+            self.size += 1
 
     def add_to_tail(self, data):
         """ O(1) """
@@ -303,14 +304,15 @@ class DoublyLinkedList:
 
     def add_node_to_tail(self, node):
         """ O(1) """
-        self.algorithm.set_next(node=node, next_node=None)
-        self.algorithm.set_prev(node=node, prev_node=self.tail)
-        if self.tail:
-            self.algorithm.set_next(node=self.tail, next_node=node)
-        else:
-            self.head = node
-        self.tail = node
-        self.size += 1
+        if node is not None:
+            self.algorithm.set_next(node=node, next_node=None)
+            self.algorithm.set_prev(node=node, prev_node=self.tail)
+            if self.tail:
+                self.algorithm.set_next(node=self.tail, next_node=node)
+            else:
+                self.head = node
+            self.tail = node
+            self.size += 1
 
     def peek_head(self):
         """ O(1) """
@@ -351,14 +353,15 @@ class DoublyLinkedList:
         return data
 
     def detach_node(self, node):
-        if node == self.head:
-            self.pop_head()
-        elif node == self.tail:
-            self.pop_tail()
-        else:
-            prev_node = self.algorithm.get_prev(node)
-            next_node = self.algorithm.get_next(node)
-            self.algorithm.set_next(node=prev_node, next_node=next_node)
-            self.algorithm.set_prev(node=next_node, prev_node=prev_node)
+        if node is not None:
+            if node == self.head:
+                self.head = self.algorithm.get_next(self.head)
+            if node == self.tail:
+                self.tail = self.algorithm.get_prev(self.tail)
+            prev_node, next_node = self.algorithm.get_prev(node), self.algorithm.get_next(node)
+            if next_node is not None:
+                self.algorithm.set_prev(node=next_node, prev_node=prev_node)
+            if prev_node is not None:
+                self.algorithm.set_next(node=prev_node, next_node=next_node)
             self.size -= 1
 
