@@ -275,7 +275,7 @@ None
 """[1:]
 
 
-def test_delete_bst_nodes_by_range():
+def test_delete_bst_nodes():
     bst_root = Node(5, Node(3, Node(1, Node(0), Node(2)), Node(4)), Node(8, Node(6, right=Node(7)), Node(9, right=Node(10))))
     bst = BinaryTree(root=bst_root, data_name="value", left_name="left", right_name="right")
     printer = BinaryTreePrinter(data_name="value", left_name="left", right_name="right")
