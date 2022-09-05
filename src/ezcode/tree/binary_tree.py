@@ -176,30 +176,60 @@ class BinaryTree(object):
         parent, node = None, self.root
         while node is not None:
             if data < self.get_data(node):
-                parent = node
-                node = self.get_left(node)
+                parent, node = node, self.get_left(node)
             elif data > self.get_data(node):
-                parent = node
-                node = self.get_right(node)
+                parent, node = node, self.get_right(node)
             else:
                 if self.get_right(node) is None:
+                    left_child = self.get_left(node)
                     if parent is None:
-                        self.root = self.get_left(node)
+                        self.root = left_child
                     elif node == self.get_left(parent):
-                        self.set_left(parent, left=self.get_left(node))
+                        self.set_left(parent, left_child)
                     else:  # node == self.get_right(parent)
-                        self.set_right(parent, right=self.get_right(node))
+                        self.set_right(parent, left_child)
                 else:  # left_most only have the right child
-                    parent, left_most = node, self.get_right(node)
+                    left_most_parent, left_most = node, self.get_right(node)
                     while left_most is not None and self.get_left(left_most) is not None:
-                        parent = left_most
+                        left_most_parent = left_most
                         left_most = self.get_left(left_most)
                     self.set_data(node, self.get_data(left_most))  # swap data then delete left_most
                     if left_most == self.get_right(node):
-                        self.set_right(parent, right=self.get_right(left_most))
+                        self.set_right(left_most_parent, right=self.get_right(left_most))
                     else:
-                        self.set_left(parent, left=self.get_right(left_most))
+                        self.set_left(left_most_parent, left=self.get_right(left_most))
                 break
+
+    def delete_bst_nodes(self, data_lower_bound, data_upper_bound):
+        if data_upper_bound < data_lower_bound:
+            raise ValueError(f"data_upper_bound {data_upper_bound} is smaller than data_lower_bound {data_lower_bound}")
+        parent, node = None, self.root
+        while node is not None:
+            data = self.get_data(node)
+            if data < data_lower_bound:
+                parent, node = node, self.get_right(node)
+            elif data_upper_bound < data:
+                parent, node = node, self.get_left(node)
+            else:
+                if self.get_right(node) is None:
+                    left_child = self.get_left(node)
+                    if parent is None:
+                        self.root = left_child
+                    elif node == self.get_left(parent):
+                        self.set_left(parent, left_child)
+                    else:  # node == self.get_right(parent)
+                        self.set_right(parent, left_child)
+                    node = left_child
+                else:  # left_most only have the right child
+                    left_most_parent, left_most = node, self.get_right(node)
+                    while left_most is not None and self.get_left(left_most) is not None:
+                        left_most_parent = left_most
+                        left_most = self.get_left(left_most)
+                    self.set_data(node, self.get_data(left_most))  # swap data then delete left_most
+                    if left_most == self.get_right(node):
+                        self.set_right(left_most_parent, right=self.get_right(left_most))
+                    else:
+                        self.set_left(left_most_parent, left=self.get_right(left_most))
 
 
 class RandomBinaryTree(BinaryTree):

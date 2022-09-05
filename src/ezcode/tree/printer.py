@@ -91,9 +91,7 @@ class BinaryTreePrinter:
         return max(left_depth, right_depth) + 1
 
     def _make_char_map(self, node):
-        self.char_map = list()
-        if node is None:
-            return
+        self.char_map, self.max_data_string_length = list(), 0
         self.tree_depth = self._collect_tree_info(node)
         last_line_data_count = pow(2, self.tree_depth - 1)
         last_line_string_length = last_line_data_count * (self.max_data_string_length + 1) - 1  # +one space in between

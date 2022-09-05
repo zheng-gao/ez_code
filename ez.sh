@@ -235,8 +235,7 @@ function control_bump() {
 # ---------------------------------------- Main Function ---------------------------------------- #
 ###################################################################################################
 function ez() {
-    local VALID_OPERATIONS=(
-        "clean" "build" "test" "uninstall" "install_local" "install_test" "install" "publish_test" "publish" "bump")
+    local VALID_OPERATIONS=("clean" "build" "test" "uninstall" "install_local" "install_test" "install" "publish_test" "publish" "bump")
     if [[ -z "${1}" ]] || [[ "${1}" = "-h" ]] || [[ "${1}" = "--help" ]]; then
         local usage=$(ez_build_usage -o "init" -d "Control Project Pipeline")
         usage+=$(ez_build_usage -o "add" -a "-o|--operations" -d "Choose from: [$(ez_join ', ' "${VALID_OPERATIONS[@]}")]")
@@ -268,8 +267,8 @@ function ez() {
     else
         [[ -z "${operations[*]}" ]] && ez_print_log -l "ERROR" -m "Must select at least one operation if no workflow is selected!" && return 1
     fi
-    [[ "${development}" = "True" ]] && operations=("clean" "build" "test" "uninstall" "install_local" "clean")
-    [[ "${release}" = "True" ]] && operations=("clean" "bump" "build" "test" "publish" "uninstall" "install" "clean")
+    [[ "${development}" = "True" ]] && operations=("clean" "uninstall" "build" "test" "install_local" "clean")
+    [[ "${release}" = "True" ]] && operations=("clean" "uninstall" "bump" "build" "test" "publish" "install" "clean")
     for opt in "${operations[@]}"; do
         ez_exclude "${opt}" "${VALID_OPERATIONS[@]}" && ez_print_log -l "ERROR" -m "Invalid operation \"${opt}\"" && return 1
     done

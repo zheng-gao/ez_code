@@ -10,6 +10,8 @@ class Node:
         self.value = value
         self.left = left
         self.right = right
+    def __repr__(self):
+        return f"Node({self.value})"
 
 
 s_root = Node(0, Node(1, Node(3, right=Node(7)), Node(4)), Node(2, Node(5, Node(8), Node(9)), Node(6)))
@@ -95,81 +97,6 @@ def test_serialization():
 def test_deserialization():
     assert s_tree.is_copied(s_tree.deserialize(formatter=int, string=s_tree.serialize()))
     assert c_tree.is_copied(c_tree.deserialize(formatter=int, string=c_tree.serialize()))
-
-
-def test_delete_bst_node():
-    bst_root = Node(5, Node(3, Node(1, Node(0), Node(2)), Node(4)), Node(8, Node(6, right=Node(7)), Node(9, right=Node(10))))
-    bst = BinaryTree(root=bst_root, data_name="value", left_name="left", right_name="right")
-    printer = BinaryTreePrinter(data_name="value", left_name="left", right_name="right")
-    assert printer.to_string(bst.root) == """
-           ┌────────────(5)────────────┐           
-    ┌─────(3)─────┐             ┌─────(8)─────┐    
- ┌─(1)──┐        (4)           (6)─┐         (9)─┐ 
-(0)    (2)                        (7)          (10)
-"""[1:]
-    bst.delete_bst_node(4)
-    assert printer.to_string(bst.root) == """
-           ┌────────────(5)────────────┐           
-    ┌─────(3)                   ┌─────(8)─────┐    
- ┌─(1)──┐                      (6)─┐         (9)─┐ 
-(0)    (2)                        (7)          (10)
-"""[1:]
-    bst.delete_bst_node(3)
-    assert printer.to_string(bst.root) == """
-        ┌────────────(5)────────────┐           
- ┌─────(1)─────┐             ┌─────(8)─────┐    
-(0)           (2)           (6)─┐         (9)─┐ 
-                               (7)          (10)
-"""[1:]
-    bst.delete_bst_node(8)
-    assert printer.to_string(bst.root) == """
-        ┌────────────(5)────────────┐        
- ┌─────(1)─────┐             ┌─────(9)─────┐ 
-(0)           (2)           (6)─┐        (10)
-                               (7)           
-"""[1:]
-    bst.delete_bst_node(6)
-    assert printer.to_string(bst.root) == """
-    ┌─────(5)─────┐    
- ┌─(1)──┐     ┌──(9)─┐ 
-(0)    (2)   (7)   (10)
-"""[1:]
-    bst.delete_bst_node(5)
-    assert printer.to_string(bst.root) == """
-    ┌─────(7)─────┐    
- ┌─(1)──┐        (9)─┐ 
-(0)    (2)         (10)
-"""[1:]
-    bst.delete_bst_node(1)
-    assert printer.to_string(bst.root) == """
-    ┌─────(7)─────┐    
- ┌─(2)           (9)─┐ 
-(0)                (10)
-"""[1:]
-    bst.delete_bst_node(0)
-    assert printer.to_string(bst.root) == """
- ┌─────(7)─────┐    
-(2)           (9)─┐ 
-                (10)
-"""[1:]
-    bst.delete_bst_node(10)
-    assert printer.to_string(bst.root) == """
- ┌─(7)─┐ 
-(2)   (9)
-"""[1:]
-    bst.delete_bst_node(7)
-    assert printer.to_string(bst.root) == """
- ┌─(9)
-(2)   
-"""[1:]
-    bst.delete_bst_node(9)
-    assert printer.to_string(bst.root) == """
-(2)
-"""[1:]
-    bst.delete_bst_node(2)
-    assert printer.to_string(bst.root) == """
-None
-"""[1:]
 
 
 def test_trie():
@@ -260,13 +187,151 @@ def test_dependency_forest():
         assert True
 
 
+def test_delete_bst_node():
+    bst_root = Node(5, Node(3, Node(1, Node(0), Node(2)), Node(4)), Node(8, Node(6, right=Node(7)), Node(10, Node(9))))
+    bst = BinaryTree(root=bst_root, data_name="value", left_name="left", right_name="right")
+    printer = BinaryTreePrinter(data_name="value", left_name="left", right_name="right")
+    assert printer.to_string(bst.root) == """
+           ┌────────────(5)────────────┐        
+    ┌─────(3)─────┐             ┌─────(8)─────┐ 
+ ┌─(1)──┐        (4)           (6)─┐      ┌─(10)
+(0)    (2)                        (7)    (9)    
+"""[1:]
+    bst.delete_bst_node(4)
+    assert printer.to_string(bst.root) == """
+           ┌────────────(5)────────────┐        
+    ┌─────(3)                   ┌─────(8)─────┐ 
+ ┌─(1)──┐                      (6)─┐      ┌─(10)
+(0)    (2)                        (7)    (9)    
+"""[1:]
+    bst.delete_bst_node(3)
+    assert printer.to_string(bst.root) == """
+        ┌────────────(5)────────────┐        
+ ┌─────(1)─────┐             ┌─────(8)─────┐ 
+(0)           (2)           (6)─┐      ┌─(10)
+                               (7)    (9)    
+"""[1:]
+    bst.delete_bst_node(10)
+    assert printer.to_string(bst.root) == """
+       ┌──────────(5)──────────┐       
+ ┌────(1)────┐           ┌────(8)────┐ 
+(0)         (2)         (6)─┐       (9)
+                           (7)         
+"""[1:]
+    bst.delete_bst_node(6)
+    assert printer.to_string(bst.root) == """
+    ┌────(5)────┐    
+ ┌─(1)─┐     ┌─(8)─┐ 
+(0)   (2)   (7)   (9)
+"""[1:]
+    bst.delete_bst_node(5)
+    assert printer.to_string(bst.root) == """
+    ┌────(7)────┐    
+ ┌─(1)─┐       (8)─┐ 
+(0)   (2)         (9)
+"""[1:]
+    bst.delete_bst_node(1)
+    assert printer.to_string(bst.root) == """
+    ┌────(7)────┐    
+ ┌─(2)         (8)─┐ 
+(0)               (9)
+"""[1:]
+    bst.delete_bst_node(0)
+    assert printer.to_string(bst.root) == """
+ ┌────(7)────┐    
+(2)         (8)─┐ 
+               (9)
+"""[1:]
+    bst.delete_bst_node(8)
+    assert printer.to_string(bst.root) == """
+ ┌─(7)─┐ 
+(2)   (9)
+"""[1:]
+    bst.delete_bst_node(7)
+    assert printer.to_string(bst.root) == """
+ ┌─(9)
+(2)   
+"""[1:]
+    bst.delete_bst_node(9)
+    assert printer.to_string(bst.root) == """
+(2)
+"""[1:]
+    bst.delete_bst_node(2)
+    assert printer.to_string(bst.root) == """
+None
+"""[1:]
+    bst = BinaryTree(root=Node(0, right=Node(1)), data_name="value", left_name="left", right_name="right")
+    assert printer.to_string(bst.root) == """
+(0)─┐ 
+   (1)
+"""[1:]
+    bst.delete_bst_node(0)
+    assert printer.to_string(bst.root) == """
+(1)
+"""[1:]
+    bst.delete_bst_node(1)
+    assert printer.to_string(bst.root) == """
+None
+"""[1:]
 
 
-
-
-
-
-
-
-
-
+def test_delete_bst_nodes_by_range():
+    bst_root = Node(5, Node(3, Node(1, Node(0), Node(2)), Node(4)), Node(8, Node(6, right=Node(7)), Node(9, right=Node(10))))
+    bst = BinaryTree(root=bst_root, data_name="value", left_name="left", right_name="right")
+    printer = BinaryTreePrinter(data_name="value", left_name="left", right_name="right")
+    assert printer.to_string(bst.root) == """
+           ┌────────────(5)────────────┐           
+    ┌─────(3)─────┐             ┌─────(8)─────┐    
+ ┌─(1)──┐        (4)           (6)─┐         (9)─┐ 
+(0)    (2)                        (7)          (10)
+"""[1:]
+    bst.delete_bst_nodes(1, 4)
+    assert printer.to_string(bst.root) == """
+ ┌────────────(5)────────────┐           
+(0)                   ┌─────(8)─────┐    
+                     (6)─┐         (9)─┐ 
+                        (7)          (10)
+"""[1:]
+    bst.delete_bst_nodes(7, 9)
+    assert printer.to_string(bst.root) == """
+ ┌─────(5)─────┐ 
+(0)        ┌─(10)
+          (6)    
+"""[1:]
+    bst.delete_bst_nodes(3, 8)
+    assert printer.to_string(bst.root) == """
+ ┌(10)
+(0)   
+"""[1:]
+    bst.delete_bst_nodes(5, 20)
+    assert printer.to_string(bst.root) == """
+(0)
+"""[1:]
+    bst.delete_bst_nodes(-1, 1)
+    assert printer.to_string(bst.root) == """
+None
+"""[1:]
+    bst_root = Node(5, Node(3, Node(1, Node(0), Node(2)), Node(4)), Node(8, Node(6, right=Node(7)), Node(9, right=Node(10))))
+    bst = BinaryTree(root=bst_root, data_name="value", left_name="left", right_name="right")
+    bst.delete_bst_nodes(4, 7)
+    assert printer.to_string(bst.root) == """
+           ┌────────────(8)────────────┐        
+    ┌─────(3)                         (9)─────┐ 
+ ┌─(1)──┐                                   (10)
+(0)    (2)                                      
+"""[1:]
+    bst.delete_bst_nodes(2, 5)
+    assert printer.to_string(bst.root) == """
+    ┌─────(8)─────┐    
+ ┌─(1)           (9)─┐ 
+(0)                (10)
+"""[1:]
+    bst.delete_bst_nodes(3, 15)
+    assert printer.to_string(bst.root) == """
+ ┌─(1)
+(0)   
+"""[1:]
+    bst.delete_bst_nodes(0, 3)
+    assert printer.to_string(bst.root) == """
+None
+"""[1:]
