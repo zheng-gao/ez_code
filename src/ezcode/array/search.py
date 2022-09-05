@@ -23,9 +23,7 @@ def binary_search_subarray(array: list, begin: int, end: int, target, is_ascendi
     if not array:
         return None
     while begin < end:
-        mid = begin + (end - begin) // 2
-        if not is_left_most and (end - begin) % 2 == 1:
-            mid += 1
+        mid = begin + (end - begin + (0 if is_left_most else 1)) // 2
         if (is_ascending and target < array[mid]) or (not is_ascending and array[mid] < target):
             end = mid - 1
         elif (is_ascending and array[mid] < target) or (not is_ascending and target < array[mid]):
