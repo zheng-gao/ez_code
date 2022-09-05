@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as file_handler:
 
 setuptools.setup(
     name="ezcode",
-    version="0.0.95",
+    version="0.0.96",
     author="Zheng Gao",
     author_email="mail.zheng.gao@gmail.com",
     description="Easy Algorithm & Data Structure",
