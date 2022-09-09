@@ -1,7 +1,7 @@
 class PriorityQueue:
     def __init__(self, init_queue: list = None, min_heap: bool = True):
         self.min_heap = min_heap
-        self.heap = list()  # (priority, key)
+        self.heap = list()  # [(priority, key)]
         if init_queue is not None:
             for item in init_queue:
                 self.push(item)
@@ -55,6 +55,12 @@ class PriorityQueue:
             if len(self) > 0:
                 self._sift_up(0)
             return top_item[0] if len(top_item) == 1 else top_item  # priority / priority, key
+
+    def update_top(self, priority):
+        """ O(logN) """
+        if self.heap[0][0] != priority:
+            self.heap[0] = (priority, self.heap[0][1])
+            self._sift_up(0)  # python sift up is from root to leaf
 
     def _sift_down(self, index: int):
         """ python sift down is from leaf to root, O(logN) """

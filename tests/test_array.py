@@ -1,4 +1,5 @@
-from ezcode.array.interval import merge_overlapped_intervals
+from ezcode.array.interval import overlapped, intersect, merge, merge_all
+from ezcode.array.interval import all_overlapped_pairs, min_groups_of_non_overlapped_intervals
 from ezcode.array.rmq import SparseTable
 from ezcode.array.search import binary_search, binary_search_range
 from ezcode.array.sort import quick_sort
@@ -207,12 +208,57 @@ def test_rmq():
     assert st.rmq(2, 4) == 4
 
 
-def test_merge_overlapped_intervals():
-    assert merge_overlapped_intervals([[1, 2]]) == [[1, 2]]
-    assert merge_overlapped_intervals([[1, 2], [2, 3], [3, 4]]) == [[1, 4]]
-    assert merge_overlapped_intervals([[1, 2], [3, 4], [5, 6]]) == [[1, 2], [3, 4], [5, 6]]
-    assert merge_overlapped_intervals([[3, 4], [1, 2], [2, 5], [7, 9], [10, 11], [6, 8]]) == [[1, 5], [6, 9], [10, 11]]
-
+def test_intervals():
+    assert not overlapped((1, 3), (4, 5))
+    assert overlapped((1, 2), (1, 2))
+    assert overlapped((1, 2), (1, 2), inclusive=False)
+    assert overlapped((1, 3), (2, 4))
+    assert overlapped((1, 2), (2, 3))
+    assert not overlapped((1, 2), (2, 3), inclusive=False)
+    assert overlapped((1, 4), (2, 3))
+    assert overlapped((1, 4), (1, 3))
+    assert overlapped((1, 4), (2, 4))
+    assert intersect((1, 3), (4, 5)) == None
+    assert intersect((1, 1), (1, 1)) == (1, 1)
+    assert intersect((1, 1), (1, 1), inclusive=False) == None
+    assert intersect((1, 3), (2, 4)) == (2, 3)
+    assert intersect((1, 2), (2, 3)) == (2, 2)
+    assert intersect((1, 2), (2, 3), inclusive=False) == None
+    assert intersect((1, 4), (2, 3)) == (2, 3)
+    assert intersect((1, 4), (1, 3)) == (1, 3)
+    assert intersect((1, 4), (2, 4)) == (2, 4)
+    assert merge((1, 3), (4, 5)) == None
+    assert merge((1, 1), (1, 1)) == (1, 1)
+    assert merge((1, 1), (1, 1), inclusive=False) == None
+    assert merge((1, 3), (2, 4)) == (1, 4)
+    assert merge((1, 2), (2, 3)) == (1, 3)
+    assert merge((1, 2), (2, 3), inclusive=False) == None
+    assert merge((1, 4), (2, 3)) == (1, 4)
+    assert merge((1, 4), (1, 3)) == (1, 4)
+    assert merge((1, 4), (2, 4)) == (1, 4)
+    assert merge_all([]) == []
+    assert merge_all([(1, 2)]) == [(1, 2)]
+    assert merge_all([(1, 2), (2, 3), (3, 4)]) == [(1, 4)]
+    assert merge_all([(1, 2), (3, 4), (5, 6)]) == [(1, 2), (3, 4), (5, 6)]
+    assert merge_all([(3, 4), (1, 2), (2, 5), (7, 9), (8, 9), (6, 8)]) == [(1, 5), (6, 9)]
+    assert all_overlapped_pairs([]) == []
+    assert all_overlapped_pairs([(1, 2)]) == []
+    assert all_overlapped_pairs([(1, 2), (1, 2)]) == [[(1, 2), (1, 2)]]
+    assert all_overlapped_pairs([(1, 2), (1, 2)], inclusive=False) == [[(1, 2), (1, 2)]]
+    assert all_overlapped_pairs([(1, 2), (2, 3), (3, 4)]) == [[(1, 2), (2, 3)], [(2, 3), (3, 4)]]
+    assert all_overlapped_pairs([(1, 2), (3, 4), (5, 6)]) == []
+    assert all_overlapped_pairs([(3, 4), (1, 2), (2, 5), (7, 9), (8, 9), (6, 8)]) == [
+        [(1, 2), (2, 5)], [(2, 5), (3, 4)], [(6, 8), (7, 9)], [(6, 8), (8, 9)], [(7, 9), (8, 9)]]
+    assert min_groups_of_non_overlapped_intervals([]) == []
+    assert min_groups_of_non_overlapped_intervals([(1, 2)]) == [[(1, 2)]]
+    assert min_groups_of_non_overlapped_intervals([(1, 2), (2, 3)]) == [[(1, 2)], [(2, 3)]]
+    assert min_groups_of_non_overlapped_intervals([(1, 2), (2, 3)], inclusive=False) == [[(1, 2), (2, 3)]]
+    assert min_groups_of_non_overlapped_intervals([(1, 2), (3, 4), (4, 4)]) == [[(1, 2), (3, 4)], [(4, 4)]]
+    assert min_groups_of_non_overlapped_intervals([(1, 2), (3, 4), (4, 4)], inclusive=False) == [[(1, 2), (3, 4), (4, 4)]]
+    assert min_groups_of_non_overlapped_intervals([(3, 4), (1, 2), (2, 5), (7, 9), (8, 9), (6, 8)]) == [
+        [(1, 2), (3, 4), (6, 8)], [(2, 5), (7, 9)], [(8, 9)]]
+    assert min_groups_of_non_overlapped_intervals([(3, 4), (1, 2), (2, 5), (7, 9), (8, 9), (6, 8)], inclusive=False) == [
+        [(3, 4), (6, 8), (8, 9)], [(1, 2), (2, 5), (7, 9)]]
 
 def test_subarrays_with_target_sum():
     array = [3, 5, -1, 2, 6, 3, -4, 5, 7, 9, -2, -3, 6]
