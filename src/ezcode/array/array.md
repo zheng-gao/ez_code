@@ -1,5 +1,5 @@
 ## Binary Search
-```
+```python
 >>> from ezcode.array.search import binary_search_range
 >>> class X:
 ...     def __init__(self, number, string):
