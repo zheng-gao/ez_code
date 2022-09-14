@@ -51,7 +51,7 @@ def next_lexicographic_permutation(items: list, copy=True) -> list:
     if begin < 0:
         reverse(items)
     else:
-        first_greater_from_end = binary_search_subarray_exclusive_boundery(items, begin + 1, end, items[begin], is_ascending=False, is_smaller=False)
+        first_greater_from_end = binary_search_subarray_exclusive_boundery(items[begin], items, begin + 1, end, is_ascending=False, is_smaller=False)
         swap(items, begin, first_greater_from_end)
         reverse(items, begin + 1, len(items) - 1)
     return items

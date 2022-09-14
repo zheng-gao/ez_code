@@ -1,3 +1,15 @@
+## Binary Search
+```
+>>> from ezcode.array.search import binary_search_range
+>>> class X:
+...     def __init__(self, number, string):
+...         self.number, self.string = number, string
+...
+>>> binary_search_range(target=2, array=[X(1,"One"), X(2,"Two"), X(2,"Two"), X(3,"Three")], is_inclusive=True, key=lambda x: x.number)
+(1, 2)
+>>> binary_search_range(target=2, array=[X(1,"One"), X(2,"Two"), X(2,"Two"), X(3,"Three")], is_inclusive=False, key=lambda x: x.number)
+(0, 3)
+```
 
 ## Longest Common Subsequence
 

@@ -1,5 +1,5 @@
-from ezcode.array.interval import overlapped, intersect, merge, merge_all
-from ezcode.array.interval import all_overlapped_pairs, min_groups_of_non_overlapped_intervals
+from ezcode.array.interval import overlapped, intersect, merge, merge_all, all_overlapped_pairs
+from ezcode.array.interval import min_groups_of_non_overlapped_intervals, NonOverlappedIntervals
 from ezcode.array.rmq import SparseTable
 from ezcode.array.search import binary_search, binary_search_range
 from ezcode.array.sort import quick_sort
@@ -34,42 +34,52 @@ def test_array_to_string():
 
 
 def test_binary_search():
-    assert 0 == binary_search(array=[0], target=0)
-    assert 0 == binary_search(array=[0, 1], target=0)
-    assert 1 == binary_search(array=[0, 1], target=1)
-    assert 0 == binary_search(array=[0, 1, 2], target=0)
-    assert 1 == binary_search(array=[0, 1, 2], target=1)
-    assert 2 == binary_search(array=[0, 1, 2], target=2)
+    assert 0 == binary_search(target=0, array=[0])
+    assert 0 == binary_search(target=0, array=[0, 1])
+    assert 1 == binary_search(target=1, array=[0, 1])
+    assert 0 == binary_search(target=0, array=[0, 1, 2])
+    assert 1 == binary_search(target=1, array=[0, 1, 2])
+    assert 2 == binary_search(target=2, array=[0, 1, 2])
     array, target = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 7
-    assert binary_search(array=[], target=0) is None
-    assert binary_search(array=array, target=-1) is None
-    assert 7 == binary_search(array=array, target=target, is_ascending=True)
-    assert 2 == binary_search(array=array[::-1], target=target, is_ascending=False)
-    assert (7, 7) == binary_search_range(array=array, target=target, is_ascending=True, is_inclusive=True)
-    assert (None, None) == binary_search_range(array=array, target=3.5, is_ascending=True, is_inclusive=True)
-    assert (3, 4) == binary_search_range(array=array, target=3.5, is_ascending=True, is_inclusive=False)
-    assert (9, None) == binary_search_range(array=array, target=10, is_ascending=True, is_inclusive=False)
-    assert (None, 0) == binary_search_range(array=array, target=-1, is_ascending=True, is_inclusive=False)
-    assert (2, 2) == binary_search_range(array=array[::-1], target=target, is_ascending=False, is_inclusive=True)
-    assert (None, None) == binary_search_range(array=array[::-1], target=3.5, is_ascending=False, is_inclusive=True)
-    assert (5, 6) == binary_search_range(array=array[::-1], target=3.5, is_ascending=False, is_inclusive=False)
-    assert (None, 0) == binary_search_range(array=array[::-1], target=10, is_ascending=False, is_inclusive=False)
-    assert (9, None) == binary_search_range(array=array[::-1], target=-1, is_ascending=False, is_inclusive=False)
+    assert binary_search(target=0, array=[]) is None
+    assert binary_search(target=-1, array=array) is None
+    assert 7 == binary_search(target=target, array=array, is_ascending=True)
+    assert 2 == binary_search(target=target, array=array[::-1], is_ascending=False)
+    assert (7, 7) == binary_search_range(target=target, array=array, is_ascending=True, is_inclusive=True)
+    assert (None, None) == binary_search_range(target=3.5, array=array, is_ascending=True, is_inclusive=True)
+    assert (3, 4) == binary_search_range(target=3.5, array=array, is_ascending=True, is_inclusive=False)
+    assert (9, None) == binary_search_range(target=10, array=array, is_ascending=True, is_inclusive=False)
+    assert (None, 0) == binary_search_range(target=-1, array=array, is_ascending=True, is_inclusive=False)
+    assert (2, 2) == binary_search_range(target=target, array=array[::-1], is_ascending=False, is_inclusive=True)
+    assert (None, None) == binary_search_range(target=3.5, array=array[::-1], is_ascending=False, is_inclusive=True)
+    assert (5, 6) == binary_search_range(target=3.5, array=array[::-1], is_ascending=False, is_inclusive=False)
+    assert (None, 0) == binary_search_range(target=10, array=array[::-1], is_ascending=False, is_inclusive=False)
+    assert (9, None) == binary_search_range(target=-1, array=array[::-1], is_ascending=False, is_inclusive=False)
     array, target = [0, 1, 1, 2, 3, 3, 3, 3, 4, 5, 6, 7, 7, 7, 8, 9, 9], 3
-    assert 4 == binary_search(array=array, target=target, is_ascending=True, has_duplicates=True, is_left_most=True)
-    assert 7 == binary_search(array=array, target=target, is_ascending=True, has_duplicates=True, is_left_most=False)
-    assert 9 == binary_search(array=array[::-1], target=target, is_ascending=False, has_duplicates=True, is_left_most=True)
-    assert 12 == binary_search(array=array[::-1], target=target, is_ascending=False, has_duplicates=True, is_left_most=False)
-    assert (4, 7) == binary_search_range(array=array, target=target, is_ascending=True, is_inclusive=True)
-    assert (None, None) == binary_search_range(array=array, target=3.5, is_ascending=True, is_inclusive=True)
-    assert (7, 8) == binary_search_range(array=array, target=3.5, is_ascending=True, is_inclusive=False)
-    assert (16, None) == binary_search_range(array=array, target=10, is_ascending=True, is_inclusive=False)
-    assert (None, 0) == binary_search_range(array=array, target=-1, is_ascending=True, is_inclusive=False)
-    assert (9, 12) == binary_search_range(array=array[::-1], target=target, is_ascending=False, is_inclusive=True)
-    assert (None, None) == binary_search_range(array=array[::-1], target=3.5, is_ascending=False, is_inclusive=True)
-    assert (8, 9) == binary_search_range(array=array[::-1], target=3.5, is_ascending=False, is_inclusive=False)
-    assert (None, 0) == binary_search_range(array=array[::-1], target=10, is_ascending=False, is_inclusive=False)
-    assert (16, None) == binary_search_range(array=array[::-1], target=-1, is_ascending=False, is_inclusive=False)
+    assert 4 == binary_search(target=target, array=array, is_ascending=True, has_duplicates=True, is_left_most=True)
+    assert 7 == binary_search(target=target, array=array, is_ascending=True, has_duplicates=True, is_left_most=False)
+    assert 9 == binary_search(target=target, array=array[::-1], is_ascending=False, has_duplicates=True, is_left_most=True)
+    assert 12 == binary_search(target=target, array=array[::-1], is_ascending=False, has_duplicates=True, is_left_most=False)
+    assert (4, 7) == binary_search_range(target=target, array=array, is_ascending=True, is_inclusive=True)
+    assert (None, None) == binary_search_range(target=3.5, array=array, is_ascending=True, is_inclusive=True)
+    assert (7, 8) == binary_search_range(target=3.5, array=array, is_ascending=True, is_inclusive=False)
+    assert (16, None) == binary_search_range(target=10, array=array, is_ascending=True, is_inclusive=False)
+    assert (None, 0) == binary_search_range(target=-1, array=array, is_ascending=True, is_inclusive=False)
+    assert (9, 12) == binary_search_range(target=target, array=array[::-1], is_ascending=False, is_inclusive=True)
+    assert (None, None) == binary_search_range(target=3.5, array=array[::-1], is_ascending=False, is_inclusive=True)
+    assert (8, 9) == binary_search_range(target=3.5, array=array[::-1], is_ascending=False, is_inclusive=False)
+    assert (None, 0) == binary_search_range(target=10, array=array[::-1], is_ascending=False, is_inclusive=False)
+    assert (16, None) == binary_search_range(target=-1, array=array[::-1], is_ascending=False, is_inclusive=False)
+
+    class P:
+        def __init__(self, x, y):
+            self.x, self.y = x, y
+
+    assert 2 == binary_search(array=[(0, "zero"), (1, "one"), (2, "two")], target=2, key=lambda x: x[0])
+    assert (1, 2) == binary_search_range(target=1, array=[P(0, 1), P(1, 1), P(1, 2), P(2, 2)], is_ascending=True, is_inclusive=True, key=lambda p: p.x)
+    assert (2, 3) == binary_search_range(target=2, array=[P(0, 1), P(1, 1), P(1, 2), P(2, 2)], is_ascending=True, is_inclusive=True, key=lambda p: p.y)
+    assert (0, 3) == binary_search_range(target=1, array=[P(0, 1), P(1, 1), P(1, 2), P(2, 2)], is_ascending=True, is_inclusive=False, key=lambda p: p.x)
+    assert (1, None) == binary_search_range(target=2, array=[P(0, 1), P(1, 1), P(1, 2), P(2, 2)], is_ascending=True, is_inclusive=False, key=lambda p: p.y)
 
 
 def test_rotate():
@@ -211,28 +221,28 @@ def test_rmq():
 def test_intervals():
     assert not overlapped((1, 3), (4, 5))
     assert overlapped((1, 2), (1, 2))
-    assert overlapped((1, 2), (1, 2), inclusive=False)
+    assert overlapped((1, 2), (1, 2), is_inclusive=False)
     assert overlapped((1, 3), (2, 4))
     assert overlapped((1, 2), (2, 3))
-    assert not overlapped((1, 2), (2, 3), inclusive=False)
+    assert not overlapped((1, 2), (2, 3), is_inclusive=False)
     assert overlapped((1, 4), (2, 3))
     assert overlapped((1, 4), (1, 3))
     assert overlapped((1, 4), (2, 4))
     assert intersect((1, 3), (4, 5)) == None
     assert intersect((1, 1), (1, 1)) == (1, 1)
-    assert intersect((1, 1), (1, 1), inclusive=False) == None
+    assert intersect((1, 1), (1, 1), is_inclusive=False) == None
     assert intersect((1, 3), (2, 4)) == (2, 3)
     assert intersect((1, 2), (2, 3)) == (2, 2)
-    assert intersect((1, 2), (2, 3), inclusive=False) == None
+    assert intersect((1, 2), (2, 3), is_inclusive=False) == None
     assert intersect((1, 4), (2, 3)) == (2, 3)
     assert intersect((1, 4), (1, 3)) == (1, 3)
     assert intersect((1, 4), (2, 4)) == (2, 4)
     assert merge((1, 3), (4, 5)) == None
     assert merge((1, 1), (1, 1)) == (1, 1)
-    assert merge((1, 1), (1, 1), inclusive=False) == None
+    assert merge((1, 1), (1, 1), is_inclusive=False) == None
     assert merge((1, 3), (2, 4)) == (1, 4)
     assert merge((1, 2), (2, 3)) == (1, 3)
-    assert merge((1, 2), (2, 3), inclusive=False) == None
+    assert merge((1, 2), (2, 3), is_inclusive=False) == None
     assert merge((1, 4), (2, 3)) == (1, 4)
     assert merge((1, 4), (1, 3)) == (1, 4)
     assert merge((1, 4), (2, 4)) == (1, 4)
@@ -244,7 +254,7 @@ def test_intervals():
     assert all_overlapped_pairs([]) == []
     assert all_overlapped_pairs([(1, 2)]) == []
     assert all_overlapped_pairs([(1, 2), (1, 2)]) == [[(1, 2), (1, 2)]]
-    assert all_overlapped_pairs([(1, 2), (1, 2)], inclusive=False) == [[(1, 2), (1, 2)]]
+    assert all_overlapped_pairs([(1, 2), (1, 2)], is_inclusive=False) == [[(1, 2), (1, 2)]]
     assert all_overlapped_pairs([(1, 2), (2, 3), (3, 4)]) == [[(1, 2), (2, 3)], [(2, 3), (3, 4)]]
     assert all_overlapped_pairs([(1, 2), (3, 4), (5, 6)]) == []
     assert all_overlapped_pairs([(3, 4), (1, 2), (2, 5), (7, 9), (8, 9), (6, 8)]) == [
@@ -252,13 +262,28 @@ def test_intervals():
     assert min_groups_of_non_overlapped_intervals([]) == []
     assert min_groups_of_non_overlapped_intervals([(1, 2)]) == [[(1, 2)]]
     assert min_groups_of_non_overlapped_intervals([(1, 2), (2, 3)]) == [[(1, 2)], [(2, 3)]]
-    assert min_groups_of_non_overlapped_intervals([(1, 2), (2, 3)], inclusive=False) == [[(1, 2), (2, 3)]]
+    assert min_groups_of_non_overlapped_intervals([(1, 2), (2, 3)], is_inclusive=False) == [[(1, 2), (2, 3)]]
     assert min_groups_of_non_overlapped_intervals([(1, 2), (3, 4), (4, 4)]) == [[(1, 2), (3, 4)], [(4, 4)]]
-    assert min_groups_of_non_overlapped_intervals([(1, 2), (3, 4), (4, 4)], inclusive=False) == [[(1, 2), (3, 4), (4, 4)]]
+    assert min_groups_of_non_overlapped_intervals([(1, 2), (3, 4), (4, 4)], is_inclusive=False) == [[(1, 2), (3, 4), (4, 4)]]
     assert min_groups_of_non_overlapped_intervals([(3, 4), (1, 2), (2, 5), (7, 9), (8, 9), (6, 8)]) == [
         [(1, 2), (3, 4), (6, 8)], [(2, 5), (7, 9)], [(8, 9)]]
-    assert min_groups_of_non_overlapped_intervals([(3, 4), (1, 2), (2, 5), (7, 9), (8, 9), (6, 8)], inclusive=False) == [
+    assert min_groups_of_non_overlapped_intervals([(3, 4), (1, 2), (2, 5), (7, 9), (8, 9), (6, 8)], is_inclusive=False) == [
         [(3, 4), (6, 8), (8, 9)], [(1, 2), (2, 5), (7, 9)]]
+
+    def test_non_overlapped_intervals(intervals, benchmark):
+        non_overlapped_intervals = NonOverlappedIntervals()
+        non_overlapped_intervals.add_intervals(intervals)
+        assert list(non_overlapped_intervals.intervals) == benchmark
+
+    test_non_overlapped_intervals(intervals=[(2, 3), (6, 8), (0, 1)], benchmark=[(0, 1), (2, 3), (6, 8)])
+    test_non_overlapped_intervals(intervals=[(1, 3), (6, 8), (0, 2)], benchmark=[(0, 3), (6, 8)])
+    test_non_overlapped_intervals(intervals=[(1, 3), (6, 8), (2, 4)], benchmark=[(1, 4), (6, 8)])
+    test_non_overlapped_intervals(intervals=[(1, 2), (6, 8), (3, 5)], benchmark=[(1, 2), (3, 5), (6, 8)])
+    test_non_overlapped_intervals(intervals=[(1, 3), (5, 8), (2, 6)], benchmark=[(1, 8)])
+    test_non_overlapped_intervals(intervals=[(1, 2), (6, 8), (5, 7)], benchmark=[(1, 2), (5, 8)])
+    test_non_overlapped_intervals(intervals=[(1, 3), (5, 8), (7, 9)], benchmark=[(1, 3), (5, 9)])
+    test_non_overlapped_intervals(intervals=[(1, 3), (5, 6), (7, 9)], benchmark=[(1, 3), (5, 6), (7, 9)])
+
 
 def test_subarrays_with_target_sum():
     array = [3, 5, -1, 2, 6, 3, -4, 5, 7, 9, -2, -3, 6]
