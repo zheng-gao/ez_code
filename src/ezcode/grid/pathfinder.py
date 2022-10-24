@@ -143,9 +143,9 @@ class GridPathFinder:
         path_dict, visited = dict(), set()                  # path_dict = {child: parent}
         candidates = PriorityMap(min_heap=True)
         g_values = {source: 0}                              # g_value: path cost to source
-        candidates.push(0, source)                          # priority = g_value
+        candidates.push(item=source, priority=0)            # priority = g_value
         while len(candidates) > 0:
-            closest_node = candidates.pop()[1]
+            closest_node = candidates.pop()
             visited.add(closest_node)                       # <------------| visit node after poping from candidates
             for neighbor in self.neighbors(closest_node, valid_values):  # |
                 if neighbor not in visited:                 # <------------| searched neighbor can be updated again
@@ -154,7 +154,7 @@ class GridPathFinder:
                     distance = g_values[closest_node] + 1   # Fixed step cost == self.distance(closest_node, neighbor, "manhattan") == 1
                     if distance < g_values[neighbor]:
                         g_values[neighbor] = distance
-                        candidates.push(distance, neighbor)
+                        candidates.push(item=neighbor, priority=distance)
                         path_dict[neighbor] = closest_node
                         if neighbor == destination:  # return early
                             return self.path_dict_to_path(path_dict, destination)
@@ -176,9 +176,9 @@ class GridPathFinder:
         g_values = {source: 0}                                     # g_value: path cost to source
         h_value = self.distance(source, destination, "manhattan")  # h_value: huristic estimate of the path cost to destination
         f_value = g_values[source] + h_value                       # f_value: g_value + h_value
-        candidates.push(f_value, source)                           # priority = f_value
+        candidates.push(item=source, priority=f_value)                           # priority = f_value
         while len(candidates) > 0:
-            closest_node = candidates.pop()[1]
+            closest_node = candidates.pop()
             visited.add(closest_node)                       # <------------| visit node after poping from candidates
             for neighbor in self.neighbors(closest_node, valid_values):  # |
                 if neighbor not in visited:                 # <------------| searched neighbor can be updated again
@@ -189,7 +189,7 @@ class GridPathFinder:
                         g_values[neighbor] = distance
                         h_value = self.distance(neighbor, destination, "manhattan")
                         f_value = g_values[neighbor] + h_value
-                        candidates.push(f_value, neighbor)
+                        candidates.push(item=neighbor, priority=f_value)
                         path_dict[neighbor] = closest_node
                         if neighbor == destination:  # return early
                             return self.path_dict_to_path(path_dict, destination)

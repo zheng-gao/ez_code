@@ -52,18 +52,18 @@ def all_overlapped_pairs(intervals: list[tuple], is_inclusive: bool = True) -> l
 
 def min_groups_of_non_overlapped_intervals(intervals: list[tuple], is_inclusive: bool = True) -> list[list[tuple]]:
     intervals.sort(key=lambda x: x[0])
-    priority_queue = PriorityQueue(min_heap=True)
+    min_queue = PriorityQueue(min_heap=True, key=lambda group: group[-1][-1])
     for interval in intervals:
-        if len(priority_queue) == 0:
-            priority_queue.push(interval[1], [interval])
+        if len(min_queue) == 0:
+            min_queue.push([interval])
         else:
-            group = priority_queue.peek()[1]
-            if overlapped(group[-1], interval, is_inclusive):
-                priority_queue.push(interval[1], [interval])
+            group = min_queue.top()
+            if overlapped(group[-1], interval, is_inclusive):  # need a new group
+                min_queue.push([interval])
             else:
                 group.append(interval)
-                priority_queue.update_top(interval[1])
-    return [group for _, group in priority_queue.heap]
+                min_queue.update_top(group)
+    return min_queue.items(with_priority=False)
 
 
 class NonOverlappedIntervals:

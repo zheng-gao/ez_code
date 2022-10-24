@@ -122,7 +122,7 @@ class GraphPathFinder:
         for node_id in self.graph.nodes.keys():
             path_values[node_id] = self_loop_weight if node_id == src_node_id else disconnected_edge_weight
         while len(candidates) > 0:
-            best_path_value, best_node_id = candidates.pop()
+            best_node_id, best_path_value = candidates.pop(with_priority=True)
             visited.add(best_node_id)
             for relaxed_node_id, weight in self.graph.get_edges(node_id=best_node_id, is_outgoing=True).items():
                 if relaxed_node_id not in visited:
@@ -130,7 +130,7 @@ class GraphPathFinder:
                     if (is_min and new_path_value < path_values[relaxed_node_id]) or (not is_min and new_path_value > path_values[relaxed_node_id]):
                         path_values[relaxed_node_id] = new_path_value
                         path_dict[relaxed_node_id] = best_node_id
-                    candidates.push(path_values[relaxed_node_id], relaxed_node_id)
+                    candidates.push(item=relaxed_node_id, priority=path_values[relaxed_node_id])
         if dst_node_id is None:
             return None, path_values
         return path_values[dst_node_id], self.path_dict_to_path(path_dict, dst_node_id)

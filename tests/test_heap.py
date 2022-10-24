@@ -3,95 +3,92 @@ from ezcode.heap import PriorityQueue, PriorityMap, PriorityQueueOnPartialArray
 
 def test_priority_queue():
     min_queue = PriorityQueue([4, 3, 5, 1, 2])
-    assert min_queue.top_n(3) == [1, 2, 3]
-    assert min_queue.top_n() == [1, 2, 3, 4, 5]
+    assert min_queue.top(3) == [1, 2, 3]
+    assert min_queue.top(len(min_queue)) == [1, 2, 3, 4, 5]
     for pop_data in [1, 2, 3, 4, 5]:
         assert min_queue.pop() == pop_data
     max_queue = PriorityQueue([4, 3, 5, 1, 2], min_heap=False)
-    assert max_queue.top_n(3) == [5, 4, 3]
-    assert max_queue.top_n() == [5, 4, 3, 2, 1]
+    assert max_queue.top(3) == [5, 4, 3]
+    assert max_queue.top(len(max_queue)) == [5, 4, 3, 2, 1]
     for pop_data in [5, 4, 3, 2, 1]:
         assert max_queue.pop() == pop_data
-
-    push_list = [(4, "D"), (3, "C"), (5, "E"), (1, "A"), (2, "B")]
-
+    push_list = [("D", 4), ("C", 3), ("E", 5), ("A", 1), ("B", 2)]
+    min_top_list = [("D", 4), ("C", 3), ("C", 3), ("A", 1), ("A", 1)]
     min_queue = PriorityQueue()
-    min_peek_list = [(4, "D"), (3, "C"), (3, "C"), (1, "A"), (1, "A")]
-    for push_data, peek_data in zip(push_list, min_peek_list):
+    for push_data, top_data in zip(push_list, min_top_list):
         min_queue.push(push_data)
-        assert min_queue.peek() == peek_data
-    min_pop_list = [(1, "A"), (2, "B"), (3, "C"), (4, "D"), (5, "E")]
-    for pop_data in min_pop_list:
+        assert min_queue.top(with_priority=True) == top_data
+    for pop_data in ["A", "B", "C", "D", "E"]:
         assert min_queue.pop() == pop_data
-    min_queue = PriorityQueue(push_list)
-    for pop_data in min_pop_list:
-        assert min_queue.pop() == pop_data
-
-    max_queue = PriorityQueue(min_heap=False)
-    max_peek_list = [(4, "D"), (4, "D"), (5, "E"), (5, "E"), (5, "E")]
-    for push_data, peek_data in zip(push_list, max_peek_list):
+    min_queue = PriorityQueue(["D", "C", "E", "A", "B"], key=lambda x: ord(x) - ord("A") + 1)
+    for pop_data in [("A", 1), ("B", 2), ("C", 3), ("D", 4), ("E", 5)]:
+        assert min_queue.pop(with_priority=True) == pop_data
+    min_queue = PriorityQueue([("D", 4), ("C", 3), ("E", 5), ("A", 1), ("B", 2)])
+    assert min_queue.heap == [("A", 1), ("B", 2), ("E", 5), ("D", 4), ("C", 3)] 
+    min_queue.update_top(("F", 6))
+    assert min_queue.heap == [("B", 2), ("C", 3), ("E", 5), ("D", 4), ("F", 6)]
+    min_queue.update_top(("B", 4))
+    assert min_queue.heap == [("C", 3), ("B", 4), ("E", 5), ("D", 4), ("F", 6)]
+    min_queue.update_top(("C", 2))
+    assert min_queue.heap == [("C", 2), ("B", 4), ("E", 5), ("D", 4), ("F", 6)] 
+    assert min_queue.top(len(min_queue)) == ["C", "B", "D", "E", "F"]
+    push_list = [("D", 4), ("C", 3), ("E", 5), ("A", 1), ("B", 2)]
+    max_top_list = [("D", 4), ("D", 4), ("E", 5), ("E", 5), ("E", 5)]
+    max_queue = PriorityQueue(min_heap=False, key=lambda x: ord(x) - ord("A") + 1)
+    for push_data, top_data in zip(push_list, max_top_list):
         max_queue.push(push_data)
-        assert max_queue.peek() == peek_data
-    max_pop_list = [(5, "E"), (4, "D"), (3, "C"), (2, "B"), (1, "A")]
-    for pop_data in max_pop_list:
+        assert max_queue.top(with_priority=True) == top_data
+    max_queue.update_top("E", 2)
+    assert max_queue.heap == [("D", 4), ("C", 3), ("E", 2), ("A", 1), ("B", 2)]
+    for pop_data in ["D", "C", "B", "E", "A"]:
         assert max_queue.pop() == pop_data
-    max_queue = PriorityQueue(push_list, min_heap=False)
-    for pop_data in max_pop_list:
-        assert max_queue.pop() == pop_data
+    max_queue = PriorityQueue(["D", "C", "E", "A", "B"], min_heap=False, key=lambda x: ord(x) - ord("A") + 1)
+    for pop_data in [("E", 5), ("D", 4), ("C", 3), ("B", 2), ("A", 1)]:
+        assert max_queue.pop(with_priority=True) == pop_data
 
 
 def test_priority_map():
-    push_list = [(4, "D"), (3, "C"), (5, "E"), (1, "A"), (2, "B")]
-
-    min_map = PriorityMap()
-    min_peek_list = [(4, "D"), (3, "C"), (3, "C"), (1, "A"), (1, "A")]
-    for push_data, peek_data in zip(push_list, min_peek_list):
+    min_map = PriorityMap(key=lambda x: ord(x) - ord("A") + 1)
+    for push_data, top_data in zip(["D", "C", "E", "A", "B"], [("D", 4), ("C", 3), ("C", 3), ("A", 1), ("A", 1)]):
         min_map.push(push_data)
-        assert min_map.peek() == peek_data
-    for key, priority in zip(["A", "B", "C", "D", "E"], [1, 2, 3, 4, 5]):
-        assert min_map.get_priority(key) == priority
-    min_map.update(0, "C")
-    assert min_map.peek() == (0, "C")
-    assert min_map.get_priority("C") == 0
-    min_map.update(3, "E")
-    assert min_map.peek() == (0, "C")
-    assert min_map.get_priority("E") == 3
-    min_pop_list = [(0, "C"), (1, "A"), (2, "B"), (3, "E"), (4, "D")]
-    for pop_data in min_pop_list:
-        assert min_map.pop() == pop_data
+        assert min_map.top(with_priority=True) == top_data
+    for item, priority in zip(["A", "B", "C", "D", "E"], [1, 2, 3, 4, 5]):
+        assert min_map[item] == priority
+    min_map.update("C", 0)
+    assert min_map.top() == "C"
+    assert min_map["C"] == 0
+    min_map["E"] = 3
+    assert min_map.top(with_priority=True) == ("C", 0)
+    assert min_map["E"] == 3
+    assert min_map.top(len(min_map), with_priority=True) == [("C", 0), ("A", 1), ("B", 2), ("E", 3), ("D", 4)]
     min_map = PriorityMap({"D": 4, "C": 3, "E": 5, "A": 1, "B": 2})
-    min_map.delete("D")
-    min_map.delete("B")
-    min_pop_list = [(1, "A"), (3, "C"), (5, "E")]
-    for pop_data in min_pop_list:
-        assert min_map.pop() == pop_data
-
-    max_map = PriorityMap(min_heap=False)
-    max_peek_list = [(4, "D"), (4, "D"), (5, "E"), (5, "E"), (5, "E")]
-    for push_data, peek_data in zip(push_list, max_peek_list):
+    del min_map["D"]
+    del min_map["B"]
+    assert min_map.pop(len(min_map)) == ["A", "C", "E"]
+    max_map = PriorityMap(min_heap=False, key=lambda x: ord(x) - ord("A") + 1)
+    for push_data, top_data in zip(["D", "C", "E", "A", "B"], ["D", "D", "E", "E", "E"]):
         max_map.push(push_data)
-        assert max_map.peek() == peek_data
-    for key, priority in zip(["A", "B", "C", "D", "E"], [1, 2, 3, 4, 5]):
-        assert max_map.get_priority(key) == priority
-    max_map.update(0, "C")
-    assert max_map.peek() == (5, "E")
-    assert max_map.get_priority("C") == 0
-    max_map.update(6, "B")
-    assert max_map.peek() == (6, "B")
-    assert max_map.get_priority("B") == 6
-    max_pop_list = [(6, "B"), (5, "E"), (4, "D"), (1, "A"), (0, "C")]
-    for pop_data in max_pop_list:
-        assert max_map.pop() == pop_data
+        assert max_map.top() == top_data
+    for item, priority in zip(["A", "B", "C", "D", "E"], [1, 2, 3, 4, 5]):
+        assert max_map[item] == priority
+    max_map["C"] = 0
+    assert max_map.top(with_priority=True) == ("E", 5)
+    assert max_map["C"] == 0
+    max_map.push(item="B", priority=6)
+    assert max_map.top() == "B"
+    assert max_map["B"] == 6
+    assert max_map.pop(3, with_priority=True) == [("B", 6), ("E", 5), ("D", 4)]
     max_map = PriorityMap({"D": 4, "C": 3, "E": 5, "A": 1, "B": 2}, min_heap=False)
-    max_map.delete("D")
-    max_map.delete("B")
-    max_pop_list = [(5, "E"), (3, "C"), (1, "A")]
-    for pop_data in max_pop_list:
-        assert max_map.pop() == pop_data
-
-    pm = PriorityMap({"k0":5, "k1":3})
-    pm.delete("k0")
-    assert pm.peek() == (3, "k1")
+    del max_map["E"]
+    assert max_map.top(with_priority=True) == ("D", 4)
+    del max_map["B"]
+    assert max_map.top(len(max_map), with_priority=True) == [("D", 4), ("C", 3), ("A", 1)]
+    del max_map["A"]
+    assert max_map.top() == "D"
+    del max_map["D"]
+    assert max_map.top() == "C"
+    del max_map["C"]
+    assert len(max_map) == 0
 
 
 def test_heap_custom_comparator():
@@ -129,47 +126,39 @@ def test_heap_custom_comparator():
                 return False
             return self.c < self.c
 
-    push_list = [(Priority(2, 2, 3), "A"), (Priority(2, 1, 1), "B"), (Priority(1, 1, 1), "E"), (Priority(1, 1, 2), "D"), (Priority(1, 1, 1), "C")]
+    init_list = [("A", Priority(2, 2, 3)), ("B", Priority(2, 1, 1)), ("E", Priority(1, 1, 1)), ("D", Priority(1, 1, 2)), ("C", Priority(1, 1, 1))]
+    min_queue = PriorityQueue(init_list)
+    init_map = {"A": Priority(2, 2, 3), "B": Priority(2, 1, 1), "E": Priority(1, 1, 1), "D": Priority(1, 1, 2), "C": Priority(1, 1, 1)}
+    min_map = PriorityMap(init_map) 
+    for pop_data in [("E", Priority(1, 1, 1)), ("C", Priority(1, 1, 1)), ("D", Priority(1, 1, 2)), ("B", Priority(2, 1, 1)), ("A", Priority(2, 2, 3))]:
+        assert min_queue.pop(with_priority=True) == pop_data
+        assert min_map.pop(with_priority=True) == pop_data
 
-    min_queue = PriorityQueue(push_list)
-    push_map = {"A": Priority(2, 2, 3), "B": Priority(2, 1, 1), "E": Priority(1, 1, 1), "D": Priority(1, 1, 2), "C": Priority(1, 1, 1)}
-    min_map = PriorityMap(push_map)
-    min_pop_list = [(Priority(1, 1, 1), "E"), (Priority(1, 1, 1), "C"), (Priority(1, 1, 2), "D"), (Priority(2, 1, 1), "B"), (Priority(2, 2, 3), "A")]
-    for pop_data in min_pop_list:
-        assert min_queue.pop() == pop_data
-        assert min_map.pop() == pop_data
-
-    max_queue = PriorityQueue(push_list, min_heap=False)
-    max_pop_list = [(Priority(2, 2, 3), "A"), (Priority(2, 1, 1), "B"), (Priority(1, 1, 2), "D"), (Priority(1, 1, 1), "E"), (Priority(1, 1, 1), "C")]
-    max_map = PriorityMap(min_heap=False)
-    for push_data in push_list:
-        max_map.push(push_data)
-    for pop_data in max_pop_list:
+    init_list = [[Priority(2, 2, 3), "A"], [Priority(2, 1, 1), "B"], [Priority(1, 1, 1), "E"], [Priority(1, 1, 2), "D"], [Priority(1, 1, 1), "C"]]
+    max_queue = PriorityQueue(init_list, min_heap=False, key=lambda x: x[0])
+    init_map = {"A": Priority(2, 2, 3), "B": Priority(2, 1, 1), "E": Priority(1, 1, 1), "D": Priority(1, 1, 2), "C": Priority(1, 1, 1)}
+    max_map = PriorityMap(init_map, min_heap=False, key=lambda x: x[0])
+    for pop_data in [[Priority(2, 2, 3), "A"], [Priority(2, 1, 1), "B"], [Priority(1, 1, 2), "D"], [Priority(1, 1, 1), "E"], [Priority(1, 1, 1), "C"]]:
         assert max_queue.pop() == pop_data
-        assert max_map.pop() == pop_data
-
+        assert max_map.pop(with_priority=True) == (pop_data[1], pop_data[0])
 
 
 def test_priority_queue_on_partial_array():
-    push_list = [(4, "D"), (3, "C"), (5, "E"), (1, "A"), (2, "B")]
-
-    min_queue = PriorityQueueOnPartialArray(array=[None] * 6, begin=3, min_heap=True)
-    min_peek_list = [(4, "D"), (3, "C"), (3, "C"), (1, "A"), (1, "A")]
-    for push_data, peek_data in zip(push_list, min_peek_list):
+    min_queue = PriorityQueueOnPartialArray(array=[None] * 9, min_heap=True, begin=3, key=lambda x: ord(x) - ord("A") + 1)
+    for push_data, top_data in zip(["D", "C", "E", "A", "B"], [("D", 4), ("C", 3), ("C", 3), ("A", 1), ("A", 1)]):
         min_queue.push(push_data)
-        assert min_queue.peek() == peek_data
-    assert min_queue.heap == [None, None, None, (1, "A"), (2, "B"), (5, "E"), (4, "D"), (3, "C")]
-    min_pop_list = [(1, "A"), (2, "B"), (3, "C"), (4, "D"), (5, "E")]
-    for pop_data in min_pop_list:
-        assert min_queue.pop() == pop_data
+        assert min_queue.top(with_priority=True) == top_data
+    assert min_queue.heap == [None, None, None, "A", "B", "E", "D", "C", None]
+    assert min_queue.pop(len(min_queue), with_priority=True) == [("A", 1), ("B", 2), ("C", 3), ("D", 4), ("E", 5)]
 
-    max_queue = PriorityQueueOnPartialArray(array=[None] * 6, begin=3, min_heap=False)
-    max_peek_list = [(4, "D"), (4, "D"), (5, "E"), (5, "E"), (5, "E")]
-    for push_data, peek_data in zip(push_list, max_peek_list):
+    max_queue = PriorityQueueOnPartialArray(array=[None] * 9, min_heap=False, begin=2, end=6, key=lambda x: ord(x) - ord("A") + 1)
+    for push_data, top_data in zip(["D", "C", "E", "A", "B"], [("D", 4), ("D", 4), ("E", 5), ("E", 5), ("E", 5)]):
         max_queue.push(push_data)
-        assert max_queue.peek() == peek_data
-    assert max_queue.heap == [None, None, None, (5, "E"), (3, "C"), (4, "D"), (1, "A"), (2, "B")]
-    max_pop_list = [(5, "E"), (4, "D"), (3, "C"), (2, "B"), (1, "A")]
-    for pop_data in max_pop_list:
-        assert max_queue.pop() == pop_data
+        assert max_queue.top(with_priority=True) == top_data
+    assert max_queue.heap == [None, None, "E", "C", "D", "A", "B", None, None]
+    assert max_queue.pop(len(max_queue), with_priority=True) == [("E", 5), ("D", 4), ("C", 3), ("B", 2), ("A", 1)]
+
+
+
+
 

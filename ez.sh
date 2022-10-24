@@ -160,7 +160,7 @@ function control_test() {
     ez_print_log -m "Installing pytest-srcpaths ..."
     python3 -m "pip" "install" --user --upgrade "pytest-srcpaths"
     ez_print_log -m "Running tests ..."
-    [[ -z "${1}" ]] && pytest -vv "${TEST_DIRECTORY}" || pytest -vv "${1}"
+    [[ -z "${1}" ]] && pytest -vv "${TEST_DIRECTORY}" || pytest -vv "${TEST_DIRECTORY}/${1}"
 }
 
 function control_uninstall() {
@@ -239,7 +239,7 @@ function ez() {
     if [[ -z "${1}" ]] || [[ "${1}" = "-h" ]] || [[ "${1}" = "--help" ]]; then
         local usage=$(ez_build_usage -o "init" -d "Control Project Pipeline")
         usage+=$(ez_build_usage -o "add" -a "-o|--operations" -d "Choose from: [$(ez_join ', ' "${VALID_OPERATIONS[@]}")]")
-        usage+=$(ez_build_usage -o "add" -a "-a|--arguments" -d "The arguments of control_* function")
+        usage+=$(ez_build_usage -o "add" -a "-a|--arguments" -d "The arguments of control_* function, e.g. test_array.py::test_binary_search")
         usage+=$(ez_build_usage -o "add" -a "-d|--development" -d "[Flag] Development Workflow: [clean, uninstall, build, test, install_local, clean]")
         usage+=$(ez_build_usage -o "add" -a "-r|--release" -d "[Flag] Release Workflow: [clean, build, test, publish, clean]")
         ez_print_usage "${usage}"; return

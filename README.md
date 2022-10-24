@@ -12,36 +12,35 @@ https://pypi.org/project/ezcode/#history
 # Development Workflow
 ```bash
 git clone https://github.com/zheng-gao/ez_code.git && cd ez_code
-./ez.sh --development
+./ez.sh -d/--development
 ```
 
 # Release Workflow
 
 ```bash
 git clone https://github.com/zheng-gao/ez_code.git && cd ez_code
-./ez.sh --release
+./ez.sh -r/--release
 ```
 
 # Unit Test
 ### Run all the tests
 ```bash
-./ez.sh --operations test
+./ez.sh -o/--operations test
 ```
 ### Run a single test
 ```bash
-./ez.sh --operations test --arguments test_array.py::test_binary_search
+./ez.sh -o/--operations test -a/--arguments test_array.py::test_binary_search
 ```
 
 # Contents
-* [Array](src/ezcode/array/array.md)
-* [Grid](src/ezcode/grid/grid.md)
-* [Hash](src/ezcode/hash/hash.md)
-* [Heap](src/ezcode/heap/heap.md)
-* [Knapsack](src/ezcode/knapsack/knapsack.md)
-* [List](src/ezcode/list/list.md)
-* [Matrix](src/ezcode/matrix/matrix.md)
-* [Tree](src/ezcode/tree/tree.md)
-* [Graph](src/ezcode/graph/graph.md)
-* [Math](src/ezcode/math/math.md)
+* [Array](docs/array.md)
+* [Grid](docs/grid.md)
+* [Hash](docs/hash.md)
+* [Heap](docs/heap.md)
+* [Knapsack](docs/knapsack.md)
+* [List](docs/list.md)
+* [Tree](docs/tree.md)
+* [Graph](docs/graph.md)
+* [Math](docs/math.md)
 
 
