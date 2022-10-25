@@ -281,35 +281,35 @@ class SegmentTree(BinaryTree):
         if data_list is not None:
             self.build_tree(data_list=data_list)
 
-    def new_node(self, begin: int, end: int, data, left_node=None, right_node=None):
+    def new_node(self, start: int, end: int, data, left_node=None, right_node=None):
         node = super().new_node(data, left_node, right_node)
-        node.__dict__["begin"] = begin
+        node.__dict__["start"] = start
         node.__dict__["end"] = end
         return node
 
     def node_to_string(self, node):
-        return f"[{node.begin},{node.end}]:" + str(self.get_data(node))
+        return f"[{node.start},{node.end}]:" + str(self.get_data(node))
 
     def build_tree(self, data_list: list):
         """ Time: O(N), Space: O(N) """
-        def build_tree_helper(begin: int, end: int):
-            if begin == end:
-                return self.new_node(begin, end, data_list[begin])
-            mid = begin + (end - begin) // 2
-            left_node = build_tree_helper(begin, mid)  # left include mid
+        def build_tree_helper(start: int, end: int):
+            if start == end:
+                return self.new_node(start, end, data_list[start])
+            mid = start + (end - start) // 2
+            left_node = build_tree_helper(start, mid)  # left include mid
             right_node = build_tree_helper(mid + 1, end)
             new_data = self.merge(self.get_data(left_node), self.get_data(right_node))
-            return self.new_node(begin, end, new_data, left_node, right_node)
+            return self.new_node(start, end, new_data, left_node, right_node)
 
         self.root = build_tree_helper(0, len(data_list) - 1)
 
     def update(self, index: int, data):
         """ Time: O(logN) """
         def update_helper(node, index: int, data):
-            if node.begin == node.end == index:
+            if node.start == node.end == index:
                 self.set_data(node, data)
                 return
-            mid = node.begin + (node.end - node.begin) // 2
+            mid = node.start + (node.end - node.start) // 2
             if index <= mid:  # left include mid
                 update_helper(self.get_left(node), index, data)
             else:
@@ -324,22 +324,22 @@ class SegmentTree(BinaryTree):
 
         update_helper(self.root, index, data)
 
-    def query(self, begin: int, end: int):
+    def query(self, start: int, end: int):
         """ Time: O(logN) """
-        def query_helper(node, begin: int, end: int):
-            if node.begin == begin and node.end == end:
+        def query_helper(node, start: int, end: int):
+            if node.start == start and node.end == end:
                 return self.get_data(node)
-            mid = node.begin + (node.end - node.begin) // 2
+            mid = node.start + (node.end - node.start) // 2
             if end <= mid:  # left include mid
-                return query_helper(self.get_left(node), begin, end)
-            if begin > mid:
-                return query_helper(self.get_right(node), begin, end)
+                return query_helper(self.get_left(node), start, end)
+            if start > mid:
+                return query_helper(self.get_right(node), start, end)
             return self.merge(
-                query_helper(self.get_left(node), begin, mid),
+                query_helper(self.get_left(node), start, mid),
                 query_helper(self.get_right(node), mid + 1, end)
             )
 
-        return query_helper(self.root, begin, end)
+        return query_helper(self.root, start, end)
 
 
 

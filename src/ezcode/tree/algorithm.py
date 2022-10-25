@@ -33,12 +33,12 @@ class BinaryTreeAlgorithm:
         if root is not None:
             queue = deque([root])
             nodes_on_current_level, nodes_on_next_level = 1, 0
-            level_begin, level = True, 0
+            level_start, level = True, 0
             while len(queue) > 0:
                 node = queue.popleft()
-                if not left_most_nodes or level_begin:
+                if not left_most_nodes or level_start:
                     result.append(node.__dict__[self.data_name])
-                    level_begin = False
+                    level_start = False
                 nodes_on_current_level -= 1
                 if node.__dict__[self.left_name]:
                     queue.append(node.__dict__[self.left_name])
@@ -48,7 +48,7 @@ class BinaryTreeAlgorithm:
                     nodes_on_next_level += 1
                 if nodes_on_current_level == 0:
                     nodes_on_current_level = nodes_on_next_level
-                    nodes_on_next_level, level_begin, level = 0, True, level + 1
+                    nodes_on_next_level, level_start, level = 0, True, level + 1
             return level
         return 0
 

@@ -126,14 +126,14 @@ class BinaryTreePrinter:
         start_print_index, end_print_index = 0, len(self.char_map[0])
         if trim_left:  # trim left blank
             for line in self.char_map:
-                last_non_blank_index_from_begin = 0
+                last_non_blank_index_from_start = 0
                 for char in line:
                     if char == " ":
-                        last_non_blank_index_from_begin += 1
+                        last_non_blank_index_from_start += 1
                     else:
                         break
-                if start_print_index == 0 or last_non_blank_index_from_begin < start_print_index:
-                    start_print_index = last_non_blank_index_from_begin
+                if start_print_index == 0 or last_non_blank_index_from_start < start_print_index:
+                    start_print_index = last_non_blank_index_from_start
         if trim_right:  # trim right blank
             for line in self.char_map:
                 last_non_blank_index_from_end = len(self.char_map[0])

@@ -49,16 +49,16 @@ class SparseTable:
                     break
                 self.dp[row][col] = self.merge(self.dp[row][col - 1], self.dp[new_row][col - 1])
 
-    def rmq(self, begin: int, end: int):
+    def rmq(self, start: int, end: int):
         """
             RMQ: Range Maximum(Minimum) Query
             Time: O(1), Space: O(1)
-            data_list[begin:pow(2,k)] and data_list[end - pow(2,k) + 1:pow(2,k)] should cover data_list[begin:end + 1] with overlapping
+            data_list[start:pow(2,k)] and data_list[end - pow(2,k) + 1:pow(2,k)] should cover data_list[start:end + 1] with overlapping
             e.g. data_list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
             rmq(2, 6), k = 2, dp[2][2] = [2, 3, 4, 5], dp[3][2] = [3, 4, 5, 6], merge = [2, 3, 4, 5, 6]
             rmq(2, 8), k = 2, dp[2][2] = [2, 3, 4, 5], dp[5][2] = [5, 6, 7, 8], merge = [2, 3, 4, 5, 6, 7, 8]
         """
-        if end < begin:
-            raise ValueError(f"end({end}) < begin({begin})")
-        k = math.floor(math.log(end - begin + 1, 2))
-        return self.merge(self.dp[begin][k], self.dp[end - (1 << k) + 1][k])
+        if end < start:
+            raise ValueError(f"end({end}) < start({start})")
+        k = math.floor(math.log(end - start + 1, 2))
+        return self.merge(self.dp[start][k], self.dp[end - (1 << k) + 1][k])

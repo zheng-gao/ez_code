@@ -6,16 +6,16 @@ def swap(array: list, i: int, j: int):
         array[j] = tmp
 
 
-def reverse(array, begin=None, end=None):
+def reverse(array, start=None, end=None):
     if not array:
         return
-    if begin is None:
-        begin = 0
+    if start is None:
+        start = 0
     if end is None:
         end = len(array) - 1
-    while begin < end:
-        swap(array, begin, end)
-        begin += 1
+    while start < end:
+        swap(array, start, end)
+        start += 1
         end -= 1
 
 
@@ -48,20 +48,20 @@ def is_rotated_sorted_array(array, is_ascending=True) -> bool:
 
 
 def find_min_index_in_rotated_sorted_array(array, is_ascending=True):
-    begin, end = 0, len(array) - 1
-    while begin < end:
-        mid = begin + (end - begin) // 2;
-        if mid == begin:
-            return begin if array[begin] < array[end] else end
+    start, end = 0, len(array) - 1
+    while start < end:
+        mid = start + (end - start) // 2;
+        if mid == start:
+            return start if array[start] < array[end] else end
         if is_ascending and array[mid] == array[end]:  # Handle the case with duplicates
             end -= 1
-        elif not is_ascending and array[mid] == array[begin]:
-            begin += 1
-        elif (is_ascending and array[mid] < array[end]) or (not is_ascending and array[mid] > array[begin]):
+        elif not is_ascending and array[mid] == array[start]:
+            start += 1
+        elif (is_ascending and array[mid] < array[end]) or (not is_ascending and array[mid] > array[start]):
             end = mid
         else:
-            begin = mid
-    return begin
+            start = mid
+    return start
 
 
 def binary_search_rotated(array, target, is_ascending=True, is_left_most=True):
