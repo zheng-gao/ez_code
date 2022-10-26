@@ -30,9 +30,9 @@ class Interval:
             return False
 
     def overlap(self, other: Interval) -> bool:
+        """ exist non-empty common subset """
         if self.is_empty or other.is_empty:
             return False
-        # non-overlaps: [self.left, self.right] ... [other.left, other.right] ... [self.left, self.right]
         if not self.left_open and not self.right_open and not other.left_open and not other.right_open:
             return self.left <= other.right and other.left <= self.right
         elif not self.left_open and not other.right_open:
@@ -43,7 +43,7 @@ class Interval:
             return self.left < other.right and other.left < self.right
 
     def merge(self, other: Interval, merge_data: Callable = None) -> Interval:
-        # min(lefts), max(rights)
+        """ union if overlapping """
         if self.overlap(other):
             if self.left < other.left:
                 left = self.left
@@ -68,7 +68,7 @@ class Interval:
         return None
 
     def intersect(self, other: Interval, intersect_data: Callable = None) -> Interval:
-        # max(lefts), min(rights)
+        """ largest non-empty common subset """
         if self.overlap(other):
             if self.left < other.left:
                 left = other.left
