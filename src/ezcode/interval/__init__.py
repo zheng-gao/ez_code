@@ -3,7 +3,7 @@ from typing import Callable
 
 
 class Interval:
-    def __init__(self, data, start, end, start_inclusive=True, end_inclusive=True):
+    def __init__(self, start, end, start_inclusive=True, end_inclusive=True, data=None):
         if start > end:
             raise ValueError(f"start \"{start}\" > end \"{end}\"")
         self.data = data
@@ -11,6 +11,13 @@ class Interval:
         self.end = end
         self.start_inclusive = start_inclusive
         self.end_inclusive = end_inclusive
+
+    def __str__(self):
+        return f"{'[' if self.start_inclusive else '('}{self.start}, {self.end}{']' if self.end_inclusive else ')'} {self.data}"
+
+    def __eq__(self, other: Interval) -> bool:
+        return self.data == other.data and self.start == other.start and self.end == other.end and \
+            self.start_inclusive == other.start_inclusive and self.end_inclusive == other.end_inclusive
 
     def overlaps_with(self, other: Interval) -> bool:
         # non-overlaps: [self.start, self.end] ... [other.start, other.end] ... [self.start, self.end]
@@ -51,4 +58,60 @@ class Interval:
         """
 
     def merge(self, other: Interval, merge_data: Callable = None) -> Interval:
-        pass
+        # min(starts), max(ends)
+        if self.overlaps_with(other):
+            if self.start < other.start:
+                start = self.start
+                start_inclusive = self.start_inclusive
+            elif other.start < self.start:
+                start = other.start
+                start_inclusive = other.start_inclusive
+            else:
+                start = self.start
+                start_inclusive = self.start_inclusive | other.start_inclusive
+            if other.end < self.end:
+                end = self.end
+                end_inclusive = self.end_inclusive
+            elif self.end < other.end:
+                end = other.end
+                end_inclusive = other.end_inclusive
+            else:
+                end = self.end
+                end_inclusive = self.end_inclusive | other.end_inclusive
+            data = merge_data(self.data, other.data) if merge_data else None
+            return Interval(start, end, start_inclusive, end_inclusive, data)
+        return None
+
+    def intersect(self, other: Interval, intersect_data: Callable = None) -> Interval:
+        # max(starts), min(ends)
+        if self.overlaps_with(other):
+            if self.start < other.start:
+                start = other.start
+                start_inclusive = other.start_inclusive
+            elif other.start < self.start:
+                start = self.start
+                start_inclusive = self.start_inclusive
+            else:
+                start = self.start
+                start_inclusive = self.start_inclusive & other.start_inclusive
+            if other.end < self.end:
+                end = other.end
+                end_inclusive = other.end_inclusive
+            elif self.end < other.end:
+                end = self.end
+                end_inclusive = self.end_inclusive
+            else:
+                end = self.end
+                end_inclusive = self.end_inclusive & other.end_inclusive
+            data = intersect_data(self.data, other.data) if intersect_data else None
+            return Interval(start, end, start_inclusive, end_inclusive, data)
+        return None
+
+
+
+
+
+
+
+
+
