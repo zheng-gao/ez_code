@@ -3,115 +3,92 @@ from typing import Callable
 
 
 class Interval:
-    def __init__(self, start, end, start_inclusive=True, end_inclusive=True, data=None):
-        if start > end:
-            raise ValueError(f"start \"{start}\" > end \"{end}\"")
+    def __init__(self, left, right, left_open: bool = False, right_open: bool = False, data=None):
         self.data = data
-        self.start = start
-        self.end = end
-        self.start_inclusive = start_inclusive
-        self.end_inclusive = end_inclusive
+        self.left = left
+        self.right = right
+        self.left_open = left_open
+        self.right_open = right_open
+        if left < right:
+            self.is_empty = False
+        elif left > right:
+            self.is_empty = True
+        else:
+            self.is_empty = left_open or right_open
 
     def __str__(self):
-        return f"{'[' if self.start_inclusive else '('}{self.start}, {self.end}{']' if self.end_inclusive else ')'}: {self.data}"
+        return f"{'(' if self.left_open else '['}{self.left}, {self.right}{')' if self.right_open else ']'}: {self.data}"
 
     def __eq__(self, other: Interval) -> bool:
-        return self.data == other.data and self.start == other.start and self.end == other.end and \
-            self.start_inclusive == other.start_inclusive and self.end_inclusive == other.end_inclusive
-
-    def overlaps_with(self, other: Interval) -> bool:
-        # non-overlaps: [self.start, self.end] ... [other.start, other.end] ... [self.start, self.end]
-        if self.start_inclusive and self.end_inclusive and other.start_inclusive and other.end_inclusive:
-            return self.start <= other.end and other.start <= self.end
-        elif self.start_inclusive and other.end_inclusive:
-            return self.start <= other.end and other.start < self.end
-        elif self.end_inclusive and other.start_inclusive:
-            return self.start < other.end and other.start <= self.end
+        if self.is_empty and other.is_empty:
+            return self.data == other.data
+        elif not self.is_empty and not other.is_empty:
+            return self.data == other.data and \
+                self.left == other.left and self.right == other.right and \
+                self.left_open == other.left_open and self.right_open == other.right_open
         else:
-            return self.start < other.end and other.start < self.end
-        """
-        from ezcode.bit import bool_list_to_number
-        boundary = bool_list_to_number([self.start_inclusive, self.end_inclusive, other.start_inclusive, other.end_inclusive])
-        match boundary:
-            case 0:   # 0000
-            case 1:   # 0001
-            case 2:   # 0010
-            case 3:   # 0011
-            case 4:   # 0100
-            case 5:   # 0101
-            case 8:   # 1000
-            case 10:  # 1010
-            case 12:  # 1100
-                return self.start < other.end and other.start < self.end
-            case 6:   # 0110
-            case 7:   # 0111
-            case 14:  # 1110
-                return self.start < other.end and other.start <= self.end
-            case 9:   # 1001
-            case 11:  # 1011
-            case 13:  # 1101
-                return self.start <= other.end and other.start < self.end
-            case 15:  1111     # all inclusive
-                return self.start <= other.end and other.start <= self.end
-            case _:
-                raise ValueError(f"Wrong boundary: {boundary}")
-        """
+            return False
+
+    def overlap(self, other: Interval) -> bool:
+        if self.is_empty or other.is_empty:
+            return False
+        # non-overlaps: [self.left, self.right] ... [other.left, other.right] ... [self.left, self.right]
+        if not self.left_open and not self.right_open and not other.left_open and not other.right_open:
+            return self.left <= other.right and other.left <= self.right
+        elif not self.left_open and not other.right_open:
+            return self.left <= other.right and other.left < self.right
+        elif not self.right_open and not other.left_open:
+            return self.left < other.right and other.left <= self.right
+        else:
+            return self.left < other.right and other.left < self.right
 
     def merge(self, other: Interval, merge_data: Callable = None) -> Interval:
-        # min(starts), max(ends)
-        if self.overlaps_with(other):
-            if self.start < other.start:
-                start = self.start
-                start_inclusive = self.start_inclusive
-            elif other.start < self.start:
-                start = other.start
-                start_inclusive = other.start_inclusive
+        # min(lefts), max(rights)
+        if self.overlap(other):
+            if self.left < other.left:
+                left = self.left
+                left_open = self.left_open
+            elif other.left < self.left:
+                left = other.left
+                left_open = other.left_open
             else:
-                start = self.start
-                start_inclusive = self.start_inclusive | other.start_inclusive
-            if other.end < self.end:
-                end = self.end
-                end_inclusive = self.end_inclusive
-            elif self.end < other.end:
-                end = other.end
-                end_inclusive = other.end_inclusive
+                left = self.left
+                left_open = self.left_open and other.left_open
+            if other.right < self.right:
+                right = self.right
+                right_open = self.right_open
+            elif self.right < other.right:
+                right = other.right
+                right_open = other.right_open
             else:
-                end = self.end
-                end_inclusive = self.end_inclusive | other.end_inclusive
+                right = self.right
+                right_open = self.right_open and other.right_open
             data = merge_data(self.data, other.data) if merge_data else None
-            return Interval(start, end, start_inclusive, end_inclusive, data)
+            return Interval(left, right, left_open, right_open, data)
         return None
 
     def intersect(self, other: Interval, intersect_data: Callable = None) -> Interval:
-        # max(starts), min(ends)
-        if self.overlaps_with(other):
-            if self.start < other.start:
-                start = other.start
-                start_inclusive = other.start_inclusive
-            elif other.start < self.start:
-                start = self.start
-                start_inclusive = self.start_inclusive
+        # max(lefts), min(rights)
+        if self.overlap(other):
+            if self.left < other.left:
+                left = other.left
+                left_open = other.left_open
+            elif other.left < self.left:
+                left = self.left
+                left_open = self.left_open
             else:
-                start = self.start
-                start_inclusive = self.start_inclusive & other.start_inclusive
-            if other.end < self.end:
-                end = other.end
-                end_inclusive = other.end_inclusive
-            elif self.end < other.end:
-                end = self.end
-                end_inclusive = self.end_inclusive
+                left = self.left
+                left_open = self.left_open or other.left_open
+            if other.right < self.right:
+                right = other.right
+                right_open = other.right_open
+            elif self.right < other.right:
+                right = self.right
+                right_open = self.right_open
             else:
-                end = self.end
-                end_inclusive = self.end_inclusive & other.end_inclusive
+                right = self.right
+                right_open = self.right_open or other.right_open
             data = intersect_data(self.data, other.data) if intersect_data else None
-            return Interval(start, end, start_inclusive, end_inclusive, data)
+            return Interval(left, right, left_open, right_open, data)
         return None
-
-
-
-
-
-
-
-
 

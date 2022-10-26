@@ -1,5 +1,3 @@
-from ezcode.array.interval import overlapped, intersect, merge, merge_all, all_overlapped_pairs
-from ezcode.array.interval import min_groups_of_non_overlapped_intervals, NonOverlappedIntervals
 from ezcode.array.rmq import SparseTable
 from ezcode.array.search import binary_search, binary_search_range
 from ezcode.array.sort import quick_sort
@@ -216,73 +214,6 @@ def test_rmq():
     assert st.rmq(7, 8) == 7
     assert st.rmq(0, 9) == 0
     assert st.rmq(2, 4) == 4
-
-
-def test_intervals():
-    assert not overlapped((1, 3), (4, 5))
-    assert overlapped((1, 2), (1, 2))
-    assert overlapped((1, 2), (1, 2), is_inclusive=False)
-    assert overlapped((1, 3), (2, 4))
-    assert overlapped((1, 2), (2, 3))
-    assert not overlapped((1, 2), (2, 3), is_inclusive=False)
-    assert overlapped((1, 4), (2, 3))
-    assert overlapped((1, 4), (1, 3))
-    assert overlapped((1, 4), (2, 4))
-    assert intersect((1, 3), (4, 5)) == None
-    assert intersect((1, 1), (1, 1)) == (1, 1)
-    assert intersect((1, 1), (1, 1), is_inclusive=False) == None
-    assert intersect((1, 3), (2, 4)) == (2, 3)
-    assert intersect((1, 2), (2, 3)) == (2, 2)
-    assert intersect((1, 2), (2, 3), is_inclusive=False) == None
-    assert intersect((1, 4), (2, 3)) == (2, 3)
-    assert intersect((1, 4), (1, 3)) == (1, 3)
-    assert intersect((1, 4), (2, 4)) == (2, 4)
-    assert merge((1, 3), (4, 5)) == None
-    assert merge((1, 1), (1, 1)) == (1, 1)
-    assert merge((1, 1), (1, 1), is_inclusive=False) == None
-    assert merge((1, 3), (2, 4)) == (1, 4)
-    assert merge((1, 2), (2, 3)) == (1, 3)
-    assert merge((1, 2), (2, 3), is_inclusive=False) == None
-    assert merge((1, 4), (2, 3)) == (1, 4)
-    assert merge((1, 4), (1, 3)) == (1, 4)
-    assert merge((1, 4), (2, 4)) == (1, 4)
-    assert merge_all([]) == []
-    assert merge_all([(1, 2)]) == [(1, 2)]
-    assert merge_all([(1, 2), (2, 3), (3, 4)]) == [(1, 4)]
-    assert merge_all([(1, 2), (3, 4), (5, 6)]) == [(1, 2), (3, 4), (5, 6)]
-    assert merge_all([(3, 4), (1, 2), (2, 5), (7, 9), (8, 9), (6, 8)]) == [(1, 5), (6, 9)]
-    assert all_overlapped_pairs([]) == []
-    assert all_overlapped_pairs([(1, 2)]) == []
-    assert all_overlapped_pairs([(1, 2), (1, 2)]) == [[(1, 2), (1, 2)]]
-    assert all_overlapped_pairs([(1, 2), (1, 2)], is_inclusive=False) == [[(1, 2), (1, 2)]]
-    assert all_overlapped_pairs([(1, 2), (2, 3), (3, 4)]) == [[(1, 2), (2, 3)], [(2, 3), (3, 4)]]
-    assert all_overlapped_pairs([(1, 2), (3, 4), (5, 6)]) == []
-    assert all_overlapped_pairs([(3, 4), (1, 2), (2, 5), (7, 9), (8, 9), (6, 8)]) == [
-        [(1, 2), (2, 5)], [(2, 5), (3, 4)], [(6, 8), (7, 9)], [(6, 8), (8, 9)], [(7, 9), (8, 9)]]
-    assert min_groups_of_non_overlapped_intervals([]) == []
-    assert min_groups_of_non_overlapped_intervals([(1, 2)]) == [[(1, 2)]]
-    assert min_groups_of_non_overlapped_intervals([(1, 2), (2, 3)]) == [[(1, 2)], [(2, 3)]]
-    assert min_groups_of_non_overlapped_intervals([(1, 2), (2, 3)], is_inclusive=False) == [[(1, 2), (2, 3)]]
-    assert min_groups_of_non_overlapped_intervals([(1, 2), (3, 4), (4, 4)]) == [[(1, 2), (3, 4)], [(4, 4)]]
-    assert min_groups_of_non_overlapped_intervals([(1, 2), (3, 4), (4, 4)], is_inclusive=False) == [[(1, 2), (3, 4), (4, 4)]]
-    assert min_groups_of_non_overlapped_intervals([(3, 4), (1, 2), (2, 5), (7, 9), (8, 9), (6, 8)]) == [
-        [(1, 2), (3, 4), (6, 8)], [(2, 5), (7, 9)], [(8, 9)]]
-    assert min_groups_of_non_overlapped_intervals([(3, 4), (1, 2), (2, 5), (7, 9), (8, 9), (6, 8)], is_inclusive=False) == [
-        [(3, 4), (6, 8), (8, 9)], [(1, 2), (2, 5), (7, 9)]]
-
-    def test_non_overlapped_intervals(intervals, benchmark):
-        non_overlapped_intervals = NonOverlappedIntervals()
-        non_overlapped_intervals.add_intervals(intervals)
-        assert list(non_overlapped_intervals.intervals) == benchmark
-
-    test_non_overlapped_intervals(intervals=[(2, 3), (6, 8), (0, 1)], benchmark=[(0, 1), (2, 3), (6, 8)])
-    test_non_overlapped_intervals(intervals=[(1, 3), (6, 8), (0, 2)], benchmark=[(0, 3), (6, 8)])
-    test_non_overlapped_intervals(intervals=[(1, 3), (6, 8), (2, 4)], benchmark=[(1, 4), (6, 8)])
-    test_non_overlapped_intervals(intervals=[(1, 2), (6, 8), (3, 5)], benchmark=[(1, 2), (3, 5), (6, 8)])
-    test_non_overlapped_intervals(intervals=[(1, 3), (5, 8), (2, 6)], benchmark=[(1, 8)])
-    test_non_overlapped_intervals(intervals=[(1, 2), (6, 8), (5, 7)], benchmark=[(1, 2), (5, 8)])
-    test_non_overlapped_intervals(intervals=[(1, 3), (5, 8), (7, 9)], benchmark=[(1, 3), (5, 9)])
-    test_non_overlapped_intervals(intervals=[(1, 3), (5, 6), (7, 9)], benchmark=[(1, 3), (5, 6), (7, 9)])
 
 
 def test_subarrays_with_target_sum():

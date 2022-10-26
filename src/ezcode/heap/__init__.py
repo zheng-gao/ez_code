@@ -16,6 +16,9 @@ class PriorityQueue:
     def __str__(self):
         return str(self.heap)
 
+    def is_empty(self) -> bool:
+        return len(self) == 0
+
     def items(self, with_priority=False):
         if with_priority:
             return self.heap
@@ -52,13 +55,13 @@ class PriorityQueue:
         kwargs: item=..., priority=...
         """
         self.heap.append(self._get_item_and_priority(*args, **kwargs))
-        self._sift_down(len(self.heap) - 1)
+        self._sift_down(len(self) - 1)
 
     def top(self, k: int = 1, with_priority: bool = False, always_return_list: bool = False):
         if k <= 0:
             raise ValueError(f"Cannot take non-positive value: {k}")
-        if len(self.heap) < k:
-            raise ValueError(f"Not enough items, size: {len(self.heap)}, k: {k}")
+        if len(self) < k:
+            raise ValueError(f"Not enough items, size: {len(self)}, k: {k}")
         if k == 1:  # O(1)
             if always_return_list:
                 return [self.heap[0]] if with_priority else [self.heap[0][0]]  # [item / (item, priority)]
@@ -71,13 +74,13 @@ class PriorityQueue:
     def pop(self, k: int = 1, with_priority: bool = False, always_return_list: bool = False):
         if k <= 0:
             raise ValueError(f"Cannot take non-positive value: {k}")
-        if len(self.heap) < k:
-            raise ValueError(f"Not enough items, queue size: {len(self.heap)}, k: {k}")
+        if len(self) < k:
+            raise ValueError(f"Not enough items, queue size: {len(self)}, k: {k}")
         if k == 1:  # O(logN)
             head = self.heap[0]
             self.heap[0] = self.heap[-1]
             self.heap.pop()
-            if len(self.heap) > 1:
+            if len(self) > 1:
                 self._sift_up(0)
             if always_return_list:
                 return [head] if with_priority else [head[0]]  # [item / (item, priority)]
@@ -91,7 +94,7 @@ class PriorityQueue:
 
     def update_top(self, *args, **kwargs):
         """ O(logN) """
-        if len(self.heap) == 0:
+        if self.is_empty():
             raise IndexError("Empty queue has no top")
         item, priority = self._get_item_and_priority(*args, **kwargs)
         if self.heap[0][1] != priority:
@@ -114,7 +117,7 @@ class PriorityQueue:
     def _sift_up(self, index: int):
         """ python sift up is from root to leaf, O(logN) """
         tmp_entry = self.heap[index]
-        end_index = len(self.heap) - 1
+        end_index = len(self) - 1
         left_index = (index << 1) + 1
         while left_index <= end_index:
             right_index = left_index + 1
@@ -148,7 +151,7 @@ class PriorityMap(PriorityQueue):
         if item not in self.map:
             raise KeyError(f"{item} not found")
         index = self.map[item]
-        if index == len(self.heap) - 1:  # the key to delete is at the end of heap
+        if index == len(self) - 1:  # the key to delete is at the end of heap
             del self.map[item]
             return self.heap.pop()
         else:
@@ -178,7 +181,7 @@ class PriorityMap(PriorityQueue):
             self.update(item, priority)
         else:
             self.heap.append((item, priority))
-            index = len(self.heap) - 1
+            index = len(self) - 1
             self.map[item] = index
             self._sift_down(index)
 
@@ -205,8 +208,8 @@ class PriorityMap(PriorityQueue):
     def top(self, k: int = 1, with_priority: bool = False, always_return_list: bool = False):
         if k <= 0:
             raise ValueError(f"Cannot take non-positive value: {k}")
-        if len(self.heap) < k:
-            raise ValueError(f"Not enough items, size: {len(self.heap)}, k: {k}")
+        if len(self) < k:
+            raise ValueError(f"Not enough items, size: {len(self)}, k: {k}")
         if k == 1:  # O(1)
             if always_return_list:
                 return [self.heap[0]] if with_priority else [self.heap[0][0]]  # [item / (item, priority)]
@@ -220,15 +223,15 @@ class PriorityMap(PriorityQueue):
     def pop(self, k: int = 1, with_priority: bool = False, always_return_list: bool = False):
         if k <= 0:
             raise ValueError(f"Cannot take non-positive value: {k}")
-        if len(self.heap) < k:
-            raise ValueError(f"Not enough items, size: {len(self.heap)}, k: {k}")
+        if len(self) < k:
+            raise ValueError(f"Not enough items, size: {len(self)}, k: {k}")
         if k == 1:  # O(logN)
             head = self.heap[0]  # (item, priority)
             self.heap[0] = self.heap[-1]
             self.map[self.heap[0][0]] = 0  # item index = 0
             self.heap.pop()
             del self.map[head[0]]
-            if len(self.heap) > 1:
+            if len(self) > 1:
                 self._sift_up(0)
             if always_return_list:
                 return [head] if with_priority else [head[0]]  # [item / (item, priority)]
@@ -258,7 +261,7 @@ class PriorityMap(PriorityQueue):
     def _sift_up(self, index: int):
         """ python sift up is from root to leaf, O(logN) """
         tmp_entry = self.heap[index]
-        end_index = len(self.heap) - 1
+        end_index = len(self) - 1
         left_index = (index << 1) + 1
         while left_index <= end_index:
             right_index = left_index + 1
