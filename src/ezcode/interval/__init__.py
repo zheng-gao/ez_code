@@ -13,7 +13,7 @@ class Interval:
         self.end_inclusive = end_inclusive
 
     def __str__(self):
-        return f"{'[' if self.start_inclusive else '('}{self.start}, {self.end}{']' if self.end_inclusive else ')'} {self.data}"
+        return f"{'[' if self.start_inclusive else '('}{self.start}, {self.end}{']' if self.end_inclusive else ')'}: {self.data}"
 
     def __eq__(self, other: Interval) -> bool:
         return self.data == other.data and self.start == other.start and self.end == other.end and \
