@@ -38,8 +38,12 @@ Interval(2, 2, data=100)
 ```python
 >>> from ezcode.interval import Interval
 >>> from ezcode.interval.algorithm import overlapping_interval_pairs
->>> overlapping_interval_pairs([Interval(1, 2), Interval(2, 3), Interval(3, 4)])
-[(Interval(1, 2), Interval(2, 3)), (Interval(2, 3), Interval(3, 4))]
+>>> pairs = overlapping_interval_pairs([Interval(1, 2), Interval(2, 3), Interval(3, 4)])
+>>> for p in pairs:
+...     print(p)
+... 
+(Interval(1, 2), Interval(2, 3))
+(Interval(2, 3), Interval(3, 4))
 ```
 ## min_groups_of_non_overlapping_intervals
 ```python
