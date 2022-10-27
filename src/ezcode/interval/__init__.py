@@ -19,7 +19,7 @@ class Interval:
     def __str__(self):
         return f"{'(' if self.left_open else '['}{self.left}, {self.right}{')' if self.right_open else ']'}: {self.data}"
 
-    def __eq__(self, other: Interval) -> bool:
+    def equal(self, other: Interval) -> bool:
         if self.is_empty and other.is_empty:
             return self.data == other.data
         elif not self.is_empty and not other.is_empty:

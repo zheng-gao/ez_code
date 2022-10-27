@@ -1,7 +1,7 @@
 from collections import deque
 from typing import Callable
 
-from ezcode.heap import PriorityQueue
+from ezcode.heap import PriorityQueue, PriorityMap
 from ezcode.interval import Interval
 
 
@@ -52,8 +52,43 @@ def min_groups_of_non_overlapping_intervals(intervals: list[Interval]) -> list[l
     return min_queue.items(with_priority=False)
 
 
+def skyline(buildings: list[tuple]) -> list[tuple]:
+    output, l_map, r_map = list(), dict(), dict()
+    for left, right, height in buildings:
+        interval = Interval(left, right, data=height)
+        if left not in l_map:
+            l_map[left] = list()
+        l_map[left].append(interval)
+        if right not in r_map:
+            r_map[right] = list()
+        r_map[right].append(interval)
+    index_l, sorted_l, index_r, sorted_r = 0, sorted(l_map.keys()), 0, sorted(r_map.keys())
+    max_map = PriorityMap(min_heap=False, key=lambda interval: interval.data)
+    while index_r < len(sorted_r):
+        left, right = sorted_l[index_l] if index_l < len(sorted_l) else float("inf"), sorted_r[index_r]
+        if left >= right:
+            for interval in r_map[right]:
+                del max_map[interval]
+            if left != right:
+                height = 0 if max_map.is_empty() else max_map.top().data
+                if output[-1][1] != height:
+                    output.append((right, height))
+            index_r += 1
+        if left <= right:
+            for interval in l_map[left]:
+                max_map.push(interval)
+            height = max_map.top().data
+            if len(output) == 0 or output[-1][1] != height:
+                output.append((left, height))
+            index_l += 1
+    return output
+
+
 """
 class NonOverlappingIntervals:
+
+    keep sorted, use binary search for add or use treemap to store intervals
+
     def __init__(self):
         self.intervals = deque()  # non-overlapped intervals sorted by first item
 

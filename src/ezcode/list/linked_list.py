@@ -18,11 +18,11 @@ class SinglyLinkedList(object):
     def __str__(self):
         return self.to_string()
 
-    def __eq__(self, other_list: SinglyLinkedList) -> bool:
-        if not isinstance(other_list, type(self)):
+    def equal(self, other: SinglyLinkedList) -> bool:
+        if not isinstance(other, type(self)):
             return False
         if self.head:
-            self_node, other_node = self.head, other_list.head
+            self_node, other_node = self.head, other.head
             while self_node:
                 if not other_node:
                     return False
@@ -32,7 +32,7 @@ class SinglyLinkedList(object):
                 other_node = self.algorithm.get_next(other_node)
             return other_node is None
         else:
-            return other_list.head is None
+            return other.head is None
 
     def copy(self):
         if not self.head:
