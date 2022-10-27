@@ -16,8 +16,15 @@ class Interval:
         else:
             self.is_empty = left_open or right_open
 
-    def __str__(self):
-        return f"{'(' if self.left_open else '['}{self.left}, {self.right}{')' if self.right_open else ']'}: {self.data}"
+    def __repr__(self):
+        string = f"{type(self).__name__}({self.left}, {self.right}"
+        if self.left_open:
+            string += ", left_open=True"
+        if self.right_open:
+            string += ", right_open=True"
+        if self.data is not None:
+            string += f", data={self.data}"
+        return string + ")"
 
     def equal(self, other: Interval) -> bool:
         if self.is_empty and other.is_empty:

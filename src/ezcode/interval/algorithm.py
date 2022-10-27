@@ -53,6 +53,7 @@ def min_groups_of_non_overlapping_intervals(intervals: list[Interval]) -> list[l
 
 
 def skyline(buildings: list[tuple]) -> list[tuple]:
+    """ buildings = [(left, right, height), (...), ...] -> [(position, height), ...] """
     output, l_map, r_map = list(), dict(), dict()
     for left, right, height in buildings:
         interval = Interval(left, right, data=height)
