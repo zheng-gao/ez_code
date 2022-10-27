@@ -34,13 +34,12 @@ git clone https://github.com/zheng-gao/ez_code.git && cd ez_code
 
 # Contents
 * [Array](docs/array.md)
+* [Graph](docs/graph.md)
 * [Grid](docs/grid.md)
 * [Hash](docs/hash.md)
 * [Heap](docs/heap.md)
+* [Interval](docs/interval.md)
 * [Knapsack](docs/knapsack.md)
 * [List](docs/list.md)
-* [Tree](docs/tree.md)
-* [Graph](docs/graph.md)
 * [Math](docs/math.md)
-
-
+* [Tree](docs/tree.md)
