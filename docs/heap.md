@@ -130,5 +130,5 @@ F in max_map: False
 ('E', 0)
 
 >>> print(PriorityMap({"A": 1, "B": 2, "C": 3}, min_heap=False))
-[(3, 'C'), (1, 'A'), (2, 'B')]
+[('C', 3), ('A', 1), ('B', 2)]
 ```
