@@ -1,4 +1,4 @@
-from ezcode.knapsack import Knapsack
+from ezcode.dp.knapsack import Knapsack
 from ezcode.utils import equal
 
 

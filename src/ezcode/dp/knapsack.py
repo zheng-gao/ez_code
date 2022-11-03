@@ -13,6 +13,10 @@ class Knapsack:
         fill_to_capacity=True,
         output_item_list=True
     ):
+    """
+        output_item_list=True -> (best_value, item_list)
+        output_item_list=False -> best_value
+    """
         if capacity < 0:
             raise ValueError(f"Capacity cannot be negative: {capacity}")
         for s in sizes:
@@ -59,6 +63,10 @@ class Knapsack:
         quantities,
         output_item_list=True
     ):
+    """
+        output_item_list=True -> (ways_to_fill, item_list)
+        output_item_list=False -> ways_to_fill
+    """
         if capacity < 0:
             raise ValueError(f"Capacity cannot be negative: {capacity}")
         for s in sizes:
@@ -549,7 +557,7 @@ class Knapsack:
                 if combo_list:
                     combo_set = set()
                     for i, combo in enumerate(combo_list):
-                        t = tuple(combo.sort())
+                        t = tuple(sorted(combo))
                         if t not in combo_set:
                             unique_combo_list.append(combo)
                         combo_set.add(t)
