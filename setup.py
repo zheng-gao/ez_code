@@ -1,7 +1,7 @@
 import setuptools
 
-with open("README.md", "r", encoding="utf-8") as file_handler:
-    long_description = file_handler.read()
+# with open("readme.md", "r", encoding="utf-8") as file_handler:
+#     long_description = file_handler.read()
 
 setuptools.setup(
     name="ezcode",
@@ -13,7 +13,7 @@ setuptools.setup(
     project_urls={
         "Bug Tracker": "https://github.com/zheng-gao/ez_code/issues",
     },
-    long_description=long_description,               # Long description read from the the readme file
+    long_description="",
     long_description_content_type="text/markdown",
     classifiers=[
         "Programming Language :: Python :: 3",
