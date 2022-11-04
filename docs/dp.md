@@ -11,6 +11,10 @@ How full can you fill a knapsack with capacity <strong><em>C</em></strong>?<br>
 >>> C, S = 10, [3, 4, 8, 5]
 >>> Knapsack.best_value(capacity=C, sizes=S, values=S, quantities=1, min_max=max, fill_to_capacity=False)
 (9, [1, 3])
+>>> Knapsack.best_value(capacity=C, sizes=S, values=S, quantities=1, min_max=max, fill_to_capacity=True)
+(None, [])
+>>> Knapsack.ways_to_fill(capacity=C, sizes=S, quantities=1)
+(0, None)
 ```
 Explanation:
 We can fill this knapsack to size 9 with item\[1\] (size: 4) and item\[3\] (size: 5)
@@ -21,12 +25,17 @@ How full can you fill a knapsack with capacity <strong><em>C</em></strong>?<br>
 (e.g. capacity = 11, sizes = \[3, 5, 1\], quantity = \[1, 2, 2\])
 ```python
 >>> from ezcode.dp.knapsack import Knapsack
->>> C, S, Q = 11, [3, 5, 1], [1, 2, 2]
+>>> C, S, Q = 11, [3, 5, 1], [2, 2, 2]
 >>> Knapsack.best_value(capacity=C, sizes=S, values=S, quantities=Q, min_max=max, fill_to_capacity=False)
 (11, [1, 1, 2])
+>>> Knapsack.best_value(capacity=C, sizes=S, values=S, quantities=Q, min_max=max, fill_to_capacity=True)
+(11, [1, 1, 2])
+>>> Knapsack.ways_to_fill(capacity=C, sizes=S, quantities=Q)
+(2, [[0, 0, 1], [1, 1, 2]])
 ```
 Explanation:
 We can fill this knapsack to size 11 with 2 item\[1\] (size: 5) and 1 item\[2\] (size: 1)
+The best_value only give one combination, the ways_to_fill gives all the 2 combinations
 
 ### Unlimited
 Given items with size <strong><em>S<sub>i</sub></em></strong> and unlimited quantity of each item.<br>
@@ -37,9 +46,14 @@ How full can you fill a knapsack with capacity <strong><em>C</em></strong>?<br>
 >>> C, S = 11, [3, 5, 2]
 >>> Knapsack.best_value(capacity=C, sizes=S, values=S, quantities=None, min_max=max, fill_to_capacity=False)
 (11, [0, 2, 2, 2, 2])
+>>> Knapsack.best_value(capacity=C, sizes=S, values=S, quantities=None, min_max=max, fill_to_capacity=True)
+(11, [0, 2, 2, 2, 2])
+>>> Knapsack.ways_to_fill(capacity=C, sizes=S, quantities=None)
+(4, [[0, 0, 1], [0, 0, 0, 2], [1, 2, 2, 2], [0, 2, 2, 2, 2]])
 ```
 Explanation:
 We can fill this knapsack to size 11 with 1 item\[0\] (size: 3) and 4 item\[2\] (size: 2)
+The ways_to_fill gives all the 4 combinations
 
 ## Question II. Can you fill to the capacity?
 

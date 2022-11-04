@@ -170,10 +170,11 @@ function control_uninstall() {
 
 function control_install_local() {
     ez_print_log -m "Installing local build ..."
-    python3 -m "pip" "install" --user --upgrade "setuptools"
-    # python3 -m "pip" "install" --user --editable "${BASE_DIRECTORY}"
-    python3 -m "pip" "install" --editable "${BASE_DIRECTORY}"
+    python3 -m "pip" "install" --upgrade "setuptools" --user
+    python3 -m "pip" "install" --editable "${BASE_DIRECTORY}" --user
+    # python3 -m "pip" "install" --editable "${BASE_DIRECTORY}"
     # python3 "${BASE_DIRECTORY}/setup.py" "install" --user
+    # python3 "${BASE_DIRECTORY}/setup.py" "install"
 }
 
 function control_install_test() {
@@ -185,7 +186,8 @@ function control_install_test() {
 function control_install() {
     # https://pypi.org/project/ezcode
     ez_print_log -m "Installing ${PROJECT_NAME} ..."
-    python3 -m "pip" "install" --upgrade --user "${PROJECT_NAME}"
+    python3 -m "pip" "install" --upgrade "${PROJECT_NAME}" --user
+    # python3 -m "pip" "install" --upgrade "${PROJECT_NAME}"
 }
 
 function control_publish_test() {
@@ -197,7 +199,7 @@ function control_publish_test() {
 
 function control_publish() {
     ez_print_log -m "Upgrading twine ..."
-    python3 -m "pip" "install" --user --upgrade "twine"
+    python3 -m "pip" "install" --upgrade "twine" --user
     ez_print_log -m "Publishing pypi repo ..."
     python3 -m "twine" "upload" --verbose "dist/"*
 }

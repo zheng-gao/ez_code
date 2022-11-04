@@ -13,10 +13,10 @@ class Knapsack:
         fill_to_capacity=True,
         output_item_list=True
     ):
-    """
-        output_item_list=True -> (best_value, item_list)
-        output_item_list=False -> best_value
-    """
+        """
+            output_item_list=True -> (best_value, item_list)
+            output_item_list=False -> best_value
+        """
         if capacity < 0:
             raise ValueError(f"Capacity cannot be negative: {capacity}")
         for s in sizes:
@@ -63,10 +63,10 @@ class Knapsack:
         quantities,
         output_item_list=True
     ):
-    """
-        output_item_list=True -> (ways_to_fill, item_list)
-        output_item_list=False -> ways_to_fill
-    """
+        """
+            output_item_list=True -> (ways_to_fill, item_list)
+            output_item_list=False -> ways_to_fill
+        """
         if capacity < 0:
             raise ValueError(f"Capacity cannot be negative: {capacity}")
         for s in sizes:
@@ -134,6 +134,12 @@ class Knapsack:
 
             if the capacity of the bag is not large enough for the item i, max_value[i][c] = max_value[i - 1][c]
             otherwise max_value[i][c] = max( value_without_item_i + value_with_item_i )
+
+            if item quantity is greater than 1, expand the sizes to [q * s for q, s in zip(quantities, sizes)]
+
+            if fill_to_capacity = True, set init value to +oo for min value or -oo for max value
+            so if max_value[i - 1][c - w[i]] == oo, then max_value[i - 1][c - w[i]] + v[i] == oo
+            which mean any case on the path cannot fill will make the followers not able to fill
         """
         infinity = float("-inf") if min_max == max else float("inf")
         knapsack_init_value = infinity if fill_to_capacity else zero_capacity_value
@@ -223,25 +229,27 @@ class Knapsack:
         item_lists = None
         if output_item_list:
             item_lists = [list() for _ in range(capacity + 1)]
-        for i in range(len(sizes)):  # must loop item sizes first, because we are rolling the rows not columns
+        for i in range(len(sizes)):  # must loop item sizes first, because we are rolling the rows not columns, column step is not 1
             for q in range(1, quantities[i] + 1):  # it is same as flatten the items: sizes=[2,3] quantities=[1,2] ==> sizes=[2, 3, 3]
                 # c < sizes[i], knapsack_value[c] won't change
                 # Capacity is looping backward, otherwise the item will be put in to the knapsack multiple times
                 for c in range(capacity, sizes[i] - 1, -1):
-                    knapsack_value[c] = min_max(knapsack_value[c], knapsack_value[c - sizes[i]] + values[i])
+                    knapsack_value_without_i = knapsack_value[c - sizes[i]] + values[i]
+                    knapsack_value[c] = min_max(knapsack_value[c], knapsack_value_without_i)
                     if output_item_list:
                         if knapsack_value[c] == knapsack_init_value:
                             item_lists[c] = list()
-                        elif knapsack_value[c] == knapsack_value[c - sizes[i]] + values[i]:
+                        elif knapsack_value[c] == knapsack_value_without_i:
                             item_lists[c] = item_lists[c - sizes[i]] + [i]
                 # Another solution
                 # for c in range(capacity, sizes[i] - 1, -1):
                 #     for q in range(1, min(quantities[i], c // sizes[i]) + 1):
-                #         knapsack_value[c] = min_max(knapsack_value[c], knapsack_value[c - q * sizes[i]] + q * values[i])
+                #         knapsack_value_without_i = knapsack_value[c - q * sizes[i]] + q * values[i]
+                #         knapsack_value[c] = min_max(knapsack_value[c], knapsack_value_without_i)
                 #         if output_item_list:
                 #             if knapsack_value[c] == knapsack_init_value:
                 #                 item_lists[c] = list()
-                #             elif knapsack_value[c] == knapsack_value[c - q * sizes[i]] + q * values[i]:
+                #             elif knapsack_value[c] == knapsack_value_without_i:
                 #                 item_lists[c] = item_lists[c - q * sizes[i]] + [i] * q
         if output_dp_table:
             return (knapsack_value, item_lists) if output_item_list else knapsack_value
@@ -275,21 +283,23 @@ class Knapsack:
         if iterate_sizes_first:
             for i in range(len(sizes)):
                 for c in range(sizes[i], capacity + 1):  # Looping forward, so items can be added multiple times
-                    knapsack_value[c] = min_max(knapsack_value[c], knapsack_value[c - sizes[i]] + values[i])
+                    knapsack_value_without_i = knapsack_value[c - sizes[i]] + values[i]
+                    knapsack_value[c] = min_max(knapsack_value[c], knapsack_value_without_i)
                     if output_item_list:
                         if knapsack_value[c] == knapsack_init_value:
                             item_lists[c] = list()
-                        elif knapsack_value[c] == knapsack_value[c - sizes[i]] + values[i]:
+                        elif knapsack_value[c] == knapsack_value_without_i:
                             item_lists[c] = item_lists[c - sizes[i]] + [i]
         else:
             for c in range(1, capacity + 1):  # Looping forward, so items can be added multiple times
                 for i in range(len(sizes)):
                     if c >= sizes[i]:  # c < sizes[i], knapsack_value[c] won't change
-                        knapsack_value[c] = min_max(knapsack_value[c], knapsack_value[c - sizes[i]] + values[i])
+                        knapsack_value_without_i = knapsack_value[c - sizes[i]] + values[i]
+                        knapsack_value[c] = min_max(knapsack_value[c], knapsack_value_without_i)
                         if output_item_list:
                             if knapsack_value[c] == knapsack_init_value:
                                 item_lists[c] = list()
-                            elif knapsack_value[c] == knapsack_value[c - sizes[i]] + values[i]:
+                            elif knapsack_value[c] == knapsack_value_without_i:
                                 item_lists[c] = item_lists[c - sizes[i]] + [i]
         if output_dp_table:
             return (knapsack_value, item_lists) if output_item_list else knapsack_value
@@ -335,15 +345,16 @@ class Knapsack:
                     #     for k in range(1, (c // sizes[i]) + 1):
                     #         best_value = min_max(best_value, knapsack_value[i - 1][c - k * sizes[i]] + k * values[i])
                     #     knapsack_value[i][c] = min_max(knapsack_value[i - 1][c], best_value)
-                    knapsack_value[i][c] = knapsack_value[i - 1][c]
+                    knapsack_value[i][c] = knapsack_value[i - 1][c]  # mimic 1d
                     if output_item_list:
                         item_lists[i][c] = item_lists[i - 1][c].copy()
                     if c >= sizes[i]:
-                        knapsack_value[i][c] = min_max(knapsack_value[i][c], knapsack_value[i][c - sizes[i]] + values[i])
+                        knapsack_value_without_i = knapsack_value[i][c - sizes[i]] + values[i]
+                        knapsack_value[i][c] = min_max(knapsack_value[i][c], knapsack_value_without_i)
                         if output_item_list:
                             if knapsack_value[i][c] == knapsack_init_value:
                                 item_lists[i][c] = list()
-                            elif knapsack_value[i][c] == knapsack_value[i][c - sizes[i]] + values[i]:
+                            elif knapsack_value[i][c] == knapsack_value_without_i:
                                 item_lists[i][c] = item_lists[i][c - sizes[i]] + [i]
         else:
             for c in range(1, capacity + 1):
@@ -359,11 +370,12 @@ class Knapsack:
                     if output_item_list:
                         item_lists[i][c] = item_lists[i - 1][c].copy()
                     if c >= sizes[i]:
-                        knapsack_value[i][c] = min_max(knapsack_value[i][c], knapsack_value[i][c - sizes[i]] + values[i])
+                        knapsack_value_without_i = knapsack_value[i][c - sizes[i]] + values[i]
+                        knapsack_value[i][c] = min_max(knapsack_value[i][c], knapsack_value_without_i)
                         if output_item_list:
                             if knapsack_value[i][c] == knapsack_init_value:
                                 item_lists[i][c] = list()
-                            elif knapsack_value[i][c] == knapsack_value[i][c - sizes[i]] + values[i]:
+                            elif knapsack_value[i][c] == knapsack_value_without_i:
                                 item_lists[i][c] = item_lists[i][c - sizes[i]] + [i]
         if output_dp_table:
             return (knapsack_value, item_lists) if output_item_list else knapsack_value
