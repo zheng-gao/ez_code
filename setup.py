@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 def build_long_description():
     long_description=""
     docs = Path(__file__).parent / "docs"
-    for md in docs.glob("*.md"):
+    for md in sorted(docs.glob("*.md")):
         with open(md, mode="r", encoding="utf-8") as f:
             long_description += f.read()
     return long_description
@@ -14,7 +14,7 @@ def build_long_description():
 
 setup(
     name="ezcode",
-    version="0.1.3",
+    version="0.1.4",
     author="Zheng Gao",
     author_email="mail.zheng.gao@gmail.com",
     description="Easy Algorithm & Data Structure",
