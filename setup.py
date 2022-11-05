@@ -1,18 +1,26 @@
+import json
 from pathlib import Path
 from setuptools import setup, find_packages
 
 
-readme = "readme.md"
+def build_long_description():
+    long_description=""
+    docs = Path(__file__).parent / "docs"
+    for md in docs.glob("*.md"):
+        with open(md, mode="r", encoding="utf-8") as f:
+            long_description += f.read()
+    return long_description
+
 
 setup(
     name="ezcode",
-    version="0.1.0",
+    version="0.1.1",
     author="Zheng Gao",
     author_email="mail.zheng.gao@gmail.com",
     description="Easy Algorithm & Data Structure",
     url="https://github.com/zheng-gao/ez_code",
     project_urls={"Bug Tracker": "https://github.com/zheng-gao/ez_code/issues"},
-    long_description=(Path(__file__).parent/readme).read_text(encoding="utf-8"),
+    long_description=build_long_description(),
     long_description_content_type="text/markdown",
     classifiers=[
         "Programming Language :: Python :: 3",
