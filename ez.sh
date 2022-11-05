@@ -140,11 +140,12 @@ function control_build() {
     # https://packaging.python.org/en/latest/tutorials/packaging-projects/
     ez_print_log -m "Upgrading pip ..."
     python3 -m "pip" "install" --user --upgrade "pip"
-    ez_print_log -m "Upgrading build ..."
-    python3 -m "pip" "install" --user --upgrade "build"
-    ez_print_log -m "Building ..."
-    python3 -m "build"
-    # python3 setup.py sdist bdist_wheel
+    # ez_print_log -m "Upgrading build ..."
+    # python3 -m "pip" "install" --user --upgrade "build"
+    # ez_print_log -m "Building ..."
+    # python3 -m "build"
+    ez_print_log -m "Building dist ..."
+    python3 "setup.py" "sdist" "bdist_wheel"
 }
 
 function control_test() {
@@ -232,6 +233,21 @@ function control_bump() {
     rm "${BASE_DIRECTORY}/setup.py.bak"
     git diff "${BASE_DIRECTORY}/setup.py"
 }
+
+# function control_view_md() {
+#     local file_path="${1}" file_name="$(basename ${1} | cut -d '.' -f 1)"
+#     mkdir -p "${BASE_DIRECTORY}/html"
+#     python3 -m "pip" "install" "requests" --user
+#     python -c "\
+# import json, pathlib, requests;\
+# base_dir = pathlib.Path('${BASE_DIRECTORY}');\
+# payload = {'text': (base_dir/'${file_path}').read_text(encoding='utf-8'), 'mode': 'markdown'};\
+# html_str = requests.post('https://api.github.com/markdown', data=json.dumps(payload), headers={'Accept':'application/vnd.github+jso'}).text;\
+# open((base_dir/'html/${file_name}.html'), 'w').write(html_str);\
+# "
+#     python -m "http.server" --directory "${BASE_DIRECTORY}/html" "9999" &
+#     open "http://localhost:9999/${file_name}.html"
+# }
 
 ###################################################################################################
 # ---------------------------------------- Main Function ---------------------------------------- #

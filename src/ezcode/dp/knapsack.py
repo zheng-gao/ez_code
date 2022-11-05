@@ -14,6 +14,7 @@ class Knapsack:
         output_item_list=True
     ):
         """
+            quantities = None (Unlimited)
             output_item_list=True -> (best_value, item_list)
             output_item_list=False -> best_value
         """
