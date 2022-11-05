@@ -1,6 +1,6 @@
 # Knapsack
 
-Given a knapsack with Capacity <strong><em>C</em></strong> and items with Sizes <strong><em>S<sub>0</sub>, S<sub>1</sub>, S<sub>2</sub>, ...</em></strong>, Values <strong><em>V<sub>0</sub>, V<sub>1</sub>, V<sub>2</sub>, ...</em></strong>, Quantities <strong><em>Q<sub>0</sub>, Q<sub>1</sub>, Q<sub>2</sub>, ...</strong> or unlimited quantities<br>
+Given a knapsack with capacity <strong><em>C</em></strong> and items with sizes <strong><em>S<sub>0</sub>, S<sub>1</sub>, S<sub>2</sub>, ...</em></strong>, values <strong><em>V<sub>0</sub>, V<sub>1</sub>, V<sub>2</sub>, ...</em></strong>, quantities <strong><em>Q<sub>0</sub>, Q<sub>1</sub>, Q<sub>2</sub>, ...</strong> or unlimited quantities<br>
 1. [What's the max number of items can you put into the knapsack?](#q1-whats-the-max-number-of-items-can-you-put-into-the-knapsack)
 2. [What's the max total size of items can you put into the knapsack?](#q2-whats-the-max-total-size-of-items-can-you-put-into-the-knapsack)
 3. [What's the max total value of items can you put into the knapsack?](#q3-whats-the-max-total-value-of-items-can-you-put-into-the-knapsack)
@@ -21,7 +21,7 @@ Given a knapsack with Capacity <strong><em>C</em></strong> and items with Sizes 
 (11, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
 ```
 Explanation:<br>
-Set all Values to 1<br>
+Set all the values to 1<br>
 If each item can only be used once, we can put 3 items into the knapsack: item 0, 1, 3<br>
 For limited quantity, we can put 5 items into the knapsack: item 0, 0, 1, 1, 2 (item 0 and 1 shows up twice)<br>
 For unlimited quantity, we can put 11 item 1 into the knapsack<br>
@@ -38,7 +38,7 @@ For unlimited quantity, we can put 11 item 1 into the knapsack<br>
 (11, [1, 1, 1, 1, 3])
 ```
 Explanation:<br>
-Set Values the same as Sizes<br>
+Set the values the same as the sizes<br>
 If each item can only be used once, we can fill the knapsack to size 10 with item 0, 1, 3<br>
 For limited quantity, we can fill the knapsack to size 11 with item 0, 1, 1, 3 (item 1 shows up twice)<br>
 For unlimited quantity, we can fill the knapsack to size 11 with item 1, 1, 1, 1, 3 (item 1 shows up 4 times)<br>
@@ -71,7 +71,7 @@ For unlimited quantity, we can fill the knapsack to value 22 with 11 item 1<br>
 (11, [1, 1, 1, 1, 3])
 ```
 Explanation:<br>
-Set Values the same as Sizes<br>
+Set the values the same as the sizes<br>
 If each item can only be used once, we can not fully fill the knapsack<br>
 For limited quantity, we can fully fill the knapsack with item 0, 1, 1, 3 (item 1 shows up twice)<br>
 For unlimited quantity, we can fully fill the knapsack with item 1, 1, 1, 1, 3 (item 1 shows up 4 times)<br>
@@ -94,7 +94,7 @@ For unlimited quantity, we can fully fill the knapsack with item 1, 1, 1, 1, 3 (
 (11, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
 ```
 Explanation:<br>
-Set all Values to 1<br>
+Set all the values to 1<br>
 If each item can only be used once, we cannot fully fill the knapsack<br>
 For limited quantity, we can fully fill the knapsack with minimum 3 items: 0, 0, 3 (item 0 shows up twice)<br>
 For limited quantity, we can fully fill the knapsack with maximum 5 items: 0, 0, 1, 1, 2 (item 0 and 1 shows up twice)<br>
