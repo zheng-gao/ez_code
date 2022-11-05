@@ -1,6 +1,6 @@
 # Knapsack
 
-Given a knapsack with Capacity <strong><em>C</em></strong> and items with Sizes <strong><em>S<sub>0</sub>, S<sub>1</sub>, S<sub>2</sub>, ...</em></strong>, Values <strong><em>V<sub>0</sub>, V<sub>1</sub>, V<sub>2</sub>, ...</em></strong>, Quantities <strong><em>Q<sub>0</sub>, Q<sub>1</sub>, Q<sub>2</sub>, ...</strong>.<br>
+Given a knapsack with Capacity <strong><em>C</em></strong> and items with Sizes <strong><em>S<sub>0</sub>, S<sub>1</sub>, S<sub>2</sub>, ...</em></strong>, Values <strong><em>V<sub>0</sub>, V<sub>1</sub>, V<sub>2</sub>, ...</em></strong>, Quantities <strong><em>Q<sub>0</sub>, Q<sub>1</sub>, Q<sub>2</sub>, ...</strong> or unlimited quantities<br>
 1. [What's the max number of items can you put into the knapsack?](#q1-whats-the-max-number-of-items-can-you-put-into-the-knapsack)
 2. [What's the max total size of items can you put into the knapsack?](#q2-whats-the-max-total-size-of-items-can-you-put-into-the-knapsack)
 3. [What's the max total value of items can you put into the knapsack?](#q3-whats-the-max-total-value-of-items-can-you-put-into-the-knapsack)
@@ -8,7 +8,6 @@ Given a knapsack with Capacity <strong><em>C</em></strong> and items with Sizes 
 5. [What's the min/max number of items can you fully fill the knapsack?](#q5-whats-the-minmax-number-of-items-can-you-fully-fill-the-knapsack)
 6. [What's the min/max total value of items can you fully fill the knapsack?](#q6-whats-the-minmax-total-value-of-items-can-you-fully-fill-the-knapsack)
 7. [Find all different ways to fully fill the knapsack](#q7-find-all-different-ways-to-fully-fill-the-knapsack)<br>
-What if the items have unlimited quantity?
 
 ## Q1. What's the max number of items can you put into the knapsack?
 ```python
