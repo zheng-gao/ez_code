@@ -14,7 +14,7 @@ def build_long_description():
 
 setup(
     name="ezcode",
-    version="0.1.1",
+    version="0.1.3",
     author="Zheng Gao",
     author_email="mail.zheng.gao@gmail.com",
     description="Easy Algorithm & Data Structure",
