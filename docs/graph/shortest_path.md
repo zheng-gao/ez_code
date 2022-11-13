@@ -1,34 +1,5 @@
 # Directed Graph
 
-## Topological Sort
-
-```python
-    """
-    a <──────────── c
-    │               │
-    │               │
-    v               v
-    d ────> b ────> f ────> e
-    """
->>> from ezcode.graph.directed import DirectedGraph
->>> dag = DirectedGraph(edges=[("c", "a"), ("b", "f"), ("e", None), ("a", "d"), ("c", "f"), ("d", "b"), ("f", "e")])
->>> dag.print()
-   a  b  c  d  e  f  
-a           *        
-b                 *  
-c  *              *  
-d     *              
-e                    
-f              *     
->>> print(dag.topological_order())
-['e', 'f', 'b', 'd', 'a', 'c']
->>> dag.is_acyclic_graph()
-True
->>> circular_dependencies = [("a", "b"), ("b", "a")]
->>> DirectedGraph(edges=circular_dependencies).is_acyclic_graph()
-False
-```
-
 ## Shortest Path Algorithm
 
 ### Unweighted
@@ -227,39 +198,6 @@ Traceback (most recent call last):
 ezcode.graph.pathfinder.NegativeCycleExistError
 ```
 
-## Eulerian Path
-```python
-    """
-    A <─── B 
-    │      ^
-    │      │
-    v      │
-    D ───> C <─── E
-           │
-           v
-           F
-    """
->>> from ezcode.graph.directed import DirectedGraph
->>> graph = DirectedGraph(edges=[["B", "A"], ["A", "D"], ["D", "C"], ["C", "B"], ["E", "C"], ["C", "F"]])
->>> graph.eulerian_path()
-['E', 'C', 'B', 'A', 'D', 'C', 'F']
->>> graph.eulerian_path(start_node="E")
-['E', 'C', 'B', 'A', 'D', 'C', 'F']
->>> graph.eulerian_path(start_node="A") is None
-True
-
-    """
-    A <─── B ───> F
-    │      ^
-    │      │
-    v      │
-    D ───> C <─── E
-    """
->>> graph = DirectedGraph(edges=[["B", "A"], ["A", "D"], ["D", "C"], ["C", "B"], ["E", "C"], ["B", "F"]])
->>> graph.eulerian_path() is None
-True
-```
-
 # Undirected Graph
 
 ## Shortest Path Algorithm
@@ -380,37 +318,3 @@ E              0.8  0.3
 (0.72, [['A', 'B', 'D']])
 ```
 
-## Eulerian Path
-```python
-    """
-    A ────── C
-    │       ╱│╲
-    │      ╱ │ ╲
-    │     ╱  │  ╲
-    │    ╱   │   E
-    │   ╱    │  ╱
-    │  ╱     │ ╱
-    │ ╱      │╱
-    B ────── D
-    """
->>> from ezcode.graph.undirected import UndirectedGraph
->>> graph = UndirectedGraph(edges=[["A", "B"], ["A", "C"], ["B", "C"], ["B", "D"], ["C", "D"], ["C", "E"], ["D", "E"]])
->>> graph.eulerian_path()
-['B', 'A', 'C', 'B', 'D', 'C', 'E', 'D']
->>> graph.eulerian_path(start_node="D")
-['D', 'B', 'A', 'C', 'D', 'E', 'C', 'B']
->>> graph.eulerian_path(start_node="A") is None
-True
->>> graph.eulerian_path(start_node="E") is None
-True
-
-    """
-    A ── B
-    │ ╲
-    │  ╲
-    D   C
-    """
->>> graph = UndirectedGraph(edges=[["A", "B"], ["A", "C"], ["A", "D"]])
->>> graph.eulerian_path() is None
-True
-```

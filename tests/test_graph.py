@@ -157,8 +157,8 @@ f              *
     graph = DirectedGraph(edges=[("c", "a"), ("b", "f"), ("e", None), ("a", "d"), ("c", "f"), ("d", "b"), ("f", "e")])
     assert graph_str == str(graph)
     assert graph.topological_order() == ["e", "f", "b", "d", "a", "c"]
-    assert graph.is_acyclic_graph()
-    assert not DirectedGraph(edges=[("a", "b"), ("b", "a")]).is_acyclic_graph()
+    assert graph.is_acyclic()
+    assert not DirectedGraph(edges=[("a", "b"), ("b", "a")]).is_acyclic()
     """
     ┌──────> c     e
     │       ╱│╲

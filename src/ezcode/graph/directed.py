@@ -72,7 +72,7 @@ class DirectedGraph(Graph):
                     no_outgoing_nodes.append(incoming)
         return topological_order
 
-    def is_acyclic_graph(self) -> bool:
+    def is_acyclic(self) -> bool:
         return len(self.topological_order()) == len(self)
 
     def eulerian_path(self, start_node=None) -> list:

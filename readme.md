@@ -33,13 +33,13 @@ ez_code/ez.sh -o/--operations test -a/--arguments test_array.py::test_binary_sea
 ```
 
 # Contents
-* [Array](docs/array.md)
-* [DP](docs/dp.md)
-* [Graph](docs/graph.md)
-* [Grid](docs/grid.md)
-* [Hash](docs/hash.md)
-* [Heap](docs/heap.md)
-* [Interval](docs/interval.md)
-* [List](docs/list.md)
-* [Math](docs/math.md)
-* [Tree](docs/tree.md)
+* [array](docs/array/array.md)
+* [dp](docs/dp.md)
+* [graph](docs/graph/graph.md)
+* [grid](docs/grid.md)
+* [hash](docs/hash.md)
+* [heap](docs/heap.md)
+* [interval](docs/interval.md)
+* [list](docs/list.md)
+* [math](docs/math.md)
+* [tree](docs/tree.md)
