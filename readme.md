@@ -23,4 +23,5 @@ ez_code/ez.sh -o/--operations test
 ```bash
 ez_code/ez.sh -o/--operations test -a/--arguments test_array.py::test_binary_search
 ```
-# [Documents](docs/readme.md)
+# Documents
+* [docs](docs/readme.md)
