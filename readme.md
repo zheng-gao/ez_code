@@ -1,3 +1,4 @@
+![Python Logo](https://www.python.org/static/community_logos/python-logo.png)
 # Installation
 ```bash
 pip3 install --upgrade ezcode
@@ -23,5 +24,5 @@ ez_code/ez.sh -o/--operations test
 ```bash
 ez_code/ez.sh -o/--operations test -a/--arguments test_array.py::test_binary_search
 ```
-# Documents
+# Documentation
 * [docs](docs/readme.md)
