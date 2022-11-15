@@ -3,6 +3,8 @@
 ```bash
 pip3 install --upgrade ezcode
 ```
+# Documentation
+* [docs](docs/readme.md)
 # PyPi Releases
 https://pypi.org/project/ezcode/#history
 # Development Workflow
@@ -24,5 +26,3 @@ ez_code/ez.sh -o/--operations test
 ```bash
 ez_code/ez.sh -o/--operations test -a/--arguments test_array.py::test_binary_search
 ```
-# Documentation
-* [docs](docs/readme.md)
