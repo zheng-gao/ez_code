@@ -1,14 +1,12 @@
 # ezcode
 [![PyPi](https://img.shields.io/pypi/v/ezcode.svg)](https://pypi.python.org/pypi/ezcode)
-[![Github](https://img.shields.io/badge/github-master-brightgreen)](https://github.com/roll/ez_code)
+[![Github](https://img.shields.io/badge/github-master-brightgreen)](https://github.com/zheng-gao/ez_code)
 ## Installation
 ```bash
 pip3 install --upgrade ezcode
 ```
 ## Documentation
-* [docs](docs/readme.md)
-## PyPi Releases
-https://pypi.org/project/ezcode/#history
+* [docs](https://github.com/zheng-gao/ez_code/blob/main/docs)
 ## Development Workflow
 ```bash
 git clone https://github.com/zheng-gao/ez_code.git
