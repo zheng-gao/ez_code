@@ -3,11 +3,25 @@ from pathlib import Path
 from setuptools import setup, find_packages
 
 
+def parse_readme(readme_path):
+    """
+    readme.md format:
+    # Content
+    1. [Subject1](path1.md)
+    2. [Subject2](path2.md)
+    ...
+    """
+    with open(file=readme_path, mode="r", encoding="utf-8") as f:
+        lines = f.readlines()
+    topic = lines[0].rstrip()
+    https://pypi.org/project/ezcode/#q1-whats-the-max-number-of-items-can-you-put-into-the-knapsack
+
+
 def build_long_description():
     long_description=""
     docs = Path(__file__).parent / "docs"
     for md in sorted(docs.glob("*.md")):
-        with open(md, mode="r", encoding="utf-8") as f:
+        with open(file=md, mode="r", encoding="utf-8") as f:
             long_description += f.read()
     return long_description
 
