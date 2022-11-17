@@ -10,16 +10,16 @@ class PriorityQueue:
             for entry in init_queue:
                 self.push(entry)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.heap)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.heap)
 
     def is_empty(self) -> bool:
         return len(self) == 0
 
-    def items(self, with_priority=False):
+    def items(self, with_priority=False) -> list:
         if with_priority:
             return self.heap
         return [item for item, _ in self.heap]
@@ -144,7 +144,7 @@ class PriorityMap(PriorityQueue):
             for item, priority in init_map.items():
                 self.push(item, priority)
 
-    def __contains__(self, item):
+    def __contains__(self, item) -> bool:
         return item in self.map
 
     def __delitem__(self, item):  # O(logN)

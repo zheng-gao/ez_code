@@ -12,10 +12,10 @@ class SinglyLinkedList(object):
         self.algorithm = SinglyLinkedListAlgorithm(data_name, next_name)
         self.size = self.calculate_size()
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self.size
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.to_string()
 
     def equal(self, other: SinglyLinkedList) -> bool:
