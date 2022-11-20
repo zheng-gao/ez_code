@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="ezcode",
-    version="0.1.8",
+    version="0.1.9",
     author="Zheng Gao",
     author_email="mail.zheng.gao@gmail.com",
     description="Easy Algorithm & Data Structure",
