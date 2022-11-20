@@ -3,7 +3,6 @@ from ezcode.tree.printer import BinaryTreePrinter
 from ezcode.tree.forest import DisjointSets, DependencyForest, CycleExistError
 from ezcode.tree.binary_tree import SegmentTree
 from ezcode.tree.trie import Trie, SuffixTrie
-from ezcode.tree.pstack import PStack
 
 
 class Node:
@@ -336,42 +335,4 @@ None
     assert printer.to_string(bst.root) == """
 None
 """[1:]
-
-
-def test_pstack():
-    stacks = [PStack()]
-    stacks.append(stacks[-1].push(1))
-    stacks.append(stacks[-1].push(2))
-    stacks.append(stacks[-1].push(3))
-    stacks.append(stacks[-1].pop())
-    stacks.append(stacks[-1].push(4))
-    stacks.append(stacks[-1].push(5))
-    stacks.append(stacks[-1].pop())
-    stacks.append(stacks[-1].push(6))
-    stacks.append(stacks[-1].pop())
-    stacks.append(stacks[-1].pop())
-    stacks.append(stacks[-1].push(7))
-    stacks.append(stacks[-1].pop())
-    stacks.append(stacks[-1].pop())
-    stacks.append(stacks[-1].pop())
-    benchmarks = [
-        [],
-        [1],
-        [1, 2],
-        [1, 2, 3],
-        [1, 2],
-        [1, 2, 4],
-        [1, 2, 4, 5],
-        [1, 2, 4],
-        [1, 2, 4, 6],
-        [1, 2, 4],
-        [1, 2],
-        [1, 2, 7],
-        [1, 2],
-        [1],
-        []
-    ]
-    for s, b in zip(stacks, benchmarks):
-        assert list(s) == b
-        assert len(s) == len(b)
 

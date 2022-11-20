@@ -1,5 +1,5 @@
 from ezcode.list.linked_list import SinglyLinkedList
-from ezcode.list.stack import Stack, MinStack, MaxStack
+from ezcode.list.stack import Stack, MinStack, MaxStack, PersistentStack
 from ezcode.list.queue import Queue, MonotonicQueue
 from ezcode.list.lru_cache import LRUCache
 
@@ -179,3 +179,40 @@ def test_monontonic_queue():
         mq.push(data)
         assert mq.peek() == benchmark
 
+
+def test_persistent_stack():
+    stacks = [PersistentStack()]
+    stacks.append(stacks[-1].push(1))
+    stacks.append(stacks[-1].push(2))
+    stacks.append(stacks[-1].push(3))
+    stacks.append(stacks[-1].pop())
+    stacks.append(stacks[-1].push(4))
+    stacks.append(stacks[-1].push(5))
+    stacks.append(stacks[-1].pop())
+    stacks.append(stacks[-1].push(6))
+    stacks.append(stacks[-1].pop())
+    stacks.append(stacks[-1].pop())
+    stacks.append(stacks[-1].push(7))
+    stacks.append(stacks[-1].pop())
+    stacks.append(stacks[-1].pop())
+    stacks.append(stacks[-1].pop())
+    benchmarks = [
+        [],
+        [1],
+        [1, 2],
+        [1, 2, 3],
+        [1, 2],
+        [1, 2, 4],
+        [1, 2, 4, 5],
+        [1, 2, 4],
+        [1, 2, 4, 6],
+        [1, 2, 4],
+        [1, 2],
+        [1, 2, 7],
+        [1, 2],
+        [1],
+        []
+    ]
+    for s, b in zip(stacks, benchmarks):
+        assert list(s) == b
+        assert len(s) == len(b)
