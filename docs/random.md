@@ -11,31 +11,34 @@
 Counter({'a': 303, 'b': 97})
 ```
 
-## RandomKeyValueDictionary
+## RandomKeyValueDictionary & RandomUniqueValueDictionary
 ```python
 >>> from collections import Counter
->>> from ezcode.random import RandomKeyValueDictionary
+>>> from ezcode.random import RandomKeyValueDictionary, RandomUniqueValueDictionary
 >>> key_counter, value_counter = Counter(), Counter()
->>> rkv_dict = RandomKeyValueDictionary({'a': 'lower', '!': 'punctuation', 'b': 'lower', '*': 'wildcard', 'A': 'upper', 'c': 'lower'})
+>>> data = {
+...     'a': 'lower',
+...     'b': 'lower',
+...     'c': 'lower',
+...     'A': 'upper',
+...     '*': 'wildcard',
+...     '!': 'punctuation'
+... }
+>>> rkv_dict = RandomKeyValueDictionary(data)
 >>> for _ in range(600):
 ...     key_counter.update([rkv_dict.random_key()])
 ...     value_counter.update([rkv_dict.random_value()])
 ... 
 >>> print(key_counter)
-Counter({'c': 109, '*': 108, 'a': 107, '!': 96, 'A': 95, 'b': 85})
+Counter({'a': 107, '!': 102, '*': 100, 'c': 99, 'b': 97, 'A': 95})
 >>> print(value_counter)
-Counter({'lower': 297, 'punctuation': 110, 'wildcard': 100, 'upper': 93})
-```
-
-## RandomUniqueValueDictionary
-```Python
->>> from collections import Counter
->>> from ezcode.random import RandomUniqueValueDictionary
+Counter({'lower': 305, 'punctuation': 104, 'wildcard': 102, 'upper': 89})
 >>> value_counter = Counter()
->>> rkv_dict = RandomUniqueValueDictionary({'a': 'lower', '!': 'punctuation', 'b': 'lower', '*': 'wildcard', 'A': 'upper', 'c': 'lower'})
+>>> ruv_dict = RandomUniqueValueDictionary(data)
 >>> for _ in range(400):
-...     value_counter.update([rkv_dict.random_value()])
+...     value_counter.update([ruv_dict.random_value()])
 ... 
 >>> print(value_counter)
-Counter({'upper': 107, 'punctuation': 102, 'lower': 99, 'wildcard': 92})
+Counter({'upper': 109, 'punctuation': 102, 'wildcard': 98, 'lower': 91})
 ```
+

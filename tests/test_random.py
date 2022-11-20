@@ -48,30 +48,30 @@ def test_random_multi_set():
 
 
 def test_random_key_value_dictionary():
-    r_dict = RandomKeyValueDictionary({"a": "lower", "*": "wildcard", "!": "punctuation", "b": "lower", "B": "upper", "?": "punctuation"})
-    assert r_dict.key_list == ['a', '*', '!', 'b', 'B', '?']
-    assert r_dict.key_index_dict == {'a': 0, '*': 1, '!': 2, 'b': 3, 'B': 4, '?': 5}
-    assert r_dict.key_value_dict == {'a': 'lower', '*': 'wildcard', '!': 'punctuation', 'b': 'lower', 'B': 'upper', '?': 'punctuation'}
-    del r_dict["B"]
-    assert r_dict.key_list == ['a', '*', '!', 'b', '?']
-    assert r_dict.key_index_dict == {'a': 0, '*': 1, '!': 2, 'b': 3, '?': 4}
-    assert r_dict.key_value_dict == {'a': 'lower', '*': 'wildcard', '!': 'punctuation', 'b': 'lower', '?': 'punctuation'}
-    del r_dict["?"]
-    assert r_dict.key_list == ['a', '*', '!', 'b']
-    assert r_dict.key_index_dict == {'a': 0, '!': 2, 'b': 3, '*': 1}
-    assert r_dict.key_value_dict == {'a': 'lower', '!': 'punctuation', 'b': 'lower', '*': 'wildcard'}
-    r_dict["A"] = "upper"
-    r_dict["c"] = "lower"
-    assert r_dict.key_list == ['a', '*', '!', 'b', 'A', 'c']
-    assert r_dict.key_index_dict == {'a': 0, '!': 2, 'b': 3, '*': 1, 'A': 4, 'c': 5}
-    assert r_dict.key_value_dict == {'a': 'lower', '!': 'punctuation', 'b': 'lower', '*': 'wildcard', 'A': 'upper', 'c': 'lower'}
+    rkv_dict = RandomKeyValueDictionary({"a": "lower", "*": "wildcard", "!": "punctuation", "b": "lower", "B": "upper", "?": "punctuation"})
+    assert rkv_dict.key_list == ['a', '*', '!', 'b', 'B', '?']
+    assert rkv_dict.key_index_dict == {'a': 0, '*': 1, '!': 2, 'b': 3, 'B': 4, '?': 5}
+    assert rkv_dict.key_value_dict == {'a': 'lower', '*': 'wildcard', '!': 'punctuation', 'b': 'lower', 'B': 'upper', '?': 'punctuation'}
+    del rkv_dict["B"]
+    assert rkv_dict.key_list == ['a', '*', '!', 'b', '?']
+    assert rkv_dict.key_index_dict == {'a': 0, '*': 1, '!': 2, 'b': 3, '?': 4}
+    assert rkv_dict.key_value_dict == {'a': 'lower', '*': 'wildcard', '!': 'punctuation', 'b': 'lower', '?': 'punctuation'}
+    del rkv_dict["?"]
+    assert rkv_dict.key_list == ['a', '*', '!', 'b']
+    assert rkv_dict.key_index_dict == {'a': 0, '!': 2, 'b': 3, '*': 1}
+    assert rkv_dict.key_value_dict == {'a': 'lower', '!': 'punctuation', 'b': 'lower', '*': 'wildcard'}
+    rkv_dict["A"] = "upper"
+    rkv_dict["c"] = "lower"
+    assert rkv_dict.key_list == ['a', '*', '!', 'b', 'A', 'c']
+    assert rkv_dict.key_index_dict == {'a': 0, '!': 2, 'b': 3, '*': 1, 'A': 4, 'c': 5}
+    assert rkv_dict.key_value_dict == {'a': 'lower', '!': 'punctuation', 'b': 'lower', '*': 'wildcard', 'A': 'upper', 'c': 'lower'}
     key_counter, value_counter, iterations, error = Counter(), Counter(), 600, 0.2
     for _ in range(iterations):
-        key_counter.update([r_dict.random_key()])
-        value_counter.update([r_dict.random_value()])
-    for key in r_dict.keys():
+        key_counter.update([rkv_dict.random_key()])
+        value_counter.update([rkv_dict.random_value()])
+    for key in rkv_dict.keys():
         assert approximately_equals(target=iterations * (1/6), error=error, value=key_counter[key])
-    for value in r_dict.values():
+    for value in rkv_dict.values():
         if value == "lower":
             assert approximately_equals(target=iterations * (1/2), error=error, value=value_counter[value])
         else:
@@ -79,30 +79,30 @@ def test_random_key_value_dictionary():
 
 
 def test_random_unique_value_dictionary():
-    ruq_dict = RandomUniqueValueDictionary({"a": "lower", "*": "wildcard", "!": "punctuation", "b": "lower", "B": "upper", "?": "punctuation"})
-    assert ruq_dict.unique_value_list == ['lower', 'wildcard', 'punctuation', 'upper']
-    assert ruq_dict.value_index_dict == {'lower': 0, 'wildcard': 1, 'punctuation': 2, 'upper': 3}
-    assert ruq_dict.value_counter == {'lower': 2, 'punctuation': 2, 'upper': 1, 'wildcard': 1}
-    assert ruq_dict.key_value_dict == {'a': 'lower', '*': 'wildcard', '!': 'punctuation', 'b': 'lower', 'B': 'upper', '?': 'punctuation'}
-    del ruq_dict["B"]
-    assert ruq_dict.unique_value_list == ['lower', 'wildcard', 'punctuation']
-    assert ruq_dict.value_index_dict == {'lower': 0, 'wildcard': 1, 'punctuation': 2}
-    assert ruq_dict.value_counter == {'lower': 2, 'punctuation': 2, 'wildcard': 1}
-    assert ruq_dict.key_value_dict == {'a': 'lower', '*': 'wildcard', '!': 'punctuation', 'b': 'lower', '?': 'punctuation'}
-    del ruq_dict["?"]
-    assert ruq_dict.unique_value_list == ['lower', 'wildcard', 'punctuation']
-    assert ruq_dict.value_index_dict == {'lower': 0, 'wildcard': 1, 'punctuation': 2}
-    assert ruq_dict.value_counter == {'lower': 2, 'punctuation': 1, 'wildcard': 1}
-    assert ruq_dict.key_value_dict == {'a': 'lower', '*': 'wildcard', '!': 'punctuation', 'b': 'lower'}
-    ruq_dict["A"] = "upper"
-    ruq_dict["c"] = "lower"
-    assert ruq_dict.unique_value_list == ['lower', 'wildcard', 'punctuation', 'upper']
-    assert ruq_dict.value_index_dict == {'lower': 0, 'wildcard': 1, 'punctuation': 2, 'upper': 3}
-    assert ruq_dict.value_counter == {'lower': 3, 'punctuation': 1, 'wildcard': 1, 'upper': 1}
-    assert ruq_dict.key_value_dict == {'a': 'lower', '*': 'wildcard', '!': 'punctuation', 'b': 'lower', 'A': 'upper', 'c': 'lower'}
+    ruv_dict = RandomUniqueValueDictionary({"a": "lower", "*": "wildcard", "!": "punctuation", "b": "lower", "B": "upper", "?": "punctuation"})
+    assert ruv_dict.unique_value_list == ['lower', 'wildcard', 'punctuation', 'upper']
+    assert ruv_dict.value_index_dict == {'lower': 0, 'wildcard': 1, 'punctuation': 2, 'upper': 3}
+    assert ruv_dict.value_counter == {'lower': 2, 'punctuation': 2, 'upper': 1, 'wildcard': 1}
+    assert ruv_dict.key_value_dict == {'a': 'lower', '*': 'wildcard', '!': 'punctuation', 'b': 'lower', 'B': 'upper', '?': 'punctuation'}
+    del ruv_dict["B"]
+    assert ruv_dict.unique_value_list == ['lower', 'wildcard', 'punctuation']
+    assert ruv_dict.value_index_dict == {'lower': 0, 'wildcard': 1, 'punctuation': 2}
+    assert ruv_dict.value_counter == {'lower': 2, 'punctuation': 2, 'wildcard': 1}
+    assert ruv_dict.key_value_dict == {'a': 'lower', '*': 'wildcard', '!': 'punctuation', 'b': 'lower', '?': 'punctuation'}
+    del ruv_dict["?"]
+    assert ruv_dict.unique_value_list == ['lower', 'wildcard', 'punctuation']
+    assert ruv_dict.value_index_dict == {'lower': 0, 'wildcard': 1, 'punctuation': 2}
+    assert ruv_dict.value_counter == {'lower': 2, 'punctuation': 1, 'wildcard': 1}
+    assert ruv_dict.key_value_dict == {'a': 'lower', '*': 'wildcard', '!': 'punctuation', 'b': 'lower'}
+    ruv_dict["A"] = "upper"
+    ruv_dict["c"] = "lower"
+    assert ruv_dict.unique_value_list == ['lower', 'wildcard', 'punctuation', 'upper']
+    assert ruv_dict.value_index_dict == {'lower': 0, 'wildcard': 1, 'punctuation': 2, 'upper': 3}
+    assert ruv_dict.value_counter == {'lower': 3, 'punctuation': 1, 'wildcard': 1, 'upper': 1}
+    assert ruv_dict.key_value_dict == {'a': 'lower', '*': 'wildcard', '!': 'punctuation', 'b': 'lower', 'A': 'upper', 'c': 'lower'}
     counter, iterations, error = Counter(), 400, 0.2
     for _ in range(iterations):
-        counter.update([ruq_dict.random_value()])
-    for value in ruq_dict.unique_value_list:
+        counter.update([ruv_dict.random_value()])
+    for value in ruv_dict.unique_value_list:
         assert approximately_equals(target=iterations * (1/4), error=error, value=counter[value])
 
