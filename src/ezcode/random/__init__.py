@@ -11,11 +11,11 @@ def knuth_shuffle(array: list):
 
 
 class RandomMultiSet:
-    def __init__(self, collection=None):
+    def __init__(self, data=None):
         self.items = list()
         self.indices = defaultdict(set)  # {item: {index1, index2, ...}}
-        if collection is not None:
-            for item in collection:
+        if data is not None:
+            for item in data:
                 self.add(item)
 
     def __contains__(self, item) -> bool:
@@ -48,11 +48,11 @@ class RandomMultiSet:
         return choice(self.items)
 
 
-class RandomDictionary:
-    def __init__(self, dictionary: dict = None):
+class RandomDict:
+    def __init__(self, data: dict = None):
         self.key_value_dict = dict()  # {key: value}
-        if dictionary is not None:
-            for key, value in dictionary.items():
+        if data is not None:
+            for key, value in data.items():
                 self[key] = value
 
     def __contains__(self, key) -> bool:
@@ -81,11 +81,11 @@ class RandomDictionary:
         pass
 
 
-class RandomKeyValueDictionary(RandomDictionary):
-    def __init__(self, dictionary: dict = None):
+class RandomKeyValueDict(RandomDict):
+    def __init__(self, data: dict = None):
         self.key_list = list()            # [key]
         self.key_index_dict = dict()  # {key: index of key_list}
-        super().__init__(dictionary=dictionary)
+        super().__init__(data=data)
 
     def __setitem__(self, key, value):
         """ O(1) """
@@ -115,12 +115,12 @@ class RandomKeyValueDictionary(RandomDictionary):
         return self.key_value_dict[self.random_key()]
 
 
-class RandomUniqueValueDictionary(RandomDictionary):
-    def __init__(self, dictionary: dict = None):
+class RandomUniqueValueDict(RandomDict):
+    def __init__(self, data: dict = None):
         self.unique_value_list = list()  # [value]
         self.value_index_dict = dict()   # {value: index of unique_value_list}
         self.value_counter = dict()      # {value: count of duplicates}
-        super().__init__(dictionary=dictionary)
+        super().__init__(data=data)
 
     def __setitem__(self, key, value):
         """ O(1) """

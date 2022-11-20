@@ -1,5 +1,5 @@
 from collections import Counter
-from ezcode.random import RandomMultiSet, RandomKeyValueDictionary, RandomUniqueValueDictionary
+from ezcode.random import RandomMultiSet, RandomKeyValueDict, RandomUniqueValueDict
 
 
 def approximately_equals(target, error, value):
@@ -47,8 +47,8 @@ def test_random_multi_set():
     assert approximately_equals(target=iterations * (1/4), error=error, value=counter["b"])
 
 
-def test_random_key_value_dictionary():
-    rkv_dict = RandomKeyValueDictionary({"a": "lower", "*": "wildcard", "!": "punctuation", "b": "lower", "B": "upper", "?": "punctuation"})
+def test_random_key_value_dict():
+    rkv_dict = RandomKeyValueDict({"a": "lower", "*": "wildcard", "!": "punctuation", "b": "lower", "B": "upper", "?": "punctuation"})
     assert rkv_dict.key_list == ['a', '*', '!', 'b', 'B', '?']
     assert rkv_dict.key_index_dict == {'a': 0, '*': 1, '!': 2, 'b': 3, 'B': 4, '?': 5}
     assert rkv_dict.key_value_dict == {'a': 'lower', '*': 'wildcard', '!': 'punctuation', 'b': 'lower', 'B': 'upper', '?': 'punctuation'}
@@ -78,8 +78,8 @@ def test_random_key_value_dictionary():
             assert approximately_equals(target=iterations * (1/6), error=error, value=value_counter[value])
 
 
-def test_random_unique_value_dictionary():
-    ruv_dict = RandomUniqueValueDictionary({"a": "lower", "*": "wildcard", "!": "punctuation", "b": "lower", "B": "upper", "?": "punctuation"})
+def test_random_unique_value_dict():
+    ruv_dict = RandomUniqueValueDict({"a": "lower", "*": "wildcard", "!": "punctuation", "b": "lower", "B": "upper", "?": "punctuation"})
     assert ruv_dict.unique_value_list == ['lower', 'wildcard', 'punctuation', 'upper']
     assert ruv_dict.value_index_dict == {'lower': 0, 'wildcard': 1, 'punctuation': 2, 'upper': 3}
     assert ruv_dict.value_counter == {'lower': 2, 'punctuation': 2, 'upper': 1, 'wildcard': 1}
