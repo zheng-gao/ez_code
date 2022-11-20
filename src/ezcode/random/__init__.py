@@ -18,6 +18,9 @@ class RandomMultiSet:
             for item in data:
                 self.add(item)
 
+    def __len__(self):
+        return len(self.items)
+
     def __contains__(self, item) -> bool:
         """ O(1) """
         return item in self.indices
@@ -54,6 +57,9 @@ class RandomDict:
         if data is not None:
             for key, value in data.items():
                 self[key] = value
+
+    def __len__(self):
+        return len(self.key_value_dict)
 
     def __contains__(self, key) -> bool:
         """ O(1) """
