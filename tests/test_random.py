@@ -39,8 +39,9 @@ def test_random_multi_set():
     assert rm_set.indices == {"b": {0, 1}}
     assert rm_set.items == ["b", "b"]
     rm_set = RandomMultiSet(["a", "a", "b", "a"])
+    assert len(rm_set) == 4
     counter = Counter()
-    iterations, error = 400, 0.2
+    iterations, error = 400, 0.25
     for _ in range(iterations):
         counter.update([rm_set.random()])
     assert approximately_equals(target=iterations * (3/4), error=error, value=counter["a"])
@@ -49,6 +50,7 @@ def test_random_multi_set():
 
 def test_random_key_value_dict():
     rkv_dict = RandomKeyValueDict({"a": "lower", "*": "wildcard", "!": "punctuation", "b": "lower", "B": "upper", "?": "punctuation"})
+    assert len(rkv_dict) == 6
     assert rkv_dict.key_list == ['a', '*', '!', 'b', 'B', '?']
     assert rkv_dict.key_index_dict == {'a': 0, '*': 1, '!': 2, 'b': 3, 'B': 4, '?': 5}
     assert rkv_dict.key_value_dict == {'a': 'lower', '*': 'wildcard', '!': 'punctuation', 'b': 'lower', 'B': 'upper', '?': 'punctuation'}
@@ -65,7 +67,7 @@ def test_random_key_value_dict():
     assert rkv_dict.key_list == ['a', '*', '!', 'b', 'A', 'c']
     assert rkv_dict.key_index_dict == {'a': 0, '!': 2, 'b': 3, '*': 1, 'A': 4, 'c': 5}
     assert rkv_dict.key_value_dict == {'a': 'lower', '!': 'punctuation', 'b': 'lower', '*': 'wildcard', 'A': 'upper', 'c': 'lower'}
-    key_counter, value_counter, iterations, error = Counter(), Counter(), 600, 0.2
+    key_counter, value_counter, iterations, error = Counter(), Counter(), 600, 0.25
     for _ in range(iterations):
         key_counter.update([rkv_dict.random_key()])
         value_counter.update([rkv_dict.random_value()])
@@ -80,6 +82,7 @@ def test_random_key_value_dict():
 
 def test_random_unique_value_dict():
     ruv_dict = RandomUniqueValueDict({"a": "lower", "*": "wildcard", "!": "punctuation", "b": "lower", "B": "upper", "?": "punctuation"})
+    assert len(ruv_dict) == 6
     assert ruv_dict.unique_value_list == ['lower', 'wildcard', 'punctuation', 'upper']
     assert ruv_dict.value_index_dict == {'lower': 0, 'wildcard': 1, 'punctuation': 2, 'upper': 3}
     assert ruv_dict.value_counter == {'lower': 2, 'punctuation': 2, 'upper': 1, 'wildcard': 1}
@@ -100,7 +103,7 @@ def test_random_unique_value_dict():
     assert ruv_dict.value_index_dict == {'lower': 0, 'wildcard': 1, 'punctuation': 2, 'upper': 3}
     assert ruv_dict.value_counter == {'lower': 3, 'punctuation': 1, 'wildcard': 1, 'upper': 1}
     assert ruv_dict.key_value_dict == {'a': 'lower', '*': 'wildcard', '!': 'punctuation', 'b': 'lower', 'A': 'upper', 'c': 'lower'}
-    counter, iterations, error = Counter(), 400, 0.2
+    counter, iterations, error = Counter(), 400, 0.25
     for _ in range(iterations):
         counter.update([ruv_dict.random_value()])
     for value in ruv_dict.unique_value_list:
