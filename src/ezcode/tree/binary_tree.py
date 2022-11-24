@@ -342,7 +342,9 @@ class SegmentTree(BinaryTree):
         return query_helper(self.root, start, end)
 
 
-
+class RedBlackTree:
+    def __init__(self):
+        pass
 
 
 

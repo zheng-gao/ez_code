@@ -1,6 +1,6 @@
 # Persistent Stack
 ```python
->>> from ezcode.list.stack import PersistentStack
+>>> from ezcode.stack import PersistentStack
 >>> stacks = [PersistentStack()]
 >>> stacks.append(stacks[-1].push(1))
 >>> stacks.append(stacks[-1].push(2))
@@ -17,21 +17,21 @@
 >>> stacks.append(stacks[-1].pop())
 >>> stacks.append(stacks[-1].pop())
 >>> for s in stacks:
-...     print(f"{len(s)}: {s}")
+...     print(f"size {len(s)}: {s}")
 ... 
-0: []
-1: [1]
-2: [1, 2]
-3: [1, 2, 3]
-2: [1, 2]
-3: [1, 2, 4]
-4: [1, 2, 4, 5]
-3: [1, 2, 4]
-4: [1, 2, 4, 6]
-3: [1, 2, 4]
-2: [1, 2]
-3: [1, 2, 7]
-2: [1, 2]
-1: [1]
-0: []
+size 0: []
+size 1: [1]
+size 2: [1, 2]
+size 3: [1, 2, 3]
+size 2: [1, 2]
+size 3: [1, 2, 4]
+size 4: [1, 2, 4, 5]
+size 3: [1, 2, 4]
+size 4: [1, 2, 4, 6]
+size 3: [1, 2, 4]
+size 2: [1, 2]
+size 3: [1, 2, 7]
+size 2: [1, 2]
+size 1: [1]
+size 0: []
 ```

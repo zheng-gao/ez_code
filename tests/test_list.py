@@ -1,6 +1,4 @@
 from ezcode.list.linked_list import SinglyLinkedList
-from ezcode.list.stack import Stack, MinStack, MaxStack, PersistentStack
-from ezcode.list.queue import Queue, MonotonicQueue
 from ezcode.list.lru_cache import LRUCache
 
 
@@ -113,30 +111,6 @@ def test_reverse_sublist():
                     [x for x in range(end, start - 1, -1)] + [x for x in range(end + 1, len(list_orig))]
 
 
-def test_queue():
-    queue = Queue()
-    for i in range(3):
-        assert len(queue) == i
-        queue.push(i)
-        assert queue.peek() == 0
-    for i in range(3):
-        assert len(queue) == 3 - i
-        assert queue.peek() == i
-        assert queue.pop() == i
-
-
-def test_stack():
-    stack = Stack()
-    for i in range(3):
-        assert len(stack) == i
-        stack.push(i)
-        assert stack.peek() == i
-    for i in range(3):
-        assert len(stack) == 3 - i
-        assert stack.peek() == 2 - i
-        assert stack.pop() == 2 - i
-
-
 def test_lru_cache():
     lru_cache = LRUCache(capacity=3)
     assert lru_cache.get(1) is None
@@ -153,66 +127,3 @@ def test_lru_cache():
     assert lru_cache.get(3) == 33
     assert lru_cache.get(5) == 5
 
-
-def test_min_max_stack():
-    min_stack = MinStack()
-    max_stack = MaxStack()
-    for data, min_data, max_data in zip([2, 1, 3, 5, 4], [2, 1, 1, 1, 1], [2, 2, 3, 5, 5]):
-        min_stack.push(data)
-        max_stack.push(data)
-        assert min_stack.get_min() == min_data
-        assert max_stack.get_max() == max_data
-    for min_data, max_data in zip([1, 1, 1, 2], [5, 3, 2, 2]):
-        min_stack.pop()
-        max_stack.pop()
-        assert min_stack.get_min() == min_data
-        assert max_stack.get_max() == max_data
-
-
-def test_monontonic_queue():
-    mq = MonotonicQueue(is_increasing=True)
-    for data, benchmark in zip([5, 3, 1, 2, 4], [5, 3, 1, 1, 1]):
-        mq.push(data)
-        assert mq.peek() == benchmark
-    mq = MonotonicQueue(is_increasing=False)
-    for data, benchmark in zip([5, 3, 1, 2, 4], [5, 5, 5, 5, 5]):
-        mq.push(data)
-        assert mq.peek() == benchmark
-
-
-def test_persistent_stack():
-    stacks = [PersistentStack()]
-    stacks.append(stacks[-1].push(1))
-    stacks.append(stacks[-1].push(2))
-    stacks.append(stacks[-1].push(3))
-    stacks.append(stacks[-1].pop())
-    stacks.append(stacks[-1].push(4))
-    stacks.append(stacks[-1].push(5))
-    stacks.append(stacks[-1].pop())
-    stacks.append(stacks[-1].push(6))
-    stacks.append(stacks[-1].pop())
-    stacks.append(stacks[-1].pop())
-    stacks.append(stacks[-1].push(7))
-    stacks.append(stacks[-1].pop())
-    stacks.append(stacks[-1].pop())
-    stacks.append(stacks[-1].pop())
-    benchmarks = [
-        [],
-        [1],
-        [1, 2],
-        [1, 2, 3],
-        [1, 2],
-        [1, 2, 4],
-        [1, 2, 4, 5],
-        [1, 2, 4],
-        [1, 2, 4, 6],
-        [1, 2, 4],
-        [1, 2],
-        [1, 2, 7],
-        [1, 2],
-        [1],
-        []
-    ]
-    for s, b in zip(stacks, benchmarks):
-        assert list(s) == b
-        assert len(s) == len(b)
