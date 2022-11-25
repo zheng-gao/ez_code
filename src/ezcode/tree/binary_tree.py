@@ -13,19 +13,20 @@ from ezcode.tree.printer import BinaryTreePrinter
 
 class BinaryTree(object):
 
-    class FakeNode(object):
+    class BinaryTreeNode(object):
         def __init__(self):
             pass
 
-    def __init__(self, root=None, data_name: str = DATA_NAME, left_name: str = LEFT_NAME, right_name: str = RIGHT_NAME):
+    def __init__(self, root=None, data_name: str = DATA_NAME, left_name: str = LEFT_NAME, right_name: str = RIGHT_NAME, algorithm: BinaryTreeAlgorithm = None):
         self.root = root
         self.data_name = data_name
         self.left_name = left_name
         self.right_name = right_name
-        self.algorithm = BinaryTreeAlgorithm(data_name, left_name, right_name)
+        if algorithm is None:
+            self.algorithm = BinaryTreeAlgorithm(data_name, left_name, right_name)
 
     def new_node(self, data, left_node=None, right_node=None):
-        node = self.FakeNode()
+        node = self.BinaryTreeNode()
         node.__dict__ = {self.data_name: data, self.left_name: left_node, self.right_name: right_node}
         return node
 
@@ -53,14 +54,15 @@ class BinaryTree(object):
     def print(self,
         left_wing: str = LEFT_WING, right_wing: str = RIGHT_WING,
         left_wing_head: str = LEFT_WING_HEAD, right_wing_head: str = RIGHT_WING_HEAD,
-        left_wing_tail: str = LEFT_WING_TAIL, right_wing_tail: str = RIGHT_WING_TAIL
+        left_wing_tail: str = LEFT_WING_TAIL, right_wing_tail: str = RIGHT_WING_TAIL,
+        node_to_string: Callable = None
     ):
         BinaryTreePrinter(
             data_name=self.data_name, left_name=self.left_name, right_name=self.right_name,
             left_wing=left_wing, right_wing=right_wing,
             left_wing_head=left_wing_head, right_wing_head=right_wing_head,
             left_wing_tail=left_wing_tail, right_wing_tail=right_wing_tail,
-            node_to_string=self.node_to_string
+            node_to_string=self.node_to_string if node_to_string is None else node_to_string
         ).print(self.root)
 
     def depth(self):
@@ -342,12 +344,20 @@ class SegmentTree(BinaryTree):
         return query_helper(self.root, start, end)
 
 
-class RedBlackTree:
+"""
+class RedBlackTree(BinaryTree):
     def __init__(self):
+        super().__init__()
+
+    def add(self, data):
         pass
 
+    def remove(self, data):
+        pass
 
-
+    def get(self, data):
+        pass
+"""
 
 
 

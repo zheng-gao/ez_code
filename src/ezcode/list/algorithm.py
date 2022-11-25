@@ -2,7 +2,7 @@ from ezcode.list.const import DATA_NAME, NEXT_NAME, PREV_NAME
 
 
 class SinglyLinkedListAlgorithm:
-    class FakeNode(object):
+    class SinglyLinkedListNode(object):
         def __init__(self):
             pass
 
@@ -11,7 +11,7 @@ class SinglyLinkedListAlgorithm:
         self.next_name = next_name
 
     def new_node(self, data=None, next_node=None):
-        node = self.FakeNode()
+        node = self.SinglyLinkedListNode()
         node.__dict__ = {self.data_name: data, self.next_name: next_node}
         return node
 
@@ -51,7 +51,7 @@ class SinglyLinkedListAlgorithm:
 
 
 class DoublyLinkedListAlgorithm:
-    class FakeNode(object):
+    class DoublyLinkedListNode(object):
         def __init__(self):
             pass
 
@@ -61,7 +61,7 @@ class DoublyLinkedListAlgorithm:
         self.prev_name = prev_name
 
     def new_node(self, data=None, next_node=None, prev_node=None):
-        node = self.FakeNode()
+        node = self.DoublyLinkedListNode()
         node.__dict__ = {self.data_name: data, self.next_name: next_node, self.prev_name: prev_node}
         return node
 
