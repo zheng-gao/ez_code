@@ -296,7 +296,7 @@ class SegmentTree(BinaryTree):
         """ Time: O(N), Space: O(N) """
         def build_tree_helper(start: int, end: int):
             if start == end:
-                return self.new_node(start, end, data_list[start])
+                return self.new_node(start=start, end=end, data=data_list[start])
             mid = start + (end - start) // 2
             left_node = build_tree_helper(start, mid)  # left include mid
             right_node = build_tree_helper(mid + 1, end)

@@ -3,6 +3,7 @@ from ezcode.interval.algorithm import merge_intervals
 from ezcode.interval.algorithm import overlapping_interval_pairs
 from ezcode.interval.algorithm import min_groups_of_non_overlapping_intervals
 from ezcode.interval.algorithm import skyline
+from ezcode.interval.algorithm import most_overlapped_subintervals
 
 
 def test_interval_overlap():
@@ -205,4 +206,12 @@ def test_skyline():
     for i, test in enumerate(tests):
         print(f"test {i}")
         assert skyline(test["input"]) == test["benchmark"]
+
+
+def test_most_overlapped_subintervals():
+    assert most_overlapped_subintervals([(1, 2), (2, 3)]) == (2, [(2, 2)])
+    assert most_overlapped_subintervals([(0, 10), (5, 12), (8, 13), (11, 12)]) == (3, [(8, 10), (11, 12)])
+    assert most_overlapped_subintervals([(1, 5), (2, 8), (3, 6), (4, 7)]) == (4, [(4, 5)])
+
+
 

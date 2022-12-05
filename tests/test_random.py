@@ -41,7 +41,7 @@ def test_random_multi_set():
     rm_set = RandomMultiSet(["a", "a", "b", "a"])
     assert len(rm_set) == 4
     counter = Counter()
-    iterations, error = 400, 0.25
+    iterations, error = 400, 0.3
     for _ in range(iterations):
         counter.update([rm_set.random()])
     assert approximately_equals(target=iterations * (3/4), error=error, value=counter["a"])
@@ -103,7 +103,7 @@ def test_random_unique_value_dict():
     assert ruv_dict.value_index_dict == {'lower': 0, 'wildcard': 1, 'punctuation': 2, 'upper': 3}
     assert ruv_dict.value_counter == {'lower': 3, 'punctuation': 1, 'wildcard': 1, 'upper': 1}
     assert ruv_dict.key_value_dict == {'a': 'lower', '*': 'wildcard', '!': 'punctuation', 'b': 'lower', 'A': 'upper', 'c': 'lower'}
-    counter, iterations, error = Counter(), 400, 0.25
+    counter, iterations, error = Counter(), 400, 0.3
     for _ in range(iterations):
         counter.update([ruv_dict.random_value()])
     for value in ruv_dict.unique_value_list:

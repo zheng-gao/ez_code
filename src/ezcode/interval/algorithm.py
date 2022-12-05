@@ -1,4 +1,5 @@
 from collections import deque
+from functools import cmp_to_key
 from typing import Callable
 
 from ezcode.heap import PriorityQueue, PriorityMap
@@ -63,11 +64,11 @@ def skyline(buildings: list[tuple]) -> list[tuple]:
         if right not in r_map:
             r_map[right] = list()
         r_map[right].append(interval)
-    index_l, sorted_l, index_r, sorted_r = 0, sorted(l_map.keys()), 0, sorted(r_map.keys())
+    index_l, index_r, sorted_l, sorted_r = 0, 0, sorted(l_map.keys()), sorted(r_map.keys())
     max_map = PriorityMap(min_heap=False, key=lambda interval: interval.data)
     while index_r < len(sorted_r):
         left, right = sorted_l[index_l] if index_l < len(sorted_l) else float("inf"), sorted_r[index_r]
-        if left >= right:
+        if left >= right:  # process right edge first
             for interval in r_map[right]:
                 del max_map[interval]
             if left != right:
@@ -85,9 +86,39 @@ def skyline(buildings: list[tuple]) -> list[tuple]:
     return output
 
 
+def most_overlapped_subintervals(intervals: list[tuple]) -> tuple[int, list[tuple]]:
+    # only support inclusive boundary
+    events = list()
+    for left, right in intervals:
+        events.append((left, True))  # is_left = True
+        events.append((right, False))  # is_left = False
+
+    def compare_event(event_1, event_2):
+        if event_1[0] == event_2[0]:
+            return -1 if event_1[1] else 1  # left side first
+        else:
+            return event_1[0] - event_2[0]
+
+    events.sort(key=cmp_to_key(compare_event))  # O(2N*log2N) ~ O(NlogN)
+    deepest_intervals, deepest_left, max_depth, depth = list(), None, 0, 0
+    for boundary, is_left in events:
+        if is_left:
+            depth += 1
+            if depth > max_depth:
+                max_depth = depth
+                deepest_left = boundary
+                deepest_intervals.clear()
+            elif depth == max_depth:
+                deepest_left = boundary
+        else:
+            if depth == max_depth:
+                deepest_intervals.append((deepest_left, boundary))
+            depth -= 1
+    return max_depth, deepest_intervals
+
+
 """
 class NonOverlappingIntervals:
-
     keep sorted, use binary search for add or use treemap to store intervals
 
     def __init__(self):
