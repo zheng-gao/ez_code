@@ -58,3 +58,28 @@ Interval(2, 2, data=100)
 [Interval(2, 5), Interval(7, 9)]
 [Interval(8, 9)]
 ```
+## most_overlapped_subintervals
+```python
+>>> from ezcode.interval.algorithm import most_overlapped_subintervals
+>>> most_overlapped_subintervals([(0, 10), (5, 12), (8, 13), (11, 12)])
+(3, [(8, 10), (11, 12)])
+
+>>> data = [
+...     (1920, 1954),
+...     (1931, 1975),
+...     (1921, 1922),
+...     (1992, 2007),
+...     (1953, 2017),
+...     (1700, 1722),
+...     (2016, 2017),
+...     (1930, 2001),
+...     (1990, 2011),
+...     (1967, 2019),
+...     (1905, 1987),
+...     (1990, 2018),
+...     (1998, 2015),
+...     (1993, 2019)
+... ]
+>>> most_overlapped_subintervals(data)
+(8, [(1998, 2001)])
+```
