@@ -25,9 +25,9 @@ class BinaryTree(object):
         if algorithm is None:
             self.algorithm = BinaryTreeAlgorithm(data_name, left_name, right_name)
 
-    def new_node(self, data, left_node=None, right_node=None):
+    def new_node(self, data, left=None, right=None):
         node = self.BinaryTreeNode()
-        node.__dict__ = {self.data_name: data, self.left_name: left_node, self.right_name: right_node}
+        node.__dict__ = {self.data_name: data, self.left_name: left, self.right_name: right}
         return node
 
     def node_to_string(self, node):
@@ -235,28 +235,25 @@ class BinaryTree(object):
 
 
 class RandomBinaryTree(BinaryTree):
-    def __init__(self,
-        data_name: str = DATA_NAME, left_name: str = LEFT_NAME, right_name: str = RIGHT_NAME,
-        size: int = 0, lower_bound: int = 0, upper_bound: int = 0
-    ):
-        super().__init__(None, data_name, left_name, right_name)
+    def __init__(self, size: int = 0, lower_bound: int = 0, upper_bound: int = 0):
+        super().__init__(root=None, data_name="data", left_name="left", right_name="right", algorithm=None)
         self.size = size
         self.lower_bound = lower_bound
         self.upper_bound = upper_bound
         self.make_tree()
 
-    def add_node(self, data):
+    def insert(self, data):
         def add_node_helper(node, data):
             if random.randint(0, 1) == 0:
-                if self.get_left(node) is None:
-                    self.set_left(node, self.new_node(data))
+                if node.left is None:
+                    node.left = self.new_node(data)
                 else:
-                    add_node_helper(self.get_left(node), data)
+                    add_node_helper(node.left, data)
             else:
-                if self.get_right(node) is None:
-                    self.set_right(node, self.new_node(data))
+                if node.right is None:
+                    node.right = self.new_node(data)
                 else:
-                    add_node_helper(self.get_right(node), data)
+                    add_node_helper(node.right, data)
 
         if self.root is None:
             self.root = self.new_node(data)
@@ -266,7 +263,7 @@ class RandomBinaryTree(BinaryTree):
     def build_tree(self):
         self.root = None
         for _ in range(self.size):
-            self.add_node(random.randint(self.lower_bound, self.upper_bound))
+            self.insert(random.randint(self.lower_bound, self.upper_bound))
 
 
 class SegmentTree(BinaryTree):
@@ -274,23 +271,19 @@ class SegmentTree(BinaryTree):
         Suitable for repeated queries
         Cannot add or delete items once the tree is built
     """
-    def __init__(self,
-        merge: Callable = lambda x, y: x + y, data_list: list = None,
-        data_name: str = DATA_NAME, left_name: str = LEFT_NAME, right_name: str = RIGHT_NAME
-    ):
-        super().__init__(None, data_name, left_name, right_name)
+    def __init__(self, merge: Callable = lambda x, y: x + y, data_list: list = None):
+        super().__init__(root=None, data_name="data", left_name="left", right_name="right", algorithm=None)
         self.merge = merge  # sum, max, min, gcd or lambda x, y: ...
         if data_list is not None:
             self.build_tree(data_list=data_list)
 
-    def new_node(self, start: int, end: int, data, left_node=None, right_node=None):
-        node = super().new_node(data, left_node, right_node)
-        node.__dict__["start"] = start
-        node.__dict__["end"] = end
+    def new_node(self, start: int, end: int, data, left=None, right=None):
+        node = super().new_node(data, left, right)
+        node.__dict__.update({"start": start, "end": end})
         return node
 
     def node_to_string(self, node):
-        return f"[{node.start},{node.end}]:" + str(self.get_data(node))
+        return f"[{node.start},{node.end}]:" + str(node.data)
 
     def build_tree(self, data_list: list):
         """ Time: O(N), Space: O(N) """
@@ -298,10 +291,8 @@ class SegmentTree(BinaryTree):
             if start == end:
                 return self.new_node(start=start, end=end, data=data_list[start])
             mid = start + (end - start) // 2
-            left_node = build_tree_helper(start, mid)  # left include mid
-            right_node = build_tree_helper(mid + 1, end)
-            new_data = self.merge(self.get_data(left_node), self.get_data(right_node))
-            return self.new_node(start, end, new_data, left_node, right_node)
+            left, right = build_tree_helper(start, mid), build_tree_helper(mid + 1, end)  # left include mid
+            return self.new_node(start, end, self.merge(left.data, right.data), left, right)
 
         self.root = build_tree_helper(0, len(data_list) - 1)
 
@@ -309,20 +300,14 @@ class SegmentTree(BinaryTree):
         """ Time: O(logN) """
         def update_helper(node, index: int, data):
             if node.start == node.end == index:
-                self.set_data(node, data)
+                node.data = data
                 return
             mid = node.start + (node.end - node.start) // 2
             if index <= mid:  # left include mid
-                update_helper(self.get_left(node), index, data)
+                update_helper(node.left, index, data)
             else:
-                update_helper(self.get_right(node), index, data)
-            self.set_data(
-                node,
-                self.merge(
-                    self.get_data(self.get_left(node)),
-                    self.get_data(self.get_right(node))
-                )
-            )
+                update_helper(node.right, index, data)
+            node.data = self.merge(node.left.data, node.right.data)
 
         update_helper(self.root, index, data)
 
@@ -330,34 +315,132 @@ class SegmentTree(BinaryTree):
         """ Time: O(logN) """
         def query_helper(node, start: int, end: int):
             if node.start == start and node.end == end:
-                return self.get_data(node)
+                return node.data
             mid = node.start + (node.end - node.start) // 2
             if end <= mid:  # left include mid
-                return query_helper(self.get_left(node), start, end)
+                return query_helper(node.left, start, end)
             if start > mid:
-                return query_helper(self.get_right(node), start, end)
+                return query_helper(node.right, start, end)
             return self.merge(
-                query_helper(self.get_left(node), start, mid),
-                query_helper(self.get_right(node), mid + 1, end)
+                query_helper(node.left, start, mid),
+                query_helper(node.right, mid + 1, end)
             )
 
         return query_helper(self.root, start, end)
 
 
-"""
 class RedBlackTree(BinaryTree):
     def __init__(self):
-        super().__init__()
+        super().__init__(root=None, data_name="data", left_name="left", right_name="right", algorithm=None)
 
-    def add(self, data):
-        pass
+    def new_node(self, data, is_red=True, parent=None, left=None, right=None):
+        node = super().new_node(data, left, right)
+        node.__dict__.update({"is_red": is_red, "parent": parent})
+        return node
+
+    def insert(self, data):
+        """ O(logN) """
+        if self.root is None:
+            self.root = self.new_node(data=data, is_red=False)  # root is black
+        else:
+            parent, node = None, self.root
+            while node is not None:
+                parent, node = node, node.left if data < node.data else node.right
+            node = self.new_node(data=data, is_red=True, parent=parent)
+            if data < parent.data:
+                parent.left = node
+            else:
+                parent.right = node
+            while parent is not None and parent.is_red:  # black parent won't violate the RB tree constraints
+                grand = parent.parent  # grand parent exists and it is black
+                uncle = grand.right if parent == grand.left else grand.left
+                if uncle.is_red:  # paint(parent:black, uncle:black, grand:red)
+                    parent.is_red, uncle.is_red, grand.is_red = False, False, True
+                    node, parent = grand, grand.parent
+                else:  # uncle is black
+                    if parent == grand.left:
+                        if node == parent.right:
+                            self.left_rotate(parent)
+                            """
+                                  ┌───────(G.b)───────┐       -->            ┌─────(G.b)─────┐
+                             ┌──(P.r)──┐         ┌──(U.b)──┐            ┌──(N.r)──┐     ┌──(U.b)──┐
+                            (x)   ┌──(N.r)──┐   (x)       (x)      ┌──(P.r)──┐   (x)   (x)       (x)
+                                 (C)       (x)                    (x)       (C)
+                            """
+                            parent, node = node, parent  # node becomes parent.left
+                        self.right_rotate(grand)
+                        """
+                                   ┌─────(G.b)─────┐       -->       ┌─────(P.r)─────┐
+                              ┌──(P.r)──┐     ┌──(U.b)──┐       ┌──(N.r)──┐     ┌──(G.b)──┐
+                         ┌──(N.r)──┐   (C)   (x)       (x)     (x)       (x)   (C)   ┌──(U.b)──┐
+                        (x)       (x)                                               (x)       (x)
+                        """
+                        if grand == self.root:
+                            self.root = parent
+                        parent.is_red, grand.is_red = False, True  # paint(parent:black, grand:red), exit while loop
+                        """
+                              ┌─────(P.b)─────┐
+                         ┌──(N.r)──┐     ┌──(G.r)──┐
+                        (x)       (x)   (C)   ┌──(U.b)──┐
+                                             (x)       (x)
+                        """
+                    else:  # parent == grand.right
+                        if node == parent.left:
+                            self.right_rotate(parent)
+                            parent, node = node, parent
+                        self.left_rotate(grand)
+                        if grand == self.root:
+                            self.root = parent
+                        parent.is_red, grand.is_red = False, True  # paint(parent:black, grand:red), exit while loop
+            self.root.is_red = False  # red uncle process might change the color of root
+
+    def left_rotate(self, node):
+        """ O(1)
+        make node the 'left' child of its right child, keep it BST
+                        <------------
+              (P)─┐┌─(P)              (P)─┐┌─(P)
+              ┌───(R)───┐           ┌───(node)───┐
+         ┌──(node)──┐  (x)         (x)       ┌──(R)──┐
+        (x)        (RL)                     (RL)    (x)
+        """
+        parent, right, right_left = node.parent, node.right, node.right.left
+        node.right, right_left.parent = right_left, node
+        right.left, node.parent = node, right
+        right.parent = parent
+        if parent is None:
+            self.root = right
+            self.root.is_red = False  # root is black
+        elif parent.left == node:
+            parent.left = right
+        else:
+            parent.right = right
+
+    def right_rotate(self, node):
+        """ O(1)
+        make node the 'right' child of its left child, keep it BST
+                         ------------>
+               (P)─┐┌─(P)              (P)─┐┌─(P)
+             ┌───(node)───┐            ┌───(L)───┐
+         ┌──(L)──┐       (x)          (x)   ┌──(node)──┐
+        (x)     (LR)                       (LR)       (x)
+        """
+        parent, left, left_right = node.parent, node.left, node.left.right
+        node.left, left_right.parent = left_right, node
+        left.right, node.parent = node, left
+        left.parent = parent
+        if parent is None:
+            self.root = left
+            self.root.is_red = False  # root is black
+        elif parent.left == node:
+            parent.left = left
+        else:
+            parent.right = left
 
     def remove(self, data):
         pass
 
     def get(self, data):
         pass
-"""
 
 
 

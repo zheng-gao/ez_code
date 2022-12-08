@@ -87,7 +87,10 @@ def skyline(buildings: list[tuple]) -> list[tuple]:
 
 
 def most_overlapped_subintervals(intervals: list[tuple]) -> tuple[int, list[tuple]]:
-    # only support inclusive boundary
+    """
+    only support inclusive/close boundary
+    return: depth, list(intervals)
+    """
     events = list()
     for left, right in intervals:
         events.append((left, True))  # is_left = True
