@@ -66,6 +66,8 @@ def test_persistent_stack():
     for s, b in zip(stacks, benchmarks):
         assert list(s) == b
         assert len(s) == len(b)
+    assert stacks[1].top() == 1
+    assert stacks[5].top(k=1) == 4
     assert stacks[6].top(k=3) == [5, 4, 2]
     assert stacks[8].top(k=3) == [6, 4, 2]
 

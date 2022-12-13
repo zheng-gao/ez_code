@@ -85,24 +85,19 @@ class MaxStack:
 
 
 class PersistentStack:
-    class Node:
-        def __init__(self, data, predecessor: PersistentStack.Node = None):
-            self.data = data
-            self.predecessor = predecessor
-
-        def __str__(self):
-            return str(self.data)
-
-    def __init__(self, size: int = 0, head: PersistentStack.Node = None):
+    def __init__(self, size: int = 0, data=None, predecessor: PersistentStack = None):
+        self.data = data
         self.size = size
-        self.head = head
+        self.predecessor = predecessor
 
     def __str__(self) -> str:
         return "[" + ", ".join(map(str, self)) + "]"
 
     def __iter__(self) -> iter:
-        node, queue = self.head, deque()
-        while node:
+        node, queue = self.predecessor, deque()
+        if self.size > 0:
+            queue.appendleft(self.data)
+        for _ in range(self.size - 1):
             queue.appendleft(node.data)
             node = node.predecessor
         return iter(queue)
@@ -112,15 +107,13 @@ class PersistentStack:
 
     def push(self, data) -> PersistentStack:
         """ O(1) """
-        if self.size == 0:
-            return PersistentStack(1, self.Node(data, None))
-        return PersistentStack(self.size + 1, self.Node(data, self.head))
+        return PersistentStack(self.size + 1, data, self)
 
     def pop(self) -> PersistentStack:
         """ O(1) """
         if self.size == 0:
             raise IndexError("Pop from empty stack")
-        return PersistentStack(self.size - 1, self.head.predecessor)
+        return self.predecessor
 
     def top(self, k: int = 1, always_return_list: bool = False):
         """ O(k) """
@@ -129,10 +122,12 @@ class PersistentStack:
         if len(self) < k:
             raise ValueError(f"Not enough items, size: {len(self)}, k: {k}")
         if k == 1:
-            return [self.head.data] if always_return_list else self.head.data
+            return [self.data] if always_return_list else self.data
         else:
-            node, output = self.head, list()
-            for _ in range(k):
+            node, output = self.predecessor, list()
+            if self.size > 0:
+                output.append(self.data)
+            for _ in range(k - 1):
                 output.append(node.data)
                 node = node.predecessor
             return output

@@ -173,8 +173,8 @@ class BinaryTree(object):
                 other_queue.append(self.get_right(other_node))
         return BinaryTree(other_root, self.data_name, self.left_name, self.right_name)
 
-    def delete_bst_node(self, data):
-        # self.root = self.algorithm.delete_bst_node(self.root, data)
+    def remove_bst_node(self, data):
+        # self.root = self.algorithm.remove_bst_node(self.root, data)
         parent, node = None, self.root
         while node is not None:
             if data < self.get_data(node):
@@ -190,19 +190,20 @@ class BinaryTree(object):
                         self.set_left(parent, left_child)
                     else:  # node == self.get_right(parent)
                         self.set_right(parent, left_child)
-                else:  # left_most only have the right child
+                else:  # left most node in the right subtree
                     left_most_parent, left_most = node, self.get_right(node)
                     while left_most is not None and self.get_left(left_most) is not None:
                         left_most_parent = left_most
                         left_most = self.get_left(left_most)
                     self.set_data(node, self.get_data(left_most))  # swap data then delete left_most
+                    right_child = self.get_right(left_most)  # left_most only have the right child
                     if left_most == self.get_right(node):
-                        self.set_right(left_most_parent, right=self.get_right(left_most))
+                        self.set_right(node, right=right_child)  # left_most_parent == node
                     else:
-                        self.set_left(left_most_parent, left=self.get_right(left_most))
+                        self.set_left(left_most_parent, left=right_child)
                 break
 
-    def delete_bst_nodes(self, data_lower_bound, data_upper_bound):
+    def remove_bst_nodes(self, data_lower_bound, data_upper_bound):
         if data_upper_bound < data_lower_bound:
             raise ValueError(f"data_upper_bound {data_upper_bound} is smaller than data_lower_bound {data_lower_bound}")
         parent, node = None, self.root
@@ -228,10 +229,11 @@ class BinaryTree(object):
                         left_most_parent = left_most
                         left_most = self.get_left(left_most)
                     self.set_data(node, self.get_data(left_most))  # swap data then delete left_most
+                    right_child = self.get_right(left_most)  # left_most only have the right child
                     if left_most == self.get_right(node):
-                        self.set_right(left_most_parent, right=self.get_right(left_most))
+                        self.set_right(node, right=right_child)  # left_most_parent == node
                     else:
-                        self.set_left(left_most_parent, left=self.get_right(left_most))
+                        self.set_left(left_most_parent, left=right_child)
 
 
 class RandomBinaryTree(BinaryTree):
@@ -338,109 +340,175 @@ class RedBlackTree(BinaryTree):
         node.__dict__.update({"is_red": is_red, "parent": parent})
         return node
 
+    def _rotate(self, node, is_left_rotation=True):
+        parent = node.parent
+        if is_left_rotation:
+            """
+            left rotate: O(1)
+            make node the 'left' child of its right child, keep it BST
+                            <------------
+                  (P)─┐┌─(P)              (P)─┐┌─(P)
+                  ┌───(R)───┐           ┌───(node)───┐
+             ┌──(node)──┐  (x)         (x)       ┌──(R)──┐
+            (x)        (RL)                     (RL)    (x)
+            """
+            right, right_left = node.right, node.right.left
+            node.right = right_left
+            if right_left is not None:
+                right_left.parent = node
+            right.left, node.parent, right.parent = node, right, parent
+            if parent is None:
+                self.root = right  # might change the color of root
+            elif parent.left == node:
+                parent.left = right
+            else:
+                parent.right = right
+        else:
+            """
+            right rotate: O(1)
+            make node the 'right' child of its left child, keep it BST
+                             ------------>
+                   (P)─┐┌─(P)              (P)─┐┌─(P)
+                 ┌───(node)───┐            ┌───(L)───┐
+             ┌──(L)──┐       (x)          (x)   ┌──(node)──┐
+            (x)     (LR)                       (LR)       (x)
+            """
+            left, left_right = node.left, node.left.right
+            node.left = left_right
+            if left_right is not None:
+                left_right.parent = node
+            left.right, node.parent, left.parent = node, left, parent
+            if parent is None:
+                self.root = left  # might change the color of root
+            elif parent.left == node:
+                parent.left = left
+            else:
+                parent.right = left
+        self.root.is_red = False  # root is black
+
     def insert(self, data):
         """ O(logN) """
         if self.root is None:
             self.root = self.new_node(data=data, is_red=False)  # root is black
+            return
+        parent, node = None, self.root
+        while node is not None:
+            if data == node.data:
+                raise KeyError(f"{data} exist")
+            parent, node = node, node.left if data < node.data else node.right
+        node = self.new_node(data=data, is_red=True, parent=parent)
+        if data < parent.data:
+            parent.left = node
         else:
-            parent, node = None, self.root
-            while node is not None:
-                parent, node = node, node.left if data < node.data else node.right
-            node = self.new_node(data=data, is_red=True, parent=parent)
-            if data < parent.data:
-                parent.left = node
-            else:
-                parent.right = node
-            while parent is not None and parent.is_red:  # black parent won't violate the RB tree constraints
-                grand = parent.parent  # grand parent exists and it is black
-                uncle = grand.right if parent == grand.left else grand.left
-                if uncle.is_red:  # paint(parent:black, uncle:black, grand:red)
-                    parent.is_red, uncle.is_red, grand.is_red = False, False, True
-                    node, parent = grand, grand.parent
-                else:  # uncle is black
-                    if parent == grand.left:
-                        if node == parent.right:
-                            self.left_rotate(parent)
-                            """
-                                  ┌───────(G.b)───────┐       -->            ┌─────(G.b)─────┐
-                             ┌──(P.r)──┐         ┌──(U.b)──┐            ┌──(N.r)──┐     ┌──(U.b)──┐
-                            (x)   ┌──(N.r)──┐   (x)       (x)      ┌──(P.r)──┐   (x)   (x)       (x)
-                                 (C)       (x)                    (x)       (C)
-                            """
-                            parent, node = node, parent  # node becomes parent.left
-                        self.right_rotate(grand)
+            parent.right = node
+        # Insert Fix Up
+        while parent is not None and parent.is_red:  # black parent won't violate the RB tree constraints
+            grand = parent.parent  # grand parent exists and it is black
+            uncle = grand.right if parent == grand.left else grand.left
+            if uncle.is_red:  # paint(parent:black, uncle:black, grand:red)
+                parent.is_red, uncle.is_red, grand.is_red = False, False, True
+                node, parent = grand, grand.parent
+            else:  # uncle is black
+                if parent == grand.left:
+                    if node == parent.right:
+                        self._rotate(parent, is_left_rotation=True)
                         """
-                                   ┌─────(G.b)─────┐       -->       ┌─────(P.r)─────┐
-                              ┌──(P.r)──┐     ┌──(U.b)──┐       ┌──(N.r)──┐     ┌──(G.b)──┐
-                         ┌──(N.r)──┐   (C)   (x)       (x)     (x)       (x)   (C)   ┌──(U.b)──┐
-                        (x)       (x)                                               (x)       (x)
+                              ┌───────(G.b)───────┐       -->            ┌─────(G.b)─────┐
+                         ┌──(P.r)──┐         ┌──(U.b)──┐            ┌──(N.r)──┐     ┌──(U.b)──┐
+                        (x)   ┌──(N.r)──┐   (x)       (x)      ┌──(P.r)──┐   (x)   (x)       (x)
+                             (C)       (x)                    (x)       (C)
                         """
-                        if grand == self.root:
-                            self.root = parent
-                        parent.is_red, grand.is_red = False, True  # paint(parent:black, grand:red), exit while loop
-                        """
-                              ┌─────(P.b)─────┐
-                         ┌──(N.r)──┐     ┌──(G.r)──┐
-                        (x)       (x)   (C)   ┌──(U.b)──┐
-                                             (x)       (x)
-                        """
-                    else:  # parent == grand.right
-                        if node == parent.left:
-                            self.right_rotate(parent)
-                            parent, node = node, parent
-                        self.left_rotate(grand)
-                        if grand == self.root:
-                            self.root = parent
-                        parent.is_red, grand.is_red = False, True  # paint(parent:black, grand:red), exit while loop
-            self.root.is_red = False  # red uncle process might change the color of root
+                        parent, node = node, parent  # node becomes parent.left
+                    self._rotate(grand, is_left_rotation=False)
+                    """
+                               ┌─────(G.b)─────┐       -->       ┌─────(P.r)─────┐
+                          ┌──(P.r)──┐     ┌──(U.b)──┐       ┌──(N.r)──┐     ┌──(G.b)──┐
+                     ┌──(N.r)──┐   (C)   (x)       (x)     (x)       (x)   (C)   ┌──(U.b)──┐
+                    (x)       (x)                                               (x)       (x)
+                    """
+                    if grand == self.root:
+                        self.root = parent
+                    parent.is_red, grand.is_red = False, True  # paint(parent:black, grand:red), exit while loop
+                    """
+                          ┌─────(P.b)─────┐
+                     ┌──(N.r)──┐     ┌──(G.r)──┐
+                    (x)       (x)   (C)   ┌──(U.b)──┐
+                                         (x)       (x)
+                    """
+                else:  # parent == grand.right
+                    if node == parent.left:
+                        self._rotate(parent, is_left_rotation=False)
+                        parent, node = node, parent
+                    self.left_rotate(grand, is_left_rotation=True)
+                    if grand == self.root:
+                        self.root = parent
+                    parent.is_red, grand.is_red = False, True  # paint(parent:black, grand:red), exit while loop
+        self.root.is_red = False  # red uncle process might change the color of root
 
-    def left_rotate(self, node):
-        """ O(1)
-        make node the 'left' child of its right child, keep it BST
-                        <------------
-              (P)─┐┌─(P)              (P)─┐┌─(P)
-              ┌───(R)───┐           ┌───(node)───┐
-         ┌──(node)──┐  (x)         (x)       ┌──(R)──┐
-        (x)        (RL)                     (RL)    (x)
-        """
-        parent, right, right_left = node.parent, node.right, node.right.left
-        node.right, right_left.parent = right_left, node
-        right.left, node.parent = node, right
-        right.parent = parent
-        if parent is None:
-            self.root = right
-            self.root.is_red = False  # root is black
-        elif parent.left == node:
-            parent.left = right
-        else:
-            parent.right = right
+    def find_node(self, data):
+        node = self.root
+        while node is not None:
+            if data == node.data:
+                break
+            node = node.left if data < node.data else node.right
+        return node
 
-    def right_rotate(self, node):
-        """ O(1)
-        make node the 'right' child of its left child, keep it BST
-                         ------------>
-               (P)─┐┌─(P)              (P)─┐┌─(P)
-             ┌───(node)───┐            ┌───(L)───┐
-         ┌──(L)──┐       (x)          (x)   ┌──(node)──┐
-        (x)     (LR)                       (LR)       (x)
-        """
-        parent, left, left_right = node.parent, node.left, node.left.right
-        node.left, left_right.parent = left_right, node
-        left.right, node.parent = node, left
-        left.parent = parent
-        if parent is None:
-            self.root = left
-            self.root.is_red = False  # root is black
-        elif parent.left == node:
-            parent.left = left
-        else:
-            parent.right = left
+    def find_left_most_node(self, node):
+        while node.left is not None:
+            node = node.left
+        return node
 
     def remove(self, data):
+        node = self.find_node(data)
+        if node is None:
+            return
+        if node.right is None:
+            if node == self.root:
+                self.root = node.left
+                if node.left is not None:
+                    node.left.parent = None
+            elif node == node.parent.left:
+                node.parent.left = node.left
+                if node.left is not None:
+                    node.left.parent = node.parent
+            else:
+                node.parent.right = node.left
+                if node.left is not None:
+                    node.left.parent = node.parent
+            if not node.is_red:  # deleted a black node
+                if node.left is None or not node.left.is_red:  # double black
+                    pass  # Delete Fix Up
+                else:
+                    node.left.is_red = False
+        else:
+            left_most = self.find_left_most_node(node.right)  # left_most only have the right child
+            left_most.data, node.data = node.data, left_most.data  # swap data then delete left most, color untouched
+            if left_most == node.right:
+                node.right = left_most.right
+                if left_most.right is not None:
+                    left_most.right.parent = node
+            else:
+                left_most.parent.left = left_most.right
+                if left_most.right is not None:
+                    left_most.right.parent = left_most.parent
+            if not left_most.is_red:  # deleted a black node
+                if left_most.right is None or not left_most.right.is_red:  # double black
+                    pass  # Delete Fix Up
+                else:
+                    left_most.right.is_red = False
+
+    def remove_fix_up(self):
         pass
 
-    def get(self, data):
-        pass
+
+
+
+
+
+
+
+
+
 
 
 

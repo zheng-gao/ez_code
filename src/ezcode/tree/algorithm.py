@@ -109,13 +109,13 @@ class BinaryTreeAlgorithm:
         right_max, r_half = self.max_path_sum(root.__dict__[self.right_name])  # right path max, right non-negative max half
         return max(left_max, right_max, root.__dict__[self.data_name] + l_half + r_half), max(root.__dict__[self.data_name] + max(l_half, r_half), 0)
 
-    def delete_bst_node(self, root, data):
+    def remove_bst_node(self, root, data):
         if root is None:
             return None
         elif data < root.__dict__[self.data_name]:
-            root.__dict__[self.left_name] = self.delete_bst_node(root.__dict__[self.left_name], data)
+            root.__dict__[self.left_name] = self.remove_bst_node(root.__dict__[self.left_name], data)
         elif data > root.__dict__[self.data_name]:
-            root.__dict__[self.right_name] = self.delete_bst_node(root.__dict__[self.right_name], data)
+            root.__dict__[self.right_name] = self.remove_bst_node(root.__dict__[self.right_name], data)
         else:
             if root.__dict__[self.right_name] is None:
                 return root.__dict__[self.left_name]
