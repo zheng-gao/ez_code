@@ -74,6 +74,9 @@ class RandomDict:
     def __setitem__(self, key, value):
         pass
 
+    def __delitem__(self, key):
+        pass
+
     def items(self):
         return self.key_value_dict.items()
 
