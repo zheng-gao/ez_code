@@ -94,12 +94,12 @@ class PersistentStack:
         return "[" + ", ".join(map(str, self)) + "]"
 
     def __iter__(self) -> iter:
-        node, queue = self.predecessor, deque()
+        predecessor, queue = self.predecessor, deque()
         if self.size > 0:
             queue.appendleft(self.data)
         for _ in range(self.size - 1):
-            queue.appendleft(node.data)
-            node = node.predecessor
+            queue.appendleft(predecessor.data)
+            predecessor = predecessor.predecessor
         return iter(queue)
 
     def __len__(self) -> int:
@@ -124,11 +124,11 @@ class PersistentStack:
         if k == 1:
             return [self.data] if always_return_list else self.data
         else:
-            node, output = self.predecessor, list()
+            predecessor, output = self.predecessor, list()
             if self.size > 0:
                 output.append(self.data)
             for _ in range(k - 1):
-                output.append(node.data)
-                node = node.predecessor
+                output.append(predecessor.data)
+                predecessor = predecessor.predecessor
             return output
 
