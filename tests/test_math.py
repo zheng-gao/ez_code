@@ -1,8 +1,9 @@
-from ezcode.math.discrete import permutation_size, permutations, all_items_permutations, next_lexicographic_permutation
-from ezcode.math.discrete import combination_size, combinations, all_subsets, partitions, enumerations
 from ezcode.math.calculator import infix_notation_to_reverse_polish_notation
 from ezcode.math.calculator import evaluate_reverse_polish_notation
 from ezcode.math.calculator import calculate
+from ezcode.math.discrete import permutation_size, permutations, all_items_permutations, next_lexicographic_permutation
+from ezcode.math.discrete import combination_size, combinations, all_subsets, partitions, enumerations
+from ezcode.math.utils import approximately_equals
 
 
 def test_ermutation_size():
@@ -32,7 +33,7 @@ def test_next_lexicographic_permutation():
 
 
 def test_permutations():
-    assert None == permutations(0, None)
+    assert permutations(0, None) is None
     assert [[]] == permutations(0, [])
     assert [[]] == permutations(0, [1, 2, 1])
     benchmark = [
@@ -74,7 +75,7 @@ def test_permutations():
 
 
 def test_complete_permutations():
-    assert None == all_items_permutations(None)
+    assert all_items_permutations(None) is None
     assert [[]] == all_items_permutations([])
     assert [[1]] == all_items_permutations([1])
     benchmark = [
@@ -95,7 +96,7 @@ def test_complete_permutations():
 
 
 def test_combinations():
-    assert None == combinations(0, None)
+    assert combinations(0, None) is None
     assert [[]] == combinations(0, [])
     assert [[]] == combinations(0, [1, 2, 3])
     benchmark = [
@@ -218,24 +219,27 @@ def test_calculator():
     assert calculate(arithmetic_expression) == 49.99999999999999
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+def test_approximately_equals():
+    assert approximately_equals(value=9, target=10, error=0.1)
+    assert approximately_equals(value=11, target=10, error=0.1)
+    assert not approximately_equals(value=8, target=10, error=0.1)
+    assert not approximately_equals(value=12, target=10, error=0.1)
+    assert approximately_equals(value=-9, target=-10, error=0.1)
+    assert approximately_equals(value=-11, target=-10, error=0.1)
+    assert not approximately_equals(value=-8, target=-10, error=0.1)
+    assert not approximately_equals(value=-12, target=-10, error=0.1)
+    assert approximately_equals(value=0, target=10, error=1)
+    assert approximately_equals(value=20, target=10, error=1)
+    assert not approximately_equals(value=-1, target=10, error=1)
+    assert not approximately_equals(value=21, target=10, error=1)
+    assert approximately_equals(value=10, target=10, error=0)
+    assert not approximately_equals(value=10.0001, target=10, error=0)
+    assert not approximately_equals(value=9.9999, target=10, error=0)
+    assert approximately_equals(value=-10, target=-10, error=0)
+    assert not approximately_equals(value=-10.0001, target=-10, error=0)
+    assert not approximately_equals(value=-9.9999, target=-10, error=0)
+    assert approximately_equals(value=0, target=0, error=0)
+    assert not approximately_equals(value=1, target=0, error=0)
+    assert not approximately_equals(value=-1, target=0, error=0)
+    assert not approximately_equals(value=0.0001, target=0, error=10000)
+    assert not approximately_equals(value=-0.0001, target=0, error=10000)

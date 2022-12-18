@@ -1,9 +1,8 @@
 from collections import Counter
+
+from ezcode.math.utils import approximately_equals
 from ezcode.random import RandomMultiSet, RandomKeyValueDict, RandomUniqueValueDict
-
-
-def approximately_equals(target, error, value):
-    return target * (1 - error) < value and value < target * (1 + error)
+from ezcode.random import RandomWeightedIndex
 
 
 def test_random_multi_set():
@@ -41,11 +40,11 @@ def test_random_multi_set():
     rm_set = RandomMultiSet(["a", "a", "b", "a"])
     assert len(rm_set) == 4
     counter = Counter()
-    iterations, error = 400, 0.3
-    for _ in range(iterations):
+    samples_size, error = 400, 0.3
+    for _ in range(samples_size):
         counter.update([rm_set.random()])
-    assert approximately_equals(target=iterations * (3/4), error=error, value=counter["a"])
-    assert approximately_equals(target=iterations * (1/4), error=error, value=counter["b"])
+    assert approximately_equals(target=samples_size * (3/4), error=error, value=counter["a"])
+    assert approximately_equals(target=samples_size * (1/4), error=error, value=counter["b"])
 
 
 def test_random_key_value_dict():
@@ -67,17 +66,17 @@ def test_random_key_value_dict():
     assert rkv_dict.key_list == ['a', '*', '!', 'b', 'A', 'c']
     assert rkv_dict.key_index_dict == {'a': 0, '!': 2, 'b': 3, '*': 1, 'A': 4, 'c': 5}
     assert rkv_dict.key_value_dict == {'a': 'lower', '!': 'punctuation', 'b': 'lower', '*': 'wildcard', 'A': 'upper', 'c': 'lower'}
-    key_counter, value_counter, iterations, error = Counter(), Counter(), 600, 0.25
-    for _ in range(iterations):
+    key_counter, value_counter, samples_size, error = Counter(), Counter(), 600, 0.25
+    for _ in range(samples_size):
         key_counter.update([rkv_dict.random_key()])
         value_counter.update([rkv_dict.random_value()])
     for key in rkv_dict.keys():
-        assert approximately_equals(target=iterations * (1/6), error=error, value=key_counter[key])
+        assert approximately_equals(target=samples_size * (1/6), error=error, value=key_counter[key])
     for value in rkv_dict.values():
         if value == "lower":
-            assert approximately_equals(target=iterations * (1/2), error=error, value=value_counter[value])
+            assert approximately_equals(target=samples_size * (1/2), error=error, value=value_counter[value])
         else:
-            assert approximately_equals(target=iterations * (1/6), error=error, value=value_counter[value])
+            assert approximately_equals(target=samples_size * (1/6), error=error, value=value_counter[value])
 
 
 def test_random_unique_value_dict():
@@ -103,9 +102,22 @@ def test_random_unique_value_dict():
     assert ruv_dict.value_index_dict == {'lower': 0, 'wildcard': 1, 'punctuation': 2, 'upper': 3}
     assert ruv_dict.value_counter == {'lower': 3, 'punctuation': 1, 'wildcard': 1, 'upper': 1}
     assert ruv_dict.key_value_dict == {'a': 'lower', '*': 'wildcard', '!': 'punctuation', 'b': 'lower', 'A': 'upper', 'c': 'lower'}
-    counter, iterations, error = Counter(), 400, 0.3
-    for _ in range(iterations):
+    counter, samples_size, error = Counter(), 400, 0.3
+    for _ in range(samples_size):
         counter.update([ruv_dict.random_value()])
     for value in ruv_dict.unique_value_list:
-        assert approximately_equals(target=iterations * (1/4), error=error, value=counter[value])
+        assert approximately_equals(target=samples_size * (1/4), error=error, value=counter[value])
+
+
+def test_random_weighted_index():
+    error, samples_size, weights = 0.2, 1000, [1, 2, 3, 4]
+    counter, random_generator = Counter(), RandomWeightedIndex(weights)
+    for _ in range(samples_size):
+        counter.update([random_generator.random_index()])
+    sum_weights = sum(weights)
+    for index, weight in enumerate(weights):
+        assert approximately_equals(target=(samples_size * weight / sum_weights), error=error, value=counter[index])
+
+
+
 

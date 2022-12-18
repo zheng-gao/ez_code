@@ -42,3 +42,15 @@ Counter({'lower': 305, 'punctuation': 104, 'wildcard': 102, 'upper': 89})
 Counter({'lower': 105, 'upper': 101, 'wildcard': 99, 'punctuation': 95})
 ```
 
+## RandomWeightedIndex
+```python
+>>> from collections import Counter
+>>> from ezcode.random import RandomWeightedIndex
+>>> counter = Counter()
+>>> rwi = RandomWeightedIndex([1, 2, 3, 4])
+>>> for _ in range(1000):
+...     counter.update([rwi.random_index()])
+... 
+>>> print(counter)
+Counter({3: 403, 2: 303, 1: 187, 0: 107})
+```

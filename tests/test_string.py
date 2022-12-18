@@ -7,6 +7,8 @@ def test_rotate_char():
     benchmark = "defghijklmnopqrstuvwxyzabcDEFGHIJKLMNOPQRSTUVWXYZABC3456789012!@#$%^&*()"
     for c1, c2 in zip(data, benchmark):
         assert rotate_char(c1, rotate_factor) == c2
+    for c1, c2 in zip(data, benchmark):
+        assert rotate_char(c2, -rotate_factor) == c1
 
 
 def test_substrings():

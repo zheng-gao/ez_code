@@ -270,13 +270,14 @@ class RandomBinaryTree(BinaryTree):
 
 class SegmentTree(BinaryTree):
     """
+        SegmentTree is Complete
         Suitable for repeated queries
         Cannot add or delete items once the tree is built
     """
     def __init__(self, merge: Callable = lambda x, y: x + y, data_list: list = None):
         super().__init__(root=None, data_name="data", left_name="left", right_name="right", algorithm=None)
         self.merge = merge  # sum, max, min, gcd or lambda x, y: ...
-        if data_list is not None:
+        if data_list:
             self.build_tree(data_list=data_list)
 
     def new_node(self, start: int, end: int, data, left=None, right=None):

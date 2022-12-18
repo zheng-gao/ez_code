@@ -1,6 +1,8 @@
 from collections import defaultdict
-from random import choice, randint
+from random import choice, randint, random
+
 from ezcode.array.utils import swap
+from ezcode.tree.binary_tree import SegmentTree
 
 
 def knuth_shuffle(array: list):
@@ -161,5 +163,27 @@ class RandomUniqueValueDict(RandomDict):
     def random_value(self):
         """ O(1), probability = 1 / total number of unique values """
         return choice(self.unique_value_list)
+
+
+class RandomWeightedIndex:
+    def __init__(self, weights: list):
+        self.segment_tree = SegmentTree(lambda x, y: x + y, weights)  # build tree time: O(N)
+
+    def update(self, index: int, weight):
+        """ Time: O(logN) """
+        self.segment_tree.update(index, weight)
+
+    def random_index(self):
+        """ Time: O(logN) """
+        node = self.segment_tree.root
+        while node.left is not None:  # Segment Tree is Complete
+            if node.right is None:
+                node = node.left
+            else:  # [0.0, node.data)
+                node = node.left if random() * node.data < node.left.data else node.right
+        return node.start
+
+
+
 
 
