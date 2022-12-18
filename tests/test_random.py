@@ -117,6 +117,15 @@ def test_random_weighted_index():
     sum_weights = sum(weights)
     for index, weight in enumerate(weights):
         assert approximately_equals(target=(samples_size * weight / sum_weights), error=error, value=counter[index])
+    weights[1], counter = 1, Counter()
+    random_generator.update(index=1, weight=1)
+    sum_weights = sum(weights)
+    for _ in range(samples_size):
+        counter.update([random_generator.random_index()])
+    for index, weight in enumerate(weights):
+        assert approximately_equals(target=(samples_size * weight / sum_weights), error=error, value=counter[index])
+
+
 
 
 

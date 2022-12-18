@@ -52,5 +52,13 @@ Counter({'lower': 105, 'upper': 101, 'wildcard': 99, 'punctuation': 95})
 ...     counter.update([rwi.random_index()])
 ... 
 >>> print(counter)
-Counter({3: 403, 2: 303, 1: 187, 0: 107})
+Counter({3: 413, 2: 307, 1: 176, 0: 104})
+
+>>> counter = Counter()
+>>> rwi.update(index=1, weight=1)
+>>> for _ in range(900):
+...     counter.update([rwi.random_index()])
+... 
+>>> print(counter)
+Counter({3: 389, 2: 312, 0: 102, 1: 97})
 ```
