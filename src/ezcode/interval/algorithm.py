@@ -26,8 +26,8 @@ def merge_intervals(intervals: list[Interval], merge_data: Callable = None) -> l
 
 
 def overlapping_interval_pairs(intervals: list[Interval]) -> list[tuple[Interval, Interval]]:
-    circular_queue, output = deque(), list()
-    for interval in sorted(intervals, key=lambda interval: interval.left):
+    circular_queue, output = deque(), list()  # every pair only visit once, O(P) where P is the number of pairs
+    for interval in sorted(intervals, key=lambda interval: interval.left):  # sort = O(NlogN) < P ~ N^2
         if not interval.is_empty:
             for _ in range(len(circular_queue)):
                 tmp = circular_queue.popleft()
