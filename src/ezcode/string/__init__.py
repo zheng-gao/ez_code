@@ -11,7 +11,7 @@ def rotate_char(char: str, rotation_factor: int) -> str:
     return chr((ord_char - start + rotation_factor) % (end - start + 1) + start) if valid_char else char
 
 
-def substrings(string: str, unique: bool = True, by_size: bool = False) -> list:
+def substrings(string: str, unique: bool = True, by_size: bool = False):
     output = dict() if by_size else list()
     if unique:
         visited = set()
@@ -36,3 +36,8 @@ def substrings(string: str, unique: bool = True, by_size: bool = False) -> list:
                 else:
                     output.append(string[start:start + size])
     return output
+
+
+def text_justification(words: list, line_width: int) -> list:
+    for word in words:
+        pass

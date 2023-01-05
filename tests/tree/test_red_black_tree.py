@@ -1,0 +1,147 @@
+from ezcode.tree.red_black_tree import RedBlackTree
+from ezcode.tree.printer import BinaryTreePrinter
+
+
+class Node:
+    def __init__(self, data=None, is_red=True, parent=None, left=None, right=None):
+        self.data = data
+        self.is_red = is_red
+        self.parent = parent
+        self.left = left
+        self.right = right
+
+
+def test_red_black_tree_validate():
+    assert RedBlackTree().validate()
+    assert RedBlackTree(root=Node(is_red=False)).validate()
+    assert not RedBlackTree(root=Node(is_red=True)).validate()
+    n = [Node(0), Node(1, False), Node(2), Node(3), Node(4, False), Node(5, False), Node(6, False)]
+    n[0].parent = n[1]
+    n[2].parent = n[1]
+    n[1].left = n[0]
+    n[1].right = n[2]
+    n[1].parent = n[3]
+    n[4].parent = n[3]
+    n[3].left = n[1]
+    n[3].right = n[4]
+    n[3].parent = n[5]
+    n[6].parent = n[5]
+    n[5].left = n[3]
+    n[5].right = n[6]
+    t = RedBlackTree(root=n[5])
+    printer = BinaryTreePrinter(node_to_string=lambda n: f"{n.data}|{'R' if n.is_red else 'B'}")
+    assert printer.to_string(t.root) == """
+              ┌─────────────(5|B)─────────────┐  
+      ┌─────(3|R)─────┐                     (6|B)
+  ┌─(1|B)─┐         (4|B)                        
+(0|R)   (2|R)                                    
+"""[1:]
+    assert t.validate()
+    n[1].is_red, n[3].is_red, n[4].is_red = True, False, True
+    assert printer.to_string(t.root) == """
+              ┌─────────────(5|B)─────────────┐  
+      ┌─────(3|B)─────┐                     (6|B)
+  ┌─(1|R)─┐         (4|R)                        
+(0|R)   (2|R)                                    
+"""[1:]
+    assert not t.validate()  # continous red
+    n[0].is_red, n[2].is_red, n[4].is_red = False, False, False
+    assert printer.to_string(t.root) == """
+              ┌─────────────(5|B)─────────────┐  
+      ┌─────(3|B)─────┐                     (6|B)
+  ┌─(1|R)─┐         (4|B)                        
+(0|B)   (2|B)                                    
+"""[1:]
+    assert not t.validate()  # missing black nodes
+    n.extend([Node(7, False), Node(8, False)])
+    n[7].parent = n[6]
+    n[8].parent = n[6]
+    n[6].left = n[7]
+    n[6].right = n[8]
+    assert printer.to_string(t.root) == """
+              ┌─────────────(5|B)─────────────┐          
+      ┌─────(3|B)─────┐               ┌─────(6|B)─────┐  
+  ┌─(1|R)─┐         (4|B)           (7|B)           (8|B)
+(0|B)   (2|B)                                            
+"""[1:]
+    assert not t.validate()  # violate binary search rule
+    n[6].data, n[7].data = n[7].data, n[6].data
+    assert printer.to_string(t.root) == """
+              ┌─────────────(5|B)─────────────┐          
+      ┌─────(3|B)─────┐               ┌─────(7|B)─────┐  
+  ┌─(1|R)─┐         (4|B)           (6|B)           (8|B)
+(0|B)   (2|B)                                            
+"""[1:]
+    assert t.validate()
+
+
+def test_red_black_tree_insert_and_remove():
+    t = RedBlackTree()
+    printer = BinaryTreePrinter(node_to_string=lambda n: f"{n.data}|{'R' if n.is_red else 'B'}")
+    t.insert(5)
+    assert t.validate()
+    assert printer.to_string(t.root) == """
+(5|B)
+"""[1:]
+    t.insert(2)
+    assert t.validate()
+    assert printer.to_string(t.root) == """
+  ┌─(5|B)
+(2|R)    
+"""[1:]
+    t.insert(4)
+    assert t.validate()
+    assert printer.to_string(t.root) == """
+  ┌─(4|B)─┐  
+(2|R)   (5|R)
+"""[1:]
+    t.insert(3)
+    assert t.validate()
+    assert printer.to_string(t.root) == """
+  ┌─────(4|B)─────┐  
+(2|B)─┐         (5|B)
+    (3|R)            
+"""[1:]
+    t.insert(0)
+    assert t.validate()
+    assert printer.to_string(t.root) == """
+      ┌─────(4|B)─────┐  
+  ┌─(2|B)─┐         (5|B)
+(0|R)   (3|R)            
+"""[1:]
+    t.insert(1)
+    assert t.validate()
+    assert printer.to_string(t.root) == """
+  ┌─────(2|B)─────┐      
+(0|B)─┐       ┌─(4|R)─┐  
+    (1|R)   (3|B)   (5|B)
+"""[1:]
+    t.insert(6)
+    assert t.validate()
+    assert printer.to_string(t.root) == """
+  ┌─────────────(2|B)─────────────┐              
+(0|B)─────┐               ┌─────(4|R)─────┐      
+        (1|R)           (3|B)           (5|B)─┐  
+                                            (6|R)
+"""[1:]
+    t.insert(8)
+    assert t.validate()
+    assert printer.to_string(t.root) == """
+  ┌─────────────(2|B)─────────────┐              
+(0|B)─────┐               ┌─────(4|R)─────┐      
+        (1|R)           (3|B)         ┌─(6|B)─┐  
+                                    (5|R)   (8|R)
+"""[1:]
+    t.insert(7)
+    assert t.validate()
+    assert printer.to_string(t.root) == """
+  ┌─────────────(2|B)─────────────┐          
+(0|B)─────┐               ┌─────(6|B)─────┐  
+        (1|R)         ┌─(4|R)─┐       ┌─(8|B)
+                    (3|B)   (5|B)   (7|R)    
+"""[1:]
+    # t.remove(2)
+
+
+
+

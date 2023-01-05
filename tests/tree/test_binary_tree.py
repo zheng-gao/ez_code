@@ -1,8 +1,5 @@
 from ezcode.tree.binary_tree import BinaryTree
 from ezcode.tree.printer import BinaryTreePrinter
-from ezcode.tree.forest import DisjointSets, DependencyForest, CycleExistError
-from ezcode.tree.binary_tree import SegmentTree
-from ezcode.tree.trie import Trie, SuffixTrie
 
 
 class Node:
@@ -10,6 +7,7 @@ class Node:
         self.value = value
         self.left = left
         self.right = right
+
     def __repr__(self):
         return f"Node({self.value})"
 
@@ -97,94 +95,6 @@ def test_serialization():
 def test_deserialization():
     assert s_tree.is_copied(s_tree.deserialize(formatter=int, string=s_tree.serialize()))
     assert c_tree.is_copied(c_tree.deserialize(formatter=int, string=c_tree.serialize()))
-
-
-def test_trie():
-    trie = Trie()
-    for word in ["code", "coke", "coffee", "cod"]:
-        trie.add(word)
-    trie_string = """
-^:4 -> c:4 -> o:4 -> d:2:$ -> e:1:$
-^:4 -> c:4 -> o:4 -> k:1 -> e:1:$
-^:4 -> c:4 -> o:4 -> f:1 -> f:1 -> e:1 -> e:1:$
-"""[1:]
-    assert str(trie) == trie_string
-    assert trie.size() == 4
-    assert trie.longest_common_prefix() == list("co")
-    assert trie.contains("cof")
-    assert not trie.contains("cofe")
-    assert trie.contains("coffee", strict=True)
-    assert not trie.contains("cof", strict=True)
-    assert trie.prefix_wildcard(list("co")) == [list("cod"), list("code"), list("coke"), list("coffee")]
-
-
-def test_suffix_trie():
-    suffix_trie = SuffixTrie("abcd")
-    suffix_trie_string = """
-^:4 -> a:1 -> b:1 -> c:1 -> d:1:$
-^:4 -> b:1 -> c:1 -> d:1:$
-^:4 -> c:1 -> d:1:$
-^:4 -> d:1:$
-"""[1:]
-    assert str(suffix_trie) == suffix_trie_string
-
-
-def test_disjoint_sets():
-    ds = DisjointSets(set([0, 1, 2, 3, 4, 5, 6]))
-    assert ds.get_max_set_size() == 1
-    assert len(ds) == 7
-    assert ds.union(3, 4)
-    assert ds.union(1, 0)
-    assert ds.union(4, 1)
-    assert ds.get_max_set_size() == 4
-    assert not ds.union(4, 0)
-    assert ds.union(5, 2)
-    assert len(ds) == 3
-    assert ds.is_joint(1, 4)
-    assert not ds.is_joint(1, 2)
-    assert ds.get_set_size(2) == 2
-    assert ds.get_set_size(1) == 4
-    assert ds.union(2, 3)
-    assert ds.get_max_set_size() == 6
-    assert len(ds) == 2
-    assert ds.is_joint(1, 2)
-    assert not ds.is_joint(1, 6)
-    assert ds.get_set_size(2) == 6
-    assert ds.get_set_size(6) == 1
-
-
-def test_segment_tree():
-    st = SegmentTree(merge=(lambda x,y:x+y))
-    st.build_tree([2, 1, 5, 3, 4])
-    assert st.query(1, 3) == 9
-    st.update(index=2, data=7)
-    assert st.query(1, 3) == 11
-
-
-def test_dependency_forest():
-    class Node:
-        def __init__(self, name):
-            self.name = name
-            self.children = set()
-
-        def add(self, node):
-            self.children.add(node)
-            return self
-
-    n = [Node(0), Node(1), Node(2), Node(3), Node(4), Node(5)]
-    n[1].add(n[0])
-    n[2].add(n[0]).add(n[1])
-    n[3].add(n[4])
-    n[4].add(n[1]).add(n[5])
-    n[5].add(n[0]).add(n[2])
-    dt = DependencyForest(n)
-    assert dt.serialize() == n
-    n[2].add(n[4])
-    try:
-        dt.serialize()
-        assert False
-    except CycleExistError:
-        assert True
 
 
 def test_remove_bst_node():

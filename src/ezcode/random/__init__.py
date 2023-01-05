@@ -2,7 +2,7 @@ from collections import defaultdict
 from random import choice, randint, random
 
 from ezcode.array.utils import swap
-from ezcode.tree.binary_tree import SegmentTree
+from ezcode.tree.segment_tree import SegmentTree
 
 
 def knuth_shuffle(array: list):
