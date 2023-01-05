@@ -6,7 +6,7 @@ class RedBlackTree(BinaryTree):
         super().__init__(root=root, data_name="data", left_name="left", right_name="right", algorithm=None)
 
     def new_node(self, data, is_red=True, parent=None, left=None, right=None):
-        node = super().new_node(data, left, right)
+        node = super().new_node(data=data, left=left, right=right)
         node.__dict__.update({"is_red": is_red, "parent": parent})
         return node
 
@@ -118,7 +118,7 @@ class RedBlackTree(BinaryTree):
             sibling = parent.right if node == parent.left else parent.left
             if sibling is not None and sibling.is_red:  # node & sibling -> black, parent -> red
                 node.is_red, sibling.is_red, parent.is_red = False, False, True  # might change the color of root
-                node, child = parent.parent, parent  # fix red parent in the next round (move up 2 steps!)
+                node, child = parent.parent, parent  # fix red parent in the next round (move 2 steps up!)
             else:  # sibling is black
                 if node == parent.left:
                     if child == node.right:
