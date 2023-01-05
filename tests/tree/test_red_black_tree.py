@@ -78,70 +78,101 @@ def test_red_black_tree_validate():
 def test_red_black_tree_insert_and_remove():
     t = RedBlackTree()
     printer = BinaryTreePrinter(node_to_string=lambda n: f"{n.data}|{'R' if n.is_red else 'B'}")
-    t.insert(5)
-    assert t.validate()
-    assert printer.to_string(t.root) == """
+    insert_benchmarks = [
+"""
 (5|B)
-"""[1:]
-    t.insert(2)
-    assert t.validate()
-    assert printer.to_string(t.root) == """
+""",
+"""
   ┌─(5|B)
 (2|R)    
-"""[1:]
-    t.insert(4)
-    assert t.validate()
-    assert printer.to_string(t.root) == """
+""",
+"""
   ┌─(4|B)─┐  
 (2|R)   (5|R)
-"""[1:]
-    t.insert(3)
-    assert t.validate()
-    assert printer.to_string(t.root) == """
+""",
+"""
   ┌─────(4|B)─────┐  
 (2|B)─┐         (5|B)
     (3|R)            
-"""[1:]
-    t.insert(0)
-    assert t.validate()
-    assert printer.to_string(t.root) == """
+""",
+"""
       ┌─────(4|B)─────┐  
   ┌─(2|B)─┐         (5|B)
 (0|R)   (3|R)            
-"""[1:]
-    t.insert(1)
-    assert t.validate()
-    assert printer.to_string(t.root) == """
-  ┌─────(2|B)─────┐      
-(0|B)─┐       ┌─(4|R)─┐  
-    (1|R)   (3|B)   (5|B)
-"""[1:]
-    t.insert(6)
-    assert t.validate()
-    assert printer.to_string(t.root) == """
-  ┌─────────────(2|B)─────────────┐              
-(0|B)─────┐               ┌─────(4|R)─────┐      
-        (1|R)           (3|B)           (5|B)─┐  
-                                            (6|R)
-"""[1:]
-    t.insert(8)
-    assert t.validate()
-    assert printer.to_string(t.root) == """
-  ┌─────────────(2|B)─────────────┐              
-(0|B)─────┐               ┌─────(4|R)─────┐      
-        (1|R)           (3|B)         ┌─(6|B)─┐  
-                                    (5|R)   (8|R)
-"""[1:]
-    t.insert(7)
-    assert t.validate()
-    assert printer.to_string(t.root) == """
-  ┌─────────────(2|B)─────────────┐          
-(0|B)─────┐               ┌─────(6|B)─────┐  
-        (1|R)         ┌─(4|R)─┐       ┌─(8|B)
-                    (3|B)   (5|B)   (7|R)    
-"""[1:]
-    # t.remove(2)
-
-
-
+""",
+"""
+          ┌─────────────(4|B)─────────────┐  
+  ┌─────(2|R)─────┐                     (5|B)
+(0|B)─┐         (3|B)                        
+    (1|R)                                    
+""",
+"""
+          ┌─────────────(4|B)─────────────┐          
+  ┌─────(2|R)─────┐                     (5|B)─────┐  
+(0|B)─┐         (3|B)                           (6|R)
+    (1|R)                                            
+""",
+"""
+          ┌─────────────(4|B)─────────────┐          
+  ┌─────(2|R)─────┐               ┌─────(6|B)─────┐  
+(0|B)─┐         (3|B)           (5|R)           (8|R)
+    (1|R)                                            
+""",
+"""
+          ┌─────────────(4|B)─────────────┐          
+  ┌─────(2|R)─────┐               ┌─────(6|R)─────┐  
+(0|B)─┐         (3|B)           (5|B)         ┌─(8|B)
+    (1|R)                                   (7|R)    
+"""
+    ]
+    for i, v in enumerate([5, 2, 4, 3, 0, 1, 6, 8, 7]):
+        t.insert(v)
+        assert t.validate()
+        assert printer.to_string(t.root) == insert_benchmarks[i][1:]
+    remove_benchmarks = [
+"""
+          ┌─────────────(5|B)─────────────┐          
+  ┌─────(2|R)─────┐               ┌─────(7|R)─────┐  
+(0|B)─┐         (3|B)           (6|B)           (8|B)
+    (1|R)                                            
+""",
+"""
+      ┌─────(5|B)─────┐      
+  ┌─(1|R)─┐       ┌─(7|R)─┐  
+(0|B)   (3|B)   (6|B)   (8|B)
+""",
+"""
+  ┌─────(5|B)─────┐      
+(1|B)─┐       ┌─(7|R)─┐  
+    (3|R)   (6|B)   (8|B)
+""",
+"""
+  ┌─────(5|B)─────┐      
+(1|B)─┐         (7|B)─┐  
+    (3|R)           (8|R)
+""",
+"""
+  ┌─────(7|B)─────┐  
+(1|B)─┐         (8|B)
+    (3|R)            
+""",
+"""
+  ┌─(3|B)─┐  
+(1|B)   (7|B)
+""",
+"""
+  ┌─(7|B)
+(1|R)    
+""",
+"""
+(7|B)
+""",
+"""
+None
+"""
+    ]
+    for i, v in enumerate([4, 2, 0, 6, 5, 8, 3, 1, 7]):
+        t.remove(v)
+        assert t.validate()
+        assert printer.to_string(t.root) == remove_benchmarks[i][1:]
 

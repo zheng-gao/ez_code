@@ -113,12 +113,12 @@ class RedBlackTree(BinaryTree):
 
     def _insert_fix_up(self, node, child):
         """ O(logN) """
-        while node != self.root and node.is_red:  # current node is red, black node won't violate the RB tree constraints
-            parent = node.parent                  # parent exists and it is black (no 2 connected red)
+        while node != self.root and node is not None and node.is_red:  # current node is red (fix continuous red)
+            parent = node.parent  # parent exists and it is black (no 2 connected red)
             sibling = parent.right if node == parent.left else parent.left
             if sibling is not None and sibling.is_red:  # node & sibling -> black, parent -> red
                 node.is_red, sibling.is_red, parent.is_red = False, False, True  # might change the color of root
-                node, child = parent, node  # fix red parent in the next round
+                node, child = parent.parent, parent  # fix red parent in the next round (move up 2 steps!)
             else:  # sibling is black
                 if node == parent.left:
                     if child == node.right:
@@ -165,7 +165,8 @@ class RedBlackTree(BinaryTree):
                 self.root = node.left
                 if node.left is not None:
                     node.left.parent = None
-                self.root.is_red = False
+                if self.root is not None:
+                    self.root.is_red = False
                 return
             elif node == node.parent.left:
                 node.parent.left = node.left
@@ -177,7 +178,7 @@ class RedBlackTree(BinaryTree):
                     node.left.parent = node.parent
             if not node.is_red:                                # deleted a black node
                 if node.left is None or not node.left.is_red:  # missing a black node
-                    self._remove_fix_up(node=node.left)
+                    self._remove_fix_up(parent=node.parent, node=node.left)
                 else:
                     node.left.is_red = False
         else:
@@ -195,14 +196,15 @@ class RedBlackTree(BinaryTree):
                     left_most.right.parent = left_most.parent
             if not left_most.is_red:                                       # deleted a black node
                 if left_most.right is None or not left_most.right.is_red:  # missing a black node
-                    self._remove_fix_up(node=left_most.right)
+                    self._remove_fix_up(parent=left_most.parent, node=left_most.right)
                 else:
                     left_most.right.is_red = False
 
-    def _remove_fix_up(self, node):
+    def _remove_fix_up(self, parent, node):
         """ O(logN) """
         while node != self.root and (node is None or not node.is_red):  # current node is black and the path missed a black node
-            parent = node.parent
+            if node is not None:
+                parent = node.parent
             sibling = parent.right if node == parent.left else parent.left
             if sibling is not None and sibling.is_red:  # parent and the sibling's children must be black
                 self._rotate(node=parent, is_left_rotation=True)

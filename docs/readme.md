@@ -1,7 +1,8 @@
 # Contents
-* [array](array/readme.md)
-* [graph](graph/readme.md)
-* [string](string/readme.md)
+* [array](array/README.md)
+* [graph](graph/README.md)
+* [string](string/README.md)
+* [tree](tree/README.md)
 * [grid](grid.md)
 * [hash](hash.md)
 * [heap](heap.md)
@@ -9,5 +10,4 @@
 * [list](list.md)
 * [math](math.md)
 * [random](random.md)
-* [tree](tree.md)
 * [dp](dp.md)
