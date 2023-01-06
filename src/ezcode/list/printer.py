@@ -1,4 +1,4 @@
-from ezcode.list.const import FORWARD_LINK, BACKWARD_LINK, BIDIRECTION_LINK
+from ezcode.list import FORWARD_LINK, BACKWARD_LINK, BIDIRECTION_LINK
 from ezcode.list.algorithm import SinglyLinkedListAlgorithm, DoublyLinkedListAlgorithm
 
 

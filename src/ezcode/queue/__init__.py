@@ -1,4 +1,4 @@
-from ezcode.list.const import BACKWARD_LINK
+from ezcode.list import BACKWARD_LINK
 from ezcode.list.linked_list import DoublyLinkedList
 
 

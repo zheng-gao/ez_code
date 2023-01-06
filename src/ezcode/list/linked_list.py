@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ezcode.list.const import DATA_NAME, NEXT_NAME, PREV_NAME, FORWARD_LINK, BACKWARD_LINK, BIDIRECTION_LINK
+from ezcode.list import DATA_NAME, NEXT_NAME, PREV_NAME, FORWARD_LINK, BACKWARD_LINK, BIDIRECTION_LINK
 from ezcode.list.algorithm import SinglyLinkedListAlgorithm, DoublyLinkedListAlgorithm
 from ezcode.list.printer import SinglyLinkedListPrinter, DoublyLinkedListPrinter
 from ezcode.utils import validate_non_negative_range

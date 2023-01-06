@@ -1,6 +1,6 @@
-import sys
+from sys import maxsize
 from collections import deque
-from ezcode.tree.const import DATA_NAME, LEFT_NAME, RIGHT_NAME
+from ezcode.tree import DATA_NAME, LEFT_NAME, RIGHT_NAME
 
 
 class BinaryTreeAlgorithm:
@@ -104,7 +104,7 @@ class BinaryTreeAlgorithm:
 
     def max_path_sum(self, root):
         if root is None:
-            return -sys.maxsize, 0  # path sum max，max half + node value
+            return -maxsize, 0  # path sum max，max half + node value
         left_max, l_half = self.max_path_sum(root.__dict__[self.left_name])  # left path max, left non-negative max half
         right_max, r_half = self.max_path_sum(root.__dict__[self.right_name])  # right path max, right non-negative max half
         return max(left_max, right_max, root.__dict__[self.data_name] + l_half + r_half), max(root.__dict__[self.data_name] + max(l_half, r_half), 0)

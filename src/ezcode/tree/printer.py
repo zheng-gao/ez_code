@@ -3,8 +3,8 @@ import math
 from collections import deque
 from typing import Callable
 
-from ezcode.tree.const import DATA_NAME, LEFT_NAME, RIGHT_NAME
-from ezcode.tree.const import LEFT_WING, RIGHT_WING, LEFT_WING_HEAD, RIGHT_WING_HEAD, LEFT_WING_TAIL, RIGHT_WING_TAIL
+from ezcode.tree import DATA_NAME, LEFT_NAME, RIGHT_NAME
+from ezcode.tree import LEFT_WING, RIGHT_WING, LEFT_WING_HEAD, RIGHT_WING_HEAD, LEFT_WING_TAIL, RIGHT_WING_TAIL
 
 
 class BinaryTreePrinter:
