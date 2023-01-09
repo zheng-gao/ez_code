@@ -17,7 +17,7 @@ class TreeDict:
             return self.key == other.key
 
         def __str__(self):
-            return f"{self.key},{self.value}"
+            return f"{repr(self.key)},{repr(self.value)}"  # for tree printer
 
         def __repr__(self):
             return f"({repr(self.key)}, {repr(self.value)})"
@@ -34,7 +34,7 @@ class TreeDict:
     def __getitem__(self, key):
         node = self.tree.search(TreeDict.Entry(key, None))
         if node is None:
-            raise KeyError(f"{key} not found")
+            raise KeyError(f"Key Not Found: {key}")
         return node.data.value
 
     def __delitem__(self, key):

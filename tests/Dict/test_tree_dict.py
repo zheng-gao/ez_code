@@ -79,3 +79,19 @@ def test_tree_dict_update_item():
         (5, "Five"), (6, "Six"), (7, "SEVEN"), (8, "Eight"), (9, "Nine")
     ]
 
+
+def test_tree_dict_contains():
+    td = TreeDict([
+        (5, "Five"), (9, "Nine"), (3, "Three"), (8, "Eight"), (6, "Six"),
+        (1, "One"), (0, "Zero"), (4, "Four"), (7, "Seven"), (2, "Two")
+    ])
+    assert 5 in td
+    assert 8 in td
+    assert 10 not in td
+    del td[4]
+    assert 4 not in td
+    del td[5]
+    assert 5 not in td
+
+
+
