@@ -14,10 +14,16 @@
 >>> td[2] = "Two"
 >>> list(td.keys())
 [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+>>> list(td.keys(reverse=True))
+[9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
 >>> list(td.values())
 ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine']
+>>> list(td.values(reverse=True))
+['Nine', 'Eight', 'Seven', 'Six', 'Five', 'Four', 'Three', 'Two', 'One', 'Zero']
 >>> list(td.items())
 [(0, 'Zero'), (1, 'One'), (2, 'Two'), (3, 'Three'), (4, 'Four'), (5, 'Five'), (6, 'Six'), (7, 'Seven'), (8, 'Eight'), (9, 'Nine')]
+>>> list(td.items(reverse=True))
+[(9, 'Nine'), (8, 'Eight'), (7, 'Seven'), (6, 'Six'), (5, 'Five'), (4, 'Four'), (3, 'Three'), (2, 'Two'), (1, 'One'), (0, 'Zero')]
 >>> td.tree.print()
 
                      ┌──────────────────────────(5,'Five'|B)─────────────────────────┐                      
@@ -34,6 +40,7 @@ False
 >>> 8 in td
 False
 >>> td[4] = '4'
+>>> td[5] = None
 >>> del td[3]
 >>> td[9] = 'NINE'
 >>> td[2]
@@ -44,16 +51,21 @@ False
 'NINE'
 >>> list(td.keys())
 [0, 1, 2, 4, 5, 6, 7, 9]
+>>> list(td.keys(reverse=True))
+[9, 7, 6, 5, 4, 2, 1, 0]
+['Zero', 'One', 'Two', '4', None, 'Six', 'Seven', 'NINE']
+>>> list(td.values(reverse=True))
+['NINE', 'Seven', 'Six', None, '4', 'Two', 'One', 'Zero']
 >>> list(td.items())
-[(0, 'Zero'), (1, 'One'), (2, 'Two'), (4, '4'), (5, 'Five'), (6, 'Six'), (7, 'Seven'), (9, 'NINE')]
->>> list(td.values())
-['Zero', 'One', 'Two', '4', 'Five', 'Six', 'Seven', 'NINE']
+[(0, 'Zero'), (1, 'One'), (2, 'Two'), (4, '4'), (5, None), (6, 'Six'), (7, 'Seven'), (9, 'NINE')]
+>>> list(td.items(reverse=True))
+[(9, 'NINE'), (7, 'Seven'), (6, 'Six'), (5, None), (4, '4'), (2, 'Two'), (1, 'One'), (0, 'Zero')]
 >>> td.tree.print()
 
-                     ┌──────────────────────────(5,'Five'|B)─────────────────────────┐                      
-     ┌──────────(1,'One'|R)──────────┐                               ┌─────────(7,'Seven'|B)─────────┐      
-(0,'Zero'|B)                 ┌───(4,'4'|B)                      (6,'Six'|R)                     (9,'NINE'|R)
-                        (2,'Two'|R)                                                                         
+                     ┌───────────────────────────(4,'4'|B)───────────────────────────┐                              
+     ┌──────────(1,'One'|B)──────────┐                               ┌──────────(6,'Six'|B)──────────┐              
+(0,'Zero'|B)                    (2,'Two'|B)                      (5,None|B)                    (7,'Seven'|B)─┐      
+                                                                                                        (9,'NINE'|R)
 
 >>> td[3]
 Traceback (most recent call last):
