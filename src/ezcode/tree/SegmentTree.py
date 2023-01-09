@@ -1,6 +1,6 @@
 from typing import Callable
 
-from ezcode.tree.binary_tree import BinaryTree
+from ezcode.Tree.BinaryTree import BinaryTree
 
 
 class SegmentTree(BinaryTree):
@@ -10,7 +10,7 @@ class SegmentTree(BinaryTree):
         Cannot add or delete items once the tree is built
     """
     def __init__(self, merge: Callable = lambda x, y: x + y, data_list: list = None):
-        super().__init__(root=None, data_name="data", left_name="left", right_name="right", algorithm=None)
+        super().__init__(root=None, data_name="data", left_name="left", right_name="right")
         self.merge = merge  # sum, max, min, gcd or lambda x, y: ...
         if data_list:
             self.build_tree(data_list=data_list)

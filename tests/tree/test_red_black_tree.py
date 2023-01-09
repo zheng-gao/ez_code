@@ -1,5 +1,5 @@
-from ezcode.tree.red_black_tree import RedBlackTree
-from ezcode.tree.printer import BinaryTreePrinter
+from ezcode.Tree.RedBlackTree import RedBlackTree
+from ezcode.Tree.BinaryTree import BinaryTreePrinter
 
 
 class Node:
@@ -175,4 +175,11 @@ None
         t.remove(v)
         assert t.validate()
         assert printer.to_string(t.root) == remove_benchmarks[i][1:]
+
+
+def test_red_black_tree_iterator():
+    benchmark = [4, 2, 0, 6, 5, 8, 3, 1, 7]
+    t = RedBlackTree(benchmark)
+    assert sorted(benchmark) == list(iter(t))
+    assert sorted(benchmark, reverse=True) == list(reversed(t))
 

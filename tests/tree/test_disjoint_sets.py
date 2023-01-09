@@ -1,4 +1,4 @@
-from ezcode.tree.disjoint_sets import DisjointSets
+from ezcode.Tree.disjoint_sets import DisjointSets
 
 def test_disjoint_sets():
     ds = DisjointSets(set([0, 1, 2, 3, 4, 5, 6]))

@@ -1,11 +1,11 @@
-import random
+from random import randint
 
-from ezcode.tree.binary_tree import BinaryTree
+from ezcode.Tree.BinaryTree import BinaryTree
 
 
-class RandomBinaryTree(BinaryTree):
+class RandomTree(BinaryTree):
     def __init__(self, size: int = 0, lower_bound: int = 0, upper_bound: int = 0):
-        super().__init__(root=None, data_name="data", left_name="left", right_name="right", algorithm=None)
+        super().__init__(root=None, data_name="data", left_name="left", right_name="right")
         self.size = size
         self.lower_bound = lower_bound
         self.upper_bound = upper_bound
@@ -13,7 +13,7 @@ class RandomBinaryTree(BinaryTree):
 
     def insert(self, data):
         def add_node_helper(node, data):
-            if random.randint(0, 1) == 0:
+            if randint(0, 1) == 0:
                 if node.left is None:
                     node.left = self.new_node(data)
                 else:
@@ -32,4 +32,4 @@ class RandomBinaryTree(BinaryTree):
     def build_tree(self):
         self.root = None
         for _ in range(self.size):
-            self.insert(random.randint(self.lower_bound, self.upper_bound))
+            self.insert(randint(self.lower_bound, self.upper_bound))

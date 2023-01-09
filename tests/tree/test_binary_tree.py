@@ -1,5 +1,4 @@
-from ezcode.tree.binary_tree import BinaryTree
-from ezcode.tree.printer import BinaryTreePrinter
+from ezcode.Tree.BinaryTree import BinaryTree, BinaryTreePrinter, BinaryTreeIterator
 
 
 class Node:
@@ -39,12 +38,33 @@ def test_printer():
 
 def test_traversals():
     assert [0, 1, 3, 7, 4, 2, 5, 8, 9, 6] == s_tree.traversal("pre-order")
-    assert [1, 3, 7, 4, 0, 2, 5, 8, 9, 6] == s_tree.traversal("in-order")
-    assert [1, 3, 7, 4, 2, 5, 8, 9, 6, 0] == s_tree.traversal("post-order")
+    assert [3, 7, 1, 4, 0, 8, 5, 9, 2, 6] == s_tree.traversal("in-order")
+    assert [7, 3, 4, 1, 8, 9, 5, 6, 2, 0] == s_tree.traversal("post-order")
     assert [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] == s_tree.traversal("level-order")
     level_order_left_most_nodes = list()
     s_tree.algorithm.level_order(s_tree.root, level_order_left_most_nodes, left_most_nodes=True)
     assert [0, 1, 3, 7] == level_order_left_most_nodes
+
+
+def test_iterator():
+    assert [0, 1, 3, 7, 4, 2, 5, 8, 9, 6] == list(BinaryTreeIterator(
+        s_tree.root, mode=BinaryTreeIterator.Mode.PRE_ORDER, is_left_first=True,
+        data_name="value", left_name="left", right_name="right"))          
+    assert [0, 2, 6, 5, 9, 8, 1, 4, 3, 7] == list(BinaryTreeIterator(
+        s_tree.root, mode=BinaryTreeIterator.Mode.PRE_ORDER, is_left_first=False,
+        data_name="value", left_name="left", right_name="right"))
+    assert [3, 7, 1, 4, 0, 8, 5, 9, 2, 6] == list(BinaryTreeIterator(
+        s_tree.root, mode=BinaryTreeIterator.Mode.IN_ORDER, is_left_first=True,
+        data_name="value", left_name="left", right_name="right"))
+    assert [6, 2, 9, 5, 8, 0, 4, 1, 7, 3] == list(BinaryTreeIterator(
+        s_tree.root, mode=BinaryTreeIterator.Mode.IN_ORDER, is_left_first=False,
+        data_name="value", left_name="left", right_name="right"))
+    assert [7, 3, 4, 1, 8, 9, 5, 6, 2, 0] == list(BinaryTreeIterator(
+        s_tree.root, mode=BinaryTreeIterator.Mode.POST_ORDER, is_left_first=True,
+        data_name="value", left_name="left", right_name="right"))
+    assert [6, 9, 8, 5, 2, 4, 7, 3, 1, 0] == list(BinaryTreeIterator(
+        s_tree.root, mode=BinaryTreeIterator.Mode.POST_ORDER, is_left_first=False,
+        data_name="value", left_name="left", right_name="right"))
 
 
 def test_lowest_common_ancestor():

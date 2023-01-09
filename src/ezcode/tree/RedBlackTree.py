@@ -1,9 +1,19 @@
-from ezcode.tree.binary_tree import BinaryTree
+from ezcode.Tree.BinaryTree import BinaryTree, BinaryTreeIterator
 
 
 class RedBlackTree(BinaryTree):
-    def __init__(self, root=None):
-        super().__init__(root=root, data_name="data", left_name="left", right_name="right", algorithm=None)
+    def __init__(self, init_data=None, root=None):
+        super().__init__(
+            root=root,
+            data_name="data", left_name="left", right_name="right",
+            iterator_mode=BinaryTreeIterator.Mode.IN_ORDER, iterator_is_left_first=True
+        )
+        if init_data is not None:
+            for data in init_data:
+                self.insert(data)
+
+    def __contains__(self, data):
+        return self.search(data) is not None
 
     def new_node(self, data, is_red=True, parent=None, left=None, right=None):
         node = super().new_node(data=data, left=left, right=right)
@@ -12,6 +22,15 @@ class RedBlackTree(BinaryTree):
 
     def node_to_string(self, node):
         return f"{node.data}|{'R' if node.is_red else 'B'}"
+
+    def search(self, data):
+        """ O(logN) """
+        node = self.root
+        while node is not None:
+            if data == node.data:
+                break
+            node = node.left if data < node.data else node.right
+        return node
 
     def validate(self) -> bool:
         """
@@ -26,13 +45,13 @@ class RedBlackTree(BinaryTree):
                 return True, 0, 0, 0
             if node.is_red and ((node.left is not None and node.left.is_red) or (node.right is not None and node.right.is_red)):
                 return False, 0, 0, 0
-            if (node.left is not None and node.left.data >= node.data) or (node.right is not None and node.right.data <= node.data):
+            if (node.left is not None and node.data < node.left.data) or (node.right is not None and node.data > node.right.data):
                 return False, 0, 0, 0
             left_is_rb_tree, left_max_path_length, left_min_path_length, left_black_node_count = _validate(node.left)
-            if not left_is_rb_tree or left_max_path_length > (left_min_path_length << 1):
+            if not left_is_rb_tree or (left_min_path_length << 1) < left_max_path_length:
                 return False, 0, 0, 0
             right_is_rb_tree, right_max_path_length, right_min_path_length, right_black_node_count = _validate(node.right)
-            if not right_is_rb_tree or right_max_path_length > (right_min_path_length << 1):
+            if not right_is_rb_tree or (right_min_path_length << 1) < right_max_path_length:
                 return False, 0, 0, 0
             if left_black_node_count != right_black_node_count:
                 return False, 0, 0, 0
@@ -146,18 +165,11 @@ class RedBlackTree(BinaryTree):
                 node.is_red, parent.is_red = False, True  # node -> black, parent -> red, exit while loop <─┘
         self.root.is_red = False  # red sibling process might change the color of root
 
-    def get_node(self, data):
-        """ O(logN) """
-        node = self.root
-        while node is not None:
-            if data == node.data:
-                break
-            node = node.left if data < node.data else node.right
-        return node
-
     def remove(self, data):
+        self.remove_node(self.search(data))
+
+    def remove_node(self, node):
         """ O(logN) """
-        node = self.get_node(data)
         if node is None:
             return
         if node.right is None:
@@ -272,5 +284,3 @@ class RedBlackTree(BinaryTree):
                      ┌─(N/B)─┐    ┌─(S/B)─┐                ┌─(N/B)─┐    ┌─(S/R)─┐        ┌─(x/B)─┐    ┌─(S/R)─┐
                     (x)     (x) (a/B)   (b/B)             (x)     (x) (a/B)   (b/B)     (x)     (x) (a/B)   (b/B)
                     """
-
-

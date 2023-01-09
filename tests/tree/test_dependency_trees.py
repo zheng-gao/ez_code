@@ -1,4 +1,4 @@
-from ezcode.tree.dependency_trees import DependencyTrees, CycleExistError
+from ezcode.Tree.dependency_trees import DependencyTrees, CycleExistError
 
 
 def test_dependency_trees():

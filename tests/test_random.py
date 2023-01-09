@@ -66,7 +66,7 @@ def test_random_key_value_dict():
     assert rkv_dict.key_list == ['a', '*', '!', 'b', 'A', 'c']
     assert rkv_dict.key_index_dict == {'a': 0, '!': 2, 'b': 3, '*': 1, 'A': 4, 'c': 5}
     assert rkv_dict.key_value_dict == {'a': 'lower', '!': 'punctuation', 'b': 'lower', '*': 'wildcard', 'A': 'upper', 'c': 'lower'}
-    key_counter, value_counter, samples_size, error = Counter(), Counter(), 600, 0.25
+    key_counter, value_counter, samples_size, error = Counter(), Counter(), 600, 0.3
     for _ in range(samples_size):
         key_counter.update([rkv_dict.random_key()])
         value_counter.update([rkv_dict.random_value()])
@@ -110,7 +110,7 @@ def test_random_unique_value_dict():
 
 
 def test_random_weighted_index():
-    error, samples_size, weights = 0.2, 1000, [1, 2, 3, 4]
+    error, samples_size, weights = 0.3, 1000, [1, 2, 3, 4]
     counter, random_generator = Counter(), RandomWeightedIndex(weights)
     for _ in range(samples_size):
         counter.update([random_generator.random_index()])

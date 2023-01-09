@@ -1,4 +1,4 @@
-from ezcode.tree.segment_tree import SegmentTree
+from ezcode.Tree.SegmentTree import SegmentTree
 
 
 def test_segment_tree():

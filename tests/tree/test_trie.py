@@ -1,4 +1,4 @@
-from ezcode.tree.trie import Trie, SuffixTrie
+from ezcode.Tree.trie import Trie, SuffixTrie
 
 
 def test_trie():

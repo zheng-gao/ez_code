@@ -9,7 +9,7 @@
 ...         self.l = l
 ...         self.r = r
 ... 
->>> from ezcode.tree.printer import BinaryTreePrinter
+>>> from ezcode.tree.BinaryTree import BinaryTreePrinter
 >>> root = Node(0, Node(1, Node(3, r=Node(7)), Node(4)), Node(2, Node(5, Node(8), Node(9)), Node(6)))
 >>> printer = BinaryTreePrinter(data_name="v", left_name="l", right_name="r")
 >>> printer.print(root)
@@ -26,7 +26,7 @@
 ### Traversals
 
 ```python
->>> from ezcode.tree.binary_tree import BinaryTree
+>>> from ezcode.tree.BinaryTree import BinaryTree
 >>> root = Node(0, Node(1, Node(3, r=Node(7)), Node(4)), Node(2, Node(5, Node(8), Node(9)), Node(6)))
 >>> tree = BinaryTree(root, data_name="v", left_name="l", right_name="r")
 >>> tree.print()
