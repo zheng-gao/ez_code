@@ -14,14 +14,17 @@ def test_tree_dict_set_get_item():
     td[7] = "Seven"
     td[2] = "Two"
     assert list(td.keys()) == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-    assert list(td.values()) == [
-        'Zero', 'One', 'Two', 'Three', 'Four',
-        'Five', 'Six', 'Seven', 'Eight', 'Nine'
-    ]
+    assert list(td.keys(reverse=True)) == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9][::-1]
+    assert list(td.values()) == ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine']
+    assert list(td.values(reverse=True)) == ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'][::-1]
     assert list(td.items()) == [
         (0, "Zero"), (1, "One"), (2, "Two"), (3, "Three"), (4, "Four"),
         (5, "Five"), (6, "Six"), (7, "Seven"), (8, "Eight"), (9, "Nine")
     ]
+    assert list(td.items(reverse=True)) == [
+        (0, "Zero"), (1, "One"), (2, "Two"), (3, "Three"), (4, "Four"),
+        (5, "Five"), (6, "Six"), (7, "Seven"), (8, "Eight"), (9, "Nine")
+    ][::-1]
     for key, value in zip(
         [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
         ['Zero', 'One', 'Two', 'Three', 'Four','Five', 'Six', 'Seven', 'Eight', 'Nine']
@@ -50,8 +53,11 @@ def test_tree_dict_delete_item():
     del td[0]
     del td[9]
     assert list(td.keys()) == [1, 2, 4, 6, 8]
+    assert list(td.keys(reverse=True)) == [1, 2, 4, 6, 8][::-1]
     assert list(td.values()) == ['One', 'Two', 'Four', 'Six', 'Eight']
+    assert list(td.values(reverse=True)) == ['One', 'Two', 'Four', 'Six', 'Eight'][::-1]
     assert list(td.items()) == [(1, "One"), (2, "Two"), (4, "Four"), (6, "Six"), (8, "Eight")]
+    assert list(td.items(reverse=True)) == [(1, "One"), (2, "Two"), (4, "Four"), (6, "Six"), (8, "Eight")][::-1]
     td.clear()
     assert list(td.keys()) == []
     assert list(td.values()) == []

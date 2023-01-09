@@ -30,12 +30,15 @@ class BinaryTreeIterator:
         right_name: str = RIGHT_NAME
     ):
         self.root = root
-        self.mode = mode
-        self.is_left_first = is_left_first
         self.data_name = data_name
         self.left_name = left_name
         self.right_name = right_name
-        self.generator = self._traverse(root)
+        if mode == BinaryTreeIterator.Mode.DFS or mode == BinaryTreeIterator.Mode.PRE_ORDER:
+            self.generator = self._pre_order_left_first(root) if is_left_first else self._pre_order_right_first(root)
+        elif mode == BinaryTreeIterator.Mode.IN_ORDER:
+            self.generator = self._in_order_left_first(root) if is_left_first else self._in_order_right_first(root)
+        elif mode == BinaryTreeIterator.Mode.POST_ORDER:
+            self.generator = self._post_order_left_first(root) if is_left_first else self._post_order_right_first(root)
 
     def __iter__(self):
         return self
@@ -43,16 +46,41 @@ class BinaryTreeIterator:
     def __next__(self):
         return next(self.generator).__dict__[self.data_name]
 
-    def _traverse(self, node):
+    def _pre_order_left_first(self, node):
         if node is not None:
-            if self.mode == BinaryTreeIterator.Mode.DFS or self.mode == BinaryTreeIterator.Mode.PRE_ORDER:
-                yield node
-            yield from self._traverse(node.__dict__[self.left_name if self.is_left_first else self.right_name])
-            if self.mode == BinaryTreeIterator.Mode.IN_ORDER:
-                yield node
-            yield from self._traverse(node.__dict__[self.right_name if self.is_left_first else self.left_name])
-            if self.mode == BinaryTreeIterator.Mode.POST_ORDER:
-                yield node
+            yield node
+            yield from self._pre_order_left_first(node.__dict__[self.left_name])
+            yield from self._pre_order_left_first(node.__dict__[self.right_name])
+
+    def _pre_order_right_first(self, node):
+        if node is not None:
+            yield node
+            yield from self._pre_order_right_first(node.__dict__[self.right_name])
+            yield from self._pre_order_right_first(node.__dict__[self.left_name])
+
+    def _in_order_left_first(self, node):
+        if node is not None:
+            yield from self._in_order_left_first(node.__dict__[self.left_name])
+            yield node
+            yield from self._in_order_left_first(node.__dict__[self.right_name])
+
+    def _in_order_right_first(self, node):
+        if node is not None:
+            yield from self._in_order_right_first(node.__dict__[self.right_name])
+            yield node
+            yield from self._in_order_right_first(node.__dict__[self.left_name])
+
+    def _post_order_left_first(self, node):
+        if node is not None:
+            yield from self._post_order_left_first(node.__dict__[self.left_name])
+            yield from self._post_order_left_first(node.__dict__[self.right_name])
+            yield node
+
+    def _post_order_right_first(self, node):
+        if node is not None:
+            yield from self._post_order_right_first(node.__dict__[self.right_name])
+            yield from self._post_order_right_first(node.__dict__[self.left_name])
+            yield node
 
 
 class BinaryTree(object):
