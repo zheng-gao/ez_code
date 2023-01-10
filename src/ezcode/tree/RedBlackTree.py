@@ -1,19 +1,12 @@
-from ezcode.Tree.BinaryTree import BinaryTree, BinaryTreeIterator
+from ezcode.Tree.BinarySearchTree import BinarySearchTree
 
 
-class RedBlackTree(BinaryTree):
+class RedBlackTree(BinarySearchTree):
     def __init__(self, init_data=None, root=None):
         super().__init__(
-            root=root,
+            init_data=init_data, root=root,
             data_name="data", left_name="left", right_name="right",
-            iterator_mode=BinaryTreeIterator.Mode.IN_ORDER, iterator_is_left_first=True
         )
-        if init_data is not None:
-            for data in init_data:
-                self.insert(data)
-
-    def __contains__(self, data):
-        return self.search(data) is not None
 
     def new_node(self, data, is_red=True, parent=None, left=None, right=None):
         node = super().new_node(data=data, left=left, right=right)
@@ -22,15 +15,6 @@ class RedBlackTree(BinaryTree):
 
     def node_to_string(self, node):
         return f"{node.data}|{'R' if node.is_red else 'B'}"
-
-    def search(self, data):
-        """ O(logN) """
-        node = self.root
-        while node is not None:
-            if data == node.data:
-                break
-            node = node.left if data < node.data else node.right
-        return node
 
     def validate(self) -> bool:
         """
@@ -44,8 +28,6 @@ class RedBlackTree(BinaryTree):
             if node is None:
                 return True, 0, 0, 0
             if node.is_red and ((node.left is not None and node.left.is_red) or (node.right is not None and node.right.is_red)):
-                return False, 0, 0, 0
-            if (node.left is not None and node.data < node.left.data) or (node.right is not None and node.data > node.right.data):
                 return False, 0, 0, 0
             left_is_rb_tree, left_max_path_length, left_min_path_length, left_black_node_count = _validate(node.left)
             if not left_is_rb_tree or (left_min_path_length << 1) < left_max_path_length:
@@ -64,7 +46,9 @@ class RedBlackTree(BinaryTree):
             return True
         if self.root.is_red:
             return False
-        return _validate(self.root)[0]
+        if super().validate():
+            return _validate(self.root)[0]
+        return False
 
     def _rotate(self, node, is_left_rotation=True):
         """ O(1) """
@@ -170,47 +154,46 @@ class RedBlackTree(BinaryTree):
 
     def remove_node(self, node):
         """ O(logN) """
-        if node is None:
-            return
-        if node.right is None:
-            if node == self.root:
-                self.root = node.left
-                if node.left is not None:
-                    node.left.parent = None
-                if self.root is not None:
-                    self.root.is_red = False
-                return
-            elif node == node.parent.left:
-                node.parent.left = node.left
-                if node.left is not None:
-                    node.left.parent = node.parent
-            else:
-                node.parent.right = node.left
-                if node.left is not None:
-                    node.left.parent = node.parent
-            if not node.is_red:                                # deleted a black node
-                if node.left is None or not node.left.is_red:  # missing a black node
-                    self._remove_fix_up(parent=node.parent, node=node.left)
+        if node is not None:
+            if node.right is None:
+                if node == self.root:
+                    self.root = node.left
+                    if node.left is not None:
+                        node.left.parent = None
+                    if self.root is not None:
+                        self.root.is_red = False
+                    return
+                elif node == node.parent.left:
+                    node.parent.left = node.left
+                    if node.left is not None:
+                        node.left.parent = node.parent
                 else:
-                    node.left.is_red = False
-        else:
-            left_most = node.right             # left most node of the right tree
-            while left_most.left is not None:  # left_most only have the right child
-                left_most = left_most.left
-            left_most.data, node.data = node.data, left_most.data  # swap data then delete left most, color untouched
-            if left_most == node.right:
-                node.right = left_most.right
-                if left_most.right is not None:
-                    left_most.right.parent = node
+                    node.parent.right = node.left
+                    if node.left is not None:
+                        node.left.parent = node.parent
+                if not node.is_red:                                # deleted a black node
+                    if node.left is None or not node.left.is_red:  # missing a black node
+                        self._remove_fix_up(parent=node.parent, node=node.left)
+                    else:
+                        node.left.is_red = False
             else:
-                left_most.parent.left = left_most.right
-                if left_most.right is not None:
-                    left_most.right.parent = left_most.parent
-            if not left_most.is_red:                                       # deleted a black node
-                if left_most.right is None or not left_most.right.is_red:  # missing a black node
-                    self._remove_fix_up(parent=left_most.parent, node=left_most.right)
+                left_most = node.right             # left most node of the right tree
+                while left_most.left is not None:  # left_most only have the right child
+                    left_most = left_most.left
+                left_most.data, node.data = node.data, left_most.data  # swap data then delete left most, color untouched
+                if left_most == node.right:
+                    node.right = left_most.right
+                    if left_most.right is not None:
+                        left_most.right.parent = node
                 else:
-                    left_most.right.is_red = False
+                    left_most.parent.left = left_most.right
+                    if left_most.right is not None:
+                        left_most.right.parent = left_most.parent
+                if not left_most.is_red:                                       # deleted a black node
+                    if left_most.right is None or not left_most.right.is_red:  # missing a black node
+                        self._remove_fix_up(parent=left_most.parent, node=left_most.right)
+                    else:
+                        left_most.right.is_red = False
 
     def _remove_fix_up(self, parent, node):
         """ O(logN) """

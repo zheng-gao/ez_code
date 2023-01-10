@@ -125,16 +125,15 @@ class BinaryTree(object):
             right_name=self.right_name
         )
 
+    def __contains__(self, data) -> bool:
+        return any(d == data for d in iter(self))
+
     def clear(self):
         self.root = None
 
     def new_node(self, data, left=None, right=None):
         node = self.BinaryTreeNode()
-        node.__dict__ = {
-            self.data_name: data,
-            self.left_name: left,
-            self.right_name: right
-        }
+        node.__dict__ = {self.data_name: data, self.left_name: left, self.right_name: right}
         return node
 
     def node_to_string(self, node):
@@ -158,19 +157,64 @@ class BinaryTree(object):
     def set_right(self, node, right):
         node.__dict__[self.right_name] = right
 
+    def get_left_most(self, node):
+        """ O(logN) """
+        if node is None:
+            raise ValueError(f"Invalid node: {node}")
+        while self.get_left(node) is not None:
+            node = self.get_left(node)
+        return node
+
+    def get_right_most(self, node):
+        """ O(logN) """
+        if node is None:
+            raise ValueError(f"Invalid node: {node}")
+        while self.get_right(node) is not None:
+            node = self.get_right(node)
+        return node
+
     def print(self,
-        left_wing: str = LEFT_WING, right_wing: str = RIGHT_WING,
-        left_wing_head: str = LEFT_WING_HEAD, right_wing_head: str = RIGHT_WING_HEAD,
-        left_wing_tail: str = LEFT_WING_TAIL, right_wing_tail: str = RIGHT_WING_TAIL,
+        left_wing: str = LEFT_WING,
+        left_wing_head: str = LEFT_WING_HEAD,
+        left_wing_tail: str = LEFT_WING_TAIL,
+        right_wing: str = RIGHT_WING,
+        right_wing_head: str = RIGHT_WING_HEAD,
+        right_wing_tail: str = RIGHT_WING_TAIL,
         node_to_string: Callable = None
     ):
-        BinaryTreePrinter(
-            data_name=self.data_name, left_name=self.left_name, right_name=self.right_name,
-            left_wing=left_wing, right_wing=right_wing,
-            left_wing_head=left_wing_head, right_wing_head=right_wing_head,
-            left_wing_tail=left_wing_tail, right_wing_tail=right_wing_tail,
+        print(
+            "\n" + self.to_string(
+                left_wing=left_wing,
+                left_wing_head=left_wing_head,
+                left_wing_tail=left_wing_tail,
+                right_wing=right_wing,
+                right_wing_head=right_wing_head,
+                right_wing_tail=right_wing_tail,
+                node_to_string=node_to_string
+            )
+        )
+
+    def to_string(self,
+        left_wing: str = LEFT_WING,
+        left_wing_head: str = LEFT_WING_HEAD,
+        left_wing_tail: str = LEFT_WING_TAIL,
+        right_wing: str = RIGHT_WING,
+        right_wing_head: str = RIGHT_WING_HEAD,
+        right_wing_tail: str = RIGHT_WING_TAIL,
+        node_to_string: Callable = None
+    ):
+        return BinaryTreePrinter(
+            data_name=self.data_name,
+            left_name=self.left_name,
+            right_name=self.right_name,
+            left_wing=left_wing,
+            left_wing_head=left_wing_head,
+            left_wing_tail=left_wing_tail,
+            right_wing=right_wing,
+            right_wing_head=right_wing_head,
+            right_wing_tail=right_wing_tail,
             node_to_string=self.node_to_string if node_to_string is None else node_to_string
-        ).print(self.root)
+        ).to_string(self.root)
 
     def depth(self):
         return self.algorithm.depth(self.root)
@@ -279,68 +323,6 @@ class BinaryTree(object):
                 other_queue.append(self.get_left(other_node))
                 other_queue.append(self.get_right(other_node))
         return BinaryTree(other_root, self.data_name, self.left_name, self.right_name)
-
-    def remove_bst_node(self, data):
-        # self.root = self.algorithm.remove_bst_node(self.root, data)
-        parent, node = None, self.root
-        while node is not None:
-            if data < self.get_data(node):
-                parent, node = node, self.get_left(node)
-            elif data > self.get_data(node):
-                parent, node = node, self.get_right(node)
-            else:
-                if self.get_right(node) is None:
-                    left_child = self.get_left(node)
-                    if parent is None:
-                        self.root = left_child
-                    elif node == self.get_left(parent):
-                        self.set_left(parent, left_child)
-                    else:  # node == self.get_right(parent)
-                        self.set_right(parent, left_child)
-                else:  # left most node in the right subtree
-                    left_most_parent, left_most = node, self.get_right(node)
-                    while left_most is not None and self.get_left(left_most) is not None:
-                        left_most_parent = left_most
-                        left_most = self.get_left(left_most)
-                    self.set_data(node, self.get_data(left_most))  # swap data then delete left_most
-                    right_child = self.get_right(left_most)  # left_most only have the right child
-                    if left_most == self.get_right(node):
-                        self.set_right(node, right=right_child)  # left_most_parent == node
-                    else:
-                        self.set_left(left_most_parent, left=right_child)
-                break
-
-    def remove_bst_nodes(self, data_lower_bound, data_upper_bound):
-        if data_upper_bound < data_lower_bound:
-            raise ValueError(f"data_upper_bound {data_upper_bound} is smaller than data_lower_bound {data_lower_bound}")
-        parent, node = None, self.root
-        while node is not None:
-            data = self.get_data(node)
-            if data < data_lower_bound:
-                parent, node = node, self.get_right(node)
-            elif data_upper_bound < data:
-                parent, node = node, self.get_left(node)
-            else:
-                if self.get_right(node) is None:
-                    left_child = self.get_left(node)
-                    if parent is None:
-                        self.root = left_child
-                    elif node == self.get_left(parent):
-                        self.set_left(parent, left_child)
-                    else:  # node == self.get_right(parent)
-                        self.set_right(parent, left_child)
-                    node = left_child
-                else:  # left_most only have the right child
-                    left_most_parent, left_most = node, self.get_right(node)
-                    while left_most is not None and self.get_left(left_most) is not None:
-                        left_most_parent = left_most
-                        left_most = self.get_left(left_most)
-                    self.set_data(node, self.get_data(left_most))  # swap data then delete left_most
-                    right_child = self.get_right(left_most)  # left_most only have the right child
-                    if left_most == self.get_right(node):
-                        self.set_right(node, right=right_child)  # left_most_parent == node
-                    else:
-                        self.set_left(left_most_parent, left=right_child)
 
 
 class BinaryTreeAlgorithm:
@@ -476,20 +458,25 @@ class BinaryTreePrinter:
             self.node = node
 
     def __init__(self,
-        data_name: str = DATA_NAME, left_name: str = LEFT_NAME, right_name: str = RIGHT_NAME,
-        left_wing: str = LEFT_WING, right_wing: str = RIGHT_WING,
-        left_wing_head: str = LEFT_WING_HEAD, right_wing_head: str = RIGHT_WING_HEAD,
-        left_wing_tail: str = LEFT_WING_TAIL, right_wing_tail: str = RIGHT_WING_TAIL,
+        data_name: str = DATA_NAME,
+        left_name: str = LEFT_NAME,
+        right_name: str = RIGHT_NAME,
+        left_wing: str = LEFT_WING,
+        left_wing_head: str = LEFT_WING_HEAD,
+        left_wing_tail: str = LEFT_WING_TAIL,
+        right_wing: str = RIGHT_WING,
+        right_wing_head: str = RIGHT_WING_HEAD,
+        right_wing_tail: str = RIGHT_WING_TAIL,
         node_to_string: Callable = None
     ):
         self.data_name = data_name
         self.left_name = left_name
         self.right_name = right_name
         self.left_wing = left_wing
-        self.right_wing = right_wing
         self.left_wing_head = left_wing_head
-        self.right_wing_head = right_wing_head
         self.left_wing_tail = left_wing_tail
+        self.right_wing = right_wing
+        self.right_wing_head = right_wing_head
         self.right_wing_tail = right_wing_tail
         self.tree_depth = 0
         self.max_data_string_length = 0

@@ -1,5 +1,4 @@
 from ezcode.Tree.RedBlackTree import RedBlackTree
-from ezcode.Tree.BinaryTree import BinaryTreePrinter
 
 
 class Node:
@@ -29,8 +28,7 @@ def test_red_black_tree_validate():
     n[5].left = n[3]
     n[5].right = n[6]
     t = RedBlackTree(root=n[5])
-    printer = BinaryTreePrinter(node_to_string=lambda n: f"{n.data}|{'R' if n.is_red else 'B'}")
-    assert printer.to_string(t.root) == """
+    assert t.to_string() == """
               ┌─────────────(5|B)─────────────┐  
       ┌─────(3|R)─────┐                     (6|B)
   ┌─(1|B)─┐         (4|B)                        
@@ -38,7 +36,7 @@ def test_red_black_tree_validate():
 """[1:]
     assert t.validate()
     n[1].is_red, n[3].is_red, n[4].is_red = True, False, True
-    assert printer.to_string(t.root) == """
+    assert t.to_string() == """
               ┌─────────────(5|B)─────────────┐  
       ┌─────(3|B)─────┐                     (6|B)
   ┌─(1|R)─┐         (4|R)                        
@@ -46,7 +44,7 @@ def test_red_black_tree_validate():
 """[1:]
     assert not t.validate()  # continous red
     n[0].is_red, n[2].is_red, n[4].is_red = False, False, False
-    assert printer.to_string(t.root) == """
+    assert t.to_string() == """
               ┌─────────────(5|B)─────────────┐  
       ┌─────(3|B)─────┐                     (6|B)
   ┌─(1|R)─┐         (4|B)                        
@@ -54,19 +52,24 @@ def test_red_black_tree_validate():
 """[1:]
     assert not t.validate()  # missing black nodes
     n.extend([Node(7, False), Node(8, False)])
-    n[7].parent = n[6]
+    n[3].right = None
+    n[4].parent = n[6]
     n[8].parent = n[6]
-    n[6].left = n[7]
+    n[6].left = n[4]
     n[6].right = n[8]
-    assert printer.to_string(t.root) == """
+    assert t.to_string() == """
               ┌─────────────(5|B)─────────────┐          
-      ┌─────(3|B)─────┐               ┌─────(6|B)─────┐  
-  ┌─(1|R)─┐         (4|B)           (7|B)           (8|B)
+      ┌─────(3|B)                     ┌─────(6|B)─────┐  
+  ┌─(1|R)─┐                         (4|B)           (8|B)
 (0|B)   (2|B)                                            
 """[1:]
-    assert not t.validate()  # violate binary search rule
+    assert not t.validate()  # (4|B) violate binary search rule
+    n[4].parent = n[3]
+    n[3].right = n[4]
+    n[6].left = n[7]
+    n[7].parent = n[6]
     n[6].data, n[7].data = n[7].data, n[6].data
-    assert printer.to_string(t.root) == """
+    assert t.to_string() == """
               ┌─────────────(5|B)─────────────┐          
       ┌─────(3|B)─────┐               ┌─────(7|B)─────┐  
   ┌─(1|R)─┐         (4|B)           (6|B)           (8|B)
@@ -77,7 +80,6 @@ def test_red_black_tree_validate():
 
 def test_red_black_tree_insert_and_remove():
     t = RedBlackTree()
-    printer = BinaryTreePrinter(node_to_string=lambda n: f"{n.data}|{'R' if n.is_red else 'B'}")
     insert_benchmarks = [
 """
 (5|B)
@@ -128,7 +130,7 @@ def test_red_black_tree_insert_and_remove():
     for i, v in enumerate([5, 2, 4, 3, 0, 1, 6, 8, 7]):
         t.insert(v)
         assert t.validate()
-        assert printer.to_string(t.root) == insert_benchmarks[i][1:]
+        assert t.to_string() == insert_benchmarks[i][1:]
     remove_benchmarks = [
 """
           ┌─────────────(5|B)─────────────┐          
@@ -174,7 +176,7 @@ None
     for i, v in enumerate([4, 2, 0, 6, 5, 8, 3, 1, 7]):
         t.remove(v)
         assert t.validate()
-        assert printer.to_string(t.root) == remove_benchmarks[i][1:]
+        assert t.to_string() == remove_benchmarks[i][1:]
 
 
 def test_red_black_tree_iterator():
