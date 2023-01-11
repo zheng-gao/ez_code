@@ -43,23 +43,21 @@ def test_traversals():
 
 def test_iterator():
     assert [0, 1, 3, 7, 4, 2, 5, 8, 9, 6] == list(BinaryTreeIterator(
-        s_tree.root, mode=BinaryTreeIterator.Mode.PRE_ORDER, is_left_first=True,
-        data_name="value", left_name="left", right_name="right"))          
+        s_tree.root, mode=BinaryTreeIterator.Mode.PRE_ORDER, is_left_first=True, data_name="value"))          
     assert [0, 2, 6, 5, 9, 8, 1, 4, 3, 7] == list(BinaryTreeIterator(
-        s_tree.root, mode=BinaryTreeIterator.Mode.PRE_ORDER, is_left_first=False,
-        data_name="value", left_name="left", right_name="right"))
+        s_tree.root, mode=BinaryTreeIterator.Mode.PRE_ORDER, is_left_first=False, data_name="value"))  
     assert [3, 7, 1, 4, 0, 8, 5, 9, 2, 6] == list(BinaryTreeIterator(
-        s_tree.root, mode=BinaryTreeIterator.Mode.IN_ORDER, is_left_first=True,
-        data_name="value", left_name="left", right_name="right"))
+        s_tree.root, mode=BinaryTreeIterator.Mode.IN_ORDER, is_left_first=True, data_name="value"))  
     assert [6, 2, 9, 5, 8, 0, 4, 1, 7, 3] == list(BinaryTreeIterator(
-        s_tree.root, mode=BinaryTreeIterator.Mode.IN_ORDER, is_left_first=False,
-        data_name="value", left_name="left", right_name="right"))
+        s_tree.root, mode=BinaryTreeIterator.Mode.IN_ORDER, is_left_first=False, data_name="value"))  
     assert [7, 3, 4, 1, 8, 9, 5, 6, 2, 0] == list(BinaryTreeIterator(
-        s_tree.root, mode=BinaryTreeIterator.Mode.POST_ORDER, is_left_first=True,
-        data_name="value", left_name="left", right_name="right"))
+        s_tree.root, mode=BinaryTreeIterator.Mode.POST_ORDER, is_left_first=True, data_name="value"))  
     assert [6, 9, 8, 5, 2, 4, 7, 3, 1, 0] == list(BinaryTreeIterator(
-        s_tree.root, mode=BinaryTreeIterator.Mode.POST_ORDER, is_left_first=False,
-        data_name="value", left_name="left", right_name="right"))
+        s_tree.root, mode=BinaryTreeIterator.Mode.POST_ORDER, is_left_first=False, data_name="value"))  
+    assert [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] == list(BinaryTreeIterator(
+        s_tree.root, mode=BinaryTreeIterator.Mode.BFS, is_left_first=True, data_name="value"))  
+    assert [0, 2, 1, 6, 5, 4, 3, 9, 8, 7] == list(BinaryTreeIterator(
+        s_tree.root, mode=BinaryTreeIterator.Mode.BFS, is_left_first=False, data_name="value"))  
 
 
 def test_contains():
@@ -85,10 +83,10 @@ def test_subtree_stats():
     assert c_tree.subtree('avg-max') == 10
 
 
-def test_depth():
-    assert s_tree.depth() == 4
+def test_height():
+    assert s_tree.height() == 4
     assert s_tree.algorithm.level_order(s_tree.root) == 4
-    assert c_tree.depth() == 4
+    assert c_tree.height() == 4
     assert c_tree.algorithm.level_order(c_tree.root) == 4
 
 

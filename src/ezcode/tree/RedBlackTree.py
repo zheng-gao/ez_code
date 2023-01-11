@@ -13,7 +13,7 @@ class RedBlackTree(BinarySearchTree):
         node.__dict__.update({"is_red": is_red, "parent": parent})
         return node
 
-    def node_to_string(self, node):
+    def node_to_string(self, node) -> str:
         return f"{node.data}|{'R' if node.is_red else 'B'}"
 
     def validate(self) -> bool:
@@ -46,7 +46,7 @@ class RedBlackTree(BinarySearchTree):
             return True
         if self.root.is_red:
             return False
-        if super().validate():
+        if super().validate():  # Binary Searchable
             return _validate(self.root)[0]
         return False
 

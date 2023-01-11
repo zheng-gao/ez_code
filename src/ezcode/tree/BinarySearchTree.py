@@ -18,29 +18,39 @@ class BinarySearchTree(BinaryTree):
         return self.search(data) is not None
 
     def validate(self) -> bool:
-        def _validate(node, left_most_node, right_most_node, lower_bound, upper_bound) -> bool:
+        def _validate(node, left_most, right_most, lower_bound, upper_bound) -> bool:
             if node is None:
                 return True
-            if (node != left_most_node and not (lower_bound < node.data)) or (node != right_most_node and not (node.data < upper_bound)):
+            if node != left_most and not (lower_bound < node.data):
                 return False  # node.data should be within boundaries
-            valid_left = _validate(node.left, left_most_node, right_most_node, lower_bound, node.data)
-            valid_right = _validate(node.right, left_most_node, right_most_node, node.data, upper_bound)
+            if node != right_most and not (node.data < upper_bound):
+                return False  # node.data should be within boundaries
+            valid_left = _validate(node.left, left_most, right_most, lower_bound, node.data)
+            valid_right = _validate(node.right, left_most, right_most, node.data, upper_bound)
             return valid_left and valid_right
 
         if self.root is None:
             return True
-        left_most_node = self.get_left_most(self.root)
-        right_most_node = self.get_right_most(self.root)
-        return _validate(self.root, left_most_node, right_most_node, left_most_node.data, right_most_node.data)
+        left_most = self.get_left_most(self.root)
+        right_most = self.get_right_most(self.root)
+        return _validate(self.root, left_most, right_most, left_most.data, right_most.data)
 
     def search(self, data, return_with_parent=False):
         """ O(logN) """
-        parent, node = None, self.root
-        while node is not None:
-            if data == node.data:
-                break
-            parent, node = node, node.left if data < node.data else node.right
-        return (parent, node) if return_with_parent else node
+        if return_with_parent:  # for internal use, e.g. self.remove
+            parent, node = None, self.root
+            while node is not None:
+                if data == node.data:
+                    break
+                parent, node = node, node.left if data < node.data else node.right
+            return parent, node
+        else:
+            node = self.root
+            while node is not None:
+                if data == node.data:
+                    break
+                node = node.left if data < node.data else node.right
+            return node
 
     def insert(self, data):
         """ O(logN) """
@@ -85,7 +95,7 @@ class BinarySearchTree(BinaryTree):
 
     def remove_range(self, data_lower_bound, data_upper_bound):
         if data_upper_bound < data_lower_bound:
-            raise ValueError(f"data_upper_bound {data_upper_bound} is smaller than data_lower_bound {data_lower_bound}")
+            raise ValueError(f"data_upper_bound {data_upper_bound} < data_lower_bound {data_lower_bound}")
         parent, node = None, self.root
         while node is not None:
             print(node.data)
