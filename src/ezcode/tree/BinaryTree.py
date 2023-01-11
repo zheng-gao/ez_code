@@ -75,8 +75,8 @@ class BinaryTreeIterator:
                 yield from self._post_order(child)
             yield node
 
-    # def _bfs(self, node, depth):
-    #     if node is not None and depth < self.height:
+    # def _bfs(self, node, depth=0):
+    #     if node is not None and depth < self.height:  # self.height need a scan of the whole tree
     #         yield node
     #         for child in self._bfs(node, depth + 1):
     #             yield from self.child_selector(child)
