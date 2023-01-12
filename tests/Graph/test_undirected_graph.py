@@ -1,4 +1,4 @@
-from ezcode.utils import equal
+from ezcode.Utils import equal
 from ezcode.Graph.GraphPathFinder import GraphPathFinder, NegativeCycleExistError, UnweightedGraphExpectedError
 from ezcode.Graph.UndirectedGraph import UndirectedGraph
 

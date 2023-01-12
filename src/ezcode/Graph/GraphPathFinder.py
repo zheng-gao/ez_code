@@ -3,7 +3,7 @@ from typing import Callable
 
 from ezcode.Graph.UndirectedGraph import UndirectedGraph
 from ezcode.Graph.DirectedGraph import DirectedGraph
-from ezcode.heap import PriorityMap
+from ezcode.Container.Heap.PriorityMap import PriorityMap
 
 
 class NegativeCycleExistError(Exception):

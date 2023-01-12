@@ -1,5 +1,5 @@
-from ezcode.Indexed.Array.utils import swap, reverse
-from ezcode.Indexed.Array.search import exclusive_binary_search_subarray
+from ezcode.Container.Array.utils import reverse
+from ezcode.Container.Array.search import exclusive_binary_search_subarray
 
 
 def permutation_size(total_size: int, selection_size: int) -> int:
@@ -52,7 +52,7 @@ def next_lexicographic_permutation(items: list, copy=True) -> list:
         reverse(items)
     else:
         first_greater_from_end = exclusive_binary_search_subarray(items[start], items, start + 1, end, is_ascending=False, is_smaller=False)
-        swap(items, start, first_greater_from_end)
+        items[start], items[first_greater_from_end] = items[first_greater_from_end], items[start]  # swap
         reverse(items, start + 1, len(items) - 1)
     return items
 
@@ -67,9 +67,9 @@ def all_items_permutations(items: list) -> list:
         for next_index in range(current_index, len(items)):
             if items[next_index] not in selected_items:  # check for duplicate items
                 selected_items.add(items[next_index])
-                swap(items, current_index, next_index)
+                items[current_index], items[next_index] = items[next_index], items[current_index]  # swap current and next
                 _permutations_with_all_items(items, current_index + 1, result)
-                swap(items, current_index, next_index)
+                items[current_index], items[next_index] = items[next_index], items[current_index]  # swap current and next
 
     if items is None:
         return None
