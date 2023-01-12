@@ -1,6 +1,14 @@
-# Binary Tree
+# BinaryTree
+The BinaryTree supports all kinds of binary nodes
+```python
+>>> class Node:
+...     def __init__(self, v=None, l=None, r=None):
+...         self.v = v
+...         self.l = l
+...         self.r = r
+```
 
-## Binary Tree Printer
+## BinaryTreePrinter
 
 ```python
 >>> class Node:
@@ -9,7 +17,7 @@
 ...         self.l = l
 ...         self.r = r
 ... 
->>> from ezcode.tree.BinaryTree import BinaryTreePrinter
+>>> from ezcode.Tree.BinaryTree import BinaryTreePrinter
 >>> root = Node(0, Node(1, Node(3, r=Node(7)), Node(4)), Node(2, Node(5, Node(8), Node(9)), Node(6)))
 >>> printer = BinaryTreePrinter(data_name="v", left_name="l", right_name="r")
 >>> printer.print(root)
@@ -18,6 +26,13 @@
  ┌────(1)────┐           ┌────(2)────┐ 
 (3)─┐       (4)       ┌─(5)─┐       (6)
    (7)               (8)   (9)         
+```
+
+## BinaryTreeIterator
+```python
+>>> from ezcode.Tree.BinaryTree import BinaryTreeIterator
+>>> list(BinaryTreeIterator(root, BinaryTreeIterator.Mode.PRE_ORDER, is_left_first=True, data_name="v", left_name="l", right_name="r"))
+[0, 1, 3, 7, 4, 2, 5, 8, 9, 6]
 ```
 
 
