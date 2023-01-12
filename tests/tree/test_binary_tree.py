@@ -70,6 +70,17 @@ def test_contains():
     assert 0 not in c_tree
 
 
+def test_depth():
+    assert s_tree.get_depth(s_tree.root) == 1
+    assert s_tree.get_depth(s_tree.root.right) == 2
+    assert s_tree.get_depth(s_tree.root.left.right) == 3
+    assert s_tree.get_depth(s_tree.root.left.left.right) == 4
+    assert s_tree.get_depth(s_tree.root.left.left.right.left) == 0
+    assert s_tree.get_depth(None) == 0
+    assert s_tree.get_depth(Node(0)) == 0
+    assert BinaryTree().get_depth(None) == 0
+
+
 def test_lowest_common_ancestor():
     s6, s7, s8 = s_root.right.right, s_root.left.left.right, s_root.right.left.left
     assert 2 == s_tree.get_data(s_tree.lowest_common_ancestor([s6, s8]))

@@ -1,11 +1,12 @@
+from typing import Iterable
 from ezcode.Tree.BinarySearchTree import BinarySearchTree
 
 
 class RedBlackTree(BinarySearchTree):
-    def __init__(self, init_data=None, root=None):
+    def __init__(self, init_data: Iterable = None, root=None):
         super().__init__(
             init_data=init_data, root=root,
-            data_name="data", left_name="left", right_name="right",
+            data_name="data", left_name="left", right_name="right"
         )
 
     def new_node(self, data, is_red=True, parent=None, left=None, right=None):

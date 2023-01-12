@@ -1,18 +1,19 @@
-from ezcode.Tree.BinaryTree import DATA_NAME, LEFT_NAME, RIGHT_NAME, BinaryTree, BinaryTreeIterator
+from typing import Iterable
+
+from ezcode.Tree.BinaryTree import DATA_NAME, LEFT_NAME, RIGHT_NAME
+from ezcode.Tree.BinaryTree import BinaryTree, BinaryTreeIterator
 
 
 class BinarySearchTree(BinaryTree):
     def __init__(self,
-        init_data=None, root=None,
+        init_data: Iterable = None, root=None,
         data_name=DATA_NAME, left_name=LEFT_NAME, right_name=RIGHT_NAME
     ):
         super().__init__(
-            root=root, data_name=data_name, left_name=left_name, right_name=right_name,
+            init_data=init_data, root=root,
+            data_name=data_name, left_name=left_name, right_name=right_name,
             iterator_mode=BinaryTreeIterator.Mode.IN_ORDER, iterator_is_left_first=True
         )
-        if init_data is not None:
-            for data in init_data:
-                self.insert(data)
 
     def __contains__(self, data) -> bool:
         return self.search(data) is not None

@@ -14,6 +14,7 @@ REQUIRED_COMMANDS+=("grep")
 # REQUIRED_COMMANDS+=("mkdir")
 REQUIRED_COMMANDS+=("rm")
 REQUIRED_COMMANDS+=("sed")
+REQUIRED_COMMANDS+=("tput")
 # Git Command
 REQUIRED_COMMANDS+=("git")
 # Python Command
@@ -51,6 +52,24 @@ function ezb_join() {
     for data in "${@:2}"; do [[ "${i}" -eq 0 ]] && out_put="${data}" || out_put+="${delimiter}${data}"; ((++i)); done
     echo "${out_put}"
 }
+function ezb_draw_line {
+    local line_size="${1}" line_item="${2}"
+    [[ -z "${line_item}" ]] && line_item="-"
+    local item_size="${#line_item}" size
+    for ((size=0; size <= line_size - item_size; size += item_size)); do echo -n "${line_item}"; done
+    local remainder_size="$((line_size - size))"
+    [[ "${remainder_size}" -gt 0 ]] && echo -n "${line_item::${remainder_size}}"
+}
+function ezb_draw_banner {
+    local title=" ${1} " line_item="${2}"
+    local title_size="${#title}" terminal_size="$(tput 'cols')"
+    local left_wing_size="$(( (terminal_size - title_size) / 2 ))"
+    local right_wing_size="$(( terminal_size - title_size - left_wing_size ))"
+    ezb_draw_line "${left_wing_size}" "${line_item}"
+    echo -n "${title}"
+    ezb_draw_line "${right_wing_size}" "${line_item}"
+    echo
+}
 function ezb_log_stack {
     local ignore_top_x="${1}" i=$((${#FUNCNAME[@]} - 1)) stack
     if [[ -n "${ignore_top_x}" ]]; then
@@ -63,7 +82,7 @@ function ezb_log_stack {
 }
 function ezb_log_info { echo -e "[$(ezb_now)][${EZB_LOGO}]$(ezb_log_stack 1)[INFO] ${@}"; }
 function ezb_log_error {
-    (>&2 echo -e "[$(ezb_now)][${EZB_LOGO}]$(ezb_log_stack 1)[$(ezb_string_format "ForegroundRed" "ERROR")] ${@}")
+    (>&2 echo -e "[$(ezb_now)][${EZB_LOGO}]$(ezb_log_stack 1)[\e[31mERROR\e[0m] ${@}")
 }
 function ezb_print_usage { echo; printf "${1}\n" | column -s "#" -t; echo; }
 function ezb_build_usage {
@@ -99,7 +118,7 @@ function ezb_build_usage {
 ###################################################################################################
 # -------------------------------------- Control Function --------------------------------------- #
 ###################################################################################################
-function control_clean() {
+function control_clean {
     local directories=(
         "${BASE_DIRECTORY}/build"
         "${BASE_DIRECTORY}/dist"
@@ -116,7 +135,7 @@ function control_clean() {
     done
 }
 
-function control_build() {
+function control_build {
     # https://packaging.python.org/en/latest/tutorials/packaging-projects/
     ezb_log_info "Upgrading pip ..."
     python3 -m "pip" "install" --user --upgrade "pip"
@@ -128,7 +147,7 @@ function control_build() {
     python3 "setup.py" "sdist" "bdist_wheel"
 }
 
-function control_test() {
+function control_test {
     # https://docs.pytest.org/en/latest/
     ezb_log_info "Installing flake8 ..."
     python3 -m "pip" "install" --user --upgrade "flake8"
@@ -144,7 +163,7 @@ function control_test() {
     [[ -z "${1}" ]] && pytest -vv "${TEST_DIRECTORY}" || pytest -vv "${TEST_DIRECTORY}/${1}"
 }
 
-function control_uninstall() {
+function control_uninstall {
     ezb_log_info "Uninstalling ${PROJECT_NAME} ..."
     python3 -m "pip" "uninstall" "${PROJECT_NAME}" -y
 }
@@ -158,34 +177,34 @@ function control_install_local() {
     # python3 "${BASE_DIRECTORY}/setup.py" "install"
 }
 
-function control_install_test() {
+function control_install_test {
     # https://test.pypi.org/project/ezcode
     ezb_log_info "Installing test repo ..."
     python3 -m "pip" "install" --user --upgrade --index-url "https://test.pypi.org/simple/" "${PROJECT_NAME}"
 }
 
-function control_install() {
+function control_install {
     # https://pypi.org/project/ezcode
     ezb_log_info "Installing ${PROJECT_NAME} ..."
     python3 -m "pip" "install" --upgrade "${PROJECT_NAME}" --user
     # python3 -m "pip" "install" --upgrade "${PROJECT_NAME}"
 }
 
-function control_publish_test() {
+function control_publish_test {
     ezb_log_info "Upgrading twine ..."
     python3 -m "pip" "install" --user --upgrade "twine"
     ezb_log_info "Publishing test repo ..."
     python3 -m "twine" "upload" --verbose --repository "testpypi" "dist/"*
 }
 
-function control_publish() {
+function control_publish {
     ezb_log_info "Upgrading twine ..."
     python3 -m "pip" "install" --upgrade "twine" --user
     ezb_log_info "Publishing pypi repo ..."
     python3 -m "twine" "upload" --verbose "dist/"*
 }
 
-function control_bump() {
+function control_bump {
     if git "diff" "${BASE_DIRECTORY}/setup.py" | grep "version=" | grep "^+\|^-"; then
         ezb_log_info "Found unstaged version change, skip version bump!" && return 0
     fi
@@ -214,7 +233,7 @@ function control_bump() {
     git diff "${BASE_DIRECTORY}/setup.py"
 }
 
-# function control_view_md() {
+# function control_view_md {
 #     local file_path="${1}" file_name="$(basename ${1} | cut -d '.' -f 1)"
 #     mkdir -p "${BASE_DIRECTORY}/html"
 #     python3 -m "pip" "install" "requests" --user
@@ -232,7 +251,7 @@ function control_bump() {
 ###################################################################################################
 # ---------------------------------------- Main Function ---------------------------------------- #
 ###################################################################################################
-function ez() {
+function ez {
     local VALID_OPERATIONS=("clean" "build" "test" "uninstall" "install_local" "install_test" "install" "publish_test" "publish" "bump")
     if [[ -z "${1}" ]] || [[ "${1}" = "-h" ]] || [[ "${1}" = "--help" ]]; then
         local usage=$(ezb_build_usage -o "init" -d "Control Project Pipeline")
@@ -244,7 +263,7 @@ function ez() {
         ezb_print_usage "${usage}"; return
     fi
     local main_args=("-o" "--operations" "-s" "--skip" "-d" "--development" "-r" "--release" "-a" "--arguments")
-    local operations=() arguments=() skip=() development release complete_operations=()
+    local operations=() arguments=() skip=() development release complete_operations=() step=1
     while [[ -n "${1}" ]]; do
         case "${1}" in
             "-o" | "--operations") shift
@@ -277,6 +296,8 @@ function ez() {
         ezb_excludes "${opt}" "${VALID_OPERATIONS[@]}" && ezb_log_error "Invalid operation \"${opt}\"" && return 1
     done
     for opt in "${operations[@]}"; do
+        local banner=$(ezb_draw_banner "operation-${step}: ${opt}" "=")
+        echo -en "\e[33m${banner}\e[0m"
         ezb_contains "${opt}" "${skip[@]}" && ezb_log_info "Operation \"${opt}\" is skipped!" && continue
         ezb_log_info "Operation \"${opt}\" is running ..."
         if "control_${opt}" "${arguments[@]}"; then
@@ -286,6 +307,7 @@ function ez() {
             ezb_log_error "Operation \"${opt}\" failed!"
             return 2
         fi
+        ((++step))
     done
     ezb_log_info "Complete operations: [$(ezb_join ', ' ${complete_operations[@]})]"
     ezb_log_info "Skipped operations: [$(ezb_join ', ' ${skip[@]})]"

@@ -9,11 +9,18 @@ class SegmentTree(BinaryTree):
         Suitable for repeated queries
         Cannot add or delete items once the tree is built
     """
-    def __init__(self, merge: Callable = lambda x, y: x + y, data_list: list = None):
-        super().__init__(root=None, data_name="data", left_name="left", right_name="right")
+    def __init__(self, data_list: list, merge: Callable = lambda x, y: x + y):
+        super().__init__(data_name="data", left_name="left", right_name="right")
         self.merge = merge  # sum, max, min, gcd or lambda x, y: ...
-        if data_list:
-            self.build_tree(data_list=data_list)
+        self.root = self.build_tree(data_list, 0, len(data_list) - 1)
+
+    def insert(self, data):
+        """ Once initialized the Segment Tree Structure cannot be changed """
+        raise NotImplementedError
+
+    def remove(self, data):
+        """ Once initialized the Segment Tree Structure cannot be changed """
+        raise NotImplementedError
 
     def new_node(self, start: int, end: int, data, left=None, right=None):
         node = super().new_node(data, left, right)
@@ -23,16 +30,18 @@ class SegmentTree(BinaryTree):
     def node_to_string(self, node):
         return f"[{node.start},{node.end}]:" + str(node.data)
 
-    def build_tree(self, data_list: list):
+    def build_tree(self, data_list: list, start: int, end: int):
         """ Time: O(N), Space: O(N) """
-        def build_tree_helper(start: int, end: int):
-            if start == end:
-                return self.new_node(start=start, end=end, data=data_list[start])
-            mid = start + (end - start) // 2
-            left, right = build_tree_helper(start, mid), build_tree_helper(mid + 1, end)  # left include mid
-            return self.new_node(start, end, self.merge(left.data, right.data), left, right)
-
-        self.root = build_tree_helper(0, len(data_list) - 1)
+        if start == end:
+            return self.new_node(start=start, end=end, data=data_list[start])
+        mid = start + (end - start) // 2
+        left = self.build_tree(data_list, start, mid)  # left includes mid
+        right = self.build_tree(data_list, mid + 1, end)
+        return self.new_node(
+            start=start, end=end,
+            data=self.merge(left.data, right.data),
+            left=left, right=right
+        )
 
     def update(self, index: int, data):
         """ Time: O(logN) """

@@ -3,8 +3,9 @@ from __future__ import annotations
 from collections import deque
 from enum import Enum
 from math import ceil
+from random import randint
 from sys import maxsize
-from typing import Callable
+from typing import Callable, Iterable
 
 # Tree Node
 DATA_NAME = "data"
@@ -97,7 +98,7 @@ class BinaryTree(object):
         def __init__(self):
             pass
 
-    def __init__(self, root=None,
+    def __init__(self, init_data: Iterable = None, root=None,
         data_name: str = DATA_NAME,
         left_name: str = LEFT_NAME,
         right_name: str = RIGHT_NAME,
@@ -112,6 +113,9 @@ class BinaryTree(object):
         self.iterator_mode = iterator_mode
         self.iterator_is_left_first = iterator_is_left_first
         self.algorithm = algorithm if algorithm is not None else BinaryTreeAlgorithm(data_name, left_name, right_name)
+        if init_data is not None:
+            for data in init_data:
+                self.insert(data)
 
     def __iter__(self):
         return BinaryTreeIterator(
@@ -165,6 +169,30 @@ class BinaryTree(object):
     def set_right(self, node, right):
         node.__dict__[self.right_name] = right
 
+    def insert(self, data):
+        """ The nodes with same depth have the same probability """
+        def _insert_random_node(node, data):
+            if randint(0, 1) == 0:
+                left = self.get_left(node)
+                if left is None:
+                    self.set_left(node, self.new_node(data))
+                else:
+                    _insert_random_node(left, data)
+            else:
+                right = self.get_right(node)
+                if right is None:
+                    self.set_right(node, self.new_node(data))
+                else:
+                    _insert_random_node(right, data)
+
+        if self.root is None:
+            self.root = self.new_node(data)
+        else:
+            _insert_random_node(self.root, data)
+
+    def remove(self, data):
+        raise NotImplementedError
+
     def get_left_most(self, node):
         """ O(logN) """
         if node is None:
@@ -186,7 +214,24 @@ class BinaryTree(object):
             count nodes on the path from root to the given node
             this method should be overridden if the node has a parent pointer
         """
-        pass
+        def _get_depth(root, node, depth):
+            if root is None or root == node:
+                return root, depth
+            left, right = self.get_left(root), self.get_right(root)
+            if left is not None:
+                root, new_depth = _get_depth(left, node, depth + 1)
+                if root == node:
+                    return root, new_depth
+            if right is not None:
+                root, new_depth = _get_depth(right, node, depth + 1)
+                if root == node:
+                    return root, new_depth
+            return None, 0
+
+        if node is None:
+            return 0
+        root, depth = _get_depth(self.root, node, 1)
+        return depth if root == node else 0
 
     def get_height(self, node) -> int:
         """ count nodes on the path from the given node to its furthest leave """
@@ -323,7 +368,10 @@ class BinaryTree(object):
                 self.set_left(node, left)
                 self.set_right(node, right)
                 index += 2
-        return BinaryTree(root, self.data_name, self.left_name, self.right_name)
+        return BinaryTree(
+            root=root, data_name=self.data_name,
+            left_name=self.left_name, right_name=self.right_name
+        )
 
     def is_copied(self, tree: BinaryTree) -> bool:
         return self.algorithm.is_copied(self.root, tree.root)
@@ -346,7 +394,10 @@ class BinaryTree(object):
                     self.set_right(other_node, self.new_node(data=self.get_data(self.get_right(self_node))))
                 other_queue.append(self.get_left(other_node))
                 other_queue.append(self.get_right(other_node))
-        return BinaryTree(other_root, self.data_name, self.left_name, self.right_name)
+        return BinaryTree(
+            root=other_root, data_name=self.data_name,
+            left_name=self.left_name, right_name=self.right_name
+        )
 
 
 class BinaryTreeAlgorithm:

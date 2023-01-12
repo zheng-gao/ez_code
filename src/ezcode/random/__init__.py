@@ -167,7 +167,7 @@ class RandomUniqueValueDict(RandomDict):
 
 class RandomWeightedIndex:
     def __init__(self, weights: list):
-        self.segment_tree = SegmentTree(lambda x, y: x + y, weights)  # build tree time: O(N)
+        self.segment_tree = SegmentTree(data_list=weights, merge=lambda x, y: x + y)  # build tree time: O(N)
 
     def update(self, index: int, weight):
         """ Time: O(logN) """
