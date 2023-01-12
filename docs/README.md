@@ -8,7 +8,7 @@
 * [hash](hash.md)
 * [heap](heap.md)
 * [interval](interval.md)
-* [list](list.md)
+* [Linked List](LinkedList/README.md)
 * [math](math.md)
 * [random](random.md)
 * [dp](dp.md)
