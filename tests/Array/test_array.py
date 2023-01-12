@@ -1,10 +1,10 @@
-from ezcode.array.rmq import SparseTable
-from ezcode.array.search import binary_search, binary_search_range
-from ezcode.array.sort import quick_sort
-from ezcode.array.subarray import subarrays_with_target_sum
-from ezcode.array.utils import copy, array_to_string, delete_all, rotate
-from ezcode.array.utils import split_list, split_list_generator, chunk_list, chunk_list_generator
-from ezcode.array.lcs import longest_common_subsequence, longest_common_subarray
+from ezcode.Array.rmq import SparseTable
+from ezcode.Array.search import binary_search, binary_search_range
+from ezcode.Array.sort import quick_sort
+from ezcode.Array.subarray import subarrays_with_target_sum
+from ezcode.Array.utils import copy, array_to_string, delete_all, rotate
+from ezcode.Array.utils import split_list, split_list_generator, chunk_list, chunk_list_generator
+from ezcode.Array.lcs import longest_common_subsequence, longest_common_subarray
 
 
 def test_array_to_string():

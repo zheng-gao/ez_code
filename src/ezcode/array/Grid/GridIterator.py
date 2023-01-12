@@ -1,4 +1,11 @@
+from enum import Enum
+
+
+GridIteratorMode = Enum("GridIteratorMode", ["HORIZONTAL", "VERTICAL", "MAJOR_DIAGONAL", "MINOR_DIAGONAL", "SPIRAL"])
+
+
 class GridIterator:
+
     def __init__(self,
         grid: list[list],
         row_start: int = 0, col_start: int = 0,
@@ -32,7 +39,7 @@ class GridIterator:
         return 0 <= col and col < len(self.grid[0])
 
 
-class HorizontalIterator(GridIterator):
+class GridHorizontalIterator(GridIterator):
     def __init__(self,
         grid: list[list],
         row_start: int = 0, col_start: int = 0,
@@ -55,7 +62,7 @@ class HorizontalIterator(GridIterator):
         return (self.reverse and self.col >= self.col_end) or (not self.reverse and self.col <= self.col_end)
 
 
-class VerticalIterator(GridIterator):
+class GridVerticalIterator(GridIterator):
     def __init__(self,
         grid: list[list],
         row_start: int = 0, col_start: int = 0,
@@ -78,7 +85,7 @@ class VerticalIterator(GridIterator):
         return (self.reverse and self.row >= self.row_end) or (not self.reverse and self.row <= self.row_end)
 
 
-class MajorDiagonalIterator(GridIterator):
+class GridMajorDiagonalIterator(GridIterator):
     def __init__(self,
         grid: list[list],
         row_start: int = 0, col_start: int = 0,
@@ -105,7 +112,7 @@ class MajorDiagonalIterator(GridIterator):
                ((self.reverse and self.col >= self.col_end) or (not self.reverse and self.col <= self.col_end))
 
 
-class MinorDiagonalIterator(GridIterator):
+class GridMinorDiagonalIterator(GridIterator):
     def __init__(self,
         grid: list[list],
         row_start: int = 0, col_start: int = 0,
@@ -132,7 +139,7 @@ class MinorDiagonalIterator(GridIterator):
                ((self.reverse and self.col >= self.col_end) or (not self.reverse and self.col <= self.col_end))
 
 
-class SpiralIterator(GridIterator):
+class GridSpiralIterator(GridIterator):
     def __init__(self,
         grid: list[list],
         row_start: int = 0, col_start: int = 0,
@@ -219,20 +226,20 @@ class GridIteratorFactory:
         grid: list[list],
         row_start: int = 0, col_start: int = 0,
         row_end: int = None, col_end: int = None,
-        iterator: str = "horizontal", reverse: bool = False
+        mode: GridIteratorMode = GridIteratorMode.HORIZONTAL, reverse: bool = False
     ):
-        if iterator == "horizontal":
-            return HorizontalIterator(grid, row_start, col_start, row_end, col_end, reverse)
-        elif iterator == "vertical":
-            return VerticalIterator(grid, row_start, col_start, row_end, col_end, reverse)
-        elif iterator == "major_diagonal":
-            return MajorDiagonalIterator(grid, row_start, col_start, row_end, col_end, reverse)
-        elif iterator == "minor_diagonal":
-            return MinorDiagonalIterator(grid, row_start, col_start, row_end, col_end, reverse)
-        elif iterator == "spiral":
-            return SpiralIterator(grid, row_start, col_start, row_end, col_end, reverse)
+        if mode == GridIteratorMode.HORIZONTAL:
+            return GridHorizontalIterator(grid, row_start, col_start, row_end, col_end, reverse)
+        elif mode == GridIteratorMode.VERTICAL:
+            return GridVerticalIterator(grid, row_start, col_start, row_end, col_end, reverse)
+        elif mode == GridIteratorMode.MAJOR_DIAGONAL:
+            return GridMajorDiagonalIterator(grid, row_start, col_start, row_end, col_end, reverse)
+        elif mode == GridIteratorMode.MINOR_DIAGONAL:
+            return GridMinorDiagonalIterator(grid, row_start, col_start, row_end, col_end, reverse)
+        elif mode == GridIteratorMode.SPIRAL:
+            return GridSpiralIterator(grid, row_start, col_start, row_end, col_end, reverse)
         else:
-            raise NotImplementedError(f"{iterator} not found")
+            raise NotImplementedError(f"{mode} not found")
 
 
 

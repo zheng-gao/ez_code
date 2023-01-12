@@ -1,5 +1,5 @@
 # Contents
-* [array](array/README.md)
+* [Array](Array/README.md)
 * [Dict](Dict/README.md)
 * [Graph](Graph/README.md)
 * [string](string/README.md)

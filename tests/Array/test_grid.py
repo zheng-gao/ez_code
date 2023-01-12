@@ -1,6 +1,6 @@
-from ezcode.grid.utils import init_grid
-from ezcode.grid.iterator import GridIteratorFactory 
-from ezcode.grid.pathfinder import GridPathFinder
+from ezcode.Array.Grid import init_grid
+from ezcode.Array.Grid.GridIterator import GridIteratorFactory, GridIteratorMode
+from ezcode.Array.Grid.GridPathFinder import GridPathFinder
 
 
 def test_init_grid():
@@ -28,66 +28,66 @@ def test_grid_iterator():
     ]
     size = len(grid)
     for row in range(size):
-        iterator = GridIteratorFactory.get(grid, row, 0, iterator="horizontal")
+        iterator = GridIteratorFactory.get(grid, row, 0, mode=GridIteratorMode.HORIZONTAL)
         for col in range(size):
             assert grid[row][col] == next(iterator)
-        iterator = GridIteratorFactory.get(grid, row, size - 1, iterator="horizontal", reverse=True)
+        iterator = GridIteratorFactory.get(grid, row, size - 1, mode=GridIteratorMode.HORIZONTAL, reverse=True)
         for col in range(size - 1, -1, -1):
             assert grid[row][col] == next(iterator)
     for col in range(size):
-        iterator = GridIteratorFactory.get(grid, 0, col, iterator="vertical")
+        iterator = GridIteratorFactory.get(grid, 0, col, mode=GridIteratorMode.VERTICAL)
         for row in range(size):
             assert grid[row][col] == next(iterator)
-        iterator = GridIteratorFactory.get(grid, size - 1, col, iterator="vertical", reverse=True)
+        iterator = GridIteratorFactory.get(grid, size - 1, col, mode=GridIteratorMode.VERTICAL, reverse=True)
         for row in range(size - 1, -1, -1):
             assert grid[row][col] == next(iterator)
     for i in range(size):
-        iterator = GridIteratorFactory.get(grid, 0, i, iterator="major_diagonal")
+        iterator = GridIteratorFactory.get(grid, 0, i, mode=GridIteratorMode.MAJOR_DIAGONAL)
         for row, col in zip(range(0, size - i), range(i, size - i)):
             assert grid[row][col] == next(iterator)
-        iterator = GridIteratorFactory.get(grid, size - 1, i, iterator="major_diagonal", reverse=True)
+        iterator = GridIteratorFactory.get(grid, size - 1, i, mode=GridIteratorMode.MAJOR_DIAGONAL, reverse=True)
         for row, col in zip(range(size - 1, size - i - 2, -1), range(i, size - i - 2, -1)):
             assert grid[row][col] == next(iterator)
     for i in range(size):
-        iterator = GridIteratorFactory.get(grid, size - i - 1, 0, iterator="minor_diagonal")
+        iterator = GridIteratorFactory.get(grid, size - i - 1, 0, mode=GridIteratorMode.MINOR_DIAGONAL)
         for row, col in zip(range(size - i - 1, -1, -1), range(0, i + 1)):
             assert grid[row][col] == next(iterator)
-        iterator = GridIteratorFactory.get(grid, i, size - 1, iterator="minor_diagonal", reverse=True)
+        iterator = GridIteratorFactory.get(grid, i, size - 1, mode=GridIteratorMode.MINOR_DIAGONAL, reverse=True)
         for row, col in zip(range(i, size), range(size - 1, size - i - 2)):
             assert grid[row][col] == next(iterator)
-    iterator = GridIteratorFactory.get(grid, 0, 0, iterator="spiral")
+    iterator = GridIteratorFactory.get(grid, 0, 0, mode=GridIteratorMode.SPIRAL)
     benchmark = [0, 1, 2, 3, 4, 9, 14, 19, 24, 23, 22, 21, 20, 15, 10, 5, 6, 7, 8, 13, 18, 17, 16, 11, 12]
     for i in range(len(benchmark)):
         assert benchmark[i] == next(iterator)
-    iterator = GridIteratorFactory.get(grid, 0, 0, iterator="spiral", reverse=True)
+    iterator = GridIteratorFactory.get(grid, 0, 0, mode=GridIteratorMode.SPIRAL, reverse=True)
     benchmark = [0, 5, 10, 15, 20, 21, 22, 23, 24, 19, 14, 9, 4, 3, 2, 1, 6, 11, 16, 17, 18, 13, 8, 7, 12]
     for i in range(len(benchmark)):
         assert benchmark[i] == next(iterator)
-    iterator = GridIteratorFactory.get(grid, 1, 0, iterator="spiral")
+    iterator = GridIteratorFactory.get(grid, 1, 0, mode=GridIteratorMode.SPIRAL)
     benchmark = [5, 0, 1, 2, 3, 4, 9, 14, 19, 24, 23, 22, 21, 16, 11, 6, 7, 8, 13, 18, 17, 12]
     for i in range(len(benchmark)):
         assert benchmark[i] == next(iterator)
-    iterator = GridIteratorFactory.get(grid, 1, 2, iterator="spiral", reverse=True)
+    iterator = GridIteratorFactory.get(grid, 1, 2, mode=GridIteratorMode.SPIRAL, reverse=True)
     benchmark = [7, 6, 11, 16, 17, 18, 13, 12]
     for i in range(len(benchmark)):
         assert benchmark[i] == next(iterator)
-    iterator = GridIteratorFactory.get(grid, 4, 3, iterator="spiral")
+    iterator = GridIteratorFactory.get(grid, 4, 3, mode=GridIteratorMode.SPIRAL)
     benchmark = [23, 22, 21, 20, 15, 10, 5, 0, 1, 2, 3, 4, 9, 14, 19, 18, 17, 16, 11, 6, 7, 8, 13, 12]
     for i in range(len(benchmark)):
         assert benchmark[i] == next(iterator)
-    iterator = GridIteratorFactory.get(grid, 4, 4, iterator="spiral", reverse=True)
+    iterator = GridIteratorFactory.get(grid, 4, 4, mode=GridIteratorMode.SPIRAL, reverse=True)
     benchmark = [24, 19, 14, 9, 4, 3, 2, 1, 0, 5, 10, 15, 20, 21, 22, 23, 18, 13, 8, 7, 6, 11, 16, 17, 12]
     for i in range(len(benchmark)):
         assert benchmark[i] == next(iterator)
-    iterator = GridIteratorFactory.get(grid, 3, 1, iterator="spiral")
+    iterator = GridIteratorFactory.get(grid, 3, 1, mode=GridIteratorMode.SPIRAL)
     benchmark = [16, 11, 6, 7, 8, 13, 18, 17, 12]
     for i in range(len(benchmark)):
         assert benchmark[i] == next(iterator)
-    iterator = GridIteratorFactory.get(grid, 1, 3, 3, 2, iterator="spiral", reverse=True)
+    iterator = GridIteratorFactory.get(grid, 1, 3, 3, 2, mode=GridIteratorMode.SPIRAL, reverse=True)
     benchmark = [8, 7, 6, 11, 16, 17]
     for i in range(len(benchmark)):
         assert benchmark[i] == next(iterator)
-    iterator = GridIteratorFactory.get(grid, 2, 2, iterator="spiral")
+    iterator = GridIteratorFactory.get(grid, 2, 2, mode=GridIteratorMode.SPIRAL)
     for i in iterator:
         assert i == 12
 

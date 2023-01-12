@@ -1,7 +1,7 @@
 from collections import defaultdict
 from random import choice, randint, random
 
-from ezcode.array.utils import swap
+from ezcode.Array.utils import swap
 from ezcode.Tree.SegmentTree import SegmentTree
 
 
