@@ -25,7 +25,7 @@ class Graph:
         return edges[node_id_2] if node_id_2 in edges else None
 
     def get_edges(self, node_id, is_outgoing: bool = True):
-        pass
+        raise NotImplementedError
 
     def __str__(self):
         output = self._cell()
@@ -45,7 +45,7 @@ class Graph:
         print(self, end="")
 
     def copy_nodes(self) -> dict:
-        pass
+        raise NotImplementedError
 
     def eulerian_path(self, start_node=None) -> list:
         """

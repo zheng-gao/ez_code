@@ -1,4 +1,4 @@
-from ezcode.graph import Graph
+from ezcode.Graph import Graph
 
 
 class UndirectedGraph(Graph):

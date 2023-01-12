@@ -1,5 +1,5 @@
 from collections import deque
-from ezcode.graph import Graph
+from ezcode.Graph import Graph
 
 
 class DirectedGraph(Graph):

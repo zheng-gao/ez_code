@@ -1,8 +1,8 @@
 from collections import deque
 from typing import Callable
 
-from ezcode.graph.undirected import UndirectedGraph
-from ezcode.graph.directed import DirectedGraph
+from ezcode.Graph.UndirectedGraph import UndirectedGraph
+from ezcode.Graph.DirectedGraph import DirectedGraph
 from ezcode.heap import PriorityMap
 
 
