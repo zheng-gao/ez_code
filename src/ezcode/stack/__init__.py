@@ -1,7 +1,7 @@
 from __future__ import annotations
 from collections import deque
 
-from ezcode.list.linked_list import SinglyLinkedList
+from ezcode.Linked.List.SinglyLinkedList import SinglyLinkedList
 
 
 class Stack:

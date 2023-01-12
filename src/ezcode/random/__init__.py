@@ -1,8 +1,8 @@
 from collections import defaultdict
 from random import choice, randint, random
 
-from ezcode.Array.utils import swap
-from ezcode.Tree.SegmentTree import SegmentTree
+from ezcode.Indexed.Array.utils import swap
+from ezcode.Linked.Tree.SegmentTree import SegmentTree
 
 
 def knuth_shuffle(array: list):

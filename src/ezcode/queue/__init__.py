@@ -1,5 +1,5 @@
-from ezcode.list import BACKWARD_LINK
-from ezcode.list.linked_list import DoublyLinkedList
+from ezcode.Linked.List import BACKWARD_LINK
+from ezcode.Linked.List.DoublyLinkedList import DoublyLinkedList
 
 
 class Queue:

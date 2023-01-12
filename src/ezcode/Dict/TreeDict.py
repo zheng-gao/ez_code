@@ -1,4 +1,4 @@
-from ezcode.Tree.RedBlackTree import RedBlackTree
+from ezcode.Linked.Tree.RedBlackTree import RedBlackTree
 
 
 class TreeDict:

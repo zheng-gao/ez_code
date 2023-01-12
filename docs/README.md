@@ -1,5 +1,5 @@
 # Contents
-* [Array](Array/README.md)
+* [Indexed](Indexed/README.md)
 * [Dict](Dict/README.md)
 * [Graph](Graph/README.md)
 * [string](string/README.md)
@@ -8,7 +8,7 @@
 * [hash](hash.md)
 * [heap](heap.md)
 * [interval](interval.md)
-* [Linked List](LinkedList/README.md)
+* [Linked](Linked/README.md)
 * [math](math.md)
 * [random](random.md)
 * [dp](dp.md)
