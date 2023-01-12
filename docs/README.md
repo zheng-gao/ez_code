@@ -1,9 +1,9 @@
 # Contents
 * [array](array/README.md)
-* [graph](graph/README.md)
+* [Dict](Dict/README.md)
+* [Graph](Graph/README.md)
 * [string](string/README.md)
 * [Tree](Tree/README.md)
-* [Dict](Dict/README.md)
 * [grid](grid.md)
 * [hash](hash.md)
 * [heap](heap.md)
