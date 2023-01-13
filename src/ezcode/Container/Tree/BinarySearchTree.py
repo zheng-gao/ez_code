@@ -128,6 +128,14 @@ class BinarySearchTree(BinaryTree):
     def pop(self, reverse=False):
         if self.size == 0:
             raise KeyError("Pop from empty container")
-        node = self.get_right_most(self.root) if reverse else self.get_left_most(self.root)
-        self.remove_node(node)
-        return node.data
+        parent, node = None, self.root
+        if reverse:
+            while node.right is not None:
+                parent, node = node, node.right
+        else:
+            while node.left is not None:
+                parent, node = node, node.left
+        saved_data = node.data  # remove_node will swap the data
+        self.remove_node(parent, node)
+        return saved_data
+

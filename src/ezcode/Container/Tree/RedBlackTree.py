@@ -196,9 +196,9 @@ class RedBlackTree(BinarySearchTree):
         self.root.is_red = False  # red sibling process might change the color of root
 
     def remove(self, data):
-        self.remove_node(self.search(data))
+        self.remove_node(None, self.search(data, return_with_parent=False))
 
-    def remove_node(self, node):
+    def remove_node(self, parent, node):
         """ O(logN) """
         if node is not None:
             if node.right is None:
@@ -314,3 +314,7 @@ class RedBlackTree(BinarySearchTree):
                      ┌─(N/B)─┐    ┌─(S/B)─┐                ┌─(N/B)─┐    ┌─(S/R)─┐        ┌─(x/B)─┐    ┌─(S/R)─┐
                     (x)     (x) (a/B)   (b/B)             (x)     (x) (a/B)   (b/B)     (x)     (x) (a/B)   (b/B)
                     """
+
+    def pop(self, reverse=False):
+        raise NotImplementedError
+

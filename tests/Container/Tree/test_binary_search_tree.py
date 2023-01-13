@@ -242,4 +242,12 @@ def test_binary_search_tree_copy():
     assert type(bst_3) is BinarySearchTree
 
 
+def test_binary_search_tree_pop():
+    bst_1 = BinarySearchTree([5, 3, 8, 4, 6, 9, 1, 0, 2, 7, 10])
+    bst_2 = bst_1.copy()
+    size = len(bst_1)
+    for i in range(size):
+        assert bst_1.pop() == i
+        assert bst_2.pop(reverse=True) == size - i - 1
+ 
 

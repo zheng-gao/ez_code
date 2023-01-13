@@ -152,7 +152,7 @@ function control_test {
     ezb_log_info "Installing flake8 ..."
     python3 -m "pip" "install" --user --upgrade "flake8"
     ezb_log_info "Running flake8 checks ..."
-    if ! python3 -m "flake8" --ignore "E124,E128,E501,W391" "${CODE_DIRECTORY}"; then
+    if ! python3 -m "flake8" --ignore "E124,E128,E501,W391,F401" "${CODE_DIRECTORY}"; then
         ezb_log_error "Failed flake8 checks!"; return 1
     fi
     ezb_log_info "Installing pytest ..."

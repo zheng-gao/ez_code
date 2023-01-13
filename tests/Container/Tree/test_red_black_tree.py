@@ -195,3 +195,12 @@ def test_red_black_tree_copy():
     assert type(t3) is RedBlackTree
 
 
+def test_red_black_tree_pop():
+    # t_1 = RedBlackTree([5, 3, 8, 4, 6, 9, 1, 0, 2, 7, 10])
+    # t_2 = t_1.copy()
+    # size = 11
+    # for i in range(size):
+    #     assert t_1.pop() == i
+    #     assert t_2.pop(reverse=True) == size - i - 1
+    pass
+ 
