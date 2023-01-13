@@ -263,7 +263,7 @@ function ez {
         ezb_print_usage "${usage}"; return
     fi
     local main_args=("-o" "--operations" "-s" "--skip" "-d" "--development" "-r" "--release" "-a" "--arguments")
-    local operations=() arguments=() skip=() development release complete_operations=() step=1
+    local operations=() arguments=() skip=() development release step=1
     while [[ -n "${1}" ]]; do
         case "${1}" in
             "-o" | "--operations") shift
@@ -295,22 +295,28 @@ function ez {
     for opt in "${operations[@]}"; do
         ezb_excludes "${opt}" "${VALID_OPERATIONS[@]}" && ezb_log_error "Invalid operation \"${opt}\"" && return 1
     done
+    local passed=() skiped=()
     for opt in "${operations[@]}"; do
         local banner=$(ezb_draw_banner "operation-${step}: ${opt}" "=")
         echo -en "\e[33m${banner}\e[0m"
-        ezb_contains "${opt}" "${skip[@]}" && ezb_log_info "Operation \"${opt}\" is skipped!" && continue
-        ezb_log_info "Operation \"${opt}\" is running ..."
-        if "control_${opt}" "${arguments[@]}"; then
-            ezb_log_info "Operation \"${opt}\" complete!"
-            complete_operations+=("${opt}")
+        if ezb_contains "${opt}" "${skip[@]}"; then
+            ezb_log_info "Operation \"${opt}\" is skipped!"
+            skiped+=("${opt}")
         else
-            ezb_log_error "Operation \"${opt}\" failed!"
-            return 2
+            ezb_log_info "Operation \"${opt}\" is running ..."
+            if "control_${opt}" "${arguments[@]}"; then
+                ezb_log_info "Operation \"${opt}\" complete!"
+                passed+=("${opt}")
+            else
+                ezb_log_error "Operation \"${opt}\" failed!"
+                return 2
+            fi
         fi
         ((++step))
     done
-    ezb_log_info "Complete operations: [$(ezb_join ', ' ${complete_operations[@]})]"
-    ezb_log_info "Skipped operations: [$(ezb_join ', ' ${skip[@]})]"
+    ezb_log_info "All operations    (${#operations[@]}): [$(ezb_join ', ' ${operations[@]})]"
+    ezb_log_info "Passed operations (${#passed[@]}): [$(ezb_join ', ' ${passed[@]})]"
+    ezb_log_info "Skiped operations (${#skiped[@]}): [$(ezb_join ', ' ${skiped[@]})]"
     ezb_log_info "Workflow Complete!!!"
 }
 

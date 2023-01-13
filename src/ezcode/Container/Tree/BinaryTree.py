@@ -1,95 +1,23 @@
 from __future__ import annotations
 
 from collections import deque
-from enum import Enum
 from math import ceil
 from random import randint
-from sys import maxsize
 from typing import Callable, Iterable
 
-# Tree Node
-DATA_NAME = "data"
-LEFT_NAME = "left"
-RIGHT_NAME = "right"
-# Printer
-LEFT_WING = "─"
-RIGHT_WING = "─"
-LEFT_WING_HEAD = "┌"
-RIGHT_WING_HEAD = "┐"
-LEFT_WING_TAIL = "("
-RIGHT_WING_TAIL = ")"
-
-
-class BinaryTreeIterator:
-    Mode = Enum("Mode", ["DFS", "BFS", "PRE_ORDER", "IN_ORDER", "POST_ORDER"])
-
-    def __init__(self, node=None, mode: Mode = Mode.DFS, is_left_first: bool = True,
-        data_name: str = DATA_NAME, left_name: str = LEFT_NAME, right_name: str = RIGHT_NAME
-    ):
-        self.data_name = data_name
-        self.left_name = left_name
-        self.right_name = right_name
-        self.child_selector = self._left_first if is_left_first else self._right_first
-        if mode == BinaryTreeIterator.Mode.DFS or mode == BinaryTreeIterator.Mode.PRE_ORDER:
-            self.generator = self._pre_order(node)
-        elif mode == BinaryTreeIterator.Mode.IN_ORDER:
-            self.generator = self._in_order(node)
-        elif mode == BinaryTreeIterator.Mode.POST_ORDER:
-            self.generator = self._post_order(node)
-        else:  # BFS
-            self.generator = self._bfs(node)
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        return next(self.generator).__dict__[self.data_name]
-
-    def _left_first(self, node):
-        if node is not None:
-            yield node.__dict__[self.left_name]
-            yield node.__dict__[self.right_name]
-
-    def _right_first(self, node):
-        if node is not None:
-            yield node.__dict__[self.right_name]
-            yield node.__dict__[self.left_name]
-
-    def _pre_order(self, node):
-        if node is not None:
-            yield node
-            for child in self.child_selector(node):
-                yield from self._pre_order(child)
-
-    def _in_order(self, node):
-        if node is not None:
-            can_yield = True
-            for child in self.child_selector(node):
-                yield from self._in_order(child)
-                if can_yield:
-                    yield node
-                can_yield = False
-
-    def _post_order(self, node):
-        if node is not None:
-            for child in self.child_selector(node):
-                yield from self._post_order(child)
-            yield node
-
-    # def _bfs(self, node, depth=0):
-    #     if node is not None and depth < self.height:  # self.height need a scan of the whole tree
-    #         yield node
-    #         for child in self._bfs(node, depth + 1):
-    #             yield from self.child_selector(child)
-    def _bfs(self, node):
-        if node is not None:
-            queue = deque([node])
-            while len(queue) > 0:
-                node = queue.popleft()
-                yield node
-                for child in self.child_selector(node):
-                    if child is not None:
-                        queue.append(child)
+from ezcode.Container.Tree import (
+    DATA_NAME,
+    LEFT_NAME,
+    RIGHT_NAME,
+    LEFT_WING,
+    RIGHT_WING,
+    LEFT_WING_HEAD,
+    RIGHT_WING_HEAD,
+    LEFT_WING_TAIL,
+    RIGHT_WING_TAIL
+)
+from ezcode.Container.Tree.BinaryTreeIterator import BinaryTreeIterator
+from ezcode.Container.Tree.BinaryTreeAlgorithm import BinaryTreeAlgorithm
 
 
 class BinaryTree(object):
@@ -98,24 +26,34 @@ class BinaryTree(object):
         def __init__(self):
             pass
 
-    def __init__(self, init_data: Iterable = None, root=None,
-        data_name: str = DATA_NAME,
-        left_name: str = LEFT_NAME,
-        right_name: str = RIGHT_NAME,
+        def match(self, node) -> bool:
+            return all(attribute in self.__dict__.keys() for attribute in node.__dict__.keys())
+
+    def __init__(self, init_data: Iterable = None, root=None, root_copy=None,
+        data_name: str = DATA_NAME, left_name: str = LEFT_NAME, right_name: str = RIGHT_NAME,
         iterator_mode: BinaryTreeIterator.Mode = BinaryTreeIterator.Mode.DFS,
         iterator_is_left_first: bool = True,
         algorithm: BinaryTreeAlgorithm = None
     ):
-        self.root = root
-        self.data_name = data_name
-        self.left_name = left_name
-        self.right_name = right_name
-        self.iterator_mode = iterator_mode
-        self.iterator_is_left_first = iterator_is_left_first
+        self.root, self.size = root, 0
+        self.data_name, self.left_name, self.right_name = data_name, left_name, right_name
+        self.iterator_mode, self.iterator_is_left_first = iterator_mode, iterator_is_left_first
         self.algorithm = algorithm if algorithm is not None else BinaryTreeAlgorithm(data_name, left_name, right_name)
+        if root is not None:  # Any change on this tree will affect the original tree on the root
+            self._size()
+        elif root_copy is not None:
+            self.root, self.size = self.copy_tree(root_copy)
         if init_data is not None:
             for data in init_data:
                 self.insert(data)
+
+    def __len__(self):
+        return self.size
+
+    def _size(self):  # recalculate the size
+        self.size = 0
+        for _ in iter(self):
+            self.size += 1
 
     def __iter__(self):
         return BinaryTreeIterator(
@@ -138,18 +76,28 @@ class BinaryTree(object):
         )
 
     def __contains__(self, data) -> bool:
-        return any(d == data for d in iter(self))
+        return any(data == d for d in iter(self))
 
     def __str__(self) -> str:
         return self.to_string()
 
-    def new_node(self, data, left=None, right=None):
-        node = self.BinaryTreeNode()
+    def new_node(self, data=None, left=None, right=None):
+        node = BinaryTree.BinaryTreeNode()
         node.__dict__ = {self.data_name: data, self.left_name: left, self.right_name: right}
         return node
 
+    @staticmethod
+    def copy_node(node):
+        node_copy = BinaryTree.BinaryTreeNode()
+        for key, value in node.__dict__.items():
+            node_copy.__dict__[key] = value
+        return node_copy
+
     def node_to_string(self, node) -> str:
         return str(self.get_data(node))
+
+    def validate(self) -> bool:
+        raise NotImplementedError
 
     def get_data(self, node):
         return node.__dict__[self.data_name]
@@ -189,8 +137,12 @@ class BinaryTree(object):
             self.root = self.new_node(data)
         else:
             _insert_random_node(self.root, data)
+        self.size += 1
 
     def remove(self, data):
+        raise NotImplementedError
+
+    def remove_node(self, node):
         raise NotImplementedError
 
     def get_left_most(self, node):
@@ -320,13 +272,28 @@ class BinaryTree(object):
             return self.algorithm.subtree_avg_extremum(self.root, max)[0]
 
     def lowest_common_ancestor(self, nodes):
-        if not nodes:
+        """
+            this method should be overridden if the node has a parent pointer
+            calculate depth_diff and move the deeper node up to the same depth, ...
+        """
+        def _lowest_common_ancestor(root, node_1, node_2):
+            if root is None or root == node_1 or root == node_2:
+                return root
+            left_ancestor = _lowest_common_ancestor(self.get_left(root), node_1, node_2)
+            right_ancestor = _lowest_common_ancestor(self.get_right(root), node_1, node_2)
+            if left_ancestor is None and right_ancestor is None:
+                return None
+            if left_ancestor is not None and right_ancestor is not None:
+                return root
+            return left_ancestor if left_ancestor is not None else right_ancestor
+
+        if nodes is None or self.root is None:
             return None
         if len(nodes) == 1:
             return nodes[0]
         ancestor = nodes[0]
         for node in nodes[1:]:
-            ancestor = self.algorithm.lowest_common_ancestor(self.root, ancestor, node)
+            ancestor = _lowest_common_ancestor(self.root, ancestor, node)
         return ancestor
 
     def max_path_sum(self):
@@ -373,152 +340,66 @@ class BinaryTree(object):
             left_name=self.left_name, right_name=self.right_name
         )
 
-    def is_copied(self, tree: BinaryTree) -> bool:
-        return self.algorithm.is_copied(self.root, tree.root)
+    def __eq__(self, other) -> bool:
+        """
+            This method should be overridden by the subclass if the subclass node has different attributes
+        """
+        def _tree_equal(node_1, node_2):
+            if node_1 is None and node_2 is None:
+                return True
+            if node_1 is None or node_2 is None:
+                return False
+            if self.get_data(node_1) != self.get_data(node_2):
+                return False
+            return _tree_equal(self.get_left(node_1), self.get_left(node_2)) and \
+                _tree_equal(self.get_right(node_1), self.get_right(node_2))
 
-    def copy(self) -> BinaryTree:
-        if self.root is None:
-            return BinaryTree(None, self.data_name, self.left_name, self.right_name)
-        self_queue = deque([self.root])
-        other_root = self.new_node(data=self.get_data(self.root))
-        other_queue = deque([other_root])
-        while len(self_queue) > 0:
-            self_node = self_queue.popleft()
-            other_node = other_queue.popleft()
-            if self_node:
-                self_queue.append(self.get_left(self_node))
-                self_queue.append(self.get_right(self_node))
-                if self.get_left(self_node):
-                    self.set_left(other_node, self.new_node(data=self.get_data(self.get_left(self_node))))
-                if self.get_right(self_node):
-                    self.set_right(other_node, self.new_node(data=self.get_data(self.get_right(self_node))))
-                other_queue.append(self.get_left(other_node))
-                other_queue.append(self.get_right(other_node))
-        return BinaryTree(
-            root=other_root, data_name=self.data_name,
-            left_name=self.left_name, right_name=self.right_name
-        )
+        if isinstance(other, BinaryTree):
+            return _tree_equal(self.root, other.root)
+        return False
 
+    def copy_tree(self, node):
+        """
+            This method should be overridden by the subclass
+            Semi-deep copy: copy the tree structure but not the data
+        """
+        if node is None:
+            return None, 0
+        if not (self.root is None and self.new_node().match(node)) and not self.root.match(node):
+            raise ValueError(f"Invalid node with attributes: {list(node.__dict__.keys())}")
+        root_copy, size_copy = self.copy_node(node), 0
+        queue, queue_copy = deque([node]), deque([root_copy])
+        while len(queue) > 0:
+            node = queue.popleft()
+            node_copy = queue_copy.popleft()
+            size_copy += 1
+            left, right = self.get_left(node), self.get_right(node)
+            if left is not None:
+                left_copy = self.copy_node(left)
+                self.set_left(node_copy, left=left_copy)
+                queue.append(left)
+                queue_copy.append(left_copy)
+            if right is not None:
+                right_copy = self.copy_node(right)
+                self.set_right(node_copy, right=right_copy)
+                queue.append(right)
+                queue_copy.append(right_copy)
+        return root_copy, size_copy
 
-class BinaryTreeAlgorithm:
-    """ Recursion Helpers """
-    def __init__(self, data_name: str = DATA_NAME, left_name: str = LEFT_NAME, right_name: str = RIGHT_NAME):
-        self.data_name = data_name
-        self.left_name = left_name
-        self.right_name = right_name
-
-    def pre_order(self, root, result: list):
-        if root is not None:
-            result.append(root.__dict__[self.data_name])
-            self.pre_order(root.__dict__[self.left_name], result)
-            self.pre_order(root.__dict__[self.right_name], result)
-
-    def in_order(self, root, result: list):
-        if root is not None:
-            self.in_order(root.__dict__[self.left_name], result)
-            result.append(root.__dict__[self.data_name])
-            self.in_order(root.__dict__[self.right_name], result)
-
-    def post_order(self, root, result: list):
-        if root is not None:
-            self.post_order(root.__dict__[self.left_name], result)
-            self.post_order(root.__dict__[self.right_name], result)
-            result.append(root.__dict__[self.data_name])
-
-    def level_order(self, root, result: list = list(), left_most_nodes=False):
-        if root is not None:
-            queue = deque([root])
-            current_level_node_count, next_level_node_count = 1, 0
-            level_start, level = True, 0
-            while len(queue) > 0:
-                node = queue.popleft()
-                if not left_most_nodes or level_start:
-                    result.append(node.__dict__[self.data_name])
-                    level_start = False
-                current_level_node_count -= 1
-                if node.__dict__[self.left_name]:
-                    queue.append(node.__dict__[self.left_name])
-                    next_level_node_count += 1
-                if node.__dict__[self.right_name]:
-                    queue.append(node.__dict__[self.right_name])
-                    next_level_node_count += 1
-                if current_level_node_count == 0:
-                    current_level_node_count = next_level_node_count
-                    next_level_node_count, level_start, level = 0, True, level + 1
-            return level
-        return 0
-
-    def subtree_sum_extremum(self, root, extremum_func):
-        if root is None:
-            return 0, 0
-        left_sum_extremum, left_sum = self.subtree_sum_extremum(root.__dict__[self.left_name], extremum_func)
-        right_sum_extremum, right_sum = self.subtree_sum_extremum(root.__dict__[self.right_name], extremum_func)
-        my_sum = left_sum + right_sum + root.__dict__[self.data_name]
-        return extremum_func(my_sum, left_sum_extremum, right_sum_extremum), my_sum
-
-    def subtree_avg_extremum(self, root, extremum_func):
-        if root is None:
-            return 0, 0, 0
-        left_avg_extremum, left_sum, left_size = self.subtree_avg_extremum(root.__dict__[self.left_name], extremum_func)
-        right_avg_extremum, right_sum, right_size = self.subtree_avg_extremum(root.__dict__[self.right_name], extremum_func)
-        my_sum = left_sum + right_sum + root.__dict__[self.data_name]
-        my_size = left_size + right_size + 1
-        my_average = my_sum / my_size
-        return extremum_func(my_average, left_avg_extremum, right_avg_extremum), my_sum, my_size
-
-    def lowest_common_ancestor(self, root, node_1, node_2):
-        if root is None or root == node_1 or root == node_2:
-            return root
-        left_ancestor = self.lowest_common_ancestor(root.__dict__[self.left_name], node_1, node_2)
-        right_ancestor = self.lowest_common_ancestor(root.__dict__[self.right_name], node_1, node_2)
-        if left_ancestor is None and right_ancestor is None:
-            return None
-        if left_ancestor is not None and right_ancestor is not None:
-            return root
-        return left_ancestor if left_ancestor is not None else right_ancestor
-
-    def is_balanced(self, root) -> (bool, int):
-        if root is None:
-            return True, 0
-        left_balanced, left_depth = self.is_balanced(root.__dict__[self.left_name])
-        right_balanced, right_depth = self.is_balanced(root.__dict__[self.right_name])
-        return left_balanced and right_balanced and abs(left_depth - right_depth) <= 1, max(left_depth, right_depth) + 1
-
-    def is_copied(self, root_1, root_2):
-        if not root_1 and not root_2:
-            return True
-        if not root_1 or not root_2:
-            return False
-        if root_1.__dict__[self.data_name] != root_2.__dict__[self.data_name]:
-            return False
-        return self.is_copied(root_1.__dict__[self.left_name], root_2.__dict__[self.left_name]) and self.is_copied(root_1.__dict__[self.right_name], root_2.__dict__[self.right_name])
-
-    def max_path_sum(self, root):
-        if root is None:
-            return -maxsize, 0  # path sum max，max half + node value
-        left_max, l_half = self.max_path_sum(root.__dict__[self.left_name])  # left path max, left non-negative max half
-        right_max, r_half = self.max_path_sum(root.__dict__[self.right_name])  # right path max, right non-negative max half
-        return max(left_max, right_max, root.__dict__[self.data_name] + l_half + r_half), max(root.__dict__[self.data_name] + max(l_half, r_half), 0)
-
-    def remove_bst_node(self, root, data):
-        if root is None:
-            return None
-        elif data < root.__dict__[self.data_name]:
-            root.__dict__[self.left_name] = self.remove_bst_node(root.__dict__[self.left_name], data)
-        elif data > root.__dict__[self.data_name]:
-            root.__dict__[self.right_name] = self.remove_bst_node(root.__dict__[self.right_name], data)
-        else:
-            if root.__dict__[self.right_name] is None:
-                return root.__dict__[self.left_name]
-            else:
-                left_most_parent, left_most = root, root.__dict__[self.right_name]
-                while left_most is not None and left_most.__dict__[self.left_name] is not None:
-                    left_most_parent = left_most
-                    left_most = left_most.__dict__[self.left_name]
-                root.__dict__[self.data_name] = left_most.__dict__[self.data_name]  # swap data then delete left_most
-                side_name = self.right_name if left_most == root.__dict__[self.right_name] else self.left_name
-                left_most_parent.__dict__[side_name] = left_most.__dict__[self.right_name]  # left_most only have the right child
-        return root
+    def copy(self):
+        """
+            This method should be overridden by the subclass if the subclass node has different attributes
+            Semi-deep copy: copy the tree structure but not the data
+        """
+        tree = self.__class__()
+        tree.data_name = self.data_name
+        tree.left_name = self.left_name
+        tree.right_name = self.right_name
+        tree.iterator_mode = self.iterator_mode
+        tree.iterator_is_left_first = self.iterator_is_left_first,
+        tree.algorithm = self.algorithm
+        tree.root, tree.size = self.copy_tree(self.root)
+        return tree
 
 
 class BinaryTreePrinter:

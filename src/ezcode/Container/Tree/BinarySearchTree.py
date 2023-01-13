@@ -6,11 +6,11 @@ from ezcode.Container.Tree.BinaryTree import BinaryTree, BinaryTreeIterator
 
 class BinarySearchTree(BinaryTree):
     def __init__(self,
-        init_data: Iterable = None, root=None,
+        init_data: Iterable = None, root=None, root_copy=None,
         data_name=DATA_NAME, left_name=LEFT_NAME, right_name=RIGHT_NAME
     ):
         super().__init__(
-            init_data=init_data, root=root,
+            init_data=init_data, root=root, root_copy=root_copy,
             data_name=data_name, left_name=left_name, right_name=right_name,
             iterator_mode=BinaryTreeIterator.Mode.IN_ORDER, iterator_is_left_first=True
         )
@@ -57,17 +57,18 @@ class BinarySearchTree(BinaryTree):
         """ O(logN) """
         if self.root is None:
             self.root = self.new_node(data=data)
-            return
-        parent, node = None, self.root
-        while node is not None:
-            if data == node.data:
-                raise KeyError(f"{data} exist")
-            parent, node = node, node.left if data < node.data else node.right
-        node = self.new_node(data=data)
-        if data < parent.data:
-            parent.left = node
         else:
-            parent.right = node
+            parent, node = None, self.root
+            while node is not None:
+                if data == node.data:
+                    raise KeyError(f"{data} exist")
+                parent, node = node, node.left if data < node.data else node.right
+            node = self.new_node(data=data)
+            if data < parent.data:
+                parent.left = node
+            else:
+                parent.right = node
+        self.size += 1
 
     def remove(self, data):
         """ O(logN) """
@@ -93,13 +94,13 @@ class BinarySearchTree(BinaryTree):
                     left_most_parent.right = left_most.right  # left_most only have the right child
                 else:
                     left_most_parent.left = left_most.right
+            self.size -= 1
 
-    def remove_range(self, data_lower_bound, data_upper_bound):
+    def remove_range(self, data_lower_bound, data_upper_bound):  # To do: inclusive/exclusive boundary
         if data_upper_bound < data_lower_bound:
             raise ValueError(f"data_upper_bound {data_upper_bound} < data_lower_bound {data_lower_bound}")
         parent, node = None, self.root
         while node is not None:
-            print(node.data)
             if node.data < data_lower_bound:
                 parent, node = node, node.right
             elif data_upper_bound < node.data:
@@ -122,5 +123,11 @@ class BinarySearchTree(BinaryTree):
                         left_most_parent.right = left_most.right  # left_most only have the right child
                     else:
                         left_most_parent.left = left_most.right
+                self.size -= 1
 
-
+    def pop(self, reverse=False):
+        if self.size == 0:
+            raise KeyError("Pop from empty container")
+        node = self.get_right_most(self.root) if reverse else self.get_left_most(self.root)
+        self.remove_node(node)
+        return node.data

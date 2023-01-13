@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Callable
 
 from ezcode.Container.Tree.BinaryTree import BinaryTree
@@ -74,3 +76,13 @@ class SegmentTree(BinaryTree):
             )
 
         return query_helper(self.root, start, end)
+
+    def __eq__(self, other) -> bool:
+        raise NotImplementedError
+
+    def copy_tree(self, node):
+        raise NotImplementedError
+
+    def copy(self) -> SegmentTree:
+        raise NotImplementedError
+

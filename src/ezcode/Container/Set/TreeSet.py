@@ -10,6 +10,9 @@ class TreeSet:
             for key in init_data:
                 self.tree.insert(key)
 
+    def __len__(self):
+        return len(self.tree)
+
     def __contains__(self, key):
         return key in self.tree
 
@@ -29,8 +32,8 @@ class TreeSet:
     def remove(self, key):
         self.tree.remove(key)
 
-    def pop(self):
-        return self.tree.pop()
+    def pop(self, reverse=False):
+        return self.tree.pop(reverse=reverse)
 
     def update(self, other: Iterable):
         for key in other:

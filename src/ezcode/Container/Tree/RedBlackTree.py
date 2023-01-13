@@ -1,15 +1,59 @@
+from __future__ import annotations
+
 from typing import Iterable
+from collections import deque
+
 from ezcode.Container.Tree.BinarySearchTree import BinarySearchTree
 
 
 class RedBlackTree(BinarySearchTree):
-    def __init__(self, init_data: Iterable = None, root=None):
+    def __init__(self, init_data: Iterable = None, root=None, root_copy=None):
         super().__init__(
-            init_data=init_data, root=root,
+            init_data=init_data, root=root, root_copy=root_copy,
             data_name="data", left_name="left", right_name="right"
         )
 
-    def new_node(self, data, is_red=True, parent=None, left=None, right=None):
+    def __eq__(self, other: RedBlackTree) -> bool:
+        def _tree_equal(node_1, node_2):
+            if node_1 is None and node_2 is None:
+                return True
+            if node_1 is None or node_2 is None:
+                return False
+            if node_1.data != node_2.data or node_1.is_red != node_2.is_red:
+                return False
+            return _tree_equal(node_1.left, node_2.left) and _tree_equal(node_1.right, node_2.right)
+
+        return _tree_equal(self.root, other.root)
+
+    def copy_tree(self, node):
+        if node is None:
+            return None, 0
+        if not (self.root is None and self.new_node().match(node)) and not self.root.match(node):
+            raise ValueError(f"Invalid node with attributes: {list(node.__dict__.keys())}")
+        root_copy, size_copy = self.copy_node(node), 0
+        queue, queue_copy = deque([node]), deque([root_copy])
+        while len(queue) > 0:
+            node = queue.popleft()
+            node_copy = queue_copy.popleft()
+            size_copy += 1
+            if node.left is not None:
+                node_copy.left = self.copy_node(node.left)
+                node_copy.left.parent = node_copy
+                queue.append(node.left)
+                queue_copy.append(node_copy.left)
+            if node.right is not None:
+                node_copy.right = self.copy_node(node.right)
+                node_copy.right.parent = node_copy
+                queue.append(node.right)
+                queue_copy.append(node_copy.right)
+        return root_copy, size_copy
+
+    def copy(self) -> RedBlackTree:
+        tree = RedBlackTree()
+        tree.root, tree.size = self.copy_tree(self.root)
+        return tree
+
+    def new_node(self, data=None, parent=None, left=None, right=None, is_red=True):
         node = super().new_node(data=data, left=left, right=right)
         node.__dict__.update({"is_red": is_red, "parent": parent})
         return node
@@ -102,18 +146,19 @@ class RedBlackTree(BinarySearchTree):
         """ O(logN) """
         if self.root is None:
             self.root = self.new_node(data=data, is_red=False)  # root is black
-            return
-        parent, node = None, self.root
-        while node is not None:
-            if data == node.data:
-                raise KeyError(f"{data} exist")
-            parent, node = node, node.left if data < node.data else node.right
-        node = self.new_node(data=data, is_red=True, parent=parent)
-        if data < parent.data:
-            parent.left = node
         else:
-            parent.right = node
-        self._insert_fix_up(node=parent, child=node)
+            parent, node = None, self.root
+            while node is not None:
+                if data == node.data:
+                    raise KeyError(f"{data} exist")
+                parent, node = node, node.left if data < node.data else node.right
+            node = self.new_node(data=data, is_red=True, parent=parent)
+            if data < parent.data:
+                parent.left = node
+            else:
+                parent.right = node
+            self._insert_fix_up(node=parent, child=node)
+        self.size += 1
 
     def _insert_fix_up(self, node, child):
         """ O(logN) """
@@ -163,20 +208,20 @@ class RedBlackTree(BinarySearchTree):
                         node.left.parent = None
                     if self.root is not None:
                         self.root.is_red = False
-                    return
-                elif node == node.parent.left:
-                    node.parent.left = node.left
-                    if node.left is not None:
-                        node.left.parent = node.parent
                 else:
-                    node.parent.right = node.left
-                    if node.left is not None:
-                        node.left.parent = node.parent
-                if not node.is_red:                                # deleted a black node
-                    if node.left is None or not node.left.is_red:  # missing a black node
-                        self._remove_fix_up(parent=node.parent, node=node.left)
+                    if node == node.parent.left:
+                        node.parent.left = node.left
+                        if node.left is not None:
+                            node.left.parent = node.parent
                     else:
-                        node.left.is_red = False
+                        node.parent.right = node.left
+                        if node.left is not None:
+                            node.left.parent = node.parent
+                    if not node.is_red:                                # deleted a black node
+                        if node.left is None or not node.left.is_red:  # missing a black node
+                            self._remove_fix_up(parent=node.parent, node=node.left)
+                        else:
+                            node.left.is_red = False
             else:
                 left_most = node.right             # left most node of the right tree
                 while left_most.left is not None:  # left_most only have the right child
@@ -195,6 +240,7 @@ class RedBlackTree(BinarySearchTree):
                         self._remove_fix_up(parent=left_most.parent, node=left_most.right)
                     else:
                         left_most.right.is_red = False
+            self.size -= 1
 
     def _remove_fix_up(self, parent, node):
         """ O(logN) """
@@ -268,10 +314,3 @@ class RedBlackTree(BinarySearchTree):
                      ┌─(N/B)─┐    ┌─(S/B)─┐                ┌─(N/B)─┐    ┌─(S/R)─┐        ┌─(x/B)─┐    ┌─(S/R)─┐
                     (x)     (x) (a/B)   (b/B)             (x)     (x) (a/B)   (b/B)     (x)     (x) (a/B)   (b/B)
                     """
-
-    def pop_left(self):
-        pass
-
-    def pop_right(self):
-        pass
-

@@ -185,3 +185,13 @@ def test_red_black_tree_iterator():
     assert sorted(benchmark) == list(iter(t))
     assert sorted(benchmark, reverse=True) == list(reversed(t))
 
+
+def test_red_black_tree_copy():
+    t1 = RedBlackTree([4, 2, 0, 6, 5, 8, 3, 1, 7])
+    t2 = RedBlackTree([4, 2, 0, 6, 5, 8, 3, 1, 7])
+    assert t1 == t2
+    t3 = t2.copy()
+    assert t1 == t3
+    assert type(t3) is RedBlackTree
+
+

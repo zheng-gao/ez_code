@@ -30,6 +30,9 @@ class TreeMap:
             for key, value in init_data:
                 self[key] = value
 
+    def __len__(self):
+        return len(self.tree)
+
     def __contains__(self, key):
         return TreeMap.Entry(key, None) in self.tree
 
@@ -91,5 +94,6 @@ class TreeMap:
         self.tree.remove_node(node)
         return node.value
 
-    def popitem(self):
-        return self.tree.pop_left()
+    def popitem(self, reverse=False):
+        return self.tree.pop(reverse=reverse)
+
