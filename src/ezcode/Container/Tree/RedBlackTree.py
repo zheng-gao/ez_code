@@ -247,9 +247,9 @@ class RedBlackTree(BinarySearchTree):
         while node != self.root and (node is None or not node.is_red):  # current node is black and the path missed a black node
             if node is not None:
                 parent = node.parent
-            sibling = parent.right if node == parent.left else parent.left
+            sibling, is_left_rotation = (parent.right, True) if node == parent.left else (parent.left, False)
             if sibling is not None and sibling.is_red:  # parent and the sibling's children must be black
-                self._rotate(node=parent, is_left_rotation=True)
+                self._rotate(node=parent, is_left_rotation=is_left_rotation)  # left/right sibling -> right/left rotate P
                 parent.is_red, sibling.is_red = True, False  # parent -> red, sibling -> black
                 """
                      ┌───(P/B)────┐  -left rotate P->  ┌──(S/R)──┐  -recolor S,P->  ┌──(S/B)──┐
@@ -314,7 +314,4 @@ class RedBlackTree(BinarySearchTree):
                      ┌─(N/B)─┐    ┌─(S/B)─┐                ┌─(N/B)─┐    ┌─(S/R)─┐        ┌─(x/B)─┐    ┌─(S/R)─┐
                     (x)     (x) (a/B)   (b/B)             (x)     (x) (a/B)   (b/B)     (x)     (x) (a/B)   (b/B)
                     """
-
-    def pop(self, reverse=False):
-        raise NotImplementedError
 

@@ -1,7 +1,7 @@
 from ezcode.Container.Map.TreeMap import TreeMap
 
 
-def test_tree_map_set_get_item():
+def test_tree_map_get_item():
     tm = TreeMap()
     tm[5] = "Five"
     tm[9] = "Nine"
@@ -13,6 +13,7 @@ def test_tree_map_set_get_item():
     tm[4] = "Four"
     tm[7] = "Seven"
     tm[2] = "Two"
+    tm[8] = "Eight" # duplicates are not added
     assert list(tm.keys()) == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     assert list(tm.keys(reverse=True)) == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9][::-1]
     assert list(tm.values()) == ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine']
@@ -32,7 +33,7 @@ def test_tree_map_set_get_item():
         assert tm[key] == value
 
 
-def test_tree_map_delete_item():
+def test_tree_map_remove_item():
     tm = TreeMap([
         (5, "Five"), (9, "Nine"), (3, "Three"), (8, "Eight"), (6, "Six"),
         (1, "One"), (0, "Zero"), (4, "Four"), (7, "Seven"), (2, "Two")
@@ -64,7 +65,7 @@ def test_tree_map_delete_item():
     assert list(tm.items()) == []
 
 
-def test_tree_map_update_item():
+def test_tree_map_set_item():
     tm = TreeMap([
         (5, "Five"), (9, "Nine"), (3, "Three"), (8, "Eight"), (6, "Six"),
         (1, "One"), (0, "Zero"), (4, "Four"), (7, "Seven"), (2, "Two")
@@ -100,4 +101,36 @@ def test_tree_map_contains():
     assert 5 not in tm
 
 
+def test_tree_map_pop():
+    benchmark = ['Four','Five', 'One', 'Seven', 'Three', 'Six', 'Two', 'Nine', 'Eight', 'Zero']
+    tm = TreeMap([
+        (5, "Five"), (9, "Nine"), (3, "Three"), (8, "Eight"), (6, "Six"),
+        (1, "One"), (0, "Zero"), (4, "Four"), (7, "Seven"), (2, "Two")
+    ])
+    for i, key in enumerate([4, 5, 1, 7, 3, 6, 2, 9, 8, 0]):
+        assert benchmark[i] == tm.pop(key) 
+
+
+def test_tree_map_popitem():
+    benchmark = [
+        (0, "Zero"), (1, "One"), (2, "Two"), (3, "Three"), (4, "Four"),
+        (5, "Five"), (6, "Six"), (7, "Seven"), (8, "Eight"), (9, "Nine")
+    ]
+    tm = TreeMap([
+        (5, "Five"), (9, "Nine"), (3, "Three"), (8, "Eight"), (6, "Six"),
+        (1, "One"), (0, "Zero"), (4, "Four"), (7, "Seven"), (2, "Two")
+    ])
+    for i in range(len(tm)):
+        item = tm.popitem()
+        assert item.key == benchmark[i][0]
+        assert item.value == benchmark[i][1]
+    tm = TreeMap([
+        (5, "Five"), (9, "Nine"), (3, "Three"), (8, "Eight"), (6, "Six"),
+        (1, "One"), (0, "Zero"), (4, "Four"), (7, "Seven"), (2, "Two")
+    ])
+    for i in range(len(tm)):
+        item = tm.popitem(reverse=True)
+        assert item.key == benchmark[-i-1][0]
+        assert item.value == benchmark[-i-1][1]
+        
 

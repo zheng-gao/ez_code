@@ -91,8 +91,9 @@ class TreeMap:
         parent, node = self.tree.search(TreeMap.Entry(key, None), return_with_parent=True)
         if node is None:
             raise KeyError(f"Key Not Found: {key}")
-        self.tree.remove_node(parent, node)
-        return node.value
+        saved_value = node.data.value        # save this value before remove_node
+        self.tree.remove_node(parent, node)  # will swap node.data
+        return saved_value
 
     def popitem(self, reverse=False):
         return self.tree.pop(reverse=reverse)
