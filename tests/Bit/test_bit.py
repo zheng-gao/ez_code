@@ -1,4 +1,4 @@
-from ezcode.Bit import bool_list_to_number
+from ezcode.Utils.Bit import bool_list_to_number
 
 
 def test_bool_list_to_number():

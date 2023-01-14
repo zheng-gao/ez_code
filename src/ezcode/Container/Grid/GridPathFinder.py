@@ -2,7 +2,7 @@ from copy import deepcopy
 from collections import deque
 
 from ezcode.Container.Heap.PriorityMap import PriorityMap
-from ezcode.Color import colored_square_string
+from ezcode.Utils.Color import colored_square_string
 
 
 class GridPathFinder:
