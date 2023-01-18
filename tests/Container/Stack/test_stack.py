@@ -1,4 +1,6 @@
-from ezcode.Container.Stack import Stack, MinStack, MaxStack, PersistentStack
+from ezcode.Container.Stack.Stack import Stack
+from ezcode.Container.Stack.MinMaxStack import MinMaxStack
+from ezcode.Container.Stack.PersistentStack import PersistentStack
 
 
 def test_stack():
@@ -16,18 +18,15 @@ def test_stack():
 
 
 def test_min_max_stack():
-    min_stack = MinStack()
-    max_stack = MaxStack()
+    min_max_stack = MinMaxStack()
     for data, min_data, max_data in zip([2, 1, 3, 5, 4], [2, 1, 1, 1, 1], [2, 2, 3, 5, 5]):
-        min_stack.push(data)
-        max_stack.push(data)
-        assert min_stack.get_min() == min_data
-        assert max_stack.get_max() == max_data
+        min_max_stack.push(data)
+        assert min_max_stack.get_min() == min_data
+        assert min_max_stack.get_max() == max_data
     for min_data, max_data in zip([1, 1, 1, 2], [5, 3, 2, 2]):
-        min_stack.pop()
-        max_stack.pop()
-        assert min_stack.get_min() == min_data
-        assert max_stack.get_max() == max_data
+        min_max_stack.pop()
+        assert min_max_stack.get_min() == min_data
+        assert min_max_stack.get_max() == max_data
 
 
 def test_persistent_stack():

@@ -1,4 +1,4 @@
-from ezcode.Hash import hash_encode, hash_decode
+from ezcode.Utils.Hash import hash_encode, hash_decode
 
 
 def test_get_hash():

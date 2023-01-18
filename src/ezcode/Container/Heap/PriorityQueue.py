@@ -1,8 +1,9 @@
 from typing import Callable
+from typing import Iterable
 
 
 class PriorityQueue:
-    def __init__(self, init_queue: list = None, min_heap: bool = True, key: Callable = lambda x: x):
+    def __init__(self, init_queue: Iterable = None, min_heap: bool = True, key: Callable = lambda x: x):
         self.min_heap = min_heap
         self.key = key
         self.heap = list()  # [(item, priority)]

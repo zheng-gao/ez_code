@@ -2,7 +2,7 @@ from collections import Counter
 
 from ezcode.Math.utils import approximately_equals
 from ezcode.Container.Random import RandomMultiSet, RandomKeyValueDict, RandomUniqueValueDict
-from ezcode.Container.Random import RandomWeightedIndex
+from ezcode.Container.Random import ArrayBasedRandomWeightedIndex, TreeBasedRandomWeightedIndex
 
 
 def test_random_multi_set():
@@ -110,23 +110,23 @@ def test_random_unique_value_dict():
 
 
 def test_random_weighted_index():
-    error, samples_size, weights = 0.3, 1000, [1, 2, 3, 4]
-    counter, random_generator = Counter(), RandomWeightedIndex(weights)
-    for _ in range(samples_size):
-        counter.update([random_generator.random_index()])
-    sum_weights = sum(weights)
-    for index, weight in enumerate(weights):
-        assert approximately_equals(target=(samples_size * weight / sum_weights), error=error, value=counter[index])
-    weights[1], counter = 1, Counter()
-    random_generator.update(index=1, weight=1)
-    sum_weights = sum(weights)
-    for _ in range(samples_size):
-        counter.update([random_generator.random_index()])
-    for index, weight in enumerate(weights):
-        assert approximately_equals(target=(samples_size * weight / sum_weights), error=error, value=counter[index])
-
-
-
-
+    def _test(random_generator, weights):
+        error, samples_size, counter = 0.3, 1000, Counter()
+        for _ in range(samples_size):
+            counter.update([random_generator.random_index()])
+        sum_weights = sum(weights)
+        for index, weight in enumerate(weights):
+            assert approximately_equals(target=(samples_size * weight / sum_weights), error=error, value=counter[index])
+        weights[1], counter = 1, Counter()
+        random_generator.update(index=1, weight=1)
+        sum_weights = sum(weights)
+        for _ in range(samples_size):
+            counter.update([random_generator.random_index()])
+        for index, weight in enumerate(weights):
+            assert approximately_equals(target=(samples_size * weight / sum_weights), error=error, value=counter[index])
+    
+    weights = [1, 2, 3, 4]
+    _test(ArrayBasedRandomWeightedIndex(weights), weights)
+    _test(TreeBasedRandomWeightedIndex(weights), weights)
 
 

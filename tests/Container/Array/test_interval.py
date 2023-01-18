@@ -1,9 +1,9 @@
-from ezcode.Interval import Interval
-from ezcode.Interval.algorithm import merge_intervals
-from ezcode.Interval.algorithm import overlapping_interval_pairs
-from ezcode.Interval.algorithm import min_groups_of_non_overlapping_intervals
-from ezcode.Interval.algorithm import skyline
-from ezcode.Interval.algorithm import most_overlapped_subintervals
+from ezcode.Container.Array.Interval import Interval
+from ezcode.Container.Array.Interval import merge_intervals
+from ezcode.Container.Array.Interval import overlapping_interval_pairs
+from ezcode.Container.Array.Interval import min_groups_of_non_overlapping_intervals
+from ezcode.Container.Array.Interval import skyline
+from ezcode.Container.Array.Interval import most_overlapped_subintervals
 
 
 def test_interval_overlap():

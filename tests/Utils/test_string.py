@@ -1,4 +1,4 @@
-from ezcode.String import rotate_char, substrings
+from ezcode.Utils.String import rotate_char, substrings
 
 
 def test_rotate_char():
