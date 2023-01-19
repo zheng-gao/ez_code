@@ -1,6 +1,6 @@
 from collections import Counter
 
-from ezcode.Math.utils import approximately_equals
+from ezcode.Math import approximately_equals
 from ezcode.Container.Random import RandomMultiSet, RandomKeyValueDict, RandomUniqueValueDict
 from ezcode.Container.Random import ArrayBasedRandomWeightedIndex, TreeBasedRandomWeightedIndex
 

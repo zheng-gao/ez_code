@@ -1,9 +1,9 @@
-from ezcode.Math.calculator import infix_notation_to_reverse_polish_notation
-from ezcode.Math.calculator import evaluate_reverse_polish_notation
-from ezcode.Math.calculator import calculate
-from ezcode.Math.discrete import permutation_size, permutations, all_items_permutations, next_lexicographic_permutation
-from ezcode.Math.discrete import combination_size, combinations, all_subsets, partitions, enumerations
-from ezcode.Math.utils import approximately_equals
+from ezcode.Math.Calculator import Calculator
+from ezcode.Math.Permutation import permutation_size, permutations, all_items_permutations, next_lexicographic_permutation
+from ezcode.Math.Combination import combination_size, combinations, all_subsets
+from ezcode.Math.Partition import partitions
+from ezcode.Math.Enumeration import enumerations
+from ezcode.Math import approximately_equals
 
 
 def test_ermutation_size():
@@ -213,10 +213,10 @@ def test_enumerations():
 
 def test_calculator():
     arithmetic_expression = "-2/-1 + √4!^2*((-1 + 5) -2)*4/ 2^2"
-    rpn = infix_notation_to_reverse_polish_notation(arithmetic_expression)
+    rpn = Calculator.infix_notation_to_reverse_polish_notation(arithmetic_expression)
     assert rpn == [-2, -1, '/', 4, '!', '√', 2, '^', -1, 5, '+', 2, '-', '*', 4, '*', 2, 2, '^', '/', '+']
-    assert evaluate_reverse_polish_notation(rpn) == 49.99999999999999
-    assert calculate(arithmetic_expression) == 49.99999999999999
+    assert Calculator.evaluate_reverse_polish_notation(rpn) == 49.99999999999999
+    assert Calculator.calculate(arithmetic_expression) == 49.99999999999999
 
 
 def test_approximately_equals():
@@ -243,3 +243,4 @@ def test_approximately_equals():
     assert not approximately_equals(value=-1, target=0, error=0)
     assert not approximately_equals(value=0.0001, target=0, error=10000)
     assert not approximately_equals(value=-0.0001, target=0, error=10000)
+
