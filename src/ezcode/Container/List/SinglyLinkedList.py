@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from ezcode.Container.List import DATA_NAME, NEXT_NAME, FORWARD_LINK, BACKWARD_LINK
-from ezcode.Container.List.algorithm import SinglyLinkedListAlgorithm
-from ezcode.Container.List.printer import SinglyLinkedListPrinter
+from ezcode.Container.List.LinkedListAlgorithm import SinglyLinkedListAlgorithm
+from ezcode.Container.List.LinkedListPrinter import SinglyLinkedListPrinter
 from ezcode.Utils import validate_non_negative_range
 
 

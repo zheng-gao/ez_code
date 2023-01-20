@@ -1,6 +1,6 @@
 from ezcode.Container.List import DATA_NAME, NEXT_NAME, PREV_NAME, FORWARD_LINK, BACKWARD_LINK, BIDIRECTION_LINK
-from ezcode.Container.List.algorithm import DoublyLinkedListAlgorithm
-from ezcode.Container.List.printer import DoublyLinkedListPrinter
+from ezcode.Container.List.LinkedListAlgorithm import DoublyLinkedListAlgorithm
+from ezcode.Container.List.LinkedListPrinter import DoublyLinkedListPrinter
 
 
 class DoublyLinkedList:

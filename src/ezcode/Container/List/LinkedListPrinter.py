@@ -1,5 +1,5 @@
 from ezcode.Container.List import FORWARD_LINK, BACKWARD_LINK, BIDIRECTION_LINK
-from ezcode.Container.List.algorithm import SinglyLinkedListAlgorithm, DoublyLinkedListAlgorithm
+from ezcode.Container.List.LinkedListAlgorithm import SinglyLinkedListAlgorithm, DoublyLinkedListAlgorithm
 
 
 class SinglyLinkedListPrinter:
