@@ -1,5 +1,5 @@
-from ezcode.Array.Knapsack import Knapsack
-from ezcode.Utils import equal
+from ezcode.Dynamic.Knapsack import Knapsack
+from ezcode.Utils import inf
 
 
 def test_knapsack_with_limited_items():
@@ -34,9 +34,9 @@ def test_knapsack_with_limited_items():
 
     # Limited, Fill to capacity
     benchmark_dp_table = [
-        [0, float("-inf"), float("-inf"), 20, float("-inf")],
-        [0,            15, float("-inf"), 20,            35],
-        [0,            15, float("-inf"), 20,            35]
+        [0, -inf, -inf, 20, -inf],
+        [0,   15, -inf, 20,   35],
+        [0,   15, -inf, 20,   35]
     ]
     benchmark_item_list = [
         [[],  [], [], [0],     []],
@@ -97,9 +97,9 @@ def test_knapsack_with_unlimited_items():
 
     # Unlimited, Fill to capacity
     benchmark_dp_table = [
-        [0, float("-inf"), float("-inf"), 20, float("-inf")],
-        [0,            15,            30, 45,            60],
-        [0,            15,            30, 45,            60]
+        [0, -inf, -inf, 20, -inf],
+        [0,   15,   30, 45,   60],
+        [0,   15,   30, 45,   60]
     ]
     benchmark_item_list = [
         [[],  [],     [],       [0],           []],
@@ -130,8 +130,8 @@ def test_knapsack_with_unlimited_items():
     # Test min function
     capacity, sizes, values = 11, [5, 7], [1, 1]
     benchmark_dp_table = [
-        [0, float("inf"), float("inf"), float("inf"), float("inf"), 1, float("inf"), float("inf"), float("inf"), float("inf"),2, float("inf")],
-        [0, float("inf"), float("inf"), float("inf"), float("inf"), 1, float("inf"),            1, float("inf"), float("inf"),2, float("inf")],
+        [0, inf, inf, inf, inf, 1, inf, inf, inf, inf, 2, inf],
+        [0, inf, inf, inf, inf, 1, inf,   1, inf, inf, 2, inf],
     ]
     benchmark_item_list = [
         [[], [], [], [], [], [0], [],  [], [], [], [0, 0], []],

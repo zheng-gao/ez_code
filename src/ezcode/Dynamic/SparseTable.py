@@ -1,17 +1,19 @@
 from math import ceil, floor, log
 from typing import Callable
 
-from ezcode.Array.Utils import validate_index_range
+from ezcode.Array.Utils import validate_index, validate_index_interval
 
 
 class SparseTable:
     """
-                            Sparse Table      Segment Tree
-        Data            :   No Data Update    Can Update Data, No Data Insert/Delete
-        Merge           :   Min/Max Only      Min, Max, Sum, ... lambda x,y
-        Space           :   O(NlogN)          O(N)
-        Preprocess Time :   O(NlogN)          O(N)
-        Range Query Time:   O(1)              O(logN)
+                            Sparse Table   Segment Tree
+        Update          :   O(N)           O(logN)
+        Insert          :   Not Support    Not Support
+        Delete          :   Not Support    Not Support
+        Merge           :   Min/Max Only   Min, Max, Sum, ... lambda x,y
+        Space           :   O(NlogN)       O(N)
+        Preprocess Time :   O(NlogN)       O(N)
+        Range Query Time:   O(1)           O(logN)
     """
     def __init__(self, merge: Callable = max, data_list: list = None):
         if merge not in [min, max]:
@@ -58,6 +60,28 @@ class SparseTable:
                     break
                 self.dp_table[row][col] = self.merge(self.dp_table[row][col - 1], self.dp_table[new_row][col - 1])
 
+    def update(self, index: int, data):
+        """ Time: O(N) """
+        def _update_next(row, col):
+            if col < len(self.dp_table[0]) - 1:
+                row_offset = (1 << col)
+                if row + row_offset < len(self.dp_table):
+                    new_data = self.merge(self.dp_table[row][col], self.dp_table[row + row_offset][col])
+                    if new_data != self.dp_table[row][col + 1]:
+                        self.dp_table[row][col + 1] = new_data
+                        _update_next(row, col + 1)
+                if row_offset <= row:
+                    new_data = self.merge(self.dp_table[row][col], self.dp_table[row - row_offset][col])
+                    if new_data != self.dp_table[row - row_offset][col + 1]:
+                        self.dp_table[row - row_offset][col + 1] = new_data
+                        _update_next(row - row_offset, col + 1)
+
+        validate_index(index, 0, len(self.dp_table) - 1)
+        if self.dp_table[index][0] == data:
+            return
+        self.dp_table[index][0] = data
+        _update_next(index, 0)
+
     def range_query(self, start: int, end: int):
         """
             RMQ: Range Maximum(Minimum) Query
@@ -73,7 +97,7 @@ class SparseTable:
                 right = dp_table[2][3] = left
                 merge covers [4, 5, 6, 8, 1, 9, 7, 0]
         """
-        validate_index_range(start, end, 0, len(self.dp_table) - 1)
+        validate_index_interval(start, end, 0, len(self.dp_table) - 1)
         k = floor(log(end - start + 1, 2))
         return self.merge(self.dp_table[start][k], self.dp_table[end + 1 - (1 << k)][k])
 

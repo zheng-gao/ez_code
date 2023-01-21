@@ -1,10 +1,11 @@
+def validate_index(index: int, inclusive_lower_bound, inclusive_upper_bound):
+    if index < inclusive_lower_bound or inclusive_upper_bound < index:
+        raise ValueError(f"index {index} is out of range [{inclusive_lower_bound}, {inclusive_upper_bound}]")
 
 
-def validate_index_range(start: int, end: int, inclusive_lower_bound, inclusive_upper_bound):
-    if start < inclusive_lower_bound or inclusive_upper_bound < start:
-        raise ValueError(f"start {start} is out of range [{inclusive_lower_bound}, {inclusive_upper_bound}]")
-    if end < inclusive_lower_bound or inclusive_upper_bound < end:
-        raise ValueError(f"end {end} is out of range [{inclusive_lower_bound}, {inclusive_upper_bound}]")
+def validate_index_interval(start: int, end: int, inclusive_lower_bound, inclusive_upper_bound):
+    validate_index(start, inclusive_lower_bound, inclusive_upper_bound)
+    validate_index(end, inclusive_lower_bound, inclusive_upper_bound)
     if end < start:
         raise ValueError(f"start {start} is greater than end {end}")
 

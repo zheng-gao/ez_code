@@ -3,7 +3,7 @@ from __future__ import annotations
 from ezcode.List import DATA_NAME, NEXT_NAME, FORWARD_LINK, BACKWARD_LINK
 from ezcode.List.LinkedListAlgorithm import SinglyLinkedListAlgorithm
 from ezcode.List.LinkedListPrinter import SinglyLinkedListPrinter
-from ezcode.Array.Utils import validate_index_range
+from ezcode.Array.Utils import validate_index_interval
 
 
 class SinglyLinkedList(object):
@@ -114,7 +114,7 @@ class SinglyLinkedList(object):
             self._reverse_sublist(0, end_index)
 
     def _reverse_sublist(self, start_index: int, end_index: int):
-        validate_index_range(start_index, end_index, 0, self.size - 1)
+        validate_index_interval(start_index, end_index, 0, self.size - 1)
         if not self.head or start_index == end_index:
             return
         start_node_prev, start_node, current_node, index = None, None, self.head, 0

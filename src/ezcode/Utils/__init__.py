@@ -1,4 +1,7 @@
 
+inf = float("inf")
+
+
 def equal(item_1, item_2, resolution=None) -> bool:
     item_type = type(item_1)
     if item_type != type(item_2):
@@ -26,7 +29,7 @@ def equal(item_1, item_2, resolution=None) -> bool:
             if not equal(value_1, item_2[key], resolution):
                 return False
         return True
-    elif resolution is not None and item_type is float and abs(item_1) != float("inf") and abs(item_2) != float("inf"):
+    elif resolution is not None and item_type is float and abs(item_1) != inf and abs(item_2) != inf:
         return abs(item_1 - item_2) <= resolution
     else:
         return item_1 == item_2

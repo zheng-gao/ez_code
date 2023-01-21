@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Callable
 
-from ezcode.Array.Utils import validate_index_range
+from ezcode.Array.Utils import validate_index, validate_index_interval
 from ezcode.Tree.BinaryTree import BinaryTree
 
 
@@ -15,7 +15,7 @@ class SegmentTree(BinaryTree):
     def __init__(self, data_list: list, merge: Callable = lambda x, y: x + y):
         super().__init__(data_name="data", left_name="left", right_name="right")
         self.merge = merge  # sum, max, min, gcd or lambda x, y: ...
-        self.data_list_size = len(data_list)  # to validate the query index range
+        self.data_list_size = len(data_list)  # to validate the range_query/update indices
         self.root = self.build_tree(data_list, 0, len(data_list) - 1)
 
     def insert(self, data):
@@ -60,6 +60,7 @@ class SegmentTree(BinaryTree):
                 update_helper(node.right, index, data)
             node.data = self.merge(node.left.data, node.right.data)
 
+        validate_index(index, 0, self.data_list_size - 1)
         update_helper(self.root, index, data)
 
     def range_query(self, start: int, end: int):
@@ -77,7 +78,7 @@ class SegmentTree(BinaryTree):
                 _range_query(node.right, mid + 1, end)
             )
 
-        validate_index_range(start, end, 0, self.data_list_size - 1)
+        validate_index_interval(start, end, 0, self.data_list_size - 1)
         return _range_query(self.root, start, end)
 
     def __eq__(self, other) -> bool:
