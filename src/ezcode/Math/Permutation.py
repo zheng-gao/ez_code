@@ -1,5 +1,5 @@
-from ezcode.Container.Array.utils import reverse
-from ezcode.Container.Array.search import exclusive_binary_search_subarray
+from ezcode.Array.Utils import reverse
+from ezcode.Array.Search import exclusive_binary_search_subarray
 
 
 def permutation_size(total_size: int, selection_size: int) -> int:
