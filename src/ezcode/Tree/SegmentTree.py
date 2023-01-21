@@ -19,11 +19,11 @@ class SegmentTree(BinaryTree):
         self.root = self.build_tree(data_list, 0, len(data_list) - 1)
 
     def insert(self, data):
-        """ Once initialized the Segment Tree Structure cannot be changed """
+        """ Once initialized, the Segment Tree Structure cannot be changed """
         raise NotImplementedError
 
     def remove(self, data):
-        """ Once initialized the Segment Tree Structure cannot be changed """
+        """ Once initialized, the Segment Tree Structure cannot be changed """
         raise NotImplementedError
 
     def new_node(self, start: int, end: int, data, left=None, right=None):
