@@ -1,4 +1,4 @@
-from ezcode.List.LRUCache import LRUCache
+from ezcode.Cache.LRUCache import LRUCache
 
 
 def test_lru_cache():

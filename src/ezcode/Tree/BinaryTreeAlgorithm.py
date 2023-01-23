@@ -70,13 +70,6 @@ class BinaryTreeAlgorithm:
         my_average = my_sum / my_size
         return extremum_func(my_average, left_avg_extremum, right_avg_extremum), my_sum, my_size
 
-    def is_balanced(self, root) -> (bool, int):
-        if root is None:
-            return True, 0
-        left_balanced, left_depth = self.is_balanced(root.__dict__[self.left_name])
-        right_balanced, right_depth = self.is_balanced(root.__dict__[self.right_name])
-        return left_balanced and right_balanced and abs(left_depth - right_depth) <= 1, max(left_depth, right_depth) + 1
-
     def max_path_sum(self, root):
         if root is None:
             return -maxsize, 0  # path sum max，max half + node value

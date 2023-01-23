@@ -46,7 +46,8 @@ class TreeMap:
         self.tree.remove(TreeMap.Entry(key, None))
 
     def __setitem__(self, key, value):
-        parent, node = self.tree.search(TreeMap.Entry(key, None), return_with_parent=True)
+        parents, node = self.tree.search(TreeMap.Entry(key, None), track_parents=True)
+        parent = parents.pop() if len(parents) > 0 else None
         if node is None or node.data.value != value:
             self.tree.remove_node(parent, node)
             self.tree.insert(TreeMap.Entry(key, value))
@@ -88,7 +89,8 @@ class TreeMap:
         self.tree.clear()
 
     def pop(self, key):
-        parent, node = self.tree.search(TreeMap.Entry(key, None), return_with_parent=True)
+        parents, node = self.tree.search(TreeMap.Entry(key, None), track_parents=True)
+        parent = parents.pop() if len(parents) > 0 else None
         if node is None:
             raise KeyError(f"Key Not Found: {key}")
         saved_value = node.data.value        # save this value before remove_node

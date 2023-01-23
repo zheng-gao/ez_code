@@ -95,51 +95,52 @@ class RedBlackTree(BinarySearchTree):
             return _validate(self.root)[0]
         return False
 
-    def _rotate(self, node, is_left_rotation=True):
-        """ O(1) """
+    def _left_rotate(self, node):
+        """
+        Time: O(1)
+        make node the 'left' child of its right child, keep it BST
+                         <----------
+              (P)─┐┌─(P)              (P)─┐┌─(P)
+              ┌───(R)───┐           ┌───(node)───┐
+         ┌──(node)──┐  (x)         (x)       ┌──(R)──┐
+        (x)        (RL)                     (RL)    (x)
+        """
         parent = node.parent
-        if is_left_rotation:
-            """
-            left rotate: O(1)
-            make node the 'left' child of its right child, keep it BST
-                             <----------
-                  (P)─┐┌─(P)              (P)─┐┌─(P)
-                  ┌───(R)───┐           ┌───(node)───┐
-             ┌──(node)──┐  (x)         (x)       ┌──(R)──┐
-            (x)        (RL)                     (RL)    (x)
-            """
-            right, right_left = node.right, node.right.left
-            node.right = right_left
-            if right_left is not None:
-                right_left.parent = node
-            right.left, node.parent, right.parent = node, right, parent
-            if parent is None:
-                self.root = right  # might change the color of root
-            elif parent.left == node:
-                parent.left = right
-            else:
-                parent.right = right
+        right, right_left = node.right, node.right.left
+        node.right = right_left
+        if right_left is not None:
+            right_left.parent = node
+        right.left, node.parent, right.parent = node, right, parent
+        if parent is None:
+            self.root = right  # might change the color of root
+        elif parent.left == node:
+            parent.left = right
         else:
-            """
-            right rotate: O(1)
-            make node the 'right' child of its left child, keep it BST
-                               ---------->
-                   (P)─┐┌─(P)              (P)─┐┌─(P)
-                 ┌───(node)───┐            ┌───(L)───┐
-             ┌──(L)──┐       (x)          (x)   ┌──(node)──┐
-            (x)     (LR)                       (LR)       (x)
-            """
-            left, left_right = node.left, node.left.right
-            node.left = left_right
-            if left_right is not None:
-                left_right.parent = node
-            left.right, node.parent, left.parent = node, left, parent
-            if parent is None:
-                self.root = left  # might change the color of root
-            elif parent.left == node:
-                parent.left = left
-            else:
-                parent.right = left
+            parent.right = right
+        self.root.is_red = False  # root is black
+
+    def _right_rotate(self, node):
+        """
+        Time: O(1)
+        make node the 'right' child of its left child, keep it BST
+                           ---------->
+               (P)─┐┌─(P)              (P)─┐┌─(P)
+             ┌───(node)───┐            ┌───(L)───┐
+         ┌──(L)──┐       (x)          (x)   ┌──(node)──┐
+        (x)     (LR)                       (LR)       (x)
+        """
+        parent = node.parent
+        left, left_right = node.left, node.left.right
+        node.left = left_right
+        if left_right is not None:
+            left_right.parent = node
+        left.right, node.parent, left.parent = node, left, parent
+        if parent is None:
+            self.root = left  # might change the color of root
+        elif parent.left == node:
+            parent.left = left
+        else:
+            parent.right = left
         self.root.is_red = False  # root is black
 
     def insert(self, data):
@@ -171,9 +172,9 @@ class RedBlackTree(BinarySearchTree):
             else:  # sibling is black
                 if node == parent.left:
                     if child == node.right:
-                        self._rotate(node=node, is_left_rotation=True)
+                        self._left_rotate(node)
                         node, child = child, node  # child becomes node.left
-                    self._rotate(node=parent, is_left_rotation=False)
+                    self._right_rotate(parent)
                     """
                           ┌────(P/B)────┐    -left rotate N->     ┌───(P/B)───┐  -swap C,N-> ...
                      ┌─(N/R)─┐      ┌─(S/B)─┐                 ┌─(C/R)─┐   ┌─(S/B)─┐
@@ -187,16 +188,17 @@ class RedBlackTree(BinarySearchTree):
                     """
                 else:  # node == parent.right                                                               |
                     if child == node.left:                                                                # |
-                        self._rotate(node=node, is_left_rotation=False)                                   # |
+                        self._right_rotate(node)                                   # |
                         node, child = child, node                                                         # |
-                    self._rotate(node=parent, is_left_rotation=True)                                      # |
+                    self._left_rotate(parent)                                      # |
                 if parent == self.root:                                                                   # |
                     self.root = node                                                                      # |
                 node.is_red, parent.is_red = False, True  # node -> black, parent -> red, exit while loop <─┘
         self.root.is_red = False  # red sibling process might change the color of root
 
     def remove(self, data):
-        self.remove_node(None, self.search(data, return_with_parent=False))
+        """ O(logN) """
+        self.remove_node(None, self.search(data, track_parents=False))
 
     def remove_node(self, parent, node):
         """ O(logN) """
@@ -247,9 +249,12 @@ class RedBlackTree(BinarySearchTree):
         while node != self.root and (node is None or not node.is_red):  # current node is black and the path missed a black node
             if node is not None:
                 parent = node.parent
-            sibling, is_left_rotation = (parent.right, True) if node == parent.left else (parent.left, False)
+            sibling = parent.right if node == parent.left else parent.left
             if sibling is not None and sibling.is_red:  # parent and the sibling's children must be black
-                self._rotate(node=parent, is_left_rotation=is_left_rotation)  # left/right sibling -> right/left rotate P
+                if node == parent.left:
+                    self._left_rotate(parent)  # left sibling -> right rotate P
+                else:
+                    self._right_rotate(parent)  # right sibling -> left rotate P
                 parent.is_red, sibling.is_red = True, False  # parent -> red, sibling -> black
                 """
                      ┌───(P/B)────┐  -left rotate P->  ┌──(S/R)──┐  -recolor S,P->  ┌──(S/B)──┐
@@ -262,7 +267,7 @@ class RedBlackTree(BinarySearchTree):
                 if sibling.left is not None and sibling.left.is_red:
                     child = sibling.left
                     if sibling == parent.right:  # right-left case
-                        self._rotate(node=sibling, is_left_rotation=False)
+                        self._right_rotate(sibling)
                         child.is_red, sibling.is_red = False, True
                         """
                              ┌───(P/?)──────┐  -right rotate S->  ┌───(P/?)───┐  -recolor C,S->  ┌───(P/?)───┐
@@ -272,7 +277,7 @@ class RedBlackTree(BinarySearchTree):
                         subtree on C is RBT again and it becomes right-right case
                         """
                     else:  # left-left case
-                        self._rotate(node=parent, is_left_rotation=False)
+                        self._right_rotate(parent)
                         sibling.is_red, parent.is_red, child.is_red = parent.is_red, False, False
                         """
                                  ┌───(P/?)───┐  -right rotate P->  ┌──(S/B)───┐  -recolor C,S,P->  ┌───(S/?)───┐
@@ -284,7 +289,7 @@ class RedBlackTree(BinarySearchTree):
                 elif sibling.right is not None and sibling.right.is_red:
                     child = sibling.right
                     if sibling == parent.right:  # right-right case
-                        self._rotate(node=parent, is_left_rotation=True)
+                        self._left_rotate(parent)
                         sibling.is_red, parent.is_red, child.is_red = parent.is_red, False, False
                         """
                              ┌───(P/?)───┐  -left rotate P->   ┌───(S/B)───┐  -recolor C,S,P->  ┌───(S/?)───┐
@@ -294,7 +299,7 @@ class RedBlackTree(BinarySearchTree):
                         """
                         return  # Satisfied RBT contraints, no need to fix up
                     else:  # left-right case
-                        self._rotate(node=sibling, is_left_rotation=True)
+                        self._left_rotate(sibling)
                         child.is_red, sibling.is_red = False, True
                         """
                               ┌───(P/?)─────┐  -left rotate S->   ┌───(P/?)───┐  -recolor C,S->  ┌───(P/?)───┐

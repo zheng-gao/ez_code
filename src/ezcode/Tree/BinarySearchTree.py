@@ -36,15 +36,16 @@ class BinarySearchTree(BinaryTree):
         right_most = self.get_right_most(self.root)
         return _validate(self.root, left_most, right_most, left_most.data, right_most.data)
 
-    def search(self, data, return_with_parent=False):
+    def search(self, data, track_parents=False):
         """ O(logN) """
-        if return_with_parent:  # for internal use, e.g. self.remove
-            parent, node = None, self.root
+        if track_parents:  # for internal use, e.g. self.remove
+            parents, node = list(), self.root
             while node is not None:
                 if data == node.data:
                     break
-                parent, node = node, node.left if data < node.data else node.right
-            return parent, node
+                parents.append(node)
+                node = node.left if data < node.data else node.right
+            return parents, node
         else:
             node = self.root
             while node is not None:
@@ -72,8 +73,8 @@ class BinarySearchTree(BinaryTree):
 
     def remove(self, data):
         """ O(logN) """
-        parent, node = self.search(data, return_with_parent=True)
-        self.remove_node(parent, node)
+        parents, node = self.search(data, track_parents=True)
+        self.remove_node(parents.pop() if len(parents) > 0 else None, node)
 
     def remove_node(self, parent, node):
         """ O(logN) """

@@ -47,6 +47,24 @@ class BinaryTree(object):
             for data in init_data:
                 self.insert(data)
 
+    def __eq__(self, other) -> bool:
+        """
+            This method should be overridden by the subclass if the subclass node has different attributes
+        """
+        def _tree_equal(node_1, node_2):
+            if node_1 is None and node_2 is None:
+                return True
+            if node_1 is None or node_2 is None:
+                return False
+            if self.get_data(node_1) != self.get_data(node_2):
+                return False
+            return _tree_equal(self.get_left(node_1), self.get_left(node_2)) and \
+                _tree_equal(self.get_right(node_1), self.get_right(node_2))
+
+        if isinstance(other, BinaryTree):
+            return _tree_equal(self.root, other.root)
+        return False
+
     def __len__(self):
         return self.size
 
@@ -185,6 +203,9 @@ class BinaryTree(object):
         root, depth = _get_depth(self.root, node, 1)
         return depth if root == node else 0
 
+    def height(self):
+        return self.get_height(self.root)
+
     def get_height(self, node) -> int:
         """ count nodes on the path from the given node to its furthest leave """
         if node is None:
@@ -237,11 +258,15 @@ class BinaryTree(object):
     def clear(self):
         self.root = None
 
-    def height(self):
-        return self.get_height(self.root)
-
     def is_balanced(self) -> bool:
-        return self.algorithm.is_balanced(self.root)[0]
+        return self.is_balanced_tree(self.root)[0]
+
+    def is_balanced_tree(self, node) -> tuple(bool, int):  # is_balanced, height
+        if node is None:
+            return True, 0
+        left_balanced, left_height = self.is_balanced_tree(self.get_left(node))
+        right_balanced, right_height = self.is_balanced_tree(self.get_right(node))
+        return left_balanced and right_balanced and abs(left_height - right_height) <= 1, max(left_height, right_height) + 1
 
     def traversal(self, mode="pre-order"):
         valid_mode = ["pre-order", "in-order", "post-order", "level-order"]
@@ -339,24 +364,6 @@ class BinaryTree(object):
             root=root, data_name=self.data_name,
             left_name=self.left_name, right_name=self.right_name
         )
-
-    def __eq__(self, other) -> bool:
-        """
-            This method should be overridden by the subclass if the subclass node has different attributes
-        """
-        def _tree_equal(node_1, node_2):
-            if node_1 is None and node_2 is None:
-                return True
-            if node_1 is None or node_2 is None:
-                return False
-            if self.get_data(node_1) != self.get_data(node_2):
-                return False
-            return _tree_equal(self.get_left(node_1), self.get_left(node_2)) and \
-                _tree_equal(self.get_right(node_1), self.get_right(node_2))
-
-        if isinstance(other, BinaryTree):
-            return _tree_equal(self.root, other.root)
-        return False
 
     def copy_tree(self, node):
         """
