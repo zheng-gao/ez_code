@@ -12,7 +12,7 @@ class AVLTree(BinarySearchTree):
             data_name="data", left_name="left", right_name="right"
         )
 
-    def new_node(self, data=None, left=None, right=None, height: int = 1):
+    def new_node(self, height: int = 1, data=None, left=None, right=None):
         node = super().new_node(data=data, left=left, right=right)
         node.__dict__["height"] = height
         return node

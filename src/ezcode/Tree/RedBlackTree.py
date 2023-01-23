@@ -53,7 +53,7 @@ class RedBlackTree(BinarySearchTree):
         tree.root, tree.size = self.copy_tree(self.root)
         return tree
 
-    def new_node(self, data=None, parent=None, left=None, right=None, is_red=True):
+    def new_node(self, is_red: bool = True, data=None, parent=None, left=None, right=None):
         node = super().new_node(data=data, left=left, right=right)
         node.__dict__.update({"is_red": is_red, "parent": parent})
         return node
