@@ -90,7 +90,7 @@ class BinarySearchTree(BinaryTree):
                 left_most_parent, left_most = node, node.right
                 while left_most.left is not None:  # left_most only have the right child
                     left_most_parent, left_most = left_most, left_most.left
-                left_most.data, node.data = node.data, left_most.data  # swap data then delete left most
+                node.data = left_most.data  # copy data then delete left most
                 if left_most_parent == node:  # never move
                     left_most_parent.right = left_most.right  # left_most only have the right child
                 else:
@@ -119,7 +119,7 @@ class BinarySearchTree(BinaryTree):
                     left_most_parent, left_most = node, node.right
                     while left_most.left is not None:  # left_most only have the right child
                         left_most_parent, left_most = left_most, left_most.left
-                    left_most.data, node.data = node.data, left_most.data  # swap data then delete left most
+                    node.data = left_most.data  # copy data then delete left most
                     if left_most_parent == node:  # never move
                         left_most_parent.right = left_most.right  # left_most only have the right child
                     else:

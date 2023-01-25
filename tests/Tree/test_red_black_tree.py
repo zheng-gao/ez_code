@@ -1,3 +1,4 @@
+from ezcode.Random.Shuffle import knuth_shuffle
 from ezcode.Tree.RedBlackTree import RedBlackTree
 
 
@@ -78,7 +79,7 @@ def test_red_black_tree_validate():
     assert t.validate()
 
 
-def test_red_black_tree_insert_and_remove():
+def test_red_black_tree_insert():
     t = RedBlackTree()
     insert_benchmarks = [
 """
@@ -131,6 +132,16 @@ def test_red_black_tree_insert_and_remove():
         t.insert(v)
         assert t.validate()
         assert str(t) == insert_benchmarks[i][1:]
+
+
+def test_red_black_tree_remove():
+    t = RedBlackTree(init_data=[5, 2, 4, 3, 0, 1, 6, 8, 7])
+    assert str(t) == """
+          ┌─────────────(4|B)─────────────┐          
+  ┌─────(2|R)─────┐               ┌─────(6|R)─────┐  
+(0|B)─┐         (3|B)           (5|B)         ┌─(8|B)
+    (1|R)                                   (7|R)    
+"""[1:]
     remove_benchmarks = [
 """
           ┌─────────────(5|B)─────────────┐          
@@ -177,6 +188,21 @@ None
         t.remove(v)
         assert t.validate()
         assert str(t) == remove_benchmarks[i][1:]
+    t.validate()
+
+
+def test_red_black_tree_random_insert_and_remove():
+    test_size = 300
+    insert_list = knuth_shuffle([x for x in range(test_size)])
+    remove_list = knuth_shuffle([x for x in range(test_size)])
+    print(f"insert_list = {insert_list}\nremove_list = {remove_list}")
+    t = RedBlackTree()
+    for v in insert_list:
+        t.insert(v)
+        assert t.validate()
+    for v in remove_list:
+        t.remove(v)
+        assert t.validate()
 
 
 def test_red_black_tree_iterator():

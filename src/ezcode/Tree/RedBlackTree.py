@@ -87,12 +87,8 @@ class RedBlackTree(BinarySearchTree):
             black_node_count = left_black_node_count + (0 if node.is_red else 1)
             return True, max_path_length, min_path_length, black_node_count
 
-        if self.root is None:
-            return True
-        if self.root.is_red:
-            return False
         if super().validate():  # Binary Searchable
-            return _validate(self.root)[0]
+            return _validate(self.root)[0] and (self.root is None or not self.root.is_red)
         return False
 
     def _left_rotate(self, node):
@@ -228,7 +224,7 @@ class RedBlackTree(BinarySearchTree):
                 left_most = node.right             # left most node of the right tree
                 while left_most.left is not None:  # left_most only have the right child
                     left_most = left_most.left
-                left_most.data, node.data = node.data, left_most.data  # swap data then delete left most, color untouched
+                node.data = left_most.data  # copy data then delete left most, color untouched
                 if left_most == node.right:
                     node.right = left_most.right
                     if left_most.right is not None:

@@ -7,3 +7,4 @@ def knuth_shuffle(array: list):
         j = randint(0, i)  # 0 <= j <=i
         if j != i:
             array[i], array[j] = array[j], array[i]
+    return array
