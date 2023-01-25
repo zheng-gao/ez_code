@@ -145,7 +145,7 @@ class AVLTree(BinarySearchTree):
             if node == parent.right:  # Case LR
                 self._left_rotate(parent=grand_parent, node=parent)  # convert to case LL
                 """
-                LR: Assume S had height H and node has been removed from subtree-S
+                Remove LR: Assume S had height H and node has been removed from subtree-S
                                    (GG)─┐┌─(GG)    -- left rotate P -->           (GG)─┐┌─(GG)
                                  ┌────(G|H+2)────┐                              ┌────(G|H+2)────┐
                       ┌───────(P|H+1)──────┐  (S|H|-1)                  ┌─────(N|H)─────┐    (S|H|-1)
@@ -154,8 +154,8 @@ class AVLTree(BinarySearchTree):
                                                            (x)       (x)
                 -- right rotate G -->
                                    (G)─┐┌─(G)
-                            ┌─────────(N|H)─────────┐          <------------------------ increase N.height
-                      ┌──(P|H+1)──┐           ┌──(G|H+2)──┐    <------------------------ decrease P/G.height
+                            ┌─────────(N|H)─────────┐          <-------------------------- update N.height
+                      ┌──(P|H+1)──┐           ┌──(G|H+2)──┐    <-------------------------- update P/G.height
                  ┌─(A|H-1)─┐ (B|H-1/H-2) (C|H-1/H-2)   (S|H|-1)                                     |
                 (x)       (x)                                                                       |
                 N=H, A=H-1: (if A=H, choose A as N and go to case LL)                               |
@@ -200,7 +200,7 @@ class AVLTree(BinarySearchTree):
             if node == parent.left:  # Case RL                                                      |
                 self._right_rotate(parent=grand_parent, node=parent)  # convert to case RR          |
             self._left_rotate(parent=great_grand_parent, node=grand_parent)  # case RR              |
-        self._update_height(grand_parent)  # use update to fit both insert/remote fixes  <----------|
+        self._update_height(grand_parent)  # use update to fit both insert/remove fixes  <----------|
         self._update_height(parent)
         self._update_height(node)
 
