@@ -1,11 +1,11 @@
 from typing import Iterable
-
 from ezcode.Tree.RedBlackTree import RedBlackTree
+from ezcode.Tree.BinarySearchTree import BinarySearchTree
 
 
 class TreeSet:
-    def __init__(self, init_data: Iterable = None):
-        self.tree = RedBlackTree()
+    def __init__(self, init_data: Iterable = None, tree: BinarySearchTree = RedBlackTree()):
+        self.tree = tree
         if init_data is not None:
             for key in init_data:
                 self.tree.insert(key)

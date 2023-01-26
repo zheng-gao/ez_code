@@ -37,6 +37,7 @@ def test_avl_tree_validate():
     assert not t.validate()  # (4|H:2|B:0) has invalid height 2
     n[4].height = 1
     assert t.validate()
+    assert t.is_balanced()
     n[4].height, n[4].left, n[1].right = 2, n[2], None
     assert str(t) == """
                            ┌────────────────────────(5|H:4|B:1)────────────────────────┐                    
@@ -168,6 +169,9 @@ def test_avl_tree_random_insert_and_remove():
     for v in remove_list:
         t.remove(v)
         assert t.validate()
+    t = AVLTree(insert_list)
+    for data in sorted(insert_list):
+        assert t.pop() == data
 
 
 def test_avl_tree_iterator():
@@ -175,4 +179,26 @@ def test_avl_tree_iterator():
     t = AVLTree(benchmark)
     assert sorted(benchmark) == list(iter(t))
     assert sorted(benchmark, reverse=True) == list(reversed(t))
+
+
+def test_avl_tree_copy_and_equal():
+    t1 = AVLTree([4, 2, 0, 6, 5, 8, 3, 1, 7])
+    t2 = AVLTree([4, 2, 0, 6, 5, 8, 3, 1, 7])
+    assert t1 == t2
+    t3 = t2.copy()
+    assert t1 == t3
+    assert type(t3) is AVLTree
+
+
+def test_avl_tree_pop():
+    t_1 = AVLTree([5, 3, 8, 4, 6, 9, 1, 0, 2, 7, 10])
+    t_2 = t_1.copy()
+    size = len(t_1)
+    for i in range(size):
+        assert t_1.pop() == i
+        assert t_2.pop(reverse=True) == size - i - 1
+    t_3 = AVLTree([5, 9, 3, 8, 6, 1, 0, 4, 7, 2])
+    size = len(t_3)
+    for i in range(size):
+        assert t_3.pop() == i
 

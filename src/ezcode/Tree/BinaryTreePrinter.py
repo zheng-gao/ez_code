@@ -2,7 +2,7 @@ from collections import deque
 from math import ceil
 from typing import Callable
 
-from ezcode.Tree import (
+from ezcode.Tree.BinaryTreeConstant import (
     DATA_NAME,
     LEFT_NAME,
     RIGHT_NAME,

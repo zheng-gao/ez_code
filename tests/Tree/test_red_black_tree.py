@@ -36,6 +36,7 @@ def test_red_black_tree_validate():
 (0|R)   (2|R)                                    
 """[1:]
     assert t.validate()
+    assert not t.is_balanced()  # Red Black Tree has not to be balanced
     n[1].is_red, n[3].is_red, n[4].is_red = True, False, True
     assert str(t) == """
               ┌─────────────(5|B)─────────────┐  
@@ -203,6 +204,9 @@ def test_red_black_tree_random_insert_and_remove():
     for v in remove_list:
         t.remove(v)
         assert t.validate()
+    t = RedBlackTree(insert_list)
+    for data in sorted(insert_list):
+        assert t.pop() == data
 
 
 def test_red_black_tree_iterator():
@@ -212,7 +216,7 @@ def test_red_black_tree_iterator():
     assert sorted(benchmark, reverse=True) == list(reversed(t))
 
 
-def test_red_black_tree_copy():
+def test_red_black_tree_copy_and_equal():
     t1 = RedBlackTree([4, 2, 0, 6, 5, 8, 3, 1, 7])
     t2 = RedBlackTree([4, 2, 0, 6, 5, 8, 3, 1, 7])
     assert t1 == t2
@@ -224,8 +228,12 @@ def test_red_black_tree_copy():
 def test_red_black_tree_pop():
     t_1 = RedBlackTree([5, 3, 8, 4, 6, 9, 1, 0, 2, 7, 10])
     t_2 = t_1.copy()
-    size = 11
+    size = len(t_1)
     for i in range(size):
         assert t_1.pop() == i
         assert t_2.pop(reverse=True) == size - i - 1
+    t_3 = RedBlackTree([5, 9, 3, 8, 6, 1, 0, 4, 7, 2])
+    size = len(t_3)
+    for i in range(size):
+        assert t_3.pop() == i
 

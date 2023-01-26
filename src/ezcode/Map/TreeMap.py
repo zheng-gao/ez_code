@@ -1,6 +1,6 @@
 from typing import Iterable
-
 from ezcode.Tree.RedBlackTree import RedBlackTree
+from ezcode.Tree.BinarySearchTree import BinarySearchTree
 
 
 class TreeMap:
@@ -24,8 +24,8 @@ class TreeMap:
         def __repr__(self):
             return f"({repr(self.key)}, {repr(self.value)})"
 
-    def __init__(self, init_data: Iterable = None):
-        self.tree = RedBlackTree()
+    def __init__(self, init_data: Iterable = None, tree: BinarySearchTree = RedBlackTree()):
+        self.tree = tree
         if init_data is not None:
             for key, value in init_data:
                 self[key] = value
@@ -47,9 +47,8 @@ class TreeMap:
 
     def __setitem__(self, key, value):
         parents, node = self.tree.search(TreeMap.Entry(key, None), track_parents=True)
-        parent = parents.pop() if len(parents) > 0 else None
         if node is None or node.data.value != value:
-            self.tree.remove_node(parent, node)
+            self.tree.remove_node(parents, node)
             self.tree.insert(TreeMap.Entry(key, value))
 
     def __iter__(self):
@@ -90,11 +89,10 @@ class TreeMap:
 
     def pop(self, key):
         parents, node = self.tree.search(TreeMap.Entry(key, None), track_parents=True)
-        parent = parents.pop() if len(parents) > 0 else None
         if node is None:
             raise KeyError(f"Key Not Found: {key}")
-        saved_value = node.data.value        # save this value before remove_node
-        self.tree.remove_node(parent, node)  # will swap node.data
+        saved_value = node.data.value         # save this value before remove_node
+        self.tree.remove_node(parents, node)  # will swap node.data
         return saved_value
 
     def popitem(self, reverse=False):

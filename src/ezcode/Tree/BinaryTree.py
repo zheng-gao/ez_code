@@ -4,7 +4,7 @@ from collections import deque
 from random import randint
 from typing import Callable, Iterable
 
-from ezcode.Tree import (
+from ezcode.Tree.BinaryTreeConstant import (
     DATA_NAME,
     LEFT_NAME,
     RIGHT_NAME,
@@ -26,8 +26,12 @@ class BinaryTree(object):
         def __init__(self):
             pass
 
-        def match(self, node) -> bool:
-            return all(attribute in self.__dict__.keys() for attribute in node.__dict__.keys())
+        def match(self, other) -> bool:
+            if any(key not in self.__dict__.keys() for key in other.__dict__.keys()):
+                return False
+            if any(key not in other.__dict__.keys() for key in self.__dict__.keys()):
+                return False
+            return True
 
     def __init__(self, init_data: Iterable = None, root=None, root_copy=None,
         data_name: str = DATA_NAME, left_name: str = LEFT_NAME, right_name: str = RIGHT_NAME,
@@ -51,18 +55,22 @@ class BinaryTree(object):
         """
             This method should be overridden by the subclass if the subclass node has different attributes
         """
-        def _tree_equal(node_1, node_2):
+        def _tree_equal(node_1, node_2, pointers):
             if node_1 is None and node_2 is None:
                 return True
             if node_1 is None or node_2 is None:
                 return False
-            if self.get_data(node_1) != self.get_data(node_2):
+            if not node_1.match(node_2):
                 return False
-            return _tree_equal(self.get_left(node_1), self.get_left(node_2)) and \
-                _tree_equal(self.get_right(node_1), self.get_right(node_2))
+            if any(node_2.__dict__[key] != value for key, value in node_1.__dict__.items() if key not in pointers):
+                return False
+            if any(node_1.__dict__[key] != value for key, value in node_2.__dict__.items() if key not in pointers):
+                return False
+            left_equal = _tree_equal(self.get_left(node_1), self.get_left(node_2), pointers)
+            return _tree_equal(self.get_right(node_1), self.get_right(node_2), pointers) if left_equal else False
 
-        if isinstance(other, BinaryTree):
-            return _tree_equal(self.root, other.root)
+        if type(other) == self.__class__:
+            return _tree_equal(self.root, other.root, set([self.left_name, self.right_name]))
         return False
 
     def __len__(self):
@@ -372,7 +380,7 @@ class BinaryTree(object):
         """
         if node is None:
             return None, 0
-        if not (self.root is None and self.new_node().match(node)) and not self.root.match(node):
+        if not (self.root is None and self.new_node().match(node)) and not (self.root is not None and self.root.match(node)):
             raise ValueError(f"Invalid node with attributes: {list(node.__dict__.keys())}")
         root_copy, size_copy = self.copy_node(node), 0
         queue, queue_copy = deque([node]), deque([root_copy])

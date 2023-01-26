@@ -39,7 +39,7 @@ class BinarySearchTree(BinaryTree):
     def search(self, data, track_parents=False):
         """ O(logN) """
         if track_parents:  # for internal use, e.g. self.remove
-            parents, node = list(), self.root
+            parents, node = [None], self.root  # the None is for the parent of root
             while node is not None:
                 if data == node.data:
                     break
@@ -56,46 +56,60 @@ class BinarySearchTree(BinaryTree):
 
     def insert(self, data):
         """ O(logN) """
+        parents = [None]  # the parent of root is None, track parents for AVLTree and RedBlackTree
         if self.root is None:
             self.root = self.new_node(data=data)
+            node = self.root
         else:
-            parent, node = None, self.root
+            node = self.root
             while node is not None:
                 if data == node.data:
                     raise KeyError(f"{data} exist")
-                parent, node = node, node.left if data < node.data else node.right
-            node = self.new_node(data=data)
+                parents.append(node)
+                node = node.left if data < node.data else node.right
+            parent, node = parents[-1], self.new_node(data=data)
             if data < parent.data:
                 parent.left = node
             else:
                 parent.right = node
         self.size += 1
+        return parents, node
 
     def remove(self, data):
         """ O(logN) """
-        parents, node = self.search(data, track_parents=True)
-        self.remove_node(parents.pop() if len(parents) > 0 else None, node)
+        self.remove_node(*self.search(data, track_parents=True))
 
-    def remove_node(self, parent, node):
-        """ O(logN) """
+    def remove_node(self, parents: list, node):
+        """
+            Time: O(logN)
+            parents, removed, successor are made to be compatible with AVLTree/RedBlackTree (no parent pointer)
+        """
+        replaced, removed = None, None
         if node is not None:
             if node.right is None:
+                parent = parents[-1]
                 if node == self.root:
                     self.root = node.left
                 elif node == parent.left:
                     parent.left = node.left
                 else:
                     parent.right = node.left
+                replaced, removed = node.left, node
             else:  # left most node of the right tree
-                left_most_parent, left_most = node, node.right
+                parents.append(node)
+                left_most = node.right
                 while left_most.left is not None:  # left_most only have the right child
-                    left_most_parent, left_most = left_most, left_most.left
+                    parents.append(left_most)
+                    left_most = left_most.left
                 node.data = left_most.data  # copy data then delete left most
-                if left_most_parent == node:  # never move
-                    left_most_parent.right = left_most.right  # left_most only have the right child
+                parent = parents[-1]
+                if parent == node:  # never move
+                    parent.right = left_most.right  # left_most only have the right child
                 else:
-                    left_most_parent.left = left_most.right
+                    parent.left = left_most.right
+                replaced, removed = left_most.right, left_most
             self.size -= 1
+        return replaced, removed
 
     def remove_range(self, data_lower_bound, data_upper_bound):  # To do: inclusive/exclusive boundary
         if data_upper_bound < data_lower_bound:
@@ -128,15 +142,57 @@ class BinarySearchTree(BinaryTree):
 
     def pop(self, reverse=False):
         if self.size == 0:
-            raise KeyError("Pop from empty container")
-        parent, node = None, self.root
+            raise KeyError("Pop from empty tree")
+        parents, node = [None], self.root
         if reverse:
             while node.right is not None:
-                parent, node = node, node.right
+                parents.append(node)
+                node = node.right
         else:
             while node.left is not None:
-                parent, node = node, node.left
+                parents.append(node)
+                node = node.left
         saved_data = node.data  # remove_node will swap the data
-        self.remove_node(parent, node)
+        self.remove_node(parents, node)
         return saved_data
+
+    def left_rotate(self, parent, node):
+        """
+        left_rotate & right_rotate keep the tree "Binary Searchable"
+        Time: O(1), make node the 'left' child of its right child
+                         <----------
+              (P)─┐┌─(P)              (P)─┐┌─(P)
+              ┌───(R)───┐           ┌───(node)───┐
+         ┌──(node)──┐  (x)         (x)       ┌──(R)──┐
+        (x)        (RL)                     (RL)    (x)
+        """
+        right = node.right
+        node.right, right.left = right.left, node
+        if parent is None:
+            self.root = right
+        elif parent.left == node:
+            parent.left = right
+        else:
+            parent.right = right
+
+    def right_rotate(self, parent, node):
+        """
+        left_rotate & right_rotate keep the tree "Binary Searchable"
+        Time: O(1), make node the 'right' child of its left child, keep it BST
+                           ---------->
+               (P)─┐┌─(P)              (P)─┐┌─(P)
+             ┌───(node)───┐            ┌───(L)───┐
+         ┌──(L)──┐       (x)          (x)   ┌──(node)──┐
+        (x)     (LR)                       (LR)       (x)
+        """
+        left = node.left
+        node.left, left.right = left.right, node
+        if parent is None:
+            self.root = left
+        elif parent.left == node:
+            parent.left = left
+        else:
+            parent.right = left
+
+
 

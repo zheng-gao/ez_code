@@ -1,11 +1,7 @@
-# Tree Node
-DATA_NAME = "data"
-LEFT_NAME = "left"
-RIGHT_NAME = "right"
-# Printer
-LEFT_WING = "─"
-RIGHT_WING = "─"
-LEFT_WING_HEAD = "┌"
-RIGHT_WING_HEAD = "┐"
-LEFT_WING_TAIL = "("
-RIGHT_WING_TAIL = ")"
+# flake8: noqa
+from .BinaryTree import BinaryTree
+from .BinarySearchTree import BinarySearchTree
+from .AVLTree import AVLTree
+from .RedBlackTree import RedBlackTree
+from .DecisionTree import DecisionTree
+from .SegmentTree import SegmentTree

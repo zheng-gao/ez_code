@@ -87,6 +87,6 @@ class SegmentTree(BinaryTree):
     def copy_tree(self, node):
         raise NotImplementedError
 
-    def copy(self) -> SegmentTree:
+    def copy(self):
         raise NotImplementedError
 

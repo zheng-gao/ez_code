@@ -1,7 +1,7 @@
 from collections import deque
 from enum import Enum
 
-from ezcode.Tree import DATA_NAME, LEFT_NAME, RIGHT_NAME
+from ezcode.Tree.BinaryTreeConstant import DATA_NAME, LEFT_NAME, RIGHT_NAME
 
 
 class BinaryTreeIterator:
