@@ -1,4 +1,3 @@
-from typing import Iterable
 from ezcode.Tree.RedBlackTree import RedBlackTree
 from ezcode.Tree.BinarySearchTree import BinarySearchTree
 
@@ -24,10 +23,10 @@ class TreeMap:
         def __repr__(self):
             return f"({repr(self.key)}, {repr(self.value)})"
 
-    def __init__(self, init_data: Iterable = None, tree: BinarySearchTree = RedBlackTree()):
+    def __init__(self, init_map=None, tree: BinarySearchTree = RedBlackTree()):
         self.tree = tree
-        if init_data is not None:
-            for key, value in init_data:
+        if init_map is not None:
+            for key, value in init_map.items():
                 self[key] = value
 
     def __len__(self):

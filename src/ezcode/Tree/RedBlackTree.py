@@ -4,6 +4,14 @@ from ezcode.Tree.BinarySearchTree import BinarySearchTree
 
 
 class RedBlackTree(BinarySearchTree):
+    """
+                    RedBlackTree                          AVLTree
+     Storage        1 extra bit for color                 1 extra int for height
+    Balanced        Not Strictly Balanced                 Strictly Balanced
+      Search        O(logN)                               O(logN) faster
+      Insert        O(logN)                               O(logN) slightly faster
+    * Remove        O(logN) faster, rotations <= 3        O(logN) logN rotations, slower
+    """
     def __init__(self, init_data: Iterable = None, root=None, root_copy=None):
         super().__init__(
             init_data=init_data, root=root, root_copy=root_copy,
