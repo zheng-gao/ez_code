@@ -1,5 +1,5 @@
 from collections import deque
-from ezcode.Graph import Graph
+from ezcode.Graph.Graph import Graph
 
 
 class DirectedGraph(Graph):
@@ -7,13 +7,8 @@ class DirectedGraph(Graph):
         if edge_weight_dict is None:
             is_weighted = weights is not None
         else:
-            is_weighted = False
-            for weight in edge_weight_dict.values():
-                if weight is not None:
-                    is_weighted = True
-                    break
-        super().__init__(is_weighted=is_weighted, mark=mark)
-        # self.nodes = {node_id: {"i": {node_id: weight}, "o": {node_id: weight}}
+            is_weighted = any(weight is not None for weight in edge_weight_dict.values())
+        super().__init__(is_weighted=is_weighted, mark=mark)  # self.nodes = {n1: {"i": {n2: w1}, "o": {n3: w2}}
         if edge_weight_dict or edges:
             self.build_graph(edge_weight_dict=edge_weight_dict, edges=edges, weights=weights)
 
@@ -45,6 +40,9 @@ class DirectedGraph(Graph):
 
     def get_edges(self, node_id, is_outgoing: bool = True):
         return self.nodes[node_id]["o"] if is_outgoing else self.nodes[node_id]["i"]
+
+    def get_all_edges(self):
+        raise NotImplementedError
 
     def copy_nodes(self) -> dict:
         new_nodes = dict()
@@ -154,6 +152,12 @@ class DirectedGraph(Graph):
     #                         return flow
     #                 visited_nodes.remove(outgoing_node_id)
     #         return 0
+
+    def is_connected(self) -> bool:
+        # https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm
+        raise NotImplementedError("TBD")
+
+
 
 
 

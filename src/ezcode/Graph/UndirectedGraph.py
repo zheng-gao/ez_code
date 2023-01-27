@@ -1,4 +1,5 @@
-from ezcode.Graph import Graph
+from collections import deque
+from ezcode.Graph.Graph import Graph
 
 
 class UndirectedGraph(Graph):
@@ -6,13 +7,8 @@ class UndirectedGraph(Graph):
         if edge_weight_dict is None:
             is_weighted = weights is not None
         else:
-            is_weighted = False
-            for weight in edge_weight_dict.values():
-                if weight is not None:
-                    is_weighted = True
-                    break
-        super().__init__(is_weighted=is_weighted, mark=mark)
-        # self.nodes = {node_id, {node_id, weight}}
+            is_weighted = any(weight is not None for weight in edge_weight_dict.values())
+        super().__init__(is_weighted=is_weighted, mark=mark)  # self.nodes = {node_id_1: {node_id_2: weight}}
         if edge_weight_dict or edges:
             self.build_graph(edge_weight_dict=edge_weight_dict, edges=edges, weights=weights)
 
@@ -44,6 +40,9 @@ class UndirectedGraph(Graph):
 
     def get_edges(self, node_id, is_outgoing: bool = True):
         return self.nodes[node_id]
+
+    def get_all_edges(self):
+        raise NotImplementedError
 
     def copy_nodes(self) -> dict:
         new_nodes = dict()
@@ -106,5 +105,26 @@ class UndirectedGraph(Graph):
 
         _dfs(node_id=start_node_id)
         return eulerian_path_nodes[::-1]
+
+    def is_connected(self) -> bool:
+        if len(self) == 0:
+            return False
+        visited, queue = set(), deque([next(iter(self.nodes.keys()))])
+        while len(queue) > 0:
+            node_id = queue.popleft()
+            visited.add(node_id)
+            for neighbor_id in self.get_edges(node_id).keys():
+                if neighbor_id not in visited:
+                    queue.append(neighbor_id)
+        return len(self) == len(visited)
+
+
+
+
+
+
+
+
+
 
 

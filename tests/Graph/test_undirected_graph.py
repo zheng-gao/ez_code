@@ -162,3 +162,34 @@ def test_negative_cycle_detection():
         assert True
 
 
+def test_is_connected():
+    """
+    A ────── C
+    │       ╱│╲
+    │      ╱ │ ╲
+    │     ╱  │  ╲
+    │    ╱   │   E
+    │   ╱    │  ╱
+    │  ╱     │ ╱
+    │ ╱      │╱
+    B ────── D
+    """
+    graph = UndirectedGraph(edges=[["A", "B"], ["A", "C"], ["B", "C"], ["B", "D"], ["C", "D"], ["C", "E"], ["D", "E"]])
+    assert graph.is_connected()
+    """
+    A ────── C
+    │       ╱
+    │      ╱
+    │     ╱
+    │    ╱       E
+    │   ╱       ╱
+    │  ╱       ╱
+    │ ╱       ╱
+    B        D
+    """
+    graph = UndirectedGraph(edges=[["A", "B"], ["A", "C"], ["B", "C"], ["D", "E"]])
+    assert not graph.is_connected()
+
+
+
+
