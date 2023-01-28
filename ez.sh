@@ -256,7 +256,7 @@ function ez {
     if [[ -z "${1}" ]] || [[ "${1}" = "-h" ]] || [[ "${1}" = "--help" ]]; then
         local usage=$(ezb_build_usage -o "init" -d "Control Project Pipeline")
         usage+=$(ezb_build_usage -o "add" -a "-o|--operations" -d "Choose from: [$(ezb_join ', ' "${VALID_OPERATIONS[@]}")]")
-        usage+=$(ezb_build_usage -o "add" -a "-a|--arguments" -d "The arguments of control_* function, e.g. test_array.py::test_binary_search")
+        usage+=$(ezb_build_usage -o "add" -a "-a|--arguments" -d "The arguments of control_* function, e.g. ${TEST_DIRECTORY}/Array/test_array.py::test_rotate")
         usage+=$(ezb_build_usage -o "add" -a "-s|--skip" -d "Skip operations, e.g. test")
         usage+=$(ezb_build_usage -o "add" -a "-d|--development" -d "[Flag] Development Workflow: [clean, uninstall, build, test, install_local, clean]")
         usage+=$(ezb_build_usage -o "add" -a "-r|--release" -d "[Flag] Release Workflow: [clean, build, test, publish, clean]")

@@ -24,5 +24,5 @@ ez_code/ez.sh -o/--operations test
 ```
 ### Run a single test
 ```bash
-ez_code/ez.sh -o/--operations test -a/--arguments test_array.py::test_binary_search
+ez_code/ez.sh -o/--operations test -a/--arguments ez_code/tests/Array/test_array.py::test_rotate
 ```
