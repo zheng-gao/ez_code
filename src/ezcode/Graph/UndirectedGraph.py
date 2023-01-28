@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from collections import deque
 from typing import Iterable, Callable
 from ezcode.Graph.Graph import Graph
@@ -6,20 +7,25 @@ from ezcode.Graph.Graph import Graph
 class UndirectedGraph(Graph):
     def __init__(self,
         edges_and_weights: Iterable = None,                          # Data init option I (overrides others)
-        edges: Iterable[Iterable] = None, weights: Iterable = None,  # Data init option II
+        edges: Iterable[Sequence] = None, weights: Iterable = None,  # Data init option II
         weight_to_str: Callable = lambda x: str(x)
     ):
         super().__init__(weight_to_str=weight_to_str)  # self.nodes = {node_id_1: {node_id_2: weight}}
-        self.build_graph(*self.unify_input(edges_and_weights, edges, weights))
+        self.update(edges_and_weights, edges, weights)
 
-    def build_graph(self, edges: Iterable[Iterable] = None, weights: Iterable = None):
-        for (n1, n2), weight in zip(edges, weights):
-            if n1 is not None and n1 not in self.nodes:
-                self.nodes[n1] = dict()
-            if n2 is not None and n2 not in self.nodes:
-                self.nodes[n2] = dict()
-            if n1 is not None and n2 is not None:
-                self.nodes[n1][n2] = self.nodes[n2][n1] = weight
+    def insert_edge(self, edge: Sequence, weight=None):
+        n1, n2 = edge
+        if n1 is not None and n1 not in self.nodes:
+            self.nodes[n1] = dict()
+        if n2 is not None and n2 not in self.nodes:
+            self.nodes[n2] = dict()
+        if n1 is not None and n2 is not None:
+            self.nodes[n1][n2] = self.nodes[n2][n1] = weight
+
+    def remove_edge(self, edge: Sequence):
+        n1, n2 = edge
+        del self.nodes[n1][n2]
+        del self.nodes[n2][n1]
 
     def get_edges(self, node_id, is_outgoing: bool = True):
         if node_id not in self.nodes:

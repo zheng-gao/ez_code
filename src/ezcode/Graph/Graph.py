@@ -1,4 +1,4 @@
-from collections.abc import MutableMapping
+from collections.abc import MutableMapping, Sequence
 from typing import Iterable, Callable
 
 
@@ -14,9 +14,9 @@ class Graph:
     def __contains__(self, node) -> bool:
         return node in self.nodes
 
-    def unify_input(self,
+    def zip_edges_and_weights(self,
         edges_and_weights: Iterable = None,                          # Data init option I (overrides others)
-        edges: Iterable[Iterable] = None, weights: Iterable = None,  # Data init option II
+        edges: Iterable[Sequence] = None, weights: Iterable = None,  # Data init option II
     ):
         if edges_and_weights:
             edges, weights = list(), list()
@@ -40,10 +40,11 @@ class Graph:
             if len(edges) != len(weights):
                 raise ValueError("Unmatched edges and weights")
             self.is_weighted = True
-        return edges, weights
+        return zip(edges, weights)
 
-    def build_graph(self, edge_weight_dict: dict = None, edges: list[list] = None, weights: list = None):
-        raise NotImplementedError
+    def update(self, edges_and_weights: Iterable = None, edges: Iterable[Sequence] = None, weights: Iterable = None):
+        for edge, weight in self.zip_edges_and_weights(edges_and_weights, edges, weights):
+            self.insert_edge(edge, weight)
 
     def get_weight(self, node_1, node_2, is_outgoing: bool = True):
         edges = self.get_edges(node_1, is_outgoing)
@@ -52,6 +53,12 @@ class Graph:
         return edges[node_2] if node_2 in edges else None
 
     def get_edges(self, node_id, is_outgoing: bool = True):
+        raise NotImplementedError
+
+    def insert_edge(self, edge: Sequence, weight=None):
+        raise NotImplementedError
+
+    def remove_edge(self, edge: Sequence):
         raise NotImplementedError
 
     def get_all_edges(self):

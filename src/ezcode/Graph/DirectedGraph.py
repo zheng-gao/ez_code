@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from collections import deque
 from typing import Iterable, Callable
 from ezcode.Graph.Graph import Graph
@@ -6,25 +7,30 @@ from ezcode.Graph.Graph import Graph
 class DirectedGraph(Graph):
     def __init__(self,
         edges_and_weights: Iterable = None,                          # Data init option I (overrides others)
-        edges: Iterable[Iterable] = None, weights: Iterable = None,  # Data init option II
+        edges: Iterable[Sequence] = None, weights: Iterable = None,  # Data init option II
         weight_to_str: Callable = lambda x: str(x)
     ):
         super().__init__(weight_to_str=weight_to_str)  # self.nodes = {node_id_1: {node_id_2: weight}}
-        self.build_graph(*self.unify_input(edges_and_weights, edges, weights))
+        self.update(edges_and_weights, edges, weights)
 
-    def build_graph(self, edges: Iterable[Iterable] = None, weights: Iterable = None):
-        for (i, o), weight in zip(edges, weights):
-            if i is not None and i not in self.nodes:
-                self.nodes[i] = {"i": dict(), "o": dict()}
-            if o is not None and o not in self.nodes:
-                self.nodes[o] = {"i": dict(), "o": dict()}
-            if i is not None and o is not None:
-                self.nodes[i]["o"][o] = self.nodes[o]["i"][i] = weight
+    def insert_edge(self, edge: Sequence, weight=None):
+        i, o = edge
+        if i is not None and i not in self.nodes:
+            self.nodes[i] = (dict(), dict())
+        if o is not None and o not in self.nodes:
+            self.nodes[o] = (dict(), dict())
+        if i is not None and o is not None:
+            self.nodes[i][1][o] = self.nodes[o][0][i] = weight  # 0: incomming, 1: outgoing
+
+    def remove_edge(self, edge: Sequence):
+        i, o = edge
+        del self.nodes[i][1][o]  # 1: outgoing
+        del self.nodes[o][0][i]  # 0: incomming
 
     def get_edges(self, node_id, is_outgoing: bool = True):
         if node_id not in self.nodes:
             return None
-        return self.nodes[node_id]["o"] if is_outgoing else self.nodes[node_id]["i"]
+        return self.nodes[node_id][1] if is_outgoing else self.nodes[node_id][0]
 
     def get_all_edges(self):
         raise NotImplementedError
@@ -32,11 +38,11 @@ class DirectedGraph(Graph):
     def copy_nodes(self) -> dict:
         new_nodes = dict()
         for node_id, edges in self.nodes.items():
-            new_nodes[node_id] = {"i": dict(), "o": dict()}
-            for incoming, weight in edges["i"].items():
-                new_nodes[node_id]["i"][incoming] = weight
-            for outgoing, weight in edges["o"].items():
-                new_nodes[node_id]["o"][outgoing] = weight
+            new_nodes[node_id] = (dict(), dict())
+            for incoming, weight in edges[0].items():
+                new_nodes[node_id][0][incoming] = weight  # 0: incomming
+            for outgoing, weight in edges[1].items():
+                new_nodes[node_id][1][outgoing] = weight  # 1: outgoing
         return new_nodes
 
     def topological_order(self):
@@ -44,14 +50,14 @@ class DirectedGraph(Graph):
         no_outgoing_nodes = deque()
         nodes = self.copy_nodes()
         for node_id, edges in nodes.items():
-            if len(edges["o"]) == 0:
+            if len(edges[1]) == 0:                        # 1: outgoing
                 no_outgoing_nodes.append(node_id)
         while len(no_outgoing_nodes) > 0:
             node_id = no_outgoing_nodes.popleft()
             topological_order.append(node_id)
-            for incoming in nodes[node_id]["i"].keys():
-                del nodes[incoming]["o"][node_id]
-                if len(nodes[incoming]["o"]) == 0:
+            for incoming in nodes[node_id][0].keys():     # 0: incomming
+                del nodes[incoming][1][node_id]           # 1: outgoing
+                if len(nodes[incoming][1]) == 0:          # 1: outgoing
                     no_outgoing_nodes.append(incoming)
         return topological_order
 
