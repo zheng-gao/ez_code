@@ -66,8 +66,17 @@ class RedBlackTree(BinarySearchTree):
 
     def insert(self, data):
         """ O(logN) """
-        self._insert_fix_up(*super().insert(data))
-        self.root.is_red = False  # super().insert and fixing up red sibling process might change the color of root
+        parents, node = self.search(data, track_parents=True)
+        self.insert_node(parents, self.new_node(data=data, is_red=True))
+
+    def insert_node(self, parents: list, node):
+        if self.root is None:
+            self.root = node
+            self.size = 1
+        else:
+            super().insert_node(parent=parents[-1], node=node, is_left_node=node.data < parents[-1].data)
+            self._insert_fix_up(parents, node)
+        self.root.is_red = False  # fixing up red sibling process might change the color of root
 
     def _insert_fix_up(self, parents: list, node):
         """ O(logN) """

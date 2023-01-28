@@ -1,9 +1,11 @@
+from collections.abc import MutableSet
 from typing import Iterable
+
 from ezcode.Tree.RedBlackTree import RedBlackTree
 from ezcode.Tree.BinarySearchTree import BinarySearchTree
 
 
-class TreeSet:
+class TreeSet(MutableSet):
     def __init__(self, init_data: Iterable = None, tree: BinarySearchTree = RedBlackTree()):
         self.tree = tree
         if init_data is not None:
@@ -26,10 +28,15 @@ class TreeSet:
         return repr(list(iter(self)))
 
     def add(self, key):
-        if key not in self:
-            self.tree.insert(key)
+        parents, node = self.tree.search(data=key, track_parents=True)
+        if node is None:
+            self.tree.insert_node(parents, self.tree.new_node(data=key))
 
     def remove(self, key):
+        self.tree.remove(key)
+
+    def discard(self, key):
+        """ Same as remove, required by collections.abc.MutableSet """
         self.tree.remove(key)
 
     def pop(self, reverse=False):

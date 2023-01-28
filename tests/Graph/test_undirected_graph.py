@@ -3,6 +3,46 @@ from ezcode.Graph.GraphPathFinder import GraphPathFinder, NegativeCycleExistErro
 from ezcode.Graph.UndirectedGraph import UndirectedGraph
 
 
+def test_undirected_graph_init():
+    # weighted
+    graphs = list()
+    graphs.append(UndirectedGraph({("A", "B"): 1, ("A", "C"): 2, ("A", "D"): 3}))                  # dict<tuple(2), X>
+    graphs.append(UndirectedGraph({("A", "B", 1), ("A", "C", 2), ("A", "D", 3)}))                  # set(tuple(3))
+    graphs.append(UndirectedGraph([("A", "B", 1), ("A", "C", 2), ("A", "D", 3)]))                  # list(tuple(3))
+    graphs.append(UndirectedGraph([["A", "B", 1], ["A", "C", 2], ["A", "D", 3]]))                  # list(list(3))
+    graphs.append(UndirectedGraph(edges=[("A", "B"), ("A", "C"), ("A", "D")], weights=[1, 2, 3]))  # edges=list(list(2))
+    graphs.append(UndirectedGraph(edges=[["A", "B"], ["A", "C"], ["A", "D"]], weights=[1, 2, 3]))  # edges=list(tuple(2))
+    graph_str = """
+   A  B  C  D
+A     1  2  3
+B  1         
+C  2         
+D  3         
+"""[1:]
+    for g in graphs:
+        assert str(g) == graph_str
+    # unweighted
+    graphs = list()
+    graphs.append(UndirectedGraph({("A", "B"): None, ("A", "C"): None, ("A", "D"): None}))         # dict<tuple(2), None>
+    graphs.append(UndirectedGraph({("A", "B", None), ("A", "C", None), ("A", "D", None)}))         # set(tuple(3))
+    graphs.append(UndirectedGraph({("A", "B"), ("A", "C"), ("A", "D")}))                           # set(tuple(2))
+    graphs.append(UndirectedGraph([("A", "B", None), ("A", "C", None), ("A", "D", None)]))         # list(tuple(3))
+    graphs.append(UndirectedGraph([["A", "B", None], ["A", "C", None], ["A", "D", None]]))         # list(list(3))
+    graphs.append(UndirectedGraph([("A", "B"), ("A", "C"), ("A", "D")]))                           # list(tuple(2))
+    graphs.append(UndirectedGraph([["A", "B"], ["A", "C"], ["A", "D"]]))                           # list(list(2))
+    graphs.append(UndirectedGraph(edges=[["A", "B"], ["A", "C"], ["A", "D"]]))                     # edges=list(list(2))
+    graphs.append(UndirectedGraph(edges=[("A", "B"), ("A", "C"), ("A", "D")]))                     # edges=list(tuple(2))
+    graph_str = """
+   A  B  C  D
+A     *  *  *
+B  *         
+C  *         
+D  *         
+"""[1:]
+    for g in graphs:
+        assert str(g) == graph_str
+
+
 def test_undirected_graph_eulerian_path():
     """
     A ────── C
@@ -43,12 +83,12 @@ def test_undirected_unweighted_graph():
     B ────── D
     """
     graph_str = """
-   A  B  C  D  E  
-A     *  *        
-B  *     *  *     
-C  *  *     *  *  
-D     *  *     *  
-E        *  *     
+   A  B  C  D  E
+A     *  *      
+B  *     *  *   
+C  *  *     *  *
+D     *  *     *
+E        *  *   
 """[1:]
     graph = UndirectedGraph(edges=[["A", "B"], ["A", "C"], ["B", "C"], ["B", "D"], ["C", "D"], ["C", "E"], ["D", "E"]])
     assert not graph.is_weighted
@@ -91,12 +131,12 @@ def test_undirected_weighted_graph():
     B ──0.9─ D
     """
     graph_str = """
-     A    B    C    D    E    
-A         0.8  0.2            
-B    0.8       0.5  0.9       
-C    0.2  0.5       0.9  0.8  
-D         0.9  0.9       0.3  
-E              0.8  0.3       
+     A    B    C    D    E
+A       0.8  0.2          
+B  0.8       0.5  0.9     
+C  0.2  0.5       0.9  0.8
+D       0.9  0.9       0.3
+E            0.8  0.3     
 """[1:]
     graph = UndirectedGraph({
         ("A", "B"): 0.8,

@@ -70,9 +70,20 @@ class AVLTree(BinarySearchTree):
             return node.left if prefer_left else node.right
         return node.left if balance_factor > 0 else node.right
 
+    def insert_node(self, parents: list, node):
+        if self.root is None:
+            self.root = node
+            self.size = 1
+        else:
+            super().insert_node(parent=parents[-1], node=node, is_left_node=node.data < parents[-1].data)
+            self._insert_fix_up(parents, node)
+
     def insert(self, data):
         """ Time: O(logN) """
-        parents, node = super().insert(data)
+        parents, node = self.search(data, track_parents=True)
+        self.insert_node(parents, self.new_node(data=data, height=1))
+
+    def _insert_fix_up(self, parents, node):
         parent = parents.pop()
         if parent is not None:
             grand_parent = parents.pop() if len(parents) > 0 else None

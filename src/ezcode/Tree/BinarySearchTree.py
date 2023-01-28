@@ -56,24 +56,16 @@ class BinarySearchTree(BinaryTree):
 
     def insert(self, data):
         """ O(logN) """
-        parents = [None]  # the parent of root is None, track parents for AVLTree and RedBlackTree
         if self.root is None:
             self.root = self.new_node(data=data)
-            node = self.root
+            self.size = 1
         else:
-            node = self.root
+            parent, node = None, self.root
             while node is not None:
                 if data == node.data:
                     raise KeyError(f"{data} exist")
-                parents.append(node)
-                node = node.left if data < node.data else node.right
-            parent, node = parents[-1], self.new_node(data=data)
-            if data < parent.data:
-                parent.left = node
-            else:
-                parent.right = node
-        self.size += 1
-        return parents, node
+                parent, node = node, node.left if data < node.data else node.right
+            self.insert_node(parent, self.new_node(data=data), is_left_node=data < parent.data)
 
     def remove(self, data):
         """ O(logN) """

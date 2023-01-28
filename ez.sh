@@ -160,7 +160,7 @@ function control_test {
     ezb_log_info "Installing pytest-srcpaths ..."
     python3 -m "pip" "install" --user --upgrade "pytest-srcpaths"
     ezb_log_info "Running tests ..."
-    [[ -z "${1}" ]] && pytest -vv "${TEST_DIRECTORY}" || pytest -vv "${TEST_DIRECTORY}/${1}"
+    [[ -z "${1}" ]] && pytest -vv "${TEST_DIRECTORY}" || pytest -vv "${1}"
 }
 
 function control_uninstall {

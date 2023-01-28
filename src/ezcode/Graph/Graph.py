@@ -1,22 +1,55 @@
+from collections.abc import MutableMapping
+from typing import Iterable, Callable
+
 
 class Graph:
-    def __init__(self, is_weighted: bool, mark: str = "*"):
+    def __init__(self, weight_to_str: Callable = lambda x: str(x)):
         self.nodes = dict()
-        self.is_weighted: bool = is_weighted
-        self.sorted_node_ids: list = None     # for print
-        self.node_id_index_map: dict = None   # for print
-        self.mark = mark                      # for print
-        self.cell_size = 1                    # for print
+        self.is_weighted: bool = False
+        self.weight_to_str = weight_to_str  # for print only
 
     def __len__(self) -> int:
         return len(self.nodes)
 
+    def __contains__(self, node) -> bool:
+        return node in self.nodes
+
+    def unify_input(self,
+        edges_and_weights: Iterable = None,                          # Data init option I (overrides others)
+        edges: Iterable[Iterable] = None, weights: Iterable = None,  # Data init option II
+    ):
+        if edges_and_weights:
+            edges, weights = list(), list()
+            if isinstance(edges_and_weights, MutableMapping):
+                for edge, weight in edges_and_weights.items():
+                    edges.append(edge)
+                    if weight is not None:
+                        self.is_weighted = True
+                        weights.append(weight)
+            else:
+                size = len(next(iter(edges_and_weights)))
+                for item in edges_and_weights:
+                    edges.append((item[0], item[1]))
+                    if size == 3:
+                        if item[2] is not None:
+                            self.is_weighted = True
+                            weights.append(item[2])
+        if not weights:
+            weights = [1] * len(edges)
+        else:
+            if len(edges) != len(weights):
+                raise ValueError("Unmatched edges and weights")
+            self.is_weighted = True
+        return edges, weights
+
     def build_graph(self, edge_weight_dict: dict = None, edges: list[list] = None, weights: list = None):
         raise NotImplementedError
 
-    def get_weight(self, node_id_1, node_id_2, is_outgoing: bool = True):
-        edges = self.get_edges(node_id_1, is_outgoing)
-        return edges[node_id_2] if node_id_2 in edges else None
+    def get_weight(self, node_1, node_2, is_outgoing: bool = True):
+        edges = self.get_edges(node_1, is_outgoing)
+        if edges is None:
+            return None
+        return edges[node_2] if node_2 in edges else None
 
     def get_edges(self, node_id, is_outgoing: bool = True):
         raise NotImplementedError
@@ -25,25 +58,37 @@ class Graph:
         raise NotImplementedError
 
     def __str__(self):
-        def _cell(item=None) -> str:
-            if not self.is_weighted and item == 1:
-                item = self.mark
-            if item is None:
-                item = ""
-            return str(item) + (" " * (self.cell_size - len(str(item))))
-
-        output = _cell()
-        for node_id in self.sorted_node_ids:
-            output += _cell(node_id)
-        output += "\n"
-        for row in range(len(self)):
-            incoming = self.sorted_node_ids[row]
-            output += _cell(incoming)
-            for col in range(len(self)):
-                outgoing = self.sorted_node_ids[col]
-                output += _cell(self.get_weight(incoming, outgoing, is_outgoing=True))
-            output += "\n"
-        return output
+        sorted_nodes = sorted(self.nodes.keys())
+        first_column_size, cell_size, table = 0, 0, [["", *sorted_nodes]]
+        for node_1 in sorted_nodes:
+            cell_size = max(cell_size, len(str(node_1)))
+            first_column_size = max(first_column_size, len(str(node_1)))
+            table_row = [node_1]
+            for node_2 in sorted_nodes:
+                weight = self.get_weight(node_1, node_2)
+                if weight is not None:
+                    weight_str = self.weight_to_str(weight) if self.is_weighted else "*"
+                    table_row.append(weight_str)
+                    cell_size = max(cell_size, len(weight_str))
+                else:
+                    table_row.append("")
+            table.append(table_row)
+        string = ""
+        for row in table:
+            for index, col in enumerate(row):
+                if index == 0:
+                    string += col.rjust(first_column_size, " ")
+                else:
+                    string += col.rjust(cell_size, " ")
+                if index < len(row) - 1:
+                    string += "  "
+            string += "\n"
+        return string
+        # return "\n".join("  ".join(map(lambda x: x.rjust(cell_size, " "), row)) for row in table)
+        # return array_to_string(
+        #     table, indent="", cell_size=cell_size + 1, alignment='r',
+        #     with_bracket_and_comma=False, deepest_iterable_one_line=True
+        # )
 
     def print(self):
         print(self, end="")

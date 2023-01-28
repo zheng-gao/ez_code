@@ -1,26 +1,18 @@
 from collections import deque
+from typing import Iterable, Callable
 from ezcode.Graph.Graph import Graph
 
 
 class UndirectedGraph(Graph):
-    def __init__(self, edge_weight_dict: dict = None, edges: list[list] = None, weights: list = None, mark: str = "*"):
-        if edge_weight_dict is None:
-            is_weighted = weights is not None
-        else:
-            is_weighted = any(weight is not None for weight in edge_weight_dict.values())
-        super().__init__(is_weighted=is_weighted, mark=mark)  # self.nodes = {node_id_1: {node_id_2: weight}}
-        if edge_weight_dict or edges:
-            self.build_graph(edge_weight_dict=edge_weight_dict, edges=edges, weights=weights)
+    def __init__(self,
+        edges_and_weights: Iterable = None,                          # Data init option I (overrides others)
+        edges: Iterable[Iterable] = None, weights: Iterable = None,  # Data init option II
+        weight_to_str: Callable = lambda x: str(x)
+    ):
+        super().__init__(weight_to_str=weight_to_str)  # self.nodes = {node_id_1: {node_id_2: weight}}
+        self.build_graph(*self.unify_input(edges_and_weights, edges, weights))
 
-    def build_graph(self, edge_weight_dict: dict = None, edges: list[list] = None, weights: list = None):
-        if edge_weight_dict:
-            edges, weights = list(), list()
-            for edge, weight in edge_weight_dict.items():
-                edges.append(edge)
-                if weight is not None:
-                    weights.append(weight)
-        if not weights:
-            weights = [1] * len(edges)
+    def build_graph(self, edges: Iterable[Iterable] = None, weights: Iterable = None):
         for (n1, n2), weight in zip(edges, weights):
             if n1 is not None and n1 not in self.nodes:
                 self.nodes[n1] = dict()
@@ -28,17 +20,10 @@ class UndirectedGraph(Graph):
                 self.nodes[n2] = dict()
             if n1 is not None and n2 is not None:
                 self.nodes[n1][n2] = self.nodes[n2][n1] = weight
-        # For print
-        self.sorted_node_ids = sorted(self.nodes.keys())
-        self.node_id_index_map = dict()
-        for index, node_id in enumerate(self.sorted_node_ids):
-            self.node_id_index_map[node_id] = index
-            self.cell_size = max(self.cell_size, len(str(node_id)))
-        for weight in weights:
-            self.cell_size = max(self.cell_size, len(str(weight)))
-        self.cell_size += 2  # Add two spaces in between
 
     def get_edges(self, node_id, is_outgoing: bool = True):
+        if node_id not in self.nodes:
+            return None
         return self.nodes[node_id]
 
     def get_all_edges(self):

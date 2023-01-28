@@ -1,8 +1,10 @@
+from collections.abc import MutableMapping
+
 from ezcode.Tree.RedBlackTree import RedBlackTree
 from ezcode.Tree.BinarySearchTree import BinarySearchTree
 
 
-class TreeMap:
+class TreeMap(MutableMapping):
     class Entry:
         def __init__(self, key, value=None):
             self.key = key
@@ -36,7 +38,7 @@ class TreeMap:
         return TreeMap.Entry(key, None) in self.tree
 
     def __getitem__(self, key):
-        node = self.tree.search(TreeMap.Entry(key, None))
+        node = self.tree.search(data=TreeMap.Entry(key, None), track_parents=False)
         if node is None:
             raise KeyError(f"Key Not Found: {key}")
         return node.data.value
@@ -45,10 +47,12 @@ class TreeMap:
         self.tree.remove(TreeMap.Entry(key, None))
 
     def __setitem__(self, key, value):
-        parents, node = self.tree.search(TreeMap.Entry(key, None), track_parents=True)
-        if node is None or node.data.value != value:
-            self.tree.remove_node(parents, node)
-            self.tree.insert(TreeMap.Entry(key, value))
+        data = TreeMap.Entry(key, value)
+        parents, node = self.tree.search(data=data, track_parents=True)
+        if node is None:
+            self.tree.insert_node(parents, self.tree.new_node(data=data))
+        else:
+            node.data.value = value
 
     def __iter__(self):
         return iter(self.tree)  # node.data -> entry(key, value)
@@ -87,7 +91,7 @@ class TreeMap:
         self.tree.clear()
 
     def pop(self, key):
-        parents, node = self.tree.search(TreeMap.Entry(key, None), track_parents=True)
+        parents, node = self.tree.search(data=TreeMap.Entry(key, None), track_parents=True)
         if node is None:
             raise KeyError(f"Key Not Found: {key}")
         saved_value = node.data.value         # save this value before remove_node

@@ -3,6 +3,46 @@ from ezcode.Graph.GraphPathFinder import GraphPathFinder, UnweightedGraphExpecte
 from ezcode.Graph.DirectedGraph import DirectedGraph
 
 
+def test_directed_graph_init():
+    # weighted
+    graphs = list()
+    graphs.append(DirectedGraph({("A", "B"): 1, ("A", "C"): 2, ("A", "D"): 3}))                  # dict<tuple(2), X>
+    graphs.append(DirectedGraph({("A", "B", 1), ("A", "C", 2), ("A", "D", 3)}))                  # set(tuple(3))
+    graphs.append(DirectedGraph([("A", "B", 1), ("A", "C", 2), ("A", "D", 3)]))                  # list(tuple(3))
+    graphs.append(DirectedGraph([["A", "B", 1], ["A", "C", 2], ["A", "D", 3]]))                  # list(list(3))
+    graphs.append(DirectedGraph(edges=[("A", "B"), ("A", "C"), ("A", "D")], weights=[1, 2, 3]))  # edges=list(list(2))
+    graphs.append(DirectedGraph(edges=[["A", "B"], ["A", "C"], ["A", "D"]], weights=[1, 2, 3]))  # edges=list(tuple(2))
+    graph_str = """
+   A  B  C  D
+A     1  2  3
+B            
+C            
+D            
+"""[1:]
+    for g in graphs:
+        assert str(g) == graph_str
+    # unweighted
+    graphs = list()
+    graphs.append(DirectedGraph({("A", "B"): None, ("A", "C"): None, ("A", "D"): None}))         # dict<tuple(2), None>
+    graphs.append(DirectedGraph({("A", "B", None), ("A", "C", None), ("A", "D", None)}))         # set(tuple(3))
+    graphs.append(DirectedGraph({("A", "B"), ("A", "C"), ("A", "D")}))                           # set(tuple(2))
+    graphs.append(DirectedGraph([("A", "B", None), ("A", "C", None), ("A", "D", None)]))         # list(tuple(3))
+    graphs.append(DirectedGraph([["A", "B", None], ["A", "C", None], ["A", "D", None]]))         # list(list(3))
+    graphs.append(DirectedGraph([("A", "B"), ("A", "C"), ("A", "D")]))                           # list(tuple(2))
+    graphs.append(DirectedGraph([["A", "B"], ["A", "C"], ["A", "D"]]))                           # list(list(2))
+    graphs.append(DirectedGraph(edges=[["A", "B"], ["A", "C"], ["A", "D"]]))                     # edges=list(list(2))
+    graphs.append(DirectedGraph(edges=[("A", "B"), ("A", "C"), ("A", "D")]))                     # edges=list(tuple(2))
+    graph_str = """
+   A  B  C  D
+A     *  *  *
+B            
+C            
+D            
+"""[1:]
+    for g in graphs:
+        assert str(g) == graph_str
+
+
 def test_directed_graph_eulerian_path():
     """
     A <─── B 
@@ -44,13 +84,13 @@ def test_directed_unweighted_graph():
     d ─────> b
     """
     graph_str = """
-   a  b  c  d  e  f  
-a           *        
-b                 *  
-c  *              *  
-d     *              
-e                    
-f              *     
+   a  b  c  d  e  f
+a           *      
+b                 *
+c  *              *
+d     *            
+e                  
+f              *   
 """[1:]
     graph = DirectedGraph(edges=[("c", "a"), ("b", "f"), ("e", None), ("a", "d"), ("c", "f"), ("d", "b"), ("f", "e")])
     assert graph_str == str(graph)
@@ -73,13 +113,13 @@ f              *
     └─────── d
     """
     graph_str = """
-   a  b  c  d  e  f  
-a     *              
-b           *        
-c  *  *           *  
-d  *     *           
-e                    
-f           *        
+   a  b  c  d  e  f
+a     *            
+b           *      
+c  *  *           *
+d  *     *         
+e                  
+f           *      
 """[1:]
     graph = DirectedGraph(edges=[("a", "b"), ("c", "b"), ("d", "a"), ("b", "d"), ("c", "a"), ("d", "c"), ("c", "f"), ("f", "d"), ("e", None)])
     assert graph_str == str(graph)
@@ -125,13 +165,13 @@ def test_directed_weighted_graph():
     └─────── d
     """
     graph_str = """
-      a     b     c     d     e     f     
-a           0.8                           
-b                       0.8               
-c     0.5   0.7                     0.6   
-d     0.6         0.8                     
-e                                         
-f                       0.4               
+     a    b    c    d    e    f
+a       0.8                    
+b                 0.8          
+c  0.5  0.7                 0.6
+d  0.6       0.8               
+e                              
+f                 0.4          
 """[1:]
     graph = DirectedGraph(
         edges=[("a", "b"), ("c", "b"), ("d", "a"), ("b", "d"), ("c", "a"), ("d", "c"), ("c", "f"), ("f", "d"), ("e", None)],

@@ -1,3 +1,6 @@
+from collections.abc import MutableSequence
+
+
 def validate_index(index: int, inclusive_lower_bound, inclusive_upper_bound):
     if index < inclusive_lower_bound or inclusive_upper_bound < index:
         raise ValueError(f"index {index} is out of range [{inclusive_lower_bound}, {inclusive_upper_bound}]")
@@ -107,39 +110,56 @@ def delete_all(array: list, items_to_delete: set):
         array.pop()
 
 
-def array_to_string(array, indent: str = "    ", cell_size=None, right_alignment=True):
-    def _array_to_string(array: list, depth: int, result: list):
-        if type(array) is list:
-            subarray_found = False
-            for subarray in array:
-                if type(subarray) is list:
-                    subarray_found = True
-                    break
-            if not subarray_found:
-                result.append(f"{indent * depth}[")
-                for index, item in enumerate(array):
-                    if cell_size:
-                        if right_alignment:
-                            item_str = str(item).rjust(cell_size, " ")
-                        else:
-                            item_str = str(item).ljust(cell_size, " ")
-                    else:
-                        item_str = str(item)
-                    result.append(item_str)
-                    if index < len(array) - 1:
-                        result.append(", ")
-                result.append("],\n")
+def array_to_string(
+    array,
+    indent: str = " " * 4,
+    alignment="r",
+    deepest_iterable_one_line=True,
+    with_bracket_and_comma=True,
+    cell_size=None
+):
+    def _array_to_string(array, depth: int, result: list):
+        def _cell_str(item):
+            if cell_size is None or cell_size == 0:
+                return str(item)
+            if alignment == "r":
+                return str(item).rjust(cell_size, " ")
+            elif alignment == "l":
+                return str(item).ljust(cell_size, " ")
             else:
-                result.append(f"{indent * depth}[\n")
-                for subarray in array:
-                    _array_to_string(subarray, depth + 1, result)
-                result.append(f"{indent * depth}]")
-                result.append(",\n" if depth > 0 else "\n")
+                return str(item).center(cell_size, " ")
+
+        if isinstance(array, MutableSequence):
+            is_deepest_iterable = True
+            if deepest_iterable_one_line:
+                for item in array:
+                    if isinstance(item, MutableSequence):
+                        is_deepest_iterable = False
+                        break
+            if deepest_iterable_one_line and is_deepest_iterable:
+                result.append(f"{indent * depth}" + ("[" if with_bracket_and_comma else ""))
+                for index, item in enumerate(array):
+                    result.append(_cell_str(item))
+                    if index < len(array) - 1:
+                        result.append("," if with_bracket_and_comma else "")
+                        result.append(" " if not cell_size else "")
+                result.append("]" if with_bracket_and_comma else "\n")
+            else:
+                result.append(f"{indent * depth}[\n" if with_bracket_and_comma else "")
+                for index, item in enumerate(array):
+                    _array_to_string(item, depth + 1, result)
+                    if index < len(array) - 1:
+                        result.append("," if with_bracket_and_comma else "")
+                    result.append("\n" if with_bracket_and_comma else "")
+                result.append(f"{indent * depth}]" if with_bracket_and_comma else "")
         else:
-            result.append(f"{indent * depth}{array},\n")
+            result.append(f"{indent * depth}{_cell_str(array)}" + ("\n" if not with_bracket_and_comma else ""))
 
     result = list()
-    _array_to_string(array, 0, result)
+    if with_bracket_and_comma:
+        _array_to_string(array, 0, result)
+    else:
+        _array_to_string(array, -1, result)
     return "".join(result)
 
 
@@ -153,9 +173,9 @@ def max_item_string_length(array: list):
         return len(str(array))
 
 
-def print_array(array, indent: str = "    ", align=True, right_alignment=True):
-    max_size = max_item_string_length(array) if align else None
-    print(array_to_string(array, indent, max_size, right_alignment), end="")
+def print_array(array, indent: str = "    ", alignment="r"):
+    max_size = max_item_string_length(array) if alignment else None
+    print(array_to_string(array=array, indent=indent, alignment=alignment, cell_size=max_size))
 
 
 def split_list(original_list: list, number_of_sublists: int):

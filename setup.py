@@ -36,7 +36,7 @@ ez_code/ez.sh -o/--operations test -a/--arguments test_array.py::test_binary_sea
 
 setup(
     name="ezcode",
-    version="1.0.10",
+    version="1.0.11",
     author="Zheng Gao",
     author_email="mail.zheng.gao@gmail.com",
     description="Easy Algorithm & Data Structure",
@@ -52,7 +52,7 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],                                            # Information to filter the project on PyPi website
-    python_requires=">=3.7",                      # Minimum version requirement of the package
+    python_requires=">=3.10",                     # Minimum version requirement of the package
     py_modules=["ezcode"],                        # Name of the python package
     package_dir={"": "src"},                      # Directory of the source code of the package
     packages=find_packages(where="src"),          # List of all python modules to be installed

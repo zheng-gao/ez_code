@@ -1,29 +1,5 @@
-from ezcode.Array.Utils import copy, array_to_string, delete_all, rotate
+from ezcode.Array.Utils import copy, delete_all, rotate
 from ezcode.Array.Utils import split_list, split_list_generator, chunk_list, chunk_list_generator
-
-
-def test_array_to_string():
-    benchmark = """
-[
-    0,
-    [1],
-    [
-        1,
-        2,
-        [0, 1, 2, 3],
-    ],
-    [],
-    [
-        [
-            [0, 1, 2],
-            0,
-        ],
-        1,
-        2,
-    ],
-]
-"""[1:]
-    assert benchmark == array_to_string([0, [1], [1, 2, [0, 1, 2, 3]], [], [[[0, 1, 2], 0], 1, 2]])
 
 
 def test_rotate():

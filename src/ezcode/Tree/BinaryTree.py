@@ -143,6 +143,15 @@ class BinaryTree(object):
     def set_right(self, node, right):
         node.__dict__[self.right_name] = right
 
+    def insert_node(self, parent, node, is_left_node=True):
+        if self.get_left(parent) is None and is_left_node:
+            self.set_left(node=parent, left=node)
+        elif self.get_right(parent) is None and not is_left_node:
+            self.set_right(node=parent, right=node)
+        else:
+            raise ValueError(f"Cannot insert {'left' if is_left_node else 'right'}")
+        self.size += 1
+
     def insert(self, data):
         """ The nodes with same depth have the same probability """
         def _insert_random_node(node, data):
