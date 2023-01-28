@@ -1,5 +1,6 @@
+from collections.abc import Sequence
 from collections import deque
-from typing import Callable
+from typing import Callable, Iterable
 
 from ezcode.Graph.UndirectedGraph import UndirectedGraph
 from ezcode.Graph.DirectedGraph import DirectedGraph
@@ -15,12 +16,16 @@ class UnweightedGraphExpectedError(Exception):
 
 
 class GraphPathFinder:
-    def __init__(self, graph=None, is_directed: bool = False, edge_weight_dict: dict = None, edges: list[list] = None, weights: list = None):
+    def __init__(self,
+        graph=None, is_directed: bool = False,
+        edges_and_weights: Iterable = None,
+        edges: Iterable[Sequence] = None, weights: Iterable = None
+    ):
         if graph is None:
             if is_directed:
-                self.graph = DirectedGraph(edge_weight_dict=edge_weight_dict, edges=edges, weights=weights)
+                self.graph = DirectedGraph(edges_and_weights=edges_and_weights, edges=edges, weights=weights)
             else:
-                self.graph = UndirectedGraph(edge_weight_dict=edge_weight_dict, edges=edges, weights=weights)
+                self.graph = UndirectedGraph(edges_and_weights=edges_and_weights, edges=edges, weights=weights)
         else:
             self.graph = graph
 
