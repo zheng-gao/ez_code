@@ -14,37 +14,36 @@ class Graph:
     def __contains__(self, node) -> bool:
         return node in self.nodes
 
-    def zip_edges_and_weights(self,
-        edges_and_weights: Iterable = None,                          # Data init option I (overrides others)
-        edges: Iterable[Sequence] = None, weights: Iterable = None,  # Data init option II
+    def update(self,
+        edges_and_weights: Iterable = None,                          # Data input option I (overrides others)
+        edges: Iterable[Sequence] = None, weights: Iterable = None,  # Data input option II
     ):
+        is_weighted = False
         if edges_and_weights:
-            edges, weights = list(), list()
             if isinstance(edges_and_weights, MutableMapping):
                 for edge, weight in edges_and_weights.items():
-                    edges.append(edge)
-                    if weight is not None:
-                        self.is_weighted = True
-                        weights.append(weight)
+                    if weight is None:
+                        self.insert_edge(edge, 1)
+                    else:
+                        self.insert_edge(edge, weight)
+                        is_weighted = True
             else:
-                size = len(next(iter(edges_and_weights)))
                 for item in edges_and_weights:
-                    edges.append((item[0], item[1]))
-                    if size == 3:
-                        if item[2] is not None:
-                            self.is_weighted = True
-                            weights.append(item[2])
-        if not weights:
-            weights = [1] * len(edges)
+                    if len(item) == 2 or item[2] is None:
+                        self.insert_edge(edge=(item[0], item[1]), weight=1)
+                    else:
+                        self.insert_edge(edge=(item[0], item[1]), weight=item[2])
+                        is_weighted = True
+        elif not weights:
+            for edge in edges:
+                self.insert_edge(edge, 1)
         else:
             if len(edges) != len(weights):
                 raise ValueError("Unmatched edges and weights")
-            self.is_weighted = True
-        return zip(edges, weights)
-
-    def update(self, edges_and_weights: Iterable = None, edges: Iterable[Sequence] = None, weights: Iterable = None):
-        for edge, weight in self.zip_edges_and_weights(edges_and_weights, edges, weights):
-            self.insert_edge(edge, weight)
+            for edge, weight in zip(edges, weights):
+                self.insert_edge(edge, weight)
+            is_weighted = True
+        self.is_weighted = is_weighted
 
     def get_weight(self, node_1, node_2, is_outgoing: bool = True):
         edges = self.get_edges(node_1, is_outgoing)

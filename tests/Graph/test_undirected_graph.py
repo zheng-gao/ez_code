@@ -21,6 +21,7 @@ D  3
 """[1:]
     for g in graphs:
         assert str(g) == graph_str
+        assert g.is_weighted
     # unweighted
     graphs = list()
     graphs.append(UndirectedGraph({("A", "B"): None, ("A", "C"): None, ("A", "D"): None}))         # dict<tuple(2), None>
@@ -41,6 +42,7 @@ D  *
 """[1:]
     for g in graphs:
         assert str(g) == graph_str
+        assert not g.is_weighted
 
 
 def test_undirected_graph_eulerian_path():
