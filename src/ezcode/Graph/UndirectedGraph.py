@@ -1,7 +1,9 @@
 from collections.abc import Sequence
 from collections import deque
 from typing import Iterable, Callable
+
 from ezcode.Graph.Graph import Graph
+from ezcode.Graph.GraphEdgeIterator import UndirectedGraphEdgeIterator
 
 
 class UndirectedGraph(Graph):
@@ -12,6 +14,9 @@ class UndirectedGraph(Graph):
     ):
         super().__init__(weight_to_str=weight_to_str)  # self.nodes = {node_id_1: {node_id_2: weight}}
         self.update(edges_and_weights, edges, weights)
+
+    def __iter__(self):
+        return UndirectedGraphEdgeIterator(self)
 
     def insert_edge(self, edge: Sequence, weight=None):
         n1, n2 = edge

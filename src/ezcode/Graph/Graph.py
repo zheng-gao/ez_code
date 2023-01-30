@@ -1,6 +1,8 @@
 from collections.abc import MutableMapping, Sequence
 from typing import Iterable, Callable
 
+from ezcode.Graph.GraphEdgeIterator import GraphEdgeIterator
+
 
 class Graph:
     def __init__(self, weight_to_str: Callable = lambda x: str(x)):
@@ -13,6 +15,9 @@ class Graph:
 
     def __contains__(self, node) -> bool:
         return node in self.nodes
+
+    def __iter__(self):
+        return GraphEdgeIterator(self)
 
     def update(self,
         edges_and_weights: Iterable = None,                          # Data input option I (overrides others)
@@ -136,9 +141,3 @@ class Graph:
 
     def is_bipartite(self) -> bool:
         raise NotImplementedError
-
-
-class GraphEdgeIterator:
-    pass
-
-
