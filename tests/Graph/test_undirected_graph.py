@@ -47,15 +47,15 @@ D  *
 
 def test_undirected_graph_eulerian_path():
     """
-    A ────── C
-    │       ╱│╲
-    │      ╱ │ ╲
-    │     ╱  │  ╲
-    │    ╱   │   E
-    │   ╱    │  ╱
-    │  ╱     │ ╱
-    │ ╱      │╱
-    B ────── D
+    A ───── C
+    │      ╱│╲
+    │     ╱ │ ╲
+    │    ╱  │  ╲
+    │   ╱   │   E
+    │  ╱    │  ╱
+    │ ╱     │ ╱
+    │╱      │╱
+    B ───── D
     """
     graph = UndirectedGraph(edges=[["A", "B"], ["A", "C"], ["B", "C"], ["B", "D"], ["C", "D"], ["C", "E"], ["D", "E"]])
     assert graph.eulerian_path(start_node="A") is None
@@ -64,9 +64,11 @@ def test_undirected_graph_eulerian_path():
     assert graph.eulerian_path() == ["B", "A", "C", "B", "D", "C", "E", "D"]
     """
     A ── B
+    │╲
     │ ╲
     │  ╲
-    D   C
+    │   ╲
+    D    C
     """
     graph = UndirectedGraph(edges=[["A", "B"], ["A", "C"], ["A", "D"]])
     assert graph.eulerian_path() is None
@@ -74,15 +76,15 @@ def test_undirected_graph_eulerian_path():
 
 def test_undirected_unweighted_graph():
     """
-    A ────── C
-    │       ╱│╲
-    │      ╱ │ ╲
-    │     ╱  │  ╲
-    │    ╱   │   E
-    │   ╱    │  ╱
-    │  ╱     │ ╱
-    │ ╱      │╱
-    B ────── D
+    A ───── C
+    │      ╱│╲
+    │     ╱ │ ╲
+    │    ╱  │  ╲
+    │   ╱   │   E
+    │  ╱    │  ╱
+    │ ╱     │ ╱
+    │╱      │╱
+    B ───── D
     """
     graph_str = """
    A  B  C  D  E
@@ -122,15 +124,15 @@ E        *  *
 
 def test_undirected_weighted_graph():
     """
-    A ──0.2─ C 
-    │       ╱│ ╲
-    │      ╱ │ 0.8
-   0.8    ╱  │   ╲
-    │    ╱  0.9   E
-    │  0.5   │   ╱
-    │  ╱     │ 0.3
-    │ ╱      │ ╱
-    B ──0.9─ D
+    A ─0.2─ C 
+    │      ╱│╲
+    │     ╱ │ 0.8
+   0.8   ╱  │  ╲
+    │   ╱  0.9  E
+    │ 0.5   │  ╱
+    │ ╱     │ 0.3
+    │╱      │╱
+    B ─0.9─ D
     """
     graph_str = """
      A    B    C    D    E
@@ -206,32 +208,113 @@ def test_negative_cycle_detection():
 
 def test_is_connected():
     """
-    A ────── C
-    │       ╱│╲
-    │      ╱ │ ╲
-    │     ╱  │  ╲
-    │    ╱   │   E
-    │   ╱    │  ╱
-    │  ╱     │ ╱
-    │ ╱      │╱
-    B ────── D
+    A ───── C
+    │      ╱│╲
+    │     ╱ │ ╲
+    │    ╱  │  ╲
+    │   ╱   │   E
+    │  ╱    │  ╱
+    │ ╱     │ ╱
+    │╱      │╱
+    B ───── D
     """
     graph = UndirectedGraph(edges=[["A", "B"], ["A", "C"], ["B", "C"], ["B", "D"], ["C", "D"], ["C", "E"], ["D", "E"]])
     assert graph.is_connected()
     """
-    A ────── C
-    │       ╱
+    A ───── C
     │      ╱
     │     ╱
-    │    ╱       E
-    │   ╱       ╱
+    │    ╱
+    │   ╱       E
     │  ╱       ╱
     │ ╱       ╱
-    B        D
+    │╱       ╱
+    B       D
     """
     graph = UndirectedGraph(edges=[["A", "B"], ["A", "C"], ["B", "C"], ["D", "E"]])
     assert not graph.is_connected()
 
 
-
-
+def test_is_bipartite():
+    """
+    A ─ B
+       ╱│
+      ╱ │
+    C ─ D
+    """
+    graph = UndirectedGraph(edges=[["A", "B"], ["B", "C"], ["B", "D"], ["C", "D"]])
+    assert not graph.is_bipartite()
+    """
+    A ─ B   E
+       ╱
+      ╱ 
+    C ─ D
+    """
+    graph = UndirectedGraph(edges=[["A", "B"], ["B", "C"], ["C", "D"], ["E", None]])
+    assert graph.is_bipartite()
+    """
+    A ─ B ─ E
+       ╱
+      ╱ 
+    C ─ D
+    """
+    graph = UndirectedGraph(edges=[["A", "B"], ["B", "C"], ["C", "D"], ["E", "B"]])
+    assert graph.is_bipartite()
+    """
+    A ─ B   E
+       ╱   ╱
+      ╱   ╱ 
+    C ─ D
+    """
+    graph = UndirectedGraph(edges=[["A", "B"], ["B", "C"], ["C", "D"], ["E", "D"]])
+    assert graph.is_bipartite()
+    """
+    A ─ B ─ E
+       ╱   ╱
+      ╱   ╱ 
+    C ─ D
+    """
+    graph = UndirectedGraph(edges=[["A", "B"], ["B", "C"], ["C", "D"], ["E", "D"], ["B", "E"]])
+    assert graph.is_bipartite()
+    """
+    ┌───────┐
+    A ─ B   E
+       ╱   ╱
+      ╱   ╱ 
+    C ─ D
+    """
+    graph = UndirectedGraph(edges=[["A", "B"], ["B", "C"], ["C", "D"], ["E", "D"], ["E", "A"]])
+    assert not graph.is_bipartite()
+    """
+    A ─ B   E ─ F
+       ╱       ╱
+      ╱       ╱ 
+    C ─ D   G
+    """
+    graph = UndirectedGraph(edges=[["A", "B"], ["B", "C"], ["C", "D"], ["E", "F"], ["F", "G"]])
+    assert graph.is_bipartite()
+    """
+    A ─ B   E ─ F
+       ╱    │  ╱
+      ╱     │ ╱ 
+    C ─ D   G
+    """
+    graph = UndirectedGraph(edges=[["A", "B"], ["B", "C"], ["C", "D"], ["E", "F"], ["F", "G"], ["G", "E"]])
+    assert not graph.is_bipartite()
+    """
+    A ─ B ─ E ─ F
+       ╱       ╱
+      ╱       ╱ 
+    C ─ D ─ G
+    """
+    graph = UndirectedGraph(edges=[["A", "B"], ["B", "C"], ["C", "D"], ["E", "F"], ["F", "G"], ["B", "E"], ["G", "D"]])
+    assert graph.is_bipartite()
+    """
+        ┌───────┐
+    A ─ B   E ─ F
+       ╱       ╱
+      ╱       ╱ 
+    C ─ D ─ G
+    """
+    graph = UndirectedGraph(edges=[["A", "B"], ["B", "C"], ["C", "D"], ["E", "F"], ["F", "G"], ["B", "F"], ["G", "D"]])
+    assert not graph.is_bipartite()

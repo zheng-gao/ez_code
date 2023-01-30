@@ -17,6 +17,12 @@ def test_tree_map_get_item():
         tm[7] = "Seven"
         tm[2] = "Two"
         tm[8] = "Eight" # duplicates are not added
+        try:
+            x = tm[10]
+        except KeyError:
+            assert True
+        else:
+            assert False
         assert list(tm.keys()) == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
         assert list(tm.keys(reverse=True)) == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9][::-1]
         assert list(tm.values()) == ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine']
@@ -50,7 +56,12 @@ def test_tree_map_remove_item():
             (0, "Zero"), (1, "One"), (2, "Two"), (4, "Four"),
             (5, "Five"), (6, "Six"), (8, "Eight"), (9, "Nine")
         ]
-        del tm[3]
+        try:
+            del tm[3]
+        except KeyError:
+            assert True
+        else:
+            assert False
         del tm[5]
         del tm[0]
         del tm[9]
@@ -113,8 +124,14 @@ def test_tree_map_pop():
     def _test(tree):
         benchmark = ['Four','Five', 'One', 'Seven', 'Three', 'Six', 'Two', 'Nine', 'Eight', 'Zero']
         tm = TreeMap({5: "Five", 9: "Nine", 3: "Three", 8: "Eight", 6: "Six", 1: "One", 0: "Zero", 4: "Four", 7: "Seven", 2: "Two"}, tree)
+        try:
+            tm.pop(10)
+        except KeyError:
+            assert True
+        else:
+            assert False
         for i, key in enumerate([4, 5, 1, 7, 3, 6, 2, 9, 8, 0]):
-            assert benchmark[i] == tm.pop(key) 
+            assert benchmark[i] == tm.pop(key)
 
     _test(AVLTree())
     _test(RedBlackTree())
@@ -131,12 +148,24 @@ def test_tree_map_popitem():
             item = tm.popitem()
             assert item.key == benchmark[i][0]
             assert item.value == benchmark[i][1]
+        try:
+            tm.popitem()
+        except KeyError:
+            assert True
+        else:
+            assert False
         tm = TreeMap({5: "Five", 9: "Nine", 3: "Three", 8: "Eight", 6: "Six", 1: "One", 0: "Zero", 4: "Four", 7: "Seven", 2: "Two"}, tree)
         for i in range(len(tm)):
             item = tm.popitem(reverse=True)
             assert item.key == benchmark[-i-1][0]
             assert item.value == benchmark[-i-1][1]
-        
+        try:
+            tm.popitem(reverse=True)
+        except KeyError:
+            assert True
+        else:
+            assert False
+
     _test(AVLTree())
     _test(RedBlackTree())
 

@@ -9,7 +9,7 @@ def test_tree_set_add_and_update_item():
         assert list(ts) == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
         assert list(reversed(ts)) == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9][::-1]
         ts.add(1)
-        ts.add(8)
+        ts.add(1)
         assert list(ts) == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
         assert list(reversed(ts)) == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9][::-1]
         ts.update([7, 6, -2, -3, -1])
@@ -27,10 +27,40 @@ def test_tree_set_remove_item():
         ts.remove(7)
         assert list(ts) == [0, 1, 2, 4, 5, 6, 8, 9]
         assert list(reversed(ts)) == [0, 1, 2, 4, 5, 6, 8, 9][::-1]
-        ts.remove(3)
+        try:
+            ts.remove(3)
+        except KeyError:
+            assert True
+        else:
+            assert False
         ts.remove(5)
         ts.remove(0)
         ts.remove(9)
+        assert list(ts) == [1, 2, 4, 6, 8]
+        assert list(reversed(ts)) == [1, 2, 4, 6, 8][::-1]
+        ts.clear()
+        assert list(ts) == []
+
+    _test(AVLTree())
+    _test(RedBlackTree())
+
+
+def test_tree_set_discard_item():
+    def _test(tree):
+        ts = TreeSet([2, 3, 0, 9, 8, 1, 7, 4, 5, 6], tree)
+        ts.discard(3)
+        ts.discard(7)
+        assert list(ts) == [0, 1, 2, 4, 5, 6, 8, 9]
+        assert list(reversed(ts)) == [0, 1, 2, 4, 5, 6, 8, 9][::-1]
+        try:
+            ts.discard(3)
+        except:
+            assert False
+        else:
+            assert True
+        ts.discard(5)
+        ts.discard(0)
+        ts.discard(9)
         assert list(ts) == [1, 2, 4, 6, 8]
         assert list(reversed(ts)) == [1, 2, 4, 6, 8][::-1]
         ts.clear()
@@ -60,9 +90,21 @@ def test_tree_set_pop():
         ts = TreeSet([6, 8, 9, 3, 2, 1, 7, 5, 0, 4], tree)
         for i in range(len(ts)):
             i = ts.pop()
+        try:
+            ts.pop()
+        except KeyError:
+            assert True
+        else:
+            assert False
         ts = TreeSet([7, 8, 6, 1, 2, 4, 5, 9, 0, 3], tree)
         for i in range(len(ts) - 1, -1, -1):
             i = ts.pop(reverse=True)
+        try:
+            ts.pop(reverse=True)
+        except KeyError:
+            assert True
+        else:
+            assert False
 
     _test(AVLTree())
     _test(RedBlackTree())

@@ -33,13 +33,19 @@ class TreeSet(MutableSet):
             self.tree.insert_node(parents, self.tree.new_node(data=key))
 
     def remove(self, key):
-        self.tree.remove(key)
+        """ remove raise KeyError if key not found """
+        parents, node = self.tree.search(data=key, track_parents=True)
+        if node is None:
+            raise KeyError(f"Not Found: {key}")
+        self.tree.remove_node(parents, node)
 
     def discard(self, key):
-        """ Same as remove, required by collections.abc.MutableSet """
+        """ discard not raise error if key not found """
         self.tree.remove(key)
 
     def pop(self, reverse=False):
+        if len(self.tree) == 0:
+            raise KeyError("Pop from empty set")
         return self.tree.pop(reverse=reverse)
 
     def update(self, other: Iterable):

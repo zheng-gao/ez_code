@@ -7,7 +7,7 @@ from ezcode.Graph.Graph import Graph
 class UndirectedGraph(Graph):
     def __init__(self,
         edges_and_weights: Iterable = None,                          # Data init option I (overrides others)
-        edges: Iterable[Sequence] = None, weights: Iterable = None,  # Data init option II
+        edges: Sequence[Sequence] = None, weights: Sequence = None,  # Data init option II
         weight_to_str: Callable = lambda x: str(x)
     ):
         super().__init__(weight_to_str=weight_to_str)  # self.nodes = {node_id_1: {node_id_2: weight}}
@@ -100,7 +100,7 @@ class UndirectedGraph(Graph):
     def is_connected(self) -> bool:
         if len(self) == 0:
             return False
-        visited, queue = set(), deque([next(iter(self.nodes.keys()))])
+        visited, queue = set(), deque([self.get_a_node()])
         while len(queue) > 0:
             node_id = queue.popleft()
             visited.add(node_id)
@@ -109,7 +109,35 @@ class UndirectedGraph(Graph):
                     queue.append(neighbor_id)
         return len(self) == len(visited)
 
+    def is_connected_with(self, other) -> bool:
+        raise NotImplementedError("TBD")
 
+    def is_bipartite(self) -> bool:
+        """
+        nodes can be partitioned into two independent sets A and B
+        every edge connects a node in set A and a node in set B
+        """
+        set_a, set_b, visited, unvisited, queue = set(), set(), set(), set(self.nodes.keys()), deque()
+        while len(unvisited) > 0:  # for disconnected sub-graphs
+            node = next(iter(unvisited))
+            set_a.add(node)
+            queue.append(node)
+            while len(queue) > 0:
+                node = queue.popleft()
+                visited.add(node)
+                unvisited.discard(node)
+                for neighbor in self.get_edges(node):
+                    if neighbor not in visited:
+                        if node in set_a:
+                            if neighbor in set_a:
+                                return False
+                            set_b.add(neighbor)
+                        else:
+                            if neighbor in set_b:
+                                return False
+                            set_a.add(neighbor)
+                        queue.append(neighbor)
+        return True
 
 
 

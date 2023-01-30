@@ -63,6 +63,9 @@ class Graph:
     def get_all_edges(self):
         raise NotImplementedError
 
+    def get_a_node(self):
+        return next(iter(self.nodes))
+
     def __str__(self):
         sorted_nodes = sorted(self.nodes.keys())
         first_column_size, cell_size, table = 0, 0, [["", *sorted_nodes]]
@@ -128,5 +131,14 @@ class Graph:
     def is_connected(self) -> bool:
         raise NotImplementedError
 
+    def is_connected_with(self, other) -> bool:
+        raise NotImplementedError
+
+    def is_bipartite(self) -> bool:
+        raise NotImplementedError
+
+
+class GraphEdgeIterator:
+    pass
 
 

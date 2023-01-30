@@ -40,11 +40,14 @@ class TreeMap(MutableMapping):
     def __getitem__(self, key):
         node = self.tree.search(data=TreeMap.Entry(key, None), track_parents=False)
         if node is None:
-            raise KeyError(f"Key Not Found: {key}")
+            raise KeyError(f"Not Found: {key}")
         return node.data.value
 
     def __delitem__(self, key):
-        self.tree.remove(TreeMap.Entry(key, None))
+        parents, node = self.tree.search(data=TreeMap.Entry(key, None), track_parents=True)
+        if node is None:
+            raise KeyError(f"Not Found: {key}")
+        self.tree.remove_node(parents, node)
 
     def __setitem__(self, key, value):
         data = TreeMap.Entry(key, value)
@@ -93,11 +96,13 @@ class TreeMap(MutableMapping):
     def pop(self, key):
         parents, node = self.tree.search(data=TreeMap.Entry(key, None), track_parents=True)
         if node is None:
-            raise KeyError(f"Key Not Found: {key}")
+            raise KeyError(f"Not Found: {key}")
         saved_value = node.data.value         # save this value before remove_node
         self.tree.remove_node(parents, node)  # will swap node.data
         return saved_value
 
     def popitem(self, reverse=False):
+        if len(self.tree) == 0:
+            raise KeyError("Pop from empty map")
         return self.tree.pop(reverse=reverse)
 
