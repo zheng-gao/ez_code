@@ -1,4 +1,4 @@
-from ezcode.List import DATA_NAME, NEXT_NAME, PREV_NAME
+from ezcode.List.LinkedListConstant import DATA_NAME, NEXT_NAME, PREV_NAME
 
 
 class SinglyLinkedListAlgorithm:

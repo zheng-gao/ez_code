@@ -1,6 +1,46 @@
-from ezcode.List import DATA_NAME, NEXT_NAME, PREV_NAME, FORWARD_LINK, BACKWARD_LINK, BIDIRECTION_LINK
+from ezcode.List.LinkedListConstant import DATA_NAME, NEXT_NAME, PREV_NAME, FORWARD_LINK, BACKWARD_LINK, BIDIRECTION_LINK
 from ezcode.List.LinkedListAlgorithm import DoublyLinkedListAlgorithm
-from ezcode.List.LinkedListPrinter import DoublyLinkedListPrinter
+
+
+class DoublyLinkedListPrinter:
+    def __init__(self, algorithm: DoublyLinkedListAlgorithm,
+        forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK, bidirection_link: str = BIDIRECTION_LINK
+    ):
+        self.algorithm = algorithm
+        self.forward_link = forward_link
+        self.backward_link = backward_link
+        self.bidirection_link = bidirection_link
+
+    def to_string(self, node, reverse=False, include_end=True):
+        if not node:
+            return "None" if include_end else ""
+        string, backward_node = "", self.algorithm.get_prev(node)
+        while self.algorithm.has_next(node):
+            data = self.algorithm.get_data(node)
+            string = f"{self.bidirection_link}{data}{string}" if reverse else f"{string}{data}{self.bidirection_link}"
+            node = self.algorithm.get_next(node)
+        data = self.algorithm.get_data(node)
+        if reverse:
+            string = f"None{self.backward_link}(T) {data}{string}" if include_end else f"(T) {data}{string}"
+        else:
+            string = f"{string}{data} (T){self.forward_link}None" if include_end else f"{string}{data} (T)"
+        if not backward_node:
+            if reverse:
+                return f"{string} (H){self.forward_link}None" if include_end else f"{string} (H)"
+            else:
+                return f"None{self.backward_link}(H) {string}" if include_end else f"(H) {string}"
+        node = backward_node
+        while node:
+            data = self.algorithm.get_data(node)
+            string = f"{string}{self.bidirection_link}{data}" if reverse else f"{data}{self.bidirection_link}{string}"
+            node = self.algorithm.get_prev(node)
+        if reverse:
+            return f"{string} (H){self.forward_link}None" if include_end else f"{string} (H)"
+        else:
+            return f"None{self.backward_link}(H) {string}" if include_end else f"(H) {string}"
+
+    def print(self, node, reverse=False, include_end=True):
+        print(self.to_string(node, reverse, include_end))
 
 
 class DoublyLinkedList:
@@ -25,16 +65,16 @@ class DoublyLinkedList:
             size, node = size + 1, self.algorithm.get_next(node)
         return size
 
-    def to_string(self, include_end=True,
+    def to_string(self, reverse=False, include_end=True,
         forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK, bidirection_link: str = BIDIRECTION_LINK
     ):
         printer = DoublyLinkedListPrinter(self.algorithm, forward_link, backward_link, bidirection_link)
-        return printer.to_string(self.head, include_end)
+        return printer.to_string(self.head, reverse, include_end)
 
-    def print(self, include_end=True,
+    def print(self, reverse=False, include_end=True,
         forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK, bidirection_link: str = BIDIRECTION_LINK
     ):
-        print(self.to_string(include_end, forward_link, backward_link, bidirection_link))
+        print(self.to_string(reverse, include_end, forward_link, backward_link, bidirection_link))
 
     def add_to_head(self, data):
         """ O(1) """

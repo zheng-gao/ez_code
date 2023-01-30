@@ -1,6 +1,13 @@
 # Do not delete this file, otherwise this package cannot be imported
 
 # flake8: noqa
+# Queue
+from .Queue.Queue import Queue
+from .Queue.MonotonicQueue import MonotonicQueue
+# Stack
+from .Stack.Stack import Stack
+from .Stack.MinMaxStack import MinMaxStack
+from .Stack.PersistentStack import PersistentStack
 # Heap
 from .Heap.PriorityMap import PriorityMap
 from .Heap.PriorityQueue import PriorityQueue

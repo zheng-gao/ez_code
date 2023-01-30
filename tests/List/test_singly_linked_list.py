@@ -36,9 +36,9 @@ def test_singly_linked_list_basics():
     assert not list_2.equal(list_3)
     assert not list_3.equal(list_0)
     assert str(list_0) == "None"
-    assert str(list_1) == "1 ─> None"
-    assert str(list_2) == "1 ─> 2 ─> None"
-    assert str(list_3) == "1 ─> 2 ─> 3 ─> None"
+    assert str(list_1) == "(H) 1 ─> None"
+    assert str(list_2) == "(H) 1 ─> 2 ─> None"
+    assert str(list_3) == "(H) 1 ─> 2 ─> 3 ─> None"
     assert list_0.to_array() == []
     assert list_1.to_array() == [1]
     assert list_2.to_array() == [1, 2]

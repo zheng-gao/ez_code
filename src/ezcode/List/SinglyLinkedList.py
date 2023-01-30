@@ -1,9 +1,34 @@
 from __future__ import annotations
 
-from ezcode.List import DATA_NAME, NEXT_NAME, FORWARD_LINK, BACKWARD_LINK
+from ezcode.List.LinkedListConstant import DATA_NAME, NEXT_NAME, FORWARD_LINK, BACKWARD_LINK
 from ezcode.List.LinkedListAlgorithm import SinglyLinkedListAlgorithm
-from ezcode.List.LinkedListPrinter import SinglyLinkedListPrinter
 from ezcode.Array.Utils import validate_index_interval
+
+
+class SinglyLinkedListPrinter:
+    def __init__(self, algorithm: SinglyLinkedListAlgorithm,
+        forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK
+    ):
+        self.algorithm = algorithm
+        self.forward_link = forward_link
+        self.backward_link = backward_link
+
+    def to_string(self, node, reverse=False, include_end=True):
+        if not node:
+            return "None" if include_end else ""
+        string, link = "", self.backward_link if reverse else self.forward_link
+        while self.algorithm.has_next(node):
+            new_string = f"{self.algorithm.get_data(node)}"
+            string = link + new_string + string if reverse else string + new_string + link
+            node = self.algorithm.get_next(node)
+        new_string = f"{self.algorithm.get_data(node)}"
+        if include_end:
+            return "None" + link + new_string + string + " (H)" if reverse else "(H) " + string + new_string + link + "None"
+        else:
+            return new_string + string + " (H)" if reverse else "(H) " + string + new_string
+
+    def print(self, node, reverse=False, include_end=True):
+        print(self.to_string(node, reverse, include_end))
 
 
 class SinglyLinkedList(object):
