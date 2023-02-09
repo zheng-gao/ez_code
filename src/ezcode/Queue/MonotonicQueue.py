@@ -12,9 +12,12 @@ class MonotonicQueue(Queue):
 
     def push(self, data):
         if self.is_increasing:
-            while len(self) > 0 and self.doubly_linked_list.peek_tail() > data:
-                self.doubly_linked_list.pop_tail()
+            while len(self) > 0 and data < self.list[-1]:
+                self.list.pop()
         else:
-            while len(self) > 0 and self.doubly_linked_list.peek_tail() < data:
-                self.doubly_linked_list.pop_tail()
-        self.doubly_linked_list.add_to_tail(data)
+            while len(self) > 0 and self.list[-1] < data:
+                self.list.pop()
+        self.list.appendleft(data)
+
+    def pop(self):
+        return self.list.pop()

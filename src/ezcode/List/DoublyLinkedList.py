@@ -1,163 +1,183 @@
-from ezcode.List.LinkedListConstant import DATA_NAME, NEXT_NAME, PREV_NAME, FORWARD_LINK, BACKWARD_LINK, BIDIRECTION_LINK
-from ezcode.List.LinkedListAlgorithm import DoublyLinkedListAlgorithm
+from typing import Iterable
+
+from ezcode.List.LinkedListConstant import DATA_NAME, NEXT_NAME, PREV_NAME
+from ezcode.List.LinkedListIterator import DoublyLinkedListIterator
+from ezcode.List.TailedLinkedList import TailedLinkedList
 
 
-class DoublyLinkedListPrinter:
-    def __init__(self, algorithm: DoublyLinkedListAlgorithm,
-        forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK, bidirection_link: str = BIDIRECTION_LINK
+class DoublyLinkedList(TailedLinkedList):
+    def __init__(self,
+        init_data: Iterable = None, head=None, head_copy=None,
+        data_name: str = DATA_NAME, next_name: str = NEXT_NAME, prev_name: str = PREV_NAME
     ):
-        self.algorithm = algorithm
-        self.forward_link = forward_link
-        self.backward_link = backward_link
-        self.bidirection_link = bidirection_link
+        self.prev_name = prev_name
+        super().__init__(
+            init_data=init_data, head=head, head_copy=head_copy,
+            data_name=data_name, next_name=next_name
+        )
 
-    def to_string(self, node, reverse=False, include_end=True):
+    def new_node(self, data=None, next_node=None, prev_node=None):
+        node = super().new_node(data=data, next_node=next_node)
+        node.__dict__[self.prev_name] = prev_node
+        return node
+
+    def get_prev(self, node, steps: int = 1):
+        for _ in range(steps):
+            if node is None:
+                return None
+            node = node.__dict__[self.prev_name]
+        return node
+
+    def has_prev(self, node, steps: int = 1) -> bool:
         if not node:
-            return "None" if include_end else ""
-        string, backward_node = "", self.algorithm.get_prev(node)
-        while self.algorithm.has_next(node):
-            data = self.algorithm.get_data(node)
-            string = f"{self.bidirection_link}{data}{string}" if reverse else f"{string}{data}{self.bidirection_link}"
-            node = self.algorithm.get_next(node)
-        data = self.algorithm.get_data(node)
-        if reverse:
-            string = f"None{self.backward_link}(T) {data}{string}" if include_end else f"(T) {data}{string}"
-        else:
-            string = f"{string}{data} (T){self.forward_link}None" if include_end else f"{string}{data} (T)"
-        if not backward_node:
-            if reverse:
-                return f"{string} (H){self.forward_link}None" if include_end else f"{string} (H)"
+            return False
+        for _ in range(steps):
+            node = node.__dict__[self.prev_name]
+            if not node:
+                return False
+        return True
+
+    def set_prev(self, node, prev_node=None):
+        node.__dict__[self.prev_name] = prev_node
+
+    def get_node(self, index: int):
+        r = self.regularize_index(index)
+        return self.get_prev(node=self.tail, steps=index) if index < r else self.get_next(node=self.head, steps=r)
+
+    def __iter__(self):
+        """ from index 0 (tail) to -1 (head) """
+        return DoublyLinkedListIterator(
+            head=self.head, tail=self.tail,
+            data_name=self.data_name, next_name=self.next_name, prev_name=self.prev_name,
+            reverse=True, iterate_node=False
+        )
+
+    def __reversed__(self):
+        """ from index -1 (head) to 0 (tail) """
+        return DoublyLinkedListIterator(
+            head=self.head, tail=self.tail,
+            data_name=self.data_name, next_name=self.next_name, prev_name=self.prev_name,
+            reverse=False, iterate_node=False
+        )
+
+    def __delitem__(self, index: int):
+        index = self.regularize_index(index)
+        if index == 0:
+            self.head = self.get_next(self.head)
+            if self.head is None:
+                self.tail = None
             else:
-                return f"None{self.backward_link}(H) {string}" if include_end else f"(H) {string}"
-        node = backward_node
-        while node:
-            data = self.algorithm.get_data(node)
-            string = f"{string}{self.bidirection_link}{data}" if reverse else f"{data}{self.bidirection_link}{string}"
-            node = self.algorithm.get_prev(node)
-        if reverse:
-            return f"{string} (H){self.forward_link}None" if include_end else f"{string} (H)"
-        else:
-            return f"None{self.backward_link}(H) {string}" if include_end else f"(H) {string}"
-
-    def print(self, node, reverse=False, include_end=True):
-        print(self.to_string(node, reverse, include_end))
-
-
-class DoublyLinkedList:
-    def __init__(self, head=None, tail=None, data_name: str = DATA_NAME, next_name: str = NEXT_NAME, prev_name: str = PREV_NAME):
-        self.head = head
-        self.tail = tail
-        self.algorithm = DoublyLinkedListAlgorithm(data_name, next_name, prev_name)
-        self.size = self.calculate_size(set_tail=(tail is None))
-
-    def __len__(self):
-        return self.size
-
-    def __str__(self):
-        return self.to_string()
-
-    def calculate_size(self, set_tail=False) -> int:
-        """ O(N) """
-        size, node = 0, self.head
-        while node:
-            if set_tail and not self.algorithm.has_next(node):
-                self.tail = node
-            size, node = size + 1, self.algorithm.get_next(node)
-        return size
-
-    def to_string(self, reverse=False, include_end=True,
-        forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK, bidirection_link: str = BIDIRECTION_LINK
-    ):
-        printer = DoublyLinkedListPrinter(self.algorithm, forward_link, backward_link, bidirection_link)
-        return printer.to_string(self.head, reverse, include_end)
-
-    def print(self, reverse=False, include_end=True,
-        forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK, bidirection_link: str = BIDIRECTION_LINK
-    ):
-        print(self.to_string(reverse, include_end, forward_link, backward_link, bidirection_link))
-
-    def add_to_head(self, data):
-        """ O(1) """
-        new_node = self.algorithm.new_node(data=data)
-        self.add_node_to_head(new_node)
-
-    def add_node_to_head(self, node):
-        """ O(1) """
-        if node is not None:
-            self.algorithm.set_next(node=node, next_node=self.head)
-            self.algorithm.set_prev(node=node, prev_node=None)
-            if self.head:
-                self.algorithm.set_prev(node=self.head, prev_node=node)
+                self.set_prev(node=self.head, prev_node=None)
+        elif index == self.size - 1:
+            self.tail = self.get_prev(self.tail)
+            if self.tail is None:
+                self.head = None
             else:
-                self.tail = node
-            self.head = node
-            self.size += 1
-
-    def add_to_tail(self, data):
-        """ O(1) """
-        new_node = self.algorithm.new_node(data=data, prev_node=self.tail)
-        self.add_node_to_tail(new_node)
-
-    def add_node_to_tail(self, node):
-        """ O(1) """
-        if node is not None:
-            self.algorithm.set_next(node=node, next_node=None)
-            self.algorithm.set_prev(node=node, prev_node=self.tail)
-            if self.tail:
-                self.algorithm.set_next(node=self.tail, next_node=node)
-            else:
-                self.head = node
-            self.tail = node
-            self.size += 1
-
-    def peek_head(self):
-        """ O(1) """
-        if not self.head:
-            raise IndexError("Peek head at an empty DoublyLinkedList")
-        return self.algorithm.get_data(self.head)
-
-    def peek_tail(self):
-        """ O(1) """
-        if not self.tail:
-            raise IndexError("Peek tail at an empty DoublyLinkedList")
-        return self.algorithm.get_data(self.tail)
-
-    def pop_head(self):
-        """ O(1) """
-        if not self.head:
-            raise IndexError("Pop head from an empty DoublyLinkedList")
-        data = self.algorithm.get_data(self.head)
-        self.head = self.algorithm.get_next(self.head)
-        if self.head:
-            self.algorithm.set_prev(node=self.head, prev_node=None)
-        else:
-            self.tail = None
-        self.size -= 1
-        return data
-
-    def pop_tail(self):
-        """ O(1) """
-        if not self.tail:
-            raise IndexError("Pop tail from an empty DoublyLinkedList")
-        data = self.algorithm.get_data(self.tail)
-        self.tail = self.algorithm.get_prev(self.tail)
-        if self.tail:
-            self.algorithm.set_next(node=self.tail, next_node=None)
-        else:
-            self.head = None
-        self.size -= 1
-        return data
-
-    def detach_node(self, node):
-        if node is not None:
-            if node == self.head:
-                self.head = self.algorithm.get_next(self.head)
-            if node == self.tail:
-                self.tail = self.algorithm.get_prev(self.tail)
-            prev_node, next_node = self.algorithm.get_prev(node), self.algorithm.get_next(node)
-            if next_node is not None:
-                self.algorithm.set_prev(node=next_node, prev_node=prev_node)
+                self.set_next(node=self.tail, next_node=None)
+        else:  # at least 3 nodes exist
+            node = self.get_node(index)
+            prev_node, next_node = self.get_prev(node), self.get_next(node)
             if prev_node is not None:
-                self.algorithm.set_next(node=prev_node, next_node=next_node)
-            self.size -= 1
+                self.set_next(node=prev_node, next_node=next_node)
+            if next_node is not None:
+                self.set_prev(node=next_node, next_node=prev_node)
+        self.size -= 1
+
+    def remove_all(self, data):
+        prev_node, node = None, self.head
+        while node is not None:
+            next_node = self.get_next(node)
+            if data == self.get_data(node):
+                if node == self.head:
+                    self.head = next_node
+                else:
+                    self.set_next(node=prev_node, next_node=next_node)
+                if next_node is not None:
+                    self.set_prev(node=next_node, prev_node=prev_node)
+                self.size -= 1
+            else:
+                prev_node = node
+            node = next_node
+        if self.head is None:
+            self.tail = None
+        elif prev_node is not None:
+            self.tail = prev_node
+
+    def popleft(self):
+        if len(self) == 0:
+            raise KeyError("Pop from empty list")
+        data = self[0]
+        del self[0]
+        return data
+
+    def append(self, data):
+        if self.head is None:  # len(self) == 0
+            self.head = self.tail = self.new_node(data)
+        else:
+            self.set_prev(node=self.head, next_node=self.new_node(data=data, next_node=self.head))
+            self.head = self.get_prev(node=self.head)
+        self.size += 1
+
+    def appendleft(self, data):
+        if self.head is None:  # len(self) == 0
+            self.head = self.tail = self.new_node(data)
+        else:
+            self.set_next(node=self.tail, next_node=self.new_node(data=data, prev_node=self.tail))
+            self.tail = self.get_next(node=self.tail)
+        self.size += 1
+
+    def insert(self, index: int, data):
+        index = self.regularize_index(index, auto_fit=True)
+        if index == 0:
+            self.append(data)
+        elif index == self.size - 1:
+            self.appendleft(data)
+        else:
+            node = self.get_next(node=self.head, steps=index)
+            next_node = self.get_next(node)
+            inserted_node = self.new_node(data=data, next_node=next_node, prev_node=node)
+            self.set_prev(node=next_node, prev_node=inserted_node)
+            self.set_next(node=node, next_node=inserted_node)
+            self.size += 1
+
+    def copy_from_node(self, node):
+        if node is None:
+            self.clear()
+        else:
+            if not (self.head is None and self.new_node().match(node)) and not (self.head is not None and self.head.match(node)):
+                raise ValueError(f"Invalid node with attributes: {list(node.__dict__.keys())}")
+            node_copy = self.new_node(data=self.get_data(node))
+            self.head, self.size = node_copy
+            self.tail = node_copy
+            while self.get_next(node) is not None:
+                node = self.get_next(node)
+                next_node_copy = self.new_node(data=self.get_data(node))
+                if next_node_copy is not None:
+                    self.set_prev(node=next_node_copy, prev_node=node_copy)  # diff from parent class, setting prev_node
+                self.set_next(node=node_copy, next_node=next_node_copy)
+                node_copy = next_node_copy
+                self.tail = node_copy
+                self.size += 1
+
+    def copy_from(self, other):
+        if isinstance(other, self.__class__):
+            self.data_name = other.data_name
+            self.next_name = other.next_name
+            self.prev_name = other.prev_name  # diff from parent class
+            self.copy_from_node(other.head)
+
+    def reverse(self):
+        node = self.tail
+        while node is not None:
+            prev_node = self.get_prev(node)
+            next_node = self.get_next(node)
+            self.set_prev(node=node, prev_node=next_node)
+            self.set_next(node=node, next_node=prev_node)
+            node = next_node
+        self.head, self.tail = self.tail, self.head
+
+
+
+
+
 

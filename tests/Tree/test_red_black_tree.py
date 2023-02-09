@@ -219,9 +219,9 @@ def test_red_black_tree_iterator():
 def test_red_black_tree_copy_and_equal():
     t1 = RedBlackTree([4, 2, 0, 6, 5, 8, 3, 1, 7])
     t2 = RedBlackTree([4, 2, 0, 6, 5, 8, 3, 1, 7])
-    assert t1 == t2
+    assert t1.equal(t2)
     t3 = t2.copy()
-    assert t1 == t3
+    assert t1.equal(t3)
     assert type(t3) is RedBlackTree
 
 

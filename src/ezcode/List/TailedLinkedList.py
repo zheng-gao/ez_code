@@ -2,7 +2,7 @@ from typing import Iterable
 
 from ezcode.List.LinkedListConstant import DATA_NAME, NEXT_NAME
 from ezcode.List.LinkedList import LinkedList
-from ezcdoe.List.LinkedListIterator import LinkedListIterator
+from ezcode.List.LinkedListIterator import LinkedListIterator
 
 
 class TailedLinkedList(LinkedList):
@@ -17,46 +17,74 @@ class TailedLinkedList(LinkedList):
         )
 
     def _size(self):  # recalculate the size
+        """ Time: O(N) """
         self.size = 0
         for node in LinkedListIterator(
             head=self.head, data_name=self.data_name, next_name=self.next_name,
             reverse=False, iterate_node=True
         ):
-            self.tail = node
+            self.tail = node  # Reset Tail
             self.size += 1
-
-    def _insert_reset_tail(self):
-        if self.tail is None:  # len(self) was 0
-            self.tail = self.head
-
-    def _remove_reset_tail(self):
-        if self.head is None:  # len(self) == 0
-            self.tail = None
+        return self.size
 
     def __delitem__(self, index: int):
-        super.__delitem__(index)
-        self._remove_reset_tail()
+        index = self.regularize_index(index)  # recalculate the index from head
+        if index == 0:
+            self.head = self.get_next(self.head)
+            if self.head is None:
+                self.tail = None
+        else:
+            predecessor = self.get_next(node=self.head, steps=index - 1)
+            self.set_next(node=predecessor, next_node=self.get_next(predecessor, steps=2))
+            if index == self.size - 1:
+                self.tail = predecessor
+        self.size -= 1
 
-    def remove(self, data):
-        super.remove(data)
-        self._remove_reset_tail()
+    def get_node(self, index: int):
+        if index == 0 and len(self) > 0:
+            return self.tail
+        return self.get_next(node=self.head, steps=self.regularize_index(index))
 
-    def pop(self):
-        data = super().pop()
-        self._remove_reset_tail()
-        return data
+    def remove_all(self, data):
+        predecessor, node = None, self.head
+        while node is not None:
+            next_node = self.get_next(node)
+            if data == self.get_data(node):
+                if node == self.head:
+                    self.head = next_node
+                else:
+                    self.set_next(node=predecessor, next_node=next_node)
+                self.size -= 1
+            else:
+                predecessor = node
+            node = next_node
+        if self.head is None:
+            self.tail = None
+        elif predecessor is not None:
+            self.tail = predecessor
 
     def clear(self):
         super().clear()
-        self._remove_reset_tail()
+        self.tail = None
 
     def append(self, data):
         super().append(data)
-        self._insert_reset_tail()
+        if self.tail is None:  # len(self) was 0
+            self.tail = self.head
+
+    def appendleft(self, data):
+        """ Time: O(1) """
+        if self.head is None:  # len(self) == 0
+            self.head = self.tail = self.new_node(data)
+        else:
+            self.set_next(node=self.tail, next_node=self.new_node(data))
+            self.tail = self.get_next(node=self.tail)
+        self.size += 1
 
     def insert(self, index: int, data):
         super().insert(index, data)
-        self._insert_reset_tail()
+        if self.tail is None:  # len(self) was 0
+            self.tail = self.head
 
     def reverse(self):
         self.tail = self.head
@@ -69,11 +97,13 @@ class TailedLinkedList(LinkedList):
             if not (self.head is None and self.new_node().match(node)) and not (self.head is not None and self.head.match(node)):
                 raise ValueError(f"Invalid node with attributes: {list(node.__dict__.keys())}")
             node_copy = self.new_node(data=self.get_data(node))
-            self.head, self.tail, self.size = node_copy, 1  # diff from parent class, reseting tail
+            self.head, self.size = node_copy
+            self.tail = node_copy  # diff from parent class, reseting tail
             while self.get_next(node) is not None:
                 node = self.get_next(node)
-                self.set_next(node=node_copy, next_node=self.new_node(data=self.get_data(node)))
-                node_copy = self.get_next(node_copy)
+                next_node_copy = self.new_node(data=self.get_data(node))
+                self.set_next(node=node_copy, next_node=next_node_copy)
+                node_copy = next_node_copy
                 self.tail = node_copy  # diff from parent class, reseting tail
                 self.size += 1
 

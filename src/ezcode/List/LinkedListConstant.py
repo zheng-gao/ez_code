@@ -4,6 +4,6 @@ NEXT_NAME = "next"
 PREV_NAME = "prev"
 
 # Printer
-FORWARD_LINK = " ─> "
-BACKWARD_LINK = " <─ "
+FORWARD_LINK = "─>"
+BACKWARD_LINK = "<─"
 BIDIRECTION_LINK = " <─> "

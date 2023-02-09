@@ -31,6 +31,12 @@ def test_binary_tree_printer():
 """[1:]
 
 
+def test_binary_tree_equal():
+    assert s_tree.equal(BinaryTree(root=Node(0, Node(1, Node(3, right=Node(7)), Node(4)), Node(2, Node(5, Node(8), Node(9)), Node(6))), data_name="value"))
+    assert not s_tree.equal(BinaryTree(root=Node(0, Node(1, Node(3, right=Node(7)), Node(4))), data_name="value"))
+    assert not c_tree.equal(s_tree)
+
+
 def test_binary_tree_traversals():
     assert [0, 1, 3, 7, 4, 2, 5, 8, 9, 6] == s_tree.traversal("pre-order")
     assert [3, 7, 1, 4, 0, 8, 5, 9, 2, 6] == s_tree.traversal("in-order")
@@ -128,13 +134,13 @@ def test_binary_tree_max_path_sum():
 
 
 def test_binary_tree_is_copied():
-    assert s_tree == s_tree
-    assert c_tree == c_tree
+    assert s_tree.equal(s_tree)
+    assert c_tree.equal(c_tree)
 
 
 def test_binary_tree_copy():
-    assert s_tree == s_tree.copy()
-    assert c_tree == c_tree.copy()
+    assert s_tree.equal(s_tree.copy())
+    assert c_tree.equal(c_tree.copy())
 
 
 def test_binary_tree_serialization():
@@ -143,7 +149,9 @@ def test_binary_tree_serialization():
 
 
 def test_binary_tree_deserialization():
-    assert s_tree == s_tree.deserialize(formatter=int, string=s_tree.serialize())
-    assert c_tree == c_tree.deserialize(formatter=int, string=c_tree.serialize())
+    assert s_tree.equal(s_tree.deserialize(formatter=int, string=s_tree.serialize()))
+    assert c_tree.equal(c_tree.deserialize(formatter=int, string=c_tree.serialize()))
+
+
 
 

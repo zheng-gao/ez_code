@@ -1,3 +1,4 @@
 # flake8: noqa
-from .SinglyLinkedList import SinglyLinkedList
+from .LinkedList import LinkedList
+from .TailedLinkedList import TailedLinkedList
 from .DoublyLinkedList import DoublyLinkedList

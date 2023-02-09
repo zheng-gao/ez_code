@@ -236,9 +236,9 @@ None
 def test_binary_search_tree_copy():
     bst_1 = BinarySearchTree([5, 3, 8, 4, 6, 9, 1, 0, 2, 7, 10])
     bst_2 = BinarySearchTree([5, 3, 8, 4, 6, 9, 1, 0, 2, 7, 10])
-    assert bst_1 == bst_2
+    assert bst_1.equal(bst_2)
     bst_3 = bst_2.copy()
-    assert bst_1 == bst_3
+    assert bst_1.equal(bst_3)
     assert type(bst_3) is BinarySearchTree
 
 

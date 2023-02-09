@@ -45,7 +45,7 @@ class BinaryTreePrinter:
         self.tree_depth = 0
         self.max_data_string_length = 0
         self.char_map = list()
-        self.node_to_string = node_to_string if node_to_string is not None else lambda node: str(node.__dict__[self.data_name])
+        self.node_to_string = (lambda node: str(node.__dict__[self.data_name])) if node_to_string is None else node_to_string
 
     def get_left(self, node):
         return node.__dict__[self.left_name]

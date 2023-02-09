@@ -51,10 +51,8 @@ class BinaryTree(object):
             for data in init_data:
                 self.insert(data)
 
-    def __eq__(self, other) -> bool:
-        """
-            This method should be overridden by the subclass if the subclass node has different attributes
-        """
+    def equal(self, other) -> bool:
+        """ This method should be overridden by the subclass if the subclass node has different attributes """
         def _tree_equal(node_1, node_2, pointers):
             if node_1 is None and node_2 is None:
                 return True
