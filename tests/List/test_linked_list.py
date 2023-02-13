@@ -7,6 +7,44 @@ class Node:
         self.n = n
 
 
+linked_lists = [
+    LinkedList(head=None, data_name="v", next_name="n"),
+    LinkedList(head=Node(1), data_name="v", next_name="n"),
+    LinkedList(head=Node(1, Node(2)), data_name="v", next_name="n"),
+    LinkedList(head=Node(1, Node(2, Node(3))), data_name="v", next_name="n")
+]
+
+
+def test_linkedin_list_printer():
+    assert str(linked_lists[0]) == "None (H)"
+    assert str(linked_lists[1]) == "None <─ 1 (H)"
+    assert str(linked_lists[2]) == "None <─ 2 <─ 1 (H)"
+    assert str(linked_lists[3]) == "None <─ 3 <─ 2 <─ 1 (H)"
+    assert linked_lists[0].to_string(reverse=True) == "(H) None"
+    assert linked_lists[1].to_string(reverse=True) == "(H) 1 ─> None"
+    assert linked_lists[2].to_string(reverse=True) == "(H) 1 ─> 2 ─> None"
+    assert linked_lists[3].to_string(reverse=True) == "(H) 1 ─> 2 ─> 3 ─> None"
+    assert linked_lists[0].to_string(reverse=True, mark_head=False) == "None"
+    assert linked_lists[1].to_string(reverse=True, mark_head=False) == "1 ─> None"
+    assert linked_lists[2].to_string(reverse=True, mark_head=False) == "1 ─> 2 ─> None"
+    assert linked_lists[3].to_string(reverse=True, mark_head=False) == "1 ─> 2 ─> 3 ─> None"
+    assert linked_lists[0].to_string(reverse=True, mark_head=False, include_end=False) == ""
+    assert linked_lists[1].to_string(reverse=True, mark_head=False, include_end=False) == "1"
+    assert linked_lists[2].to_string(reverse=True, mark_head=False, include_end=False) == "1 ─> 2"
+    assert linked_lists[3].to_string(reverse=True, mark_head=False, include_end=False) == "1 ─> 2 ─> 3"
+    assert linked_lists[0].to_string(reverse=True, include_end=False) == "(H)"
+    assert linked_lists[1].to_string(reverse=True, include_end=False) == "(H) 1"
+    assert linked_lists[2].to_string(reverse=True, include_end=False) == "(H) 1 ─> 2"
+    assert linked_lists[3].to_string(reverse=True, include_end=False) == "(H) 1 ─> 2 ─> 3"
+    assert linked_lists[0].to_string(include_end=False) == "(H)"
+    assert linked_lists[1].to_string(include_end=False) == "1 (H)"
+    assert linked_lists[2].to_string(include_end=False) == "2 <─ 1 (H)"
+    assert linked_lists[3].to_string(include_end=False) == "3 <─ 2 <─ 1 (H)"
+    assert linked_lists[0].to_string(mark_head=False, include_end=False) == ""
+    assert linked_lists[1].to_string(mark_head=False, include_end=False) == "1"
+    assert linked_lists[2].to_string(mark_head=False, include_end=False) == "2 <─ 1"
+    assert linked_lists[3].to_string(mark_head=False, include_end=False) == "3 <─ 2 <─ 1"
+
 def test_linked_list_iterator():
     l = LinkedList([0, 1, 2, 3, 4, 5])
     assert list(iter(l)) == [0, 1, 2, 3, 4, 5]
@@ -53,10 +91,6 @@ def test_linked_list_basics():
     assert not list_1.equal(list_2)
     assert not list_2.equal(list_3)
     assert not list_3.equal(list_0)
-    assert str(list_0) == "None (H)"
-    assert str(list_1) == "None <─ 1 (H)"
-    assert str(list_2) == "None <─ 2 <─ 1 (H)"
-    assert str(list_3) == "None <─ 3 <─ 2 <─ 1 (H)"
     assert list(iter(list_0)) == []
     assert list(iter(list_1)) == [1]
     assert list(iter(list_2)) == [2, 1]

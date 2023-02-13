@@ -105,7 +105,7 @@ class LinkedList(MutableSequence):
             self.head = self.get_next(self.head)
         else:
             predecessor = self.get_next(node=self.head, steps=index - 1)
-            self.set_next(node=predecessor, next_node=self.get_next(predecessor, steps=2))
+            self.set_next(node=predecessor, next_node=self.get_next(node=predecessor, steps=2))
         self.size -= 1
 
     def __add__(self, other: Iterable):
@@ -197,6 +197,13 @@ class LinkedList(MutableSequence):
         self.head = self.new_node(data=data, next_node=self.head)
         self.size += 1
 
+    def append_node(self, node):
+        if node is None:
+            raise ValueError("NoneType node is not supported")
+        self.set_next(node=node, next_node=self.head)
+        self.head = node
+        self.size += 1
+
     def insert(self, index: int, data):
         index = self.regularize_index(index, auto_fit=True)
         if index == 0:
@@ -251,7 +258,7 @@ class LinkedList(MutableSequence):
     def has_cycle(self, node):
         fast_node = slow_node = node
         while fast_node and self.get_next(fast_node):
-            fast_node, slow_node = self.get_next(fast_node, steps=2), self.get_next(slow_node)
+            fast_node, slow_node = self.get_next(node=fast_node, steps=2), self.get_next(slow_node)
             if fast_node == slow_node:
                 return True
         return False
@@ -275,13 +282,42 @@ class LinkedList(MutableSequence):
         """
         fast_node = slow_node = node
         while fast_node and self.get_next(fast_node):
-            fast_node, slow_node = self.get_next(fast_node, steps=2), self.get_next(slow_node)
+            fast_node, slow_node = self.get_next(node=fast_node, steps=2), self.get_next(slow_node)
             if fast_node == slow_node:
                 slow_node = node
                 while slow_node != fast_node:
                     fast_node, slow_node = self.get_next(fast_node), self.get_next(slow_node)  # same speed
                 return slow_node
         return None
+
+    def swap_pairs_of_nodes(self):
+        if self.head and self.get_next(self.head):
+            # We need 3 nodes to swap a pair of nodes (second, third)
+            # first second third
+            #   |      |     |
+            #  fake    n1 -> n2 -> n3 -> n4 -> ...
+            fake_head = self.new_node()
+            first, second, third = fake_head, self.head, self.get_next(self.head)
+            while third:
+                self.set_next(node=first, next_node=third)
+                self.set_next(node=second, next_node=self.get_next(third))
+                self.set_next(node=third, next_node=second)
+                # first second third
+                #   │      │     │
+                #  fake    n1 <─ n2    n3 ─> n4 ─> ...
+                #   └──────│─────^     ^
+                #          └───────────┘
+                third = self.get_next(second)
+                # first       second third
+                #   |           |     |
+                # fake -> n2 -> n1 -> n3 -> n4 -> ...
+                if not third or not self.get_next(third):
+                    break
+                first, second, third = second, third, self.get_next(third)
+                #             first second third
+                #               |     |     |
+                # fake -> n2 -> n1 -> n3 -> n4 -> ...
+            self.head = self.get_next(fake_head)
 
 
 """
@@ -330,36 +366,6 @@ class LinkedList(MutableSequence):
             self.head = current_node
         else:
             self.algorithm.set_next(start_node_prev, current_node)
-
-
-    def swap_pairs_of_nodes(self):
-        if self.head and self.algorithm.get_next(self.head):
-            # We need 3 nodes to swap a pair of nodes (second, third)
-            # first second third
-            #   |      |     |
-            #  fake    n1 -> n2 -> n3 -> n4 -> ...
-            fake_head = self.algorithm.new_node()
-            first, second, third = fake_head, self.head, self.algorithm.get_next(self.head)
-            while third:
-                self.algorithm.set_next(node=first, next_node=third)
-                self.algorithm.set_next(node=second, next_node=self.algorithm.get_next(third))
-                self.algorithm.set_next(node=third, next_node=second)
-                # first second third
-                #   |      |     |
-                #  fake    n1 <- n2    n3 -> n4 -> ...
-                #   |------|-----^     ^
-                #          |-----------|
-                third = self.algorithm.get_next(second)
-                # first       second third
-                #   |           |     |
-                # fake -> n2 -> n1 -> n3 -> n4 -> ...
-                if not third or not self.algorithm.get_next(third):
-                    break
-                first, second, third = second, third, self.algorithm.get_next(third)
-                #             first second third
-                #               |     |     |
-                # fake -> n2 -> n1 -> n3 -> n4 -> ...
-            self.head = self.algorithm.get_next(fake_head)
 
     def get_intersection_head(self, other_list: SinglyLinkedList):
         size_delta = self.size - other_list.size

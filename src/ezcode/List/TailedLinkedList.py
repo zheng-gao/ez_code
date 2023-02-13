@@ -72,13 +72,29 @@ class TailedLinkedList(LinkedList):
         if self.tail is None:  # len(self) was 0
             self.tail = self.head
 
+    def append_node(self, node):
+        super().append_node(node)
+        if self.tail is None:  # len(self) was 0
+            self.tail = self.head
+
     def appendleft(self, data):
         """ Time: O(1) """
         if self.head is None:  # len(self) == 0
             self.head = self.tail = self.new_node(data)
         else:
             self.set_next(node=self.tail, next_node=self.new_node(data))
-            self.tail = self.get_next(node=self.tail)
+            self.tail = self.get_next(self.tail)
+        self.size += 1
+
+    def appendleft_node(self, node):
+        """ Time: O(1) """
+        if node is None:
+            raise ValueError("NoneType node is not supported")
+        if self.head is None:  # len(self) == 0
+            self.head = self.tail = node
+        else:
+            self.set_next(node=self.tail, next_node=node)
+            self.tail = node
         self.size += 1
 
     def insert(self, index: int, data):
@@ -106,4 +122,20 @@ class TailedLinkedList(LinkedList):
                 node_copy = next_node_copy
                 self.tail = node_copy  # diff from parent class, reseting tail
                 self.size += 1
+
+    def swap_pairs_of_nodes(self):
+        super().swap_pairs_of_nodes()
+        next_node = self.get_next(self.tail)
+        if next_node is not None:
+            self.tail = next_node
+
+
+
+
+
+
+
+
+
+
 

@@ -6,4 +6,4 @@ PREV_NAME = "prev"
 # Printer
 FORWARD_LINK = "─>"
 BACKWARD_LINK = "<─"
-BIDIRECTION_LINK = " <─> "
+BIDIRECTION_LINK = "<─>"

@@ -1,11 +1,12 @@
-from typing import Iterable
+from typing import Iterable, Callable
 
-from ezcode.List.LinkedListConstant import DATA_NAME, NEXT_NAME, PREV_NAME
+from ezcode.List.LinkedListConstant import DATA_NAME, NEXT_NAME, PREV_NAME, FORWARD_LINK, BACKWARD_LINK, BIDIRECTION_LINK
 from ezcode.List.LinkedListIterator import DoublyLinkedListIterator
+from ezcode.List.LinkedListPrinter import DoublyLinkedListPrinter
 from ezcode.List.TailedLinkedList import TailedLinkedList
 
 
-class DoublyLinkedList(TailedLinkedList):
+class TailedDoublyLinkedList(TailedLinkedList):
     def __init__(self,
         init_data: Iterable = None, head=None, head_copy=None,
         data_name: str = DATA_NAME, next_name: str = NEXT_NAME, prev_name: str = PREV_NAME
@@ -83,6 +84,33 @@ class DoublyLinkedList(TailedLinkedList):
                 self.set_prev(node=next_node, next_node=prev_node)
         self.size -= 1
 
+    def __str__(self) -> str:
+        return self.to_string()
+
+    def print(self,
+        reverse: bool = False, include_end: bool = True, mark_head: bool = True, mark_tail: bool = True,
+        forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK,
+        bidirection_link: str = BIDIRECTION_LINK, node_to_string: Callable = None
+    ):
+        print(
+            self.to_string(
+                reverse=reverse, include_end=include_end, mark_head=mark_head, mark_tail=mark_tail,
+                forward_link=forward_link, backward_link=backward_link,
+                bidirection_link=bidirection_link, node_to_string=node_to_string
+            )
+        )
+
+    def to_string(self,
+        reverse: bool = False, include_end: bool = True, mark_head: bool = True, mark_tail: bool = True,
+        forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK,
+        bidirection_link: str = BIDIRECTION_LINK, node_to_string: Callable = None
+    ):
+        return DoublyLinkedListPrinter(
+            data_name=self.data_name, next_name=self.next_name, prev_name=self.prev_name,
+            forward_link=forward_link, backward_link=backward_link, bidirection_link=bidirection_link,
+            node_to_string=self.node_to_string if node_to_string is None else node_to_string
+        ).to_string(node=self.head, reverse=reverse, include_end=include_end, mark_head=mark_head, mark_tail=mark_tail)
+
     def remove_all(self, data):
         prev_node, node = None, self.head
         while node is not None:
@@ -103,6 +131,20 @@ class DoublyLinkedList(TailedLinkedList):
         elif prev_node is not None:
             self.tail = prev_node
 
+    def remove_node(self, node):
+        if node is None:
+            raise ValueError("NoneType node is not supported")
+        if node == self.head:
+            self.head = self.get_next(self.head)
+        if node == self.tail:
+            self.tail = self.get_prev(self.tail)
+        prev_node, next_node = self.get_prev(node), self.get_next(node)
+        if next_node is not None:
+            self.set_prev(node=next_node, prev_node=prev_node)
+        if prev_node is not None:
+            self.set_next(node=prev_node, next_node=next_node)
+        self.size -= 1
+
     def popleft(self):
         if len(self) == 0:
             raise KeyError("Pop from empty list")
@@ -118,12 +160,34 @@ class DoublyLinkedList(TailedLinkedList):
             self.head = self.get_prev(node=self.head)
         self.size += 1
 
+    def append_node(self, node):
+        if node is None:
+            raise ValueError("NoneType node is not supported")
+        if self.head is None:
+            self.head = self.tail = node
+        else:
+            self.set_next(node=node, next_node=self.head)
+            self.set_prev(node=self.head, prev_node=node)
+            self.head = node
+        self.size += 1
+
     def appendleft(self, data):
         if self.head is None:  # len(self) == 0
             self.head = self.tail = self.new_node(data)
         else:
             self.set_next(node=self.tail, next_node=self.new_node(data=data, prev_node=self.tail))
             self.tail = self.get_next(node=self.tail)
+        self.size += 1
+
+    def appendleft_node(self, node):
+        """ Time: O(1) """
+        if node is None:
+            raise ValueError("NoneType node is not supported")
+        if self.head is None:  # len(self) == 0
+            self.head = self.tail = node
+        else:
+            self.set_next(node=self.tail, next_node=node)
+            self.tail = node
         self.size += 1
 
     def insert(self, index: int, data):
@@ -175,6 +239,33 @@ class DoublyLinkedList(TailedLinkedList):
             self.set_next(node=node, next_node=prev_node)
             node = next_node
         self.head, self.tail = self.tail, self.head
+
+    def has_cycle(self, node):
+        raise NotImplementedError
+
+    def get_cycle_entrance(self, node):
+        raise NotImplementedError
+
+    def swap_pairs_of_nodes(self):
+        super().swap_pairs_of_nodes()
+        for node in DoublyLinkedListIterator(
+            head=self.head, tail=self.tail,
+            data_name=self.data_name, next_name=self.next_name, prev_name=self.prev_name,
+            reverse=False, iterate_node=True
+        ):
+            next_node = self.get_next(node)
+            if next_node is not None:
+                self.set_prev(node=next_node, prev_node=node)
+
+
+
+
+
+
+
+
+
+
 
 
 
