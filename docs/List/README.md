@@ -3,6 +3,20 @@
 2. [Tailed Linked List](2_Tailed_Linked_List.md)<br>
 3. [Doubly Linked List](3_Doubly_Linked_List.md)<br>
 ---
+## Inheritance Hierarchy
+```
+collections.abc.MutableSequence
+                       │
+                       ▼
+                   LinkedList    ───► Stack
+                       │     
+                       ▼
+                TailedLinkedList ───► Queue
+                       │
+                       ▼
+                DoublyLinkedList ───► LRUCache
+```
+---
 ## [Linked List](1_Linked_List.md)
 ```
                                                   Head
