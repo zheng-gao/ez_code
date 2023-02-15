@@ -20,6 +20,14 @@ def test_linkedin_list_printer():
     assert str(linked_lists[1]) == "None <─ 1 (H)"
     assert str(linked_lists[2]) == "None <─ 2 <─ 1 (H)"
     assert str(linked_lists[3]) == "None <─ 3 <─ 2 <─ 1 (H)"
+    assert linked_lists[0].to_string(include_end=False) == "(H)"
+    assert linked_lists[1].to_string(include_end=False) == "1 (H)"
+    assert linked_lists[2].to_string(include_end=False) == "2 <─ 1 (H)"
+    assert linked_lists[3].to_string(include_end=False) == "3 <─ 2 <─ 1 (H)"
+    assert linked_lists[0].to_string(mark_head=False, include_end=False) == ""
+    assert linked_lists[1].to_string(mark_head=False, include_end=False) == "1"
+    assert linked_lists[2].to_string(mark_head=False, include_end=False) == "2 <─ 1"
+    assert linked_lists[3].to_string(mark_head=False, include_end=False) == "3 <─ 2 <─ 1"
     assert linked_lists[0].to_string(reverse=True) == "(H) None"
     assert linked_lists[1].to_string(reverse=True) == "(H) 1 ─> None"
     assert linked_lists[2].to_string(reverse=True) == "(H) 1 ─> 2 ─> None"
@@ -36,14 +44,15 @@ def test_linkedin_list_printer():
     assert linked_lists[1].to_string(reverse=True, include_end=False) == "(H) 1"
     assert linked_lists[2].to_string(reverse=True, include_end=False) == "(H) 1 ─> 2"
     assert linked_lists[3].to_string(reverse=True, include_end=False) == "(H) 1 ─> 2 ─> 3"
-    assert linked_lists[0].to_string(include_end=False) == "(H)"
-    assert linked_lists[1].to_string(include_end=False) == "1 (H)"
-    assert linked_lists[2].to_string(include_end=False) == "2 <─ 1 (H)"
-    assert linked_lists[3].to_string(include_end=False) == "3 <─ 2 <─ 1 (H)"
-    assert linked_lists[0].to_string(mark_head=False, include_end=False) == ""
-    assert linked_lists[1].to_string(mark_head=False, include_end=False) == "1"
-    assert linked_lists[2].to_string(mark_head=False, include_end=False) == "2 <─ 1"
-    assert linked_lists[3].to_string(mark_head=False, include_end=False) == "3 <─ 2 <─ 1"
+
+
+def test_linked_list_equal():
+    linked_list = LinkedList([])
+    assert linked_list.equal(linked_lists[0])
+    for index, data in enumerate([1, 2, 3], start=1):
+        linked_list.append(data)
+        assert linked_list.equal(linked_lists[index])
+
 
 def test_linked_list_iterator():
     l = LinkedList([0, 1, 2, 3, 4, 5])

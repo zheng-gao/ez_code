@@ -1,12 +1,13 @@
 from typing import Iterable, Callable
 
-from ezcode.List.LinkedListConstant import DATA_NAME, NEXT_NAME, PREV_NAME, FORWARD_LINK, BACKWARD_LINK, BIDIRECTION_LINK
+from ezcode.List.LinkedListConstant import DATA_NAME, NEXT_NAME, PREV_NAME
+from ezcode.List.LinkedListConstant import FORWARD_LINK, BACKWARD_LINK, BIDIRECTION_LINK
 from ezcode.List.LinkedListIterator import DoublyLinkedListIterator
 from ezcode.List.LinkedListPrinter import DoublyLinkedListPrinter
 from ezcode.List.TailedLinkedList import TailedLinkedList
 
 
-class TailedDoublyLinkedList(TailedLinkedList):
+class DoublyLinkedList(TailedLinkedList):
     def __init__(self,
         init_data: Iterable = None, head=None, head_copy=None,
         data_name: str = DATA_NAME, next_name: str = NEXT_NAME, prev_name: str = PREV_NAME

@@ -1,7 +1,8 @@
 from collections.abc import MutableSequence, Container
 from typing import Iterable, Callable
 
-from ezcode.List.LinkedListConstant import DATA_NAME, NEXT_NAME, FORWARD_LINK, BACKWARD_LINK
+from ezcode.List.LinkedListConstant import DATA_NAME, NEXT_NAME
+from ezcode.List.LinkedListConstant import FORWARD_LINK, BACKWARD_LINK
 from ezcode.List.LinkedListIterator import LinkedListIterator
 from ezcode.List.LinkedListPrinter import LinkedListPrinter
 
