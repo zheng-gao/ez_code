@@ -3,7 +3,7 @@
 2. [Tailed Linked List](2_Tailed_Linked_List.md)<br>
 3. [Doubly Linked List](3_Doubly_Linked_List.md)<br>
 ---
-## Linked List
+## [Linked List](1_Linked_List.md)
 ```
                                                   Head
                  ┌──────┐          ┌──────┐     ┌──────┐
@@ -12,7 +12,7 @@
     │ None │◄────┤ Next │ ... ◄────┤ Next │◄────┤ Next │
     └──────┘     └──────┘          └──────┘     └──────┘
 ```
-## Tailed Linked List
+## [Tailed Linked List](2_Tailed_Linked_List.md)
 ```
                    Tail                           Head
                  ┌──────┐          ┌──────┐     ┌──────┐
@@ -21,7 +21,7 @@
     │ None │◄────┤ Next │ ... ◄────┤ Next │◄────┤ Next │
     └──────┘     └──────┘          └──────┘     └──────┘
 ```
-## Doubly Linked List
+## [Doubly Linked List](3_Doubly_Linked_List.md)
 ```
                    Tail                           Head
                  ┌──────┐          ┌──────┐     ┌──────┐
