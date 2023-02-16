@@ -27,7 +27,7 @@ class LinkedList(MutableSequence):
         self.data_name = data_name
         self.next_name = next_name
         if head is not None:  # Any change on this list will affect the original list on the head
-            self._size()       # Recalculate the size, Time: O(N)
+            self._size()      # Recalculate the size, Time: O(N)
         elif head_copy is not None:
             self.copy_from(head_copy)
         if init_data is not None:
@@ -301,6 +301,17 @@ class LinkedList(MutableSequence):
                 return slow_node
         return None
 
+    def get_intersection_node(self, other):
+        if not isinstance(other, self.__class__):
+            raise TypeError
+        size_delta = self.size - other.size
+        long_list_node, short_list_node = (self.head, other.head) if size_delta > 0 else (other.head, self.head)
+        long_list_node = self.get_next(node=long_list_node, steps=abs(size_delta))
+        while short_list_node and short_list_node != long_list_node:
+            short_list_node = self.get_next(short_list_node)
+            long_list_node = self.get_next(long_list_node)
+        return short_list_node
+
     def swap_pairs_of_nodes(self):
         if self.head and self.get_next(self.head):
             # We need 3 nodes to swap a pair of nodes (second, third)
@@ -377,18 +388,6 @@ class LinkedList(MutableSequence):
             self.head = current_node
         else:
             self.algorithm.set_next(start_node_prev, current_node)
-
-    def get_intersection_head(self, other_list: SinglyLinkedList):
-        size_delta = self.size - other_list.size
-        long_list_node, short_list_node = (self.head, other_list.head) if size_delta > 0 else (other_list.head, self.head)
-        long_list_node = self.algorithm.get_next(node=long_list_node, steps=abs(size_delta))
-        while short_list_node and short_list_node != long_list_node:
-            short_list_node = self.algorithm.get_next(short_list_node)
-            long_list_node = self.algorithm.get_next(long_list_node)
-        return short_list_node
-
-
-
 """
 
 

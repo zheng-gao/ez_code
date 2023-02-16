@@ -186,6 +186,15 @@ def test_swap_pairs_of_nodes():
     l.swap_pairs_of_nodes()
     assert list(iter(l)) == [1, 0, 3, 2, 5, 4]
 
+def test_get_intersection_node():
+    long_head = Node("L1", Node("L2", Node("L3", Node("L4", Node("L5")))))
+    short_head = Node("S1", long_head.n.n.n)
+    long_list = LinkedList(head=long_head, data_name="v", next_name="n")
+    short_list = LinkedList(head=short_head, data_name="v", next_name="n")
+    assert short_list.get_intersection_node(long_list).v == "L4"
+    assert long_list.get_intersection_node(short_list).v == "L4"
+    other_list = LinkedList(head=Node("S1", Node("S2")), data_name="v", next_name="n")
+    assert long_list.get_intersection_node(other_list) is None
 
 # list_0_reverse.head = list_0_reverse.reverse(list_0_reverse.head, list_0_reverse.get_next(list_0_reverse.head))
 # list_1_reverse.head = list_1_reverse.reverse(list_1_reverse.head, list_1_reverse.get_next(list_1_reverse.head))
