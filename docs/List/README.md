@@ -11,10 +11,10 @@ collections.abc.MutableSequence
                    LinkedList    ───► Stack
                        │     
                        ▼
-                TailedLinkedList ───► Queue
+                TailedLinkedList ───► Stack, Queue
                        │
                        ▼
-                DoublyLinkedList ───► Deque
+                DoublyLinkedList ───► Stack, Queue, Deque
 ```
 ---
 ## [Linked List](1_Linked_List.md)
