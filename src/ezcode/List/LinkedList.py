@@ -114,8 +114,12 @@ class LinkedList(MutableSequence):
         new_list.extend(other)
         return new_list
 
+    def __radd__(self, other: Iterable):
+        return self.__add__(other)
+
     def __iadd__(self, other: Iterable):
         self.extend(other)
+        return self
 
     def __str__(self) -> str:
         return self.to_string()
@@ -237,13 +241,19 @@ class LinkedList(MutableSequence):
             self.set_next(node=node, next_node=predecessor)
             predecessor, node = node, successor
         self.head = predecessor
+        return self
 
     def pop(self):
         if len(self) == 0:
             raise KeyError("Pop from empty list")
-        data = self[-1]
-        del self[-1]
+        data, self.head, self.size = self.get_data(self.head), self.get_next(self.head), self.size - 1
         return data
+
+    def pop_node(self):
+        if len(self) == 0:
+            raise KeyError("Pop from empty list")
+        node, self.head, self.size = self.head, self.get_next(self.head), self.size - 1
+        return node
 
     def equal(self, other) -> bool:
         """ This method should be overridden by the subclass if the subclass node has different attributes """
@@ -256,7 +266,7 @@ class LinkedList(MutableSequence):
                 return False
         return True
 
-    def has_cycle(self, node):
+    def has_cycle(self, node) -> bool:
         fast_node = slow_node = node
         while fast_node and self.get_next(fast_node):
             fast_node, slow_node = self.get_next(node=fast_node, steps=2), self.get_next(slow_node)

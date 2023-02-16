@@ -14,7 +14,7 @@ collections.abc.MutableSequence
                 TailedLinkedList ───► Queue
                        │
                        ▼
-                DoublyLinkedList ───► Deque, LRUCache
+                DoublyLinkedList ───► Deque
 ```
 ---
 ## [Linked List](1_Linked_List.md)

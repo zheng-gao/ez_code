@@ -144,6 +144,7 @@ function control_build {
     # ezb_log_info "Building ..."
     # python3 -m "build"
     ezb_log_info "Building dist ..."
+    # python3.11 -m pip install wheel --user
     python3 "setup.py" "sdist" "bdist_wheel"
 }
 
@@ -165,6 +166,7 @@ function control_test {
 
 function control_uninstall {
     ezb_log_info "Uninstalling ${PROJECT_NAME} ..."
+    # python3 -m ensurepip
     python3 -m "pip" "uninstall" "${PROJECT_NAME}" -y
 }
 

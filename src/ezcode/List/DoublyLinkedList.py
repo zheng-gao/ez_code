@@ -240,8 +240,9 @@ class DoublyLinkedList(TailedLinkedList):
             self.set_next(node=node, next_node=prev_node)
             node = next_node
         self.head, self.tail = self.tail, self.head
+        return self
 
-    def has_cycle(self, node):
+    def has_cycle(self, node) -> bool:
         raise NotImplementedError
 
     def get_cycle_entrance(self, node):

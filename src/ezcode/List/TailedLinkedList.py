@@ -105,6 +105,7 @@ class TailedLinkedList(LinkedList):
     def reverse(self):
         self.tail = self.head
         super().reverse()
+        return self
 
     def copy_from_node(self, node):
         if node is None:

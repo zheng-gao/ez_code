@@ -46,24 +46,124 @@ def test_linkedin_list_printer():
     assert linked_lists[3].to_string(reverse=True, include_end=False) == "(H) 1 ─> 2 ─> 3"
 
 
-def test_linked_list_equal():
-    linked_list = LinkedList([])
-    assert linked_list.equal(linked_lists[0])
-    for index, data in enumerate([1, 2, 3], start=1):
-        linked_list.append(data)
-        assert linked_list.equal(linked_lists[index])
-
-
 def test_linked_list_iterator():
+    assert list(iter(LinkedList())) == []
     l = LinkedList([0, 1, 2, 3, 4, 5])
     assert list(iter(l)) == [0, 1, 2, 3, 4, 5]
     assert list(reversed(l)) == [5, 4, 3, 2, 1, 0]
+
+
+def test_linked_list_equal():
+    assert LinkedList([]).equal(linked_lists[0])
+    assert LinkedList([1]).equal(linked_lists[1])
+    assert LinkedList([2, 1]).equal(linked_lists[2])
+    assert LinkedList([3, 2, 1]).equal(linked_lists[3])
+
+def test_linked_list_copy():
+    assert LinkedList([]).copy().equal(linked_lists[0])
+    assert LinkedList([1]).copy().equal(linked_lists[1])
+    assert LinkedList([2, 1]).copy().equal(linked_lists[2])
+    assert LinkedList([3, 2, 1]).copy().equal(linked_lists[3])
+
+def test_linked_list_reverse():
+    assert LinkedList([]).reverse().equal(linked_lists[0])
+    assert LinkedList([1]).reverse().equal(linked_lists[1])
+    assert LinkedList([2, 1]).reverse().equal(LinkedList([1, 2]))
+    assert LinkedList([3, 2, 1]).reverse().equal(LinkedList([1, 2, 3]))
+
+
+def test_linked_list_get_item():
+    l = LinkedList([0, 1, 2])
+    for i in [0, 1, 2]:
+        assert l[i] == i
+    for i in [-1, -2, -3]:
+        assert l[i] == len(l) + i
+
+
+def test_linked_list_set_item():
+    l = LinkedList([0, 1, 2])
+    l[0] = 3
+    l[-1] = 1
+    l[1] = 2
+    assert list(iter(l)) == [3, 2, 1] 
+
+
+def test_linked_list_delete_item():
+    l = LinkedList([0, 1, 2, 3, 4, 5])
     del l[0]
     del l[2]
     del l[-1]
     assert list(iter(l)) == [1, 2, 4]
     del l[2]
     assert list(iter(l)) == [1, 2]
+
+
+def test_linked_list_remove_all():
+    l = LinkedList([0, 4, 1, 2, 3, 4, 5])
+    l.remove_all({2, 3})
+    assert list(iter(l)) == [0, 4, 1, 4, 5]
+    l.remove_all(4)
+    assert list(iter(l)) == [0, 1, 5]
+
+
+def test_linked_list_append_node():
+    l = LinkedList()
+    l.append_node(l.new_node(data=0))
+    l.append_node(l.new_node(data=1))
+    l.append_node(l.new_node(data=2))
+    assert list(iter(l)) == [0, 1, 2]
+
+
+def test_linked_list_extend():
+    l = LinkedList()
+    l.extend(LinkedList([0, 1, 2]))
+    l.extend(LinkedList([3, 4]))
+    assert list(iter(l)) == [0, 1, 2, 3, 4]
+
+
+def test_linked_list_addition():
+    l = LinkedList()
+    l += LinkedList([0, 1, 2])
+    assert list(iter(l)) == [0, 1, 2]
+    assert list(iter(l + LinkedList([3, 4]))) == [0, 1, 2, 3, 4]
+
+
+def test_linked_list_pop():
+    l = LinkedList([0, 1, 2, 3, 4, 5])
+    for i in range(5, -1, -1):
+        assert l.pop() == i
+
+
+def test_linked_list_insert():
+    l = LinkedList([0, 1, 2, 3, 4, 5])
+    l.insert(index=2, data=9)
+    l.insert(index=0, data=7)
+    l.insert(index=-1, data=8)
+    l.insert(index=-3, data=6)
+    l.insert(index=-100, data=-100)
+    l.insert(index=100, data=100)
+    assert list(iter(l)) == [-100, 7, 0, 1, 9, 2, 3, 6, 4, 5, 8, 100]
+
+
+def test_linked_list_exception():
+    try:
+        LinkedList()[-1] = 0
+    except IndexError as e:
+        assert e.args[0] == "list index -1 out of range"
+    else:
+        assert False
+    try:
+        LinkedList([0, 1, 2])[3] = 0
+    except IndexError as e:
+        assert e.args[0] == "list index 3 out of range"
+    else:
+        assert False
+    try:
+        LinkedList().pop()
+    except KeyError as e:
+        assert e.args[0] == "Pop from empty list"
+    else:
+        assert False
 
 
 def test_linked_list_cycle_detection():
@@ -75,71 +175,27 @@ def test_linked_list_cycle_detection():
     assert LinkedList(data_name="v", next_name="n").get_cycle_entrance(n[0]) == n[2]
 
 
-def test_linked_list_basics():
-    list_0 = LinkedList(head=None, data_name="v", next_name="n")
-    list_0_copy = LinkedList(head=None, data_name="v", next_name="n")
-    list_0_reverse = LinkedList(head=None, data_name="v", next_name="n")
-    list_1 = LinkedList(head=Node(1), data_name="v", next_name="n")
-    list_1_copy = LinkedList(head=Node(1), data_name="v", next_name="n")
-    list_1_reverse = LinkedList(head=Node(1), data_name="v", next_name="n")
-    list_2 = LinkedList(head=Node(1, Node(2)), data_name="v", next_name="n")
-    list_2_copy = LinkedList(head=Node(1, Node(2)), data_name="v", next_name="n")
-    list_2_reverse = LinkedList(head=Node(2, Node(1)), data_name="v", next_name="n")
-    list_3 = LinkedList(head=Node(1, Node(2, Node(3))), data_name="v", next_name="n")
-    list_3_copy = LinkedList(head=Node(1, Node(2, Node(3))), data_name="v", next_name="n")
-    list_3_reverse = LinkedList(head=Node(3, Node(2, Node(1))), data_name="v", next_name="n")
-    assert list_0_copy.equal(list_0)
-    assert list_1_copy.equal(list_1)
-    assert list_2_copy.equal(list_2)
-    assert list_3_copy.equal(list_3)
-    assert list_0.copy().equal(list_0_copy)
-    assert list_1.copy().equal(list_1_copy)
-    assert list_2.copy().equal(list_2_copy)
-    assert list_3.copy().equal(list_3_copy)
-    assert not list_0.equal(list_1)
-    assert not list_1.equal(list_2)
-    assert not list_2.equal(list_3)
-    assert not list_3.equal(list_0)
-    assert list(iter(list_0)) == []
-    assert list(iter(list_1)) == [1]
-    assert list(iter(list_2)) == [2, 1]
-    assert list(iter(list_3)) == [3, 2, 1]
-    list_0_reverse_copy = list_0_reverse.copy()
-    list_1_reverse_copy = list_1_reverse.copy()
-    list_2_reverse_copy = list_2_reverse.copy()
-    list_3_reverse_copy = list_3_reverse.copy()
-    list_0_reverse_copy.reverse()
-    list_1_reverse_copy.reverse()
-    list_2_reverse_copy.reverse()
-    list_3_reverse_copy.reverse()
-    assert list_0_copy.equal(list_0_reverse_copy)
-    assert list_1_copy.equal(list_1_reverse_copy)
-    assert list_2_copy.equal(list_2_reverse_copy)
-    assert list_3_copy.equal(list_3_reverse_copy)
-    # list_0_reverse.head = list_0_reverse.reverse(list_0_reverse.head, list_0_reverse.get_next(list_0_reverse.head))
-    # list_1_reverse.head = list_1_reverse.reverse(list_1_reverse.head, list_1_reverse.get_next(list_1_reverse.head))
-    # list_2_reverse.head = list_2_reverse.reverse(list_2_reverse.head, list_2_reverse.get_next(list_2_reverse.head))
-    # list_3_reverse.head = list_3_reverse.reverse(list_3_reverse.head, list_3_reverse.get_next(list_3_reverse.head))
-    # assert list_0_copy.equal(list_0_reverse)
-    # assert list_1_copy.equal(list_1_reverse)
-    # assert list_2_copy.equal(list_2_reverse)
-    # assert list_3_copy.equal(list_3_reverse)
-    try:
-        list_0[-1] == 0
-    except IndexError as e:
-        assert e.args[0] == "list index -1 out of range"
-    else:
-        assert False
-    try:
-        list_0.pop()
-    except KeyError as e:
-        assert e.args[0] == "Pop from empty list"
-    else:
-        assert False
-    list_3.remove_all(set([2, 3]))
-    assert list_3.equal(list_1)
-    list_2.remove_all(set([1, 2]))
-    assert list_2.equal(list_0)
+def test_swap_pairs_of_nodes():
+    l = LinkedList()
+    l.swap_pairs_of_nodes()
+    assert list(iter(l)) == []
+    l = LinkedList([0, 1, 2])
+    l.swap_pairs_of_nodes()
+    assert list(iter(l)) == [0, 2, 1]
+    l = LinkedList([0, 1, 2, 3, 4, 5])
+    l.swap_pairs_of_nodes()
+    assert list(iter(l)) == [1, 0, 3, 2, 5, 4]
+
+
+# list_0_reverse.head = list_0_reverse.reverse(list_0_reverse.head, list_0_reverse.get_next(list_0_reverse.head))
+# list_1_reverse.head = list_1_reverse.reverse(list_1_reverse.head, list_1_reverse.get_next(list_1_reverse.head))
+# list_2_reverse.head = list_2_reverse.reverse(list_2_reverse.head, list_2_reverse.get_next(list_2_reverse.head))
+# list_3_reverse.head = list_3_reverse.reverse(list_3_reverse.head, list_3_reverse.get_next(list_3_reverse.head))
+# assert list_0_copy.equal(list_0_reverse)
+# assert list_1_copy.equal(list_1_reverse)
+# assert list_2_copy.equal(list_2_reverse)
+# assert list_3_copy.equal(list_3_reverse)
+
 
 
 # def test_reverse_sublist():
