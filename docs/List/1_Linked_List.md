@@ -2,7 +2,7 @@
 ## Overview
 ```python
 class LinkedList(MutableSequence):
-	def __init__(self,
+    def __init__(self,
         init_data: Iterable = None,
         head=None,
         head_copy=None,
