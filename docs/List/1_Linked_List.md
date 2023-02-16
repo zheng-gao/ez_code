@@ -1,6 +1,6 @@
 # Linked List
 ## Overview
-```python
+The class [LinkedList](../../src/ezcode/List/LinkedList.py#L10) is inherited from collection.abc.MutableSequence
 class LinkedList(MutableSequence):
     def __init__(self,
         init_data: Iterable = None,
@@ -62,8 +62,8 @@ class LinkedList(MutableSequence):
     def has_cycle(self, node) -> bool
     def get_cycle_entrance(self, node)
     def swap_pairs_of_nodes(self)
-```
-## Example
+---
+## Examples
 ### Initialize List via Custom Data Structure
 ```python
 >>> from ezcode import LinkedList
