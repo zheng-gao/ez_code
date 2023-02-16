@@ -1,5 +1,6 @@
 # Linked List
 ## Overview
+
 The class [LinkedList](../../src/ezcode/List/LinkedList.py#L10) is inherited from collection.abc.MutableSequence
 class LinkedList(MutableSequence):
     def __init__(self,
