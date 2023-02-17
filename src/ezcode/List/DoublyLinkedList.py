@@ -157,7 +157,7 @@ class DoublyLinkedList(TailedLinkedList):
         if self.head is None:  # len(self) == 0
             self.head = self.tail = self.new_node(data)
         else:
-            self.set_prev(node=self.head, next_node=self.new_node(data=data, next_node=self.head))
+            self.set_prev(node=self.head, prev_node=self.new_node(data=data, next_node=self.head))
             self.head = self.get_prev(node=self.head)
         self.size += 1
 

@@ -1,8 +1,9 @@
-from typing import Iterable
+from typing import Iterable, Callable
 
-from ezcode.List.LinkedListConstant import DATA_NAME, NEXT_NAME
+from ezcode.List.LinkedListConstant import DATA_NAME, NEXT_NAME, FORWARD_LINK, BACKWARD_LINK
 from ezcode.List.LinkedList import LinkedList
 from ezcode.List.LinkedListIterator import LinkedListIterator
+from ezcode.List.LinkedListPrinter import TailedLinkedListPrinter
 
 
 class TailedLinkedList(LinkedList):
@@ -15,6 +16,29 @@ class TailedLinkedList(LinkedList):
             init_data=init_data, head=head, head_copy=head_copy,
             data_name=data_name, next_name=next_name
         )
+
+    def print(self, reverse: bool = False, include_end: bool = True, mark_head: bool = True,
+        mark_tail: bool = True, forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK,
+        node_to_string: Callable = None
+    ):
+        print(
+            self.to_string(
+                reverse=reverse, include_end=include_end, mark_head=mark_head, mark_tail=mark_tail,
+                forward_link=forward_link, backward_link=backward_link,
+                node_to_string=node_to_string
+            )
+        )
+
+    def to_string(self,
+        reverse: bool = False, include_end: bool = True, mark_head: bool = True, mark_tail: bool = True,
+        forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK,
+        node_to_string: Callable = None
+    ):
+        return TailedLinkedListPrinter(
+            data_name=self.data_name, next_name=self.next_name,
+            forward_link=forward_link, backward_link=backward_link,
+            node_to_string=self.node_to_string if node_to_string is None else node_to_string
+        ).to_string(node=self.head, reverse=reverse, include_end=include_end, mark_head=mark_head, mark_tail=mark_tail)
 
     def _size(self):  # recalculate the size
         """ Time: O(N) """

@@ -44,6 +44,47 @@ class LinkedListPrinter:
         print(self.to_string(node, reverse, include_end, mark_head))
 
 
+class TailedLinkedListPrinter(LinkedListPrinter):
+    def __init__(self,
+        data_name: str = DATA_NAME, next_name: str = NEXT_NAME,
+        forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK,
+        node_to_string: Callable = None
+    ):
+        super().__init__(data_name, next_name, forward_link, backward_link, node_to_string)
+
+    def to_string(self, node, reverse=False, include_end=True, mark_head=True, mark_tail=True):
+        string, is_first_node = "", True
+        for n in LinkedListIterator(
+            head=node, reverse=False, iterate_node=True,
+            data_name=self.data_name, next_name=self.next_name,
+        ):
+            if is_first_node:
+                string, is_first_node = self.node_to_string(n), False
+            else:
+                n_str = self.node_to_string(n)
+                string = f"{string} {self.forward_link} {n_str}" if reverse else f"{n_str} {self.backward_link} {string}"
+        if string:
+            if mark_head:
+                string = f"(H) {string}" if reverse else f"{string} (H)"
+            if mark_tail:
+                string = f"{string} (T)" if reverse else f"(T) {string}"
+            if include_end:
+                string = f"{string} {self.forward_link} None" if reverse else f"None {self.backward_link} {string}"
+        else:
+            if mark_head and mark_tail:
+                string = "(H,T)" if reverse else "(T,H)"
+            elif mark_head:
+                string = "(H)"
+            elif mark_tail:
+                string = "(T)"
+            if include_end:
+                string = f"{string + ' ' if string else ''}None" if reverse else f"None{' ' + string if string else ''}"
+        return string
+
+    def print(self, node, reverse=False, include_end=True, mark_head=True, mark_tail=True):
+        print(self.to_string(node, reverse, include_end, mark_head, mark_tail))
+
+
 class DoublyLinkedListPrinter(LinkedListPrinter):
     def __init__(self,
         data_name: str = DATA_NAME, next_name: str = NEXT_NAME, prev_name: str = PREV_NAME,

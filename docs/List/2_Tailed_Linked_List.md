@@ -15,7 +15,7 @@ The class [TailedLinkedList](../../src/ezcode/List/TailedLinkedList.py#L8) is in
 ...     l.appendleft(i)
 ... 
 >>> l.print()
-None <─ 5 <─ 4 <─ 3 <─ 0 <─ 1 <─ 2 (H)
+None <─ (T) 5 <─ 4 <─ 3 <─ 0 <─ 1 <─ 2 (H)
 >>> while len(l) > 0:
 ...     print(l.pop(), end=" ")
 ... 
