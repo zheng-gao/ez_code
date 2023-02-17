@@ -1,7 +1,7 @@
 # Tailed Linked List
 ## Overview
 
-The class [TailedLinkedList](../../src/ezcode/List/TailedLinkedList.py#L8) is inherited from [ezcode.List.LinkedList](../../src/ezcode/List/LinkedList.py#L10)
+The class [TailedLinkedList](../../src/ezcode/List/TailedLinkedList.py#L9) is inherited from [ezcode.List.LinkedList](../../src/ezcode/List/LinkedList.py#L10)
 
 ## Examples
 ### Append, Append Left & Pop

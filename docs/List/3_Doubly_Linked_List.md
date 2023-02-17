@@ -1,7 +1,7 @@
 # Doubly Linked List
 ## Overview
 
-The class [DoublyLinkedList](../../src/ezcode/List/DoublyLinkedList.py#L10) is inherited from [ezcode.List.LinkedList](../../src/ezcode/List/TailedLinkedList.py#L8)
+The class [DoublyLinkedList](../../src/ezcode/List/DoublyLinkedList.py#L10) is inherited from [ezcode.List.LinkedList](../../src/ezcode/List/TailedLinkedList.py#L9)
 
 ## Examples
 ### Append, Append Left, Pop & Pop Left
