@@ -4,6 +4,15 @@
 The class [TailedLinkedList](../../src/ezcode/List/TailedLinkedList.py#L9) is inherited from [ezcode.List.LinkedList](../../src/ezcode/List/LinkedList.py#L10)
 
 ## Examples
+### Iterator
+```python
+>>> from ezcode import TailedLinkedList
+>>> l = TailedLinkedList([0, 1, 2, 3])
+>>> list(iter(l))
+[0, 1, 2, 3]
+>>> list(reversed(l))
+[3, 2, 1, 0]
+```
 ### Append, Append Left & Pop
 ```python
 >>> from ezcode import TailedLinkedList

@@ -4,6 +4,15 @@
 The class [DoublyLinkedList](../../src/ezcode/List/DoublyLinkedList.py#L10) is inherited from [ezcode.List.TailedLinkedList](../../src/ezcode/List/TailedLinkedList.py#L9)
 
 ## Examples
+### Iterator
+```python
+>>> from ezcode import DoublyLinkedList
+>>> l = DoublyLinkedList([0, 1, 2, 3])
+>>> list(iter(l))
+[0, 1, 2, 3]
+>>> list(reversed(l))
+[3, 2, 1, 0]
+```
 ### Append, Append Left, Pop & Pop Left
 ```python
 >>> from ezcode import DoublyLinkedList
