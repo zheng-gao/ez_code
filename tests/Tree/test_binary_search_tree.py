@@ -1,3 +1,5 @@
+from collections.abc import Collection
+from ezcode.Tree.BinaryTree import BinaryTree
 from ezcode.Tree.BinarySearchTree import BinarySearchTree
 
 
@@ -6,6 +8,11 @@ class Node:
         self.data = data
         self.left = left
         self.right = right
+
+
+def test_binary_search_tree_type():
+    assert isinstance(BinarySearchTree(), Collection)
+    assert isinstance(BinarySearchTree(), BinaryTree)
 
 
 def test_binary_search_tree_validate():

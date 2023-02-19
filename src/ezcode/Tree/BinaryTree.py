@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from collections import deque
-from collections.abc import Collection
 from random import randint
 from typing import Callable, Iterable
 
@@ -21,9 +20,9 @@ from ezcode.Tree.BinaryTreeIterator import BinaryTreeIterator
 from ezcode.Tree.BinaryTreePrinter import BinaryTreePrinter
 
 
-class BinaryTree(Collection):
+class BinaryTree:
 
-    class BinaryTreeNode(object):
+    class BinaryTreeNode:
         def __init__(self):
             pass
 

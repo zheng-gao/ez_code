@@ -56,9 +56,9 @@ def test_linkedin_list_printer():
 
 
 def test_linked_list_iterator():
-    assert list(iter(LinkedList())) == []
+    assert list(LinkedList()) == []
     l = LinkedList([0, 1, 2, 3, 4, 5])
-    assert list(iter(l)) == [0, 1, 2, 3, 4, 5]
+    assert list(l) == [0, 1, 2, 3, 4, 5]
     assert list(reversed(l)) == [5, 4, 3, 2, 1, 0]
 
 
@@ -77,19 +77,19 @@ def test_linked_list_copy():
 
 
 def test_linked_list_reverse():
-    assert list(iter(LinkedList().reverse())) == []
-    assert list(iter(LinkedList([0]).reverse())) == [0]
-    assert list(iter(LinkedList([0, 1]).reverse())) == [1, 0]
-    assert list(iter(LinkedList([0, 1, 2]).reverse())) == [2, 1, 0]
-    assert list(iter(LinkedList([0, 1, 2, 3, 4, 5]).reverse(4, 5))) == [0, 1, 2, 3, 5, 4]
-    assert list(iter(LinkedList([0, 1, 2, 3, 4, 5]).reverse(2, 5))) == [0, 1, 5, 4, 3, 2]
-    assert list(iter(LinkedList([0, 1, 2, 3, 4, 5]).reverse(0, 1))) == [1, 0, 2, 3, 4, 5]
-    assert list(iter(LinkedList([0, 1, 2, 3, 4, 5]).reverse(0, 3))) == [3, 2, 1, 0, 4, 5]
-    assert list(iter(LinkedList([0, 1, 2, 3, 4, 5]).reverse(2, 4))) == [0, 1, 4, 3, 2, 5]
-    assert list(iter(LinkedList([0, 1, 2, 3, 4, 5]).reverse(1, 4))) == [0, 4, 3, 2, 1, 5]
-    assert list(iter(LinkedList([0, 1, 2, 3, 4, 5]).reverse(0, 5))) == [5, 4, 3, 2, 1, 0]
-    assert list(iter(LinkedList([0, 1, 2, 3, 4, 5]).reverse(2, 3))) == [0, 1, 3, 2, 4, 5]
-    assert list(iter(LinkedList([0, 1, 2, 3, 4, 5]).reverse(2, 2))) == [0, 1, 2, 3, 4, 5]  # No change
+    assert list(LinkedList().reverse()) == []
+    assert list(LinkedList([0]).reverse()) == [0]
+    assert list(LinkedList([0, 1]).reverse()) == [1, 0]
+    assert list(LinkedList([0, 1, 2]).reverse()) == [2, 1, 0]
+    assert list(LinkedList([0, 1, 2, 3, 4, 5]).reverse(4, 5)) == [0, 1, 2, 3, 5, 4]
+    assert list(LinkedList([0, 1, 2, 3, 4, 5]).reverse(2, 5)) == [0, 1, 5, 4, 3, 2]
+    assert list(LinkedList([0, 1, 2, 3, 4, 5]).reverse(0, 1)) == [1, 0, 2, 3, 4, 5]
+    assert list(LinkedList([0, 1, 2, 3, 4, 5]).reverse(0, 3)) == [3, 2, 1, 0, 4, 5]
+    assert list(LinkedList([0, 1, 2, 3, 4, 5]).reverse(2, 4)) == [0, 1, 4, 3, 2, 5]
+    assert list(LinkedList([0, 1, 2, 3, 4, 5]).reverse(1, 4)) == [0, 4, 3, 2, 1, 5]
+    assert list(LinkedList([0, 1, 2, 3, 4, 5]).reverse(0, 5)) == [5, 4, 3, 2, 1, 0]
+    assert list(LinkedList([0, 1, 2, 3, 4, 5]).reverse(2, 3)) == [0, 1, 3, 2, 4, 5]
+    assert list(LinkedList([0, 1, 2, 3, 4, 5]).reverse(2, 2)) == [0, 1, 2, 3, 4, 5]  # No change
     for list_orig in linked_lists:
         for i in range(len(list_orig)):
             list_orig_copy = list_orig.copy()
@@ -97,12 +97,12 @@ def test_linked_list_reverse():
             print(f"i = {i}")
             list_orig_copy.reverse(start=i)
             list_orig_copy.print()
-            assert list(iter(list_orig_copy)) == \
+            assert list(list_orig_copy) == \
                 list(range(len(list_orig) - 1, len(list_orig) - 1 - i, -1)) + \
                 list(range(len(list_orig) - i))
             list_orig_copy = list_orig.copy()
             list_orig_copy.reverse(end=i)
-            assert list(iter(list_orig_copy)) == \
+            assert list(list_orig_copy) == \
                 list(range(len(list_orig) - 1 - i, len(list_orig))) + \
                 list(range(len(list_orig) - 2 - i, -1, -1))
             sublist_length = len(list_orig) // 2
@@ -110,7 +110,7 @@ def test_linked_list_reverse():
                 start, end = i, i + sublist_length - 1
                 list_orig_copy = list_orig.copy()
                 list_orig_copy.reverse(start=start, end=end)
-                assert list(iter(list_orig_copy)) == \
+                assert list(list_orig_copy) == \
                     list(range(len(list_orig) - 1, len(list_orig) - 1 - start, -1)) + \
                     list(range(len(list_orig) - 1 - end, len(list_orig) - start)) + \
                     list(range(len(list_orig) - 2 - end, -1, -1))
@@ -129,7 +129,7 @@ def test_linked_list_set_item():
     l[0] = 3
     l[-1] = 1
     l[1] = 2
-    assert list(iter(l)) == [3, 2, 1] 
+    assert list(l) == [3, 2, 1] 
 
 
 def test_linked_list_delete_item():
@@ -137,17 +137,17 @@ def test_linked_list_delete_item():
     del l[0]
     del l[2]
     del l[-1]
-    assert list(iter(l)) == [1, 2, 4]
+    assert list(l) == [1, 2, 4]
     del l[2]
-    assert list(iter(l)) == [1, 2]
+    assert list(l) == [1, 2]
 
 
 def test_linked_list_remove_all():
     l = LinkedList([0, 4, 1, 2, 3, 4, 5])
     l.remove_all({2, 3})
-    assert list(iter(l)) == [0, 4, 1, 4, 5]
+    assert list(l) == [0, 4, 1, 4, 5]
     l.remove_all(4)
-    assert list(iter(l)) == [0, 1, 5]
+    assert list(l) == [0, 1, 5]
 
 
 def test_linked_list_append_node():
@@ -155,21 +155,21 @@ def test_linked_list_append_node():
     l.append_node(l.new_node(data=0))
     l.append_node(l.new_node(data=1))
     l.append_node(l.new_node(data=2))
-    assert list(iter(l)) == [0, 1, 2]
+    assert list(l) == [0, 1, 2]
 
 
 def test_linked_list_extend():
     l = LinkedList()
     l.extend(LinkedList([0, 1, 2]))
     l.extend(LinkedList([3, 4]))
-    assert list(iter(l)) == [0, 1, 2, 3, 4]
+    assert list(l) == [0, 1, 2, 3, 4]
 
 
 def test_linked_list_addition():
     l = LinkedList()
     l += LinkedList([0, 1, 2])
-    assert list(iter(l)) == [0, 1, 2]
-    assert list(iter(l + LinkedList([3, 4]))) == [0, 1, 2, 3, 4]
+    assert list(l) == [0, 1, 2]
+    assert list(l + LinkedList([3, 4])) == [0, 1, 2, 3, 4]
 
 
 def test_linked_list_pop():
@@ -186,7 +186,7 @@ def test_linked_list_insert():
     l.insert(index=-3, data=6)
     l.insert(index=-100, data=-100)
     l.insert(index=100, data=100)
-    assert list(iter(l)) == [-100, 7, 0, 1, 9, 2, 3, 6, 4, 5, 8, 100]
+    assert list(l) == [-100, 7, 0, 1, 9, 2, 3, 6, 4, 5, 8, 100]
 
 
 def test_linked_list_exception():
@@ -222,13 +222,13 @@ def test_linked_list_cycle_detection():
 def test_swap_pairs_of_nodes():
     l = LinkedList()
     l.swap_pairs_of_nodes()
-    assert list(iter(l)) == []
+    assert list(l) == []
     l = LinkedList([0, 1, 2])
     l.swap_pairs_of_nodes()
-    assert list(iter(l)) == [0, 2, 1]
+    assert list(l) == [0, 2, 1]
     l = LinkedList([0, 1, 2, 3, 4, 5])
     l.swap_pairs_of_nodes()
-    assert list(iter(l)) == [1, 0, 3, 2, 5, 4]
+    assert list(l) == [1, 0, 3, 2, 5, 4]
 
 
 def test_get_intersection_node():

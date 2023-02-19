@@ -1,4 +1,7 @@
+from collections.abc import Collection
 from ezcode.Random.Shuffle import knuth_shuffle
+from ezcode.Tree.BinaryTree import BinaryTree
+from ezcode.Tree.BinarySearchTree import BinarySearchTree
 from ezcode.Tree.AVLTree import AVLTree
 
 
@@ -8,6 +11,12 @@ class Node:
         self.data = data
         self.left = left
         self.right = right
+
+
+def test_avl_tree_type():
+    assert isinstance(AVLTree(), Collection)
+    assert isinstance(AVLTree(), BinaryTree)
+    assert isinstance(AVLTree(), BinarySearchTree)
 
 
 def test_avl_tree_validate():
@@ -177,7 +186,7 @@ def test_avl_tree_random_insert_and_remove():
 def test_avl_tree_iterator():
     benchmark = [4, 2, 0, 6, 5, 8, 3, 1, 7]
     t = AVLTree(benchmark)
-    assert sorted(benchmark) == list(iter(t))
+    assert sorted(benchmark) == list(t)
     assert sorted(benchmark, reverse=True) == list(reversed(t))
 
 

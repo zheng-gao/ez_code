@@ -1,4 +1,7 @@
+from collections.abc import Collection
 from ezcode.Random.Shuffle import knuth_shuffle
+from ezcode.Tree.BinaryTree import BinaryTree
+from ezcode.Tree.BinarySearchTree import BinarySearchTree
 from ezcode.Tree.RedBlackTree import RedBlackTree
 
 
@@ -9,6 +12,12 @@ class Node:
         self.parent = parent
         self.left = left
         self.right = right
+
+
+def test_red_black_tree_type():
+    assert isinstance(RedBlackTree(), Collection)
+    assert isinstance(RedBlackTree(), BinaryTree)
+    assert isinstance(RedBlackTree(), BinarySearchTree)
 
 
 def test_red_black_tree_validate():
@@ -212,7 +221,7 @@ def test_red_black_tree_random_insert_and_remove():
 def test_red_black_tree_iterator():
     benchmark = [4, 2, 0, 6, 5, 8, 3, 1, 7]
     t = RedBlackTree(benchmark)
-    assert sorted(benchmark) == list(iter(t))
+    assert sorted(benchmark) == list(t)
     assert sorted(benchmark, reverse=True) == list(reversed(t))
 
 

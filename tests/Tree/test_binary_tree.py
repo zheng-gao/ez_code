@@ -1,3 +1,4 @@
+from collections.abc import Collection
 from ezcode.Tree.BinaryTree import BinaryTree, BinaryTreePrinter, BinaryTreeIterator
 
 
@@ -13,6 +14,10 @@ s_tree = BinaryTree(root_copy=s_root, data_name="value", left_name="left", right
 
 c_root = Node(-2, Node(8, Node(-4, left=Node(-2)), Node(3, left=Node(-1))), Node(-3, left=Node(2, Node(10), Node(7))))
 c_tree = BinaryTree(root_copy=c_root, data_name="value", left_name="left", right_name="right")
+
+
+def test_binary_tree_type():
+    assert isinstance(BinaryTree(), Collection)
 
 
 def test_binary_tree_printer():
