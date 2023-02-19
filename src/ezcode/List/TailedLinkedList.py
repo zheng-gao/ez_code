@@ -126,11 +126,6 @@ class TailedLinkedList(LinkedList):
         if self.tail is None:  # len(self) was 0
             self.tail = self.head
 
-    def reverse(self):
-        self.tail = self.head
-        super().reverse()
-        return self
-
     def copy_from_node(self, node):
         if node is None:
             self.clear()
@@ -154,7 +149,11 @@ class TailedLinkedList(LinkedList):
         if next_node is not None:
             self.tail = next_node
 
-
+    def reverse(self):
+        """ To Do: supporting start, end """
+        self.tail = self.head
+        super().reverse()
+        return self
 
 
 

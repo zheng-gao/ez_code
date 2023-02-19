@@ -234,15 +234,6 @@ class LinkedList(MutableSequence):
                 predecessor = node
             node = next_node
 
-    def reverse(self):
-        predecessor, node = None, self.head
-        while node is not None:
-            successor = self.get_next(node)
-            self.set_next(node=node, next_node=predecessor)
-            predecessor, node = node, successor
-        self.head = predecessor
-        return self
-
     def pop(self):
         if len(self) == 0:
             raise KeyError("Pop from empty list")
@@ -278,10 +269,10 @@ class LinkedList(MutableSequence):
         """
         https://en.wikipedia.org/wiki/Cycle_detection
           ┌─────── A ───────┐┌──── B ────┐
-         n1 -> n2 -> ... -> n3 -> ... -> n4 <-- meeting point
-                          ┌ ^            | ─┐   circle perimeter = C
-                          │ |            v  │   B < C
-                          │ n6 <- ... <- n5 │
+         n1 ─► n2 ─► ... ─► n3 ─► ... ─► n4 <-- meeting point
+                          ┌ ▲            │ ─┐   circle perimeter = C
+                          │ │            ▼  │   B < C
+                          │ n6 ◄─ ... ◄─ n5 │
                           └───── C - B ─────┘
         When the fast meets the slow, the fast has walked N rounds in the circle, where N > 1
         (A + B) * 2 = A + B + C * N, since the fast is 2 times faster than the slow
@@ -317,7 +308,7 @@ class LinkedList(MutableSequence):
             # We need 3 nodes to swap a pair of nodes (second, third)
             # first second third
             #   |      |     |
-            #  fake    n1 -> n2 -> n3 -> n4 -> ...
+            #  fake    n1 ─► n2 ─► n3 ─► n4 -> ...
             fake_head = self.new_node()
             first, second, third = fake_head, self.head, self.get_next(self.head)
             while third:
@@ -326,69 +317,64 @@ class LinkedList(MutableSequence):
                 self.set_next(node=third, next_node=second)
                 # first second third
                 #   │      │     │
-                #  fake    n1 <─ n2    n3 ─> n4 ─> ...
-                #   └──────│─────^     ^
+                #  fake    n1 ◄─ n2    n3 ─► n4 ─► ...
+                #   └──────│─────▲     ▲
                 #          └───────────┘
                 third = self.get_next(second)
                 # first       second third
                 #   |           |     |
-                # fake -> n2 -> n1 -> n3 -> n4 -> ...
+                # fake ─► n2 ─► n1 ─► n3 ─► n4 ─► ...
                 if not third or not self.get_next(third):
                     break
                 first, second, third = second, third, self.get_next(third)
                 #             first second third
                 #               |     |     |
-                # fake -> n2 -> n1 -> n3 -> n4 -> ...
+                # fake ─► n2 ─► n1 ─► n3 ─► n4 ─► ...
             self.head = self.get_next(fake_head)
 
-
-"""
-    To Do
-    def reverse(self, start_index: int = None, end_index: int = None):
-        if start_index is None and end_index is None:
-            if self.head:
-                previous_node, current_node, next_node = None, self.head, self.algorithm.get_next(self.head)
-                while next_node:
-                    self.algorithm.set_next(node=current_node, next_node=previous_node)
-                    previous_node = current_node
-                    current_node = next_node
-                    next_node = self.algorithm.get_next(next_node)
-                self.algorithm.set_next(node=current_node, next_node=previous_node)
-                self.head = current_node
-        elif start_index is not None and end_index is not None:
-            self._reverse_sublist(start_index, end_index)
-        elif start_index is not None:
-            self._reverse_sublist(start_index, self.size - 1)
+    def reverse(self, start: int = None, end: int = None):
+        """ To Do: reverse(start, end, steps) => reverse(slice): to replace swap_pairs_of_nodes """
+        rstart, rend = 0, len(self) - 1
+        if end is not None:
+            rstart = self.regularize_index(end)
+        if start is not None:
+            rend = self.regularize_index(start)
+        if rstart == rend or self.head is None:
+            return self
+        """
+        reverse(1, 3) -> rstart = 2, rend = 4
+                                      N     P(TH)   H
+        None ◄── n0 ◄── n1 ◄── n2 ◄── n3 ◄── n4 ◄── n5
+                            N        P(TT)   TH     H
+        None ◄── n0 ◄── n1 ◄── n2 ◄── n3 ◄── n4 ◄── n5
+                      S        N     P(TT)   TH     H
+        None ◄── n0 ◄── n1     n2 ◄─► n3 ◄── n4 ◄── n5
+                 S      N      P      TT     TH     H
+        None ◄── n0     n1 ──► n2 ◄─► n3 ◄── n4 ◄── n5
+                 N      P             TT     TH     H
+                        ▼────────────────────┐
+        None ◄── n0     n1 ──► n2 ──► n3     n4 ◄── n5
+                 ▲────────────────────┘
+        """
+        predecessor, node = None, self.head
+        for _ in range(rstart):
+            predecessor, node = node, self.get_next(node)
+        tmp_head = predecessor  # save the tmp head
+        predecessor, node = node, self.get_next(node)  # move forward one more time
+        tmp_tail = predecessor  # save the tmp tail
+        for _ in range(rend - rstart):
+            successor = self.get_next(node)
+            self.set_next(node=node, next_node=predecessor)
+            predecessor, node = node, successor
+        self.set_next(node=tmp_tail, next_node=node)
+        if tmp_head is None:
+            self.head = predecessor
         else:
-            self._reverse_sublist(0, end_index)
+            self.set_next(node=tmp_head, next_node=predecessor)
+        return self
 
-    def _reverse_sublist(self, start_index: int, end_index: int):
-        validate_index_interval(start_index, end_index, 0, self.size - 1)
-        if not self.head or start_index == end_index:
-            return
-        start_node_prev, start_node, current_node, index = None, None, self.head, 0
-        while current_node:
-            if start_node is None and index == start_index:
-                start_node = current_node
-                index += 1
-                break
-            start_node_prev = current_node
-            current_node = self.algorithm.get_next(current_node)
-            index += 1
-        previous_node, current_node, next_node = None, start_node, self.algorithm.get_next(start_node)
-        while next_node is not None and index <= end_index:  # the tail is end_node.next
-            self.algorithm.set_next(current_node, previous_node)
-            previous_node = current_node
-            current_node = next_node
-            next_node = self.algorithm.get_next(next_node)
-            index += 1
-        self.algorithm.set_next(current_node, previous_node)
-        self.algorithm.set_next(start_node, next_node)
-        if start_node_prev is None:
-            self.head = current_node
-        else:
-            self.algorithm.set_next(start_node_prev, current_node)
-"""
+
+
 
 
 

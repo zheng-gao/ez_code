@@ -58,7 +58,21 @@ None <─ 0 <─ 1 <─ 2 <─ 3 (H)
 ... 
 3 2 1 0
 ```
-
+### Reverse
+```python
+>>> from ezcode import LinkedList
+>>> l = LinkedList([0, 1, 2, 3, 4, 5])
+>>> l.print()
+None <─ 0 <─ 1 <─ 2 <─ 3 <─ 4 <─ 5 (H)
+>>> l.copy().reverse().print()
+None <─ 5 <─ 4 <─ 3 <─ 2 <─ 1 <─ 0 (H)
+>>> l.copy().reverse(start=2).print()
+None <─ 0 <─ 1 <─ 5 <─ 4 <─ 3 <─ 2 (H)
+>>> l.copy().reverse(end=3).print()
+None <─ 3 <─ 2 <─ 1 <─ 0 <─ 4 <─ 5 (H)
+>>> l.copy().reverse(start=1, end=4).print()
+None <─ 0 <─ 4 <─ 3 <─ 2 <─ 1 <─ 5 (H)
+```
 
 
 
