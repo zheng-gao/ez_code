@@ -1,7 +1,7 @@
 # List
-1. [Linked List](1_Linked_List.md)<br>
-2. [Tailed Linked List](2_Tailed_Linked_List.md)<br>
-3. [Doubly Linked List](3_Doubly_Linked_List.md)<br>
+1. [Linked List](1_LinkedList.md)<br>
+2. [Tailed Linked List](2_TailedLinkedList.md)<br>
+3. [Doubly Linked List](3_DoublyLinkedList.md)<br>
 ---
 ## Inheritance Hierarchy
 ```

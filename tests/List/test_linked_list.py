@@ -1,3 +1,4 @@
+from collections.abc import MutableSequence
 from ezcode.List.LinkedList import LinkedList
 
 
@@ -17,6 +18,10 @@ linked_lists = [
     LinkedList(head=Node(0, Node(1, Node(2, Node(3, Node(4, Node(5, Node(6))))))), data_name="v", next_name="n"),
     LinkedList(head=Node(0, Node(1, Node(2, Node(3, Node(4, Node(5, Node(6, Node(7)))))))), data_name="v", next_name="n"),
 ]
+
+
+def test_linked_list_type():
+    assert isinstance(LinkedList(), MutableSequence)
 
 
 def test_linkedin_list_printer():

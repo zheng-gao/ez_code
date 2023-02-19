@@ -332,7 +332,7 @@ class LinkedList(MutableSequence):
                 # fake ─► n2 ─► n1 ─► n3 ─► n4 ─► ...
             self.head = self.get_next(fake_head)
 
-    def reverse(self, start: int = None, end: int = None):
+    def reverse(self, start: int = None, end: int = None, steps: int = None):
         """ To Do: reverse(start, end, steps) => reverse(slice): to replace swap_pairs_of_nodes """
         rstart, rend = 0, len(self) - 1
         if end is not None:
@@ -341,8 +341,10 @@ class LinkedList(MutableSequence):
             rend = self.regularize_index(start)
         if rstart == rend or self.head is None:
             return self
+        if rend < rstart:
+            raise ValueError(f"Invalid start {start} or end {end}")
         """
-        reverse(1, 3) -> rstart = 2, rend = 4
+        reverse(1, 3) -> rstart = 2, rend = 4, steps = 3
                                       N     P(TH)   H
         None ◄── n0 ◄── n1 ◄── n2 ◄── n3 ◄── n4 ◄── n5
                             N        P(TT)   TH     H
