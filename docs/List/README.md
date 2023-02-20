@@ -17,7 +17,7 @@ collections.abc.MutableSequence
                 DoublyLinkedList ───► Stack, Queue, Deque
 ```
 ---
-## [Linked List](1_Linked_List.md)
+## [Linked List](1_LinkedList.md)
 ```
                                                   Head
                  ┌──────┐          ┌──────┐     ┌──────┐
@@ -26,7 +26,7 @@ collections.abc.MutableSequence
     │ None │◄────┤ Next │ ... ◄────┤ Next │◄────┤ Next │
     └──────┘     └──────┘          └──────┘     └──────┘
 ```
-## [Tailed Linked List](2_Tailed_Linked_List.md)
+## [Tailed Linked List](2_TailedLinkedList.md)
 ```
                    Tail                           Head
                  ┌──────┐          ┌──────┐     ┌──────┐
@@ -35,7 +35,7 @@ collections.abc.MutableSequence
     │ None │◄────┤ Next │ ... ◄────┤ Next │◄────┤ Next │
     └──────┘     └──────┘          └──────┘     └──────┘
 ```
-## [Doubly Linked List](3_Doubly_Linked_List.md)
+## [Doubly Linked List](3_DoublyLinkedList.md)
 ```
                    Tail                           Head
                  ┌──────┐          ┌──────┐     ┌──────┐
