@@ -133,7 +133,7 @@ class RedBlackTreeWithParent(BinarySearchTree):
             sibling = parent.right if node == parent.left else parent.left
             if sibling is not None and sibling.is_red:  # node & sibling -> black, parent -> red
                 node.is_red, sibling.is_red, parent.is_red = False, False, True  # might change the color of root
-                node, child = parent.parent, parent  # fix red parent in the next round (move 2 steps up!)
+                node, child = parent.parent, parent  # fix red parent in the next round (move 2 step up!)
             else:  # sibling is black
                 if node == parent.left:
                     if child == node.right:

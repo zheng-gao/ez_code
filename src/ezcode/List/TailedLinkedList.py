@@ -58,8 +58,8 @@ class TailedLinkedList(LinkedList):
             if self.head is None:
                 self.tail = None
         else:
-            predecessor = self.get_next(node=self.head, steps=index - 1)
-            self.set_next(node=predecessor, next_node=self.get_next(predecessor, steps=2))
+            predecessor = self.get_next(node=self.head, step=index - 1)
+            self.set_next(node=predecessor, next_node=self.get_next(predecessor, step=2))
             if index == self.size - 1:
                 self.tail = predecessor
         self.size -= 1
@@ -67,7 +67,7 @@ class TailedLinkedList(LinkedList):
     def get_node(self, index: int):
         if index == 0 and len(self) > 0:
             return self.tail
-        return self.get_next(node=self.head, steps=self.regularize_index(index))
+        return self.get_next(node=self.head, step=self.regularize_index(index))
 
     def remove_all(self, data):
         predecessor, node = None, self.head
@@ -142,12 +142,6 @@ class TailedLinkedList(LinkedList):
                 node_copy = next_node_copy
                 self.tail = node_copy  # diff from parent class, reseting tail
                 self.size += 1
-
-    def swap_pairs_of_nodes(self):
-        super().swap_pairs_of_nodes()
-        next_node = self.get_next(self.tail)
-        if next_node is not None:
-            self.tail = next_node
 
     def reverse(self):
         """ To Do: supporting start, end """

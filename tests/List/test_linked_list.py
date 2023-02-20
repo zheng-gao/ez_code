@@ -93,10 +93,7 @@ def test_linked_list_reverse():
     for list_orig in linked_lists:
         for i in range(len(list_orig)):
             list_orig_copy = list_orig.copy()
-            list_orig_copy.print()
-            print(f"i = {i}")
             list_orig_copy.reverse(start=i)
-            list_orig_copy.print()
             assert list(list_orig_copy) == \
                 list(range(len(list_orig) - 1, len(list_orig) - 1 - i, -1)) + \
                 list(range(len(list_orig) - i))
@@ -114,6 +111,17 @@ def test_linked_list_reverse():
                     list(range(len(list_orig) - 1, len(list_orig) - 1 - start, -1)) + \
                     list(range(len(list_orig) - 1 - end, len(list_orig) - start)) + \
                     list(range(len(list_orig) - 2 - end, -1, -1))
+    assert list(LinkedList().reverse(group_size=1)) == []
+    assert list(LinkedList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).reverse(1, 8, 3, remainder_on_left=True)) == [0, 2, 1, 5, 4, 3, 8, 7, 6, 9]
+    assert list(LinkedList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).reverse(1, group_size=3, remainder_on_left=True)) == [0, 3, 2, 1, 6, 5, 4, 9, 8, 7]
+    assert list(LinkedList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).reverse(group_size=7, remainder_on_left=True)) == [2, 1, 0, 9, 8, 7, 6, 5, 4, 3]
+    assert list(LinkedList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).reverse(0, -1, 2, remainder_on_left=True)) == [1, 0, 3, 2, 5, 4, 7, 6, 9, 8]
+    assert list(LinkedList([0, 1, 2, 3, 4, 5, 6, 7, 8]).reverse(end=-1, group_size=2, remainder_on_left=True)) == [0, 2, 1, 4, 3, 6, 5, 8, 7]
+    assert list(LinkedList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).reverse(4, 8, 1)) == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]  # No change
+    assert list(LinkedList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).reverse(1, 8, 3, remainder_on_left=False)) == [0, 3, 2, 1, 6, 5, 4, 8, 7, 9]
+    assert list(LinkedList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).reverse(2, group_size=3, remainder_on_left=False)) == [0, 1, 4, 3, 2, 7, 6, 5, 9, 8]
+    assert list(LinkedList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).reverse(group_size=7, remainder_on_left=False)) == [6, 5, 4, 3, 2, 1, 0, 9, 8, 7]
+    assert list(LinkedList([0, 1, 2, 3, 4, 5, 6, 7, 8]).reverse(end=-1, group_size=2, remainder_on_left=False)) == [1, 0, 3, 2, 5, 4, 7, 6, 8]
 
 
 def test_linked_list_get_item():
@@ -217,18 +225,6 @@ def test_linked_list_cycle_detection():
     n[-1].n = n[2]
     assert LinkedList(data_name="v", next_name="n").has_cycle(n[0])
     assert LinkedList(data_name="v", next_name="n").get_cycle_entrance(n[0]) == n[2]
-
-
-def test_swap_pairs_of_nodes():
-    l = LinkedList()
-    l.swap_pairs_of_nodes()
-    assert list(l) == []
-    l = LinkedList([0, 1, 2])
-    l.swap_pairs_of_nodes()
-    assert list(l) == [0, 2, 1]
-    l = LinkedList([0, 1, 2, 3, 4, 5])
-    l.swap_pairs_of_nodes()
-    assert list(l) == [1, 0, 3, 2, 5, 4]
 
 
 def test_get_intersection_node():

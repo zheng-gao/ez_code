@@ -23,17 +23,17 @@ class DoublyLinkedList(TailedLinkedList):
         node.__dict__[self.prev_name] = prev_node
         return node
 
-    def get_prev(self, node, steps: int = 1):
-        for _ in range(steps):
+    def get_prev(self, node, step: int = 1):
+        for _ in range(step):
             if node is None:
                 return None
             node = node.__dict__[self.prev_name]
         return node
 
-    def has_prev(self, node, steps: int = 1) -> bool:
+    def has_prev(self, node, step: int = 1) -> bool:
         if not node:
             return False
-        for _ in range(steps):
+        for _ in range(step):
             node = node.__dict__[self.prev_name]
             if not node:
                 return False
@@ -44,7 +44,7 @@ class DoublyLinkedList(TailedLinkedList):
 
     def get_node(self, index: int):
         r = self.regularize_index(index)
-        return self.get_prev(node=self.tail, steps=index) if index < r else self.get_next(node=self.head, steps=r)
+        return self.get_prev(node=self.tail, step=index) if index < r else self.get_next(node=self.head, step=r)
 
     def __iter__(self):
         """ from index 0 (tail) to -1 (head) """
@@ -198,7 +198,7 @@ class DoublyLinkedList(TailedLinkedList):
         elif index == self.size - 1:
             self.appendleft(data)
         else:
-            node = self.get_next(node=self.head, steps=index)
+            node = self.get_next(node=self.head, step=index)
             next_node = self.get_next(node)
             inserted_node = self.new_node(data=data, next_node=next_node, prev_node=node)
             self.set_prev(node=next_node, prev_node=inserted_node)
@@ -248,16 +248,6 @@ class DoublyLinkedList(TailedLinkedList):
     def get_cycle_entrance(self, node):
         raise NotImplementedError
 
-    def swap_pairs_of_nodes(self):
-        super().swap_pairs_of_nodes()
-        for node in DoublyLinkedListIterator(
-            head=self.head, tail=self.tail,
-            data_name=self.data_name, next_name=self.next_name, prev_name=self.prev_name,
-            reverse=False, iterate_node=True
-        ):
-            next_node = self.get_next(node)
-            if next_node is not None:
-                self.set_prev(node=next_node, prev_node=node)
 
 
 

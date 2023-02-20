@@ -1,9 +1,9 @@
 # Tailed Linked List
 ## Overview
 
-The class [TailedLinkedList](../../src/ezcode/List/TailedLinkedList.py#L9) is inherited from [ezcode.List.LinkedList](../../src/ezcode/List/LinkedList.py#L10)
+The class [TailedLinkedList](../../src/ezcode/List/TailedLinkedList.py#L9) inherits from [ezcode.List.LinkedList](../../src/ezcode/List/LinkedList.py#L10) and it is in the module [ezcode.List](../../src/ezcode/List/__init__.py)
 
-## Examples
+## Details
 ### Iterator
 ```python
 >>> from ezcode import TailedLinkedList

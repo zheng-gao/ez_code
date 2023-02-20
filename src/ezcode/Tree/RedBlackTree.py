@@ -86,7 +86,7 @@ class RedBlackTree(BinarySearchTree):
             uncle = grand_parent.right if parent == grand_parent.left else grand_parent.left
             if uncle is not None and uncle.is_red:  # parent & uncle -> black, grand_parent -> red
                 parent.is_red, uncle.is_red, grand_parent.is_red = False, False, True  # might change the color of root
-                parent, node = parents.pop(), grand_parent  # fix red grand_parent in the next round (move 2 steps up!)
+                parent, node = parents.pop(), grand_parent  # fix red grand_parent in the next round (move 2 step up!)
             else:  # uncle is black
                 great_grand_parent = parents[-1] if len(parents) > 0 else None
                 if parent == grand_parent.left:

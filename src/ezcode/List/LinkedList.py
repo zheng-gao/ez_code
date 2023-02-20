@@ -55,17 +55,17 @@ class LinkedList(MutableSequence):
     def set_data(self, node, data):
         node.__dict__[self.data_name] = data
 
-    def get_next(self, node, steps: int = 1):
-        for _ in range(steps):
+    def get_next(self, node, step: int = 1):
+        for _ in range(step):
             if node is None:
                 return None
             node = node.__dict__[self.next_name]
         return node
 
-    def has_next(self, node, steps: int = 1) -> bool:
+    def has_next(self, node, step: int = 1) -> bool:
         if not node:
             return False
-        for _ in range(steps):
+        for _ in range(step):
             node = node.__dict__[self.next_name]
             if not node:
                 return False
@@ -105,8 +105,8 @@ class LinkedList(MutableSequence):
         if index == 0:
             self.head = self.get_next(self.head)
         else:
-            predecessor = self.get_next(node=self.head, steps=index - 1)
-            self.set_next(node=predecessor, next_node=self.get_next(node=predecessor, steps=2))
+            predecessor = self.get_next(node=self.head, step=index - 1)
+            self.set_next(node=predecessor, next_node=self.get_next(node=predecessor, step=2))
         self.size -= 1
 
     def __add__(self, other: Iterable):
@@ -156,7 +156,7 @@ class LinkedList(MutableSequence):
         return (self.size - 1 - index) if index >= 0 else (-1 - index)
 
     def get_node(self, index: int):
-        return self.get_next(node=self.head, steps=self.regularize_index(index))
+        return self.get_next(node=self.head, step=self.regularize_index(index))
 
     def clear(self):
         self.head, self.size = None, 0
@@ -214,7 +214,7 @@ class LinkedList(MutableSequence):
         if index == 0:
             self.append(data)
         else:
-            node = self.get_next(node=self.head, steps=index)
+            node = self.get_next(node=self.head, step=index)
             self.set_next(node=node, next_node=self.new_node(data=data, next_node=self.get_next(node)))
             self.size += 1
 
@@ -260,7 +260,7 @@ class LinkedList(MutableSequence):
     def has_cycle(self, node) -> bool:
         fast_node = slow_node = node
         while fast_node and self.get_next(fast_node):
-            fast_node, slow_node = self.get_next(node=fast_node, steps=2), self.get_next(slow_node)
+            fast_node, slow_node = self.get_next(node=fast_node, step=2), self.get_next(slow_node)
             if fast_node == slow_node:
                 return True
         return False
@@ -284,7 +284,7 @@ class LinkedList(MutableSequence):
         """
         fast_node = slow_node = node
         while fast_node and self.get_next(fast_node):
-            fast_node, slow_node = self.get_next(node=fast_node, steps=2), self.get_next(slow_node)
+            fast_node, slow_node = self.get_next(node=fast_node, step=2), self.get_next(slow_node)
             if fast_node == slow_node:
                 slow_node = node
                 while slow_node != fast_node:
@@ -297,59 +297,31 @@ class LinkedList(MutableSequence):
             raise TypeError
         size_delta = self.size - other.size
         long_list_node, short_list_node = (self.head, other.head) if size_delta > 0 else (other.head, self.head)
-        long_list_node = self.get_next(node=long_list_node, steps=abs(size_delta))
+        long_list_node = self.get_next(node=long_list_node, step=abs(size_delta))
         while short_list_node and short_list_node != long_list_node:
             short_list_node = self.get_next(short_list_node)
             long_list_node = self.get_next(long_list_node)
         return short_list_node
 
-    def swap_pairs_of_nodes(self):
-        if self.head and self.get_next(self.head):
-            # We need 3 nodes to swap a pair of nodes (second, third)
-            # first second third
-            #   |      |     |
-            #  fake    n1 ─► n2 ─► n3 ─► n4 -> ...
-            fake_head = self.new_node()
-            first, second, third = fake_head, self.head, self.get_next(self.head)
-            while third:
-                self.set_next(node=first, next_node=third)
-                self.set_next(node=second, next_node=self.get_next(third))
-                self.set_next(node=third, next_node=second)
-                # first second third
-                #   │      │     │
-                #  fake    n1 ◄─ n2    n3 ─► n4 ─► ...
-                #   └──────│─────▲     ▲
-                #          └───────────┘
-                third = self.get_next(second)
-                # first       second third
-                #   |           |     |
-                # fake ─► n2 ─► n1 ─► n3 ─► n4 ─► ...
-                if not third or not self.get_next(third):
-                    break
-                first, second, third = second, third, self.get_next(third)
-                #             first second third
-                #               |     |     |
-                # fake ─► n2 ─► n1 ─► n3 ─► n4 ─► ...
-            self.head = self.get_next(fake_head)
-
-    def reverse(self, start: int = None, end: int = None, steps: int = None):
-        """ To Do: reverse(start, end, steps) => reverse(slice): to replace swap_pairs_of_nodes """
-        rstart, rend = 0, len(self) - 1
-        if end is not None:
-            rstart = self.regularize_index(end)
-        if start is not None:
-            rend = self.regularize_index(start)
+    def reverse(self, start: int = 0, end: int = -1, group_size: int = None, remainder_on_left: bool = False):
+        if len(self) < 2:
+            return self
+        rstart = self.regularize_index(end)
+        rend = self.regularize_index(start)
         if rstart == rend or self.head is None:
             return self
         if rend < rstart:
             raise ValueError(f"Invalid start {start} or end {end}")
+        range_size = rend - rstart + 1
+        group_size = range_size if group_size is None else min(group_size, range_size)
+        remainder_size = range_size % group_size
         """
-        reverse(1, 3) -> rstart = 2, rend = 4, steps = 3
+        reverse(1, 3) -> rstart = 2, rend = 4, step = 3
                                       N     P(TH)   H
         None ◄── n0 ◄── n1 ◄── n2 ◄── n3 ◄── n4 ◄── n5
-                            N        P(TT)   TH     H
+                               N     P(TT)   TH     H
         None ◄── n0 ◄── n1 ◄── n2 ◄── n3 ◄── n4 ◄── n5
-                      S        N     P(TT)   TH     H
+                        S      N     P(TT)   TH     H
         None ◄── n0 ◄── n1     n2 ◄─► n3 ◄── n4 ◄── n5
                  S      N      P      TT     TH     H
         None ◄── n0     n1 ──► n2 ◄─► n3 ◄── n4 ◄── n5
@@ -364,15 +336,24 @@ class LinkedList(MutableSequence):
         tmp_head = predecessor  # save the tmp head
         predecessor, node = node, self.get_next(node)  # move forward one more time
         tmp_tail = predecessor  # save the tmp tail
-        for _ in range(rend - rstart):
-            successor = self.get_next(node)
-            self.set_next(node=node, next_node=predecessor)
-            predecessor, node = node, successor
-        self.set_next(node=tmp_tail, next_node=node)
-        if tmp_head is None:
-            self.head = predecessor
-        else:
-            self.set_next(node=tmp_head, next_node=predecessor)
+        first_loop = True
+        while group_size > 0 and range_size >= group_size:  # group_size > 0 is required, cause range_size can be 0
+            if first_loop and not remainder_on_left and remainder_size > 0:
+                first_loop, shift_size = False, remainder_size
+            else:
+                shift_size = group_size
+            for _ in range(shift_size - 1):
+                successor = self.get_next(node)
+                self.set_next(node=node, next_node=predecessor)
+                predecessor, node = node, successor
+            self.set_next(node=tmp_tail, next_node=node)
+            if tmp_head is None:
+                self.head = predecessor
+            else:
+                self.set_next(node=tmp_head, next_node=predecessor)
+            tmp_head, tmp_tail, predecessor, node = tmp_tail, node, node, self.get_next(node)
+            range_size -= shift_size
+            group_size = min(group_size, range_size)
         return self
 
 
