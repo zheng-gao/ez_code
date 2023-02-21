@@ -1,7 +1,7 @@
 # Linked List
 ## Overview
 
-[ezcode.List](../../src/ezcode/List/__init__.py).[LinkedList](../../src/ezcode/List/LinkedList.py#L10) inherits from [collection.abc.MutableSequence](https://docs.python.org/3/library/collections.abc.html#collections.abc.MutableSequence). The LinkedList only have a head pointer to the last node and nodes can be appended or poped from head in O(1), which makes it behaves like a LIFO or Stack.
+[ezcode.List](../../src/ezcode/List/__init__.py).[LinkedList](../../src/ezcode/List/LinkedList.py#L10) inherits from [collection.abc.MutableSequence](https://docs.python.org/3/library/collections.abc.html#collections.abc.MutableSequence). It maintains a head pointer and nodes can be appended or poped from head in O(1), which makes it behaves like a LIFO or Stack.
 
 ## Details
 ### Initialize List via Custom Data Structure
