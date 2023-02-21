@@ -15,7 +15,7 @@ class TailedLinkedList(LinkedList):
         super().__init__(
             init_data=init_data, head=head, head_copy=head_copy,
             data_name=data_name, next_name=next_name
-        )
+        )  # will call self._size() to reset self.tail
 
     def print(self, reverse: bool = False, include_end: bool = True, mark_head: bool = True,
         mark_tail: bool = True, forward_link: str = FORWARD_LINK, backward_link: str = BACKWARD_LINK,
@@ -143,10 +143,12 @@ class TailedLinkedList(LinkedList):
                 self.tail = node_copy  # diff from parent class, reseting tail
                 self.size += 1
 
-    def reverse(self):
-        """ To Do: supporting start, end """
-        self.tail = self.head
-        super().reverse()
+    def reverse(self, start: int = 0, end: int = -1, group_size: int = None, remainder_on_left: bool = False):
+        super().reverse(start=start, end=end, group_size=group_size, remainder_on_left=remainder_on_left)
+        if self.get_next(self.tail) is not None:  # reset tail, not the best solution but simple
+            self.tail = self.head
+            while self.get_next(self.tail) is not None:
+                self.tail = self.get_next(self.tail)
         return self
 
 
