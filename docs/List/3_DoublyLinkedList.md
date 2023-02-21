@@ -1,7 +1,7 @@
 # Doubly Linked List
 ## Overview
 
-[ezcode.List](../../src/ezcode/List/__init__.py).[DoublyLinkedList](../../src/ezcode/List/DoublyLinkedList.py#L10) inherits from [ezcode.List.TailedLinkedList](../../src/ezcode/List/TailedLinkedList.py#L9)
+[ezcode.List](../../src/ezcode/List/__init__.py).[DoublyLinkedList](../../src/ezcode/List/DoublyLinkedList.py#L10) inherits from [ezcode.List.TailedLinkedList](../../src/ezcode/List/TailedLinkedList.py#L9). The DoublyLinkedList maintains both head and tail pointers and every node has 2 pointers to both of its successor and predecessor. Nodes can be appended or poped from both sides.
 
 ## Details
 ### Iterator
@@ -24,7 +24,7 @@
 ...     l.appendleft(i)
 ... 
 >>> l.print()
-None <─ (T) 5 <─> 4 <─> 3 <─> 0 <─> 1 <─> 2 (H)
+None <─ (T) 5 <─> 4 <─> 3 <─> 0 <─> 1 <─> 2 (H) ─> None
 >>> while len(l) > 3:
 ...     print(l.pop(), end=" ")
 ... 

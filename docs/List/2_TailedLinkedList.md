@@ -1,7 +1,7 @@
 # Tailed Linked List
 ## Overview
 
-[ezcode.List](../../src/ezcode/List/__init__.py).[TailedLinkedList](../../src/ezcode/List/TailedLinkedList.py#L9) inherits from [ezcode.List.LinkedList](../../src/ezcode/List/LinkedList.py#L10)
+[ezcode.List](../../src/ezcode/List/__init__.py).[TailedLinkedList](../../src/ezcode/List/TailedLinkedList.py#L9) inherits from [ezcode.List.LinkedList](../../src/ezcode/List/LinkedList.py#L10). The TailedLinkedList maintains a tail pointer to the first node and a head pointer to the last node. New nodes can be appended from both sides, but nodes can only be poped from head. So it can be used as both Queue (FIFO) and Stack (LIFO)  
 
 ## Details
 ### Iterator
