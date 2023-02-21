@@ -79,7 +79,7 @@ class TailedLinkedListPrinter(LinkedListPrinter):
                 string = "(T)"
             if include_end:
                 string = f"{string + ' ' if string else ''}None" if reverse else f"None{' ' + string if string else ''}"
-        return string
+        return string if string else "None"
 
     def print(self, node, reverse=False, include_end=True, mark_head=True, mark_tail=True):
         print(self.to_string(node, reverse, include_end, mark_head, mark_tail))
@@ -106,7 +106,8 @@ class DoublyLinkedListPrinter(LinkedListPrinter):
             else:
                 n_str = self.node_to_string(n)
                 string = f"{string} {self.bidirection_link} {n_str}" if reverse else f"{n_str} {self.bidirection_link} {string}"
-        node = node.__dict__[self.next_name] if reverse else node.__dict__[self.prev_name]
+        if node is not None:
+            node = node.__dict__[self.prev_name]
         is_first_node = string == ""
         for n in DoublyLinkedListIterator(
             head=node, tail=node, reverse=True, iterate_node=True,
@@ -125,7 +126,7 @@ class DoublyLinkedListPrinter(LinkedListPrinter):
             elif mark_tail:
                 string = f"{string} (T)" if reverse else f"(T) {string}"
             if include_end:
-                string = f"{string} {self.forward_link} None" if reverse else f"None {self.backward_link} {string}"
+                string = f"None {self.backward_link} {string} {self.forward_link} None"
         else:
             if mark_head and mark_tail:
                 string = "(H,T)" if reverse else "(T,H)"
@@ -134,8 +135,8 @@ class DoublyLinkedListPrinter(LinkedListPrinter):
             elif mark_tail:
                 string = "(T)"
             if include_end:
-                string = f"None {string} None"
-        return string
+                string = f"None {string} None" if string else "None"
+        return string if string else "None"
 
     def print(self, node, reverse=False, include_end=True, mark_head=True, mark_tail=True):
         print(self.to_string(node, reverse, include_end, mark_head, mark_tail))
