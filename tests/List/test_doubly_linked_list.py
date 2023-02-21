@@ -4,6 +4,13 @@ from ezcode.List.TailedLinkedList import TailedLinkedList
 from ezcode.List.DoublyLinkedList import DoublyLinkedList
 
 
+class Node:
+    def __init__(self, d=None, n=None, p=None):
+        self.d = d
+        self.n = n
+        self.p = p
+
+
 def test_doubly_linked_list_type():
     assert isinstance(DoublyLinkedList(), MutableSequence)
     assert isinstance(DoublyLinkedList(), LinkedList)
@@ -38,6 +45,27 @@ def test_doubly_linkedin_list_printer():
     assert DoublyLinkedList([0]).to_string(include_end=False, mark_head=False, mark_tail=False) == "0"
     assert DoublyLinkedList([0, 1]).to_string(include_end=False, mark_head=False, mark_tail=False) == "0 <─> 1"
     assert DoublyLinkedList([0, 1, 2]).to_string(include_end=False, mark_head=False, mark_tail=False) == "0 <─> 1 <─> 2"
+
+
+def test_doubly_linked_list_equal():
+    nodes = [Node(0), Node(1), Node(2)]
+    assert DoublyLinkedList().equal(DoublyLinkedList(head=None, data_name="d", next_name="n", prev_name="p"))
+    assert DoublyLinkedList([0]).equal(DoublyLinkedList(head=nodes[0], data_name="d", next_name="n", prev_name="p"))
+    nodes[0].n, nodes[1].p = nodes[1], nodes[0]
+    assert DoublyLinkedList([1, 0]).equal(DoublyLinkedList(head=nodes[0], data_name="d", next_name="n", prev_name="p"))
+    nodes[1].n, nodes[2].p = nodes[2], nodes[1]
+    assert DoublyLinkedList([2, 1, 0]).equal(DoublyLinkedList(head=nodes[0], data_name="d", next_name="n", prev_name="p"))
+
+
+def test_doubly_linked_list_copy():
+    nodes = [Node(0), Node(1), Node(2)]
+    assert DoublyLinkedList().copy().equal(DoublyLinkedList(head=None, data_name="d", next_name="n", prev_name="p"))
+    assert DoublyLinkedList([0]).copy().equal(DoublyLinkedList(head=nodes[0], data_name="d", next_name="n", prev_name="p"))
+    nodes[0].n, nodes[1].p = nodes[1], nodes[0]
+    assert DoublyLinkedList([1, 0]).copy().equal(DoublyLinkedList(head=nodes[0], data_name="d", next_name="n", prev_name="p"))
+    nodes[1].n, nodes[2].p = nodes[2], nodes[1]
+    assert DoublyLinkedList([2, 1, 0]).copy().equal(DoublyLinkedList(head=nodes[0], data_name="d", next_name="n", prev_name="p"))
+
 
 
 

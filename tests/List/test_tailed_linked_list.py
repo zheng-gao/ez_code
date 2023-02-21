@@ -3,6 +3,12 @@ from ezcode.List.LinkedList import LinkedList
 from ezcode.List.TailedLinkedList import TailedLinkedList
 
 
+class Node:
+    def __init__(self, d=None, n=None):
+        self.d = d
+        self.n = n
+
+
 def test_tailed_linked_list_type():
     assert isinstance(TailedLinkedList(), MutableSequence)
     assert isinstance(TailedLinkedList(), LinkedList)
@@ -36,4 +42,28 @@ def test_tailed_linkedin_list_printer():
     assert TailedLinkedList([0]).to_string(include_end=False, mark_head=False, mark_tail=False) == "0"
     assert TailedLinkedList([0, 1]).to_string(include_end=False, mark_head=False, mark_tail=False) == "0 <─ 1"
     assert TailedLinkedList([0, 1, 2]).to_string(include_end=False, mark_head=False, mark_tail=False) == "0 <─ 1 <─ 2"
+
+
+def test_tailed_linked_list_equal():
+    nodes = [Node(0), Node(1), Node(2)]
+    assert TailedLinkedList().equal(TailedLinkedList(head=None, data_name="d", next_name="n"))
+    assert TailedLinkedList([0]).equal(TailedLinkedList(head=nodes[0], data_name="d", next_name="n"))
+    nodes[0].n = nodes[1]
+    assert TailedLinkedList([1, 0]).equal(TailedLinkedList(head=nodes[0], data_name="d", next_name="n"))
+    nodes[1].n = nodes[2]
+    assert TailedLinkedList([2, 1, 0]).equal(TailedLinkedList(head=nodes[0], data_name="d", next_name="n"))
+
+
+def test_tailed_linked_list_copy():
+    nodes = [Node(0), Node(1), Node(2)]
+    assert TailedLinkedList().copy().equal(TailedLinkedList(head=None, data_name="d", next_name="n"))
+    assert TailedLinkedList([0]).copy().equal(TailedLinkedList(head=nodes[0], data_name="d", next_name="n"))
+    nodes[0].n = nodes[1]
+    assert TailedLinkedList([1, 0]).copy().equal(TailedLinkedList(head=nodes[0], data_name="d", next_name="n"))
+    nodes[1].n = nodes[2]
+    assert TailedLinkedList([2, 1, 0]).copy().equal(TailedLinkedList(head=nodes[0], data_name="d", next_name="n"))
+
+
+
+
 
