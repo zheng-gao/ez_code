@@ -1,7 +1,7 @@
 # Doubly Linked List
 ## Overview
 
-The class [DoublyLinkedList](../../src/ezcode/List/DoublyLinkedList.py#L10) inherits from [ezcode.List.TailedLinkedList](../../src/ezcode/List/TailedLinkedList.py#L9) and it is in the module [ezcode.List](../../src/ezcode/List/__init__.py)
+[ezcode.List](../../src/ezcode/List/__init__.py).[DoublyLinkedList](../../src/ezcode/List/DoublyLinkedList.py#L10) inherits from [ezcode.List.TailedLinkedList](../../src/ezcode/List/TailedLinkedList.py#L9)
 
 ## Details
 ### Iterator

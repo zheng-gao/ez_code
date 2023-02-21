@@ -1,7 +1,7 @@
 # Linked List
 ## Overview
 
-The class [LinkedList](../../src/ezcode/List/LinkedList.py#L10) inherits from [collection.abc.MutableSequence](https://docs.python.org/3/library/collections.abc.html#collections.abc.MutableSequence) and it is in the module [ezcode.List](../../src/ezcode/List/__init__.py)
+[ezcode.List](../../src/ezcode/List/__init__.py).[LinkedList](../../src/ezcode/List/LinkedList.py#L10) inherits from [collection.abc.MutableSequence](https://docs.python.org/3/library/collections.abc.html#collections.abc.MutableSequence)
 
 ## Details
 ### Initialize List via Custom Data Structure
