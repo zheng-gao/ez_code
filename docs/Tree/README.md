@@ -13,8 +13,8 @@ collections.abc.Collection
                 BinaryTree
                     │     
                     ▼
-             BinarySearchTree ───► RedBlackTree
-                    │
-                    ▼
-                 AVLTree
+         ┌── BinarySearchTree ──┐
+         │                      │
+         ▼                      ▼
+      AVLTree              RedBlackTree
 ```
