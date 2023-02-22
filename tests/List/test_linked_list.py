@@ -76,6 +76,12 @@ def test_linked_list_copy():
     assert LinkedList([2, 1, 0]).copy().equal(linked_lists[3])
 
 
+def test_linked_list_clear():
+    l = LinkedList([2, 1, 0])
+    l.clear()
+    assert l.equal(LinkedList())
+
+
 def test_linked_list_get_item():
     l = LinkedList([0, 1, 2])
     for i in [0, 1, 2]:

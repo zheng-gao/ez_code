@@ -64,6 +64,13 @@ def test_tailed_linked_list_copy():
     assert TailedLinkedList([2, 1, 0]).copy().equal(TailedLinkedList(head=nodes[0], data_name="d", next_name="n"))
 
 
+def test_tailed_linked_list_clear():
+    l = TailedLinkedList([2, 1, 0])
+    l.clear()
+    assert l.equal(TailedLinkedList())
+
+
+
 
 
 

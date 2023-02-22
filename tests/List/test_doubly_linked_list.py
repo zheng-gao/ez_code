@@ -67,5 +67,17 @@ def test_doubly_linked_list_copy():
     assert DoublyLinkedList([2, 1, 0]).copy().equal(DoublyLinkedList(head=nodes[0], data_name="d", next_name="n", prev_name="p"))
 
 
+def test_doubly_linked_list_clear():
+    l = DoublyLinkedList([2, 1, 0])
+    l.clear()
+    assert l.equal(DoublyLinkedList())
+
+
+
+
+
+
+
+
 
 

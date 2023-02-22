@@ -66,6 +66,9 @@ class TreeMap(MutableMapping):
     def __repr__(self):
         return repr(list(iter(self)))
 
+    def clear(self):
+        self.tree.clear()
+
     def keys(self, reverse=False):
         if reverse:
             for entry in reversed(self):
@@ -89,9 +92,6 @@ class TreeMap(MutableMapping):
         else:
             for entry in self:
                 yield entry.key, entry.value
-
-    def clear(self):
-        self.tree.clear()
 
     def pop(self, key):
         parents, node = self.tree.search(data=TreeMap.Entry(key, None), track_parents=True)
