@@ -97,11 +97,11 @@ class GraphPathFinder:
         if src_node_id is not None and src_node_id == dst_node_id:
             return 0, list([src_node_id])
         path_values, path_dict, queue, visited = dict(), dict(), deque([src_node_id]), set([src_node_id])
-        for node_id in self.graph.nodes.keys():
+        for node_id in self.graph.nodes:
             path_values[node_id] = 0 if node_id == src_node_id else float("inf")
         while len(queue) > 0:
             node_id = queue.popleft()
-            for neighbor_id in self.graph.get_edges(node_id=node_id, is_outgoing=True).keys():
+            for neighbor_id in self.graph.get_edges(node_id=node_id, is_outgoing=True):
                 if neighbor_id not in visited:
                     visited.add(neighbor_id)
                     queue.append(neighbor_id)
@@ -124,7 +124,7 @@ class GraphPathFinder:
             return self_loop_weight, list([src_node_id])
         path_values, path_dict, visited = dict(), dict(), set()
         candidates = PriorityMap({src_node_id: self_loop_weight}, min_heap=is_min)
-        for node_id in self.graph.nodes.keys():
+        for node_id in self.graph.nodes:
             path_values[node_id] = self_loop_weight if node_id == src_node_id else disconnected_edge_weight
         while len(candidates) > 0:
             best_node_id, best_path_value = candidates.pop(with_priority=True)
@@ -154,7 +154,7 @@ class GraphPathFinder:
             return self_loop_weight, list([src_node_id])
         path_values, path_dict, queue, queue_set = dict(), dict(), deque([src_node_id]), set([src_node_id])
         enqueue_counters = dict() if check_cycle else None
-        for node_id in self.graph.nodes.keys():
+        for node_id in self.graph.nodes:
             path_values[node_id] = self_loop_weight if node_id == src_node_id else disconnected_edge_weight
             if check_cycle:
                 enqueue_counters[node_id] = 1 if node_id == src_node_id else 0
@@ -186,18 +186,18 @@ class GraphPathFinder:
     ):
         """ Can handle Negative Weight but not Negative cycle: O(V^3) """
         adjacent_matrix = dict()  # <node_id, <node_id, path_value>>
-        for n1 in self.graph.nodes.keys():
+        for n1 in self.graph.nodes:
             adjacent_matrix[n1] = dict()
-            for n2 in self.graph.nodes.keys():
+            for n2 in self.graph.nodes:
                 if n1 == n2:
                     adjacent_matrix[n1][n2] = self_loop_weight
                 elif n2 in self.graph.get_edges(node_id=n1, is_outgoing=True):
                     adjacent_matrix[n1][n2] = self.graph.get_weight(n1, n2, is_outgoing=True)
                 else:
                     adjacent_matrix[n1][n2] = disconnected_edge_weight
-        for relax in self.graph.nodes.keys():  # relax must be at the first loop, src and dst loops can swap.
-            for src in self.graph.nodes.keys():
-                for dst in self.graph.nodes.keys():
+        for relax in self.graph.nodes:  # relax must be at the first loop, src and dst loops can swap.
+            for src in self.graph.nodes:
+                for dst in self.graph.nodes:
                     relaxed_path_value = path_value_func(adjacent_matrix[src][relax], adjacent_matrix[relax][dst])
                     if (is_min and relaxed_path_value < adjacent_matrix[src][dst]) or (not is_min and relaxed_path_value > adjacent_matrix[src][dst]):
                         adjacent_matrix[src][dst] = relaxed_path_value

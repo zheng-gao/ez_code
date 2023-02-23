@@ -90,7 +90,7 @@ class UndirectedGraph(Graph):
         def _dfs(node_id):
             if node_id not in visited_edges:
                 visited_edges[node_id] = set()
-            for next_node_id in self.get_edges(node_id).keys():
+            for next_node_id in self.get_edges(node_id):
                 if next_node_id not in visited_edges:
                     visited_edges[next_node_id] = set()
                 if next_node_id not in visited_edges[node_id] and node_id not in visited_edges[next_node_id]:
@@ -109,7 +109,7 @@ class UndirectedGraph(Graph):
         while len(queue) > 0:
             node_id = queue.popleft()
             visited.add(node_id)
-            for neighbor_id in self.get_edges(node_id).keys():
+            for neighbor_id in self.get_edges(node_id):
                 if neighbor_id not in visited:
                     queue.append(neighbor_id)
         return len(self) == len(visited)
@@ -122,7 +122,7 @@ class UndirectedGraph(Graph):
         nodes can be partitioned into two independent sets A and B
         every edge connects a node in set A and a node in set B
         """
-        set_a, set_b, visited, unvisited, queue = set(), set(), set(), set(self.nodes.keys()), deque()
+        set_a, set_b, visited, unvisited, queue = set(), set(), set(), set(self.nodes), deque()
         while len(unvisited) > 0:  # for disconnected sub-graphs
             node = next(iter(unvisited))
             set_a.add(node)

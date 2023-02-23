@@ -27,7 +27,7 @@ def test_random_key_value_dict():
     for _ in range(samples_size):
         key_counter.update([rkv_dict.random_key()])
         value_counter.update([rkv_dict.random_value()])
-    for key in rkv_dict.keys():
+    for key in rkv_dict:
         assert approximately_equals(target=samples_size * (1/6), error=error, value=key_counter[key])
     for value in rkv_dict.values():
         if value == "lower":

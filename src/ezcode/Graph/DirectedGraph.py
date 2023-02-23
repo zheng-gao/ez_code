@@ -55,7 +55,7 @@ class DirectedGraph(Graph):
         while len(no_outgoing_nodes) > 0:
             node_id = no_outgoing_nodes.popleft()
             topological_order.append(node_id)
-            for incoming in nodes[node_id][0].keys():     # 0: incomming
+            for incoming in nodes[node_id][0]:            # 0: incomming
                 del nodes[incoming][1][node_id]           # 1: outgoing
                 if len(nodes[incoming][1]) == 0:          # 1: outgoing
                     no_outgoing_nodes.append(incoming)
@@ -111,7 +111,7 @@ class DirectedGraph(Graph):
         def _dfs(node_id):
             if node_id not in visited_edges:
                 visited_edges[node_id] = set()
-            for outgoing_node_id in self.get_edges(node_id, is_outgoing=True).keys():
+            for outgoing_node_id in self.get_edges(node_id, is_outgoing=True):
                 if outgoing_node_id not in visited_edges[node_id]:
                     visited_edges[node_id].add(outgoing_node_id)
                     _dfs(outgoing_node_id)

@@ -72,7 +72,7 @@ class Graph:
         return next(iter(self.nodes))
 
     def __str__(self):
-        sorted_nodes = sorted(self.nodes.keys())
+        sorted_nodes = sorted(self.nodes)  # key
         first_column_size, cell_size, table = 0, 0, [["", *sorted_nodes]]
         for node_1 in sorted_nodes:
             cell_size = max(cell_size, len(str(node_1)))

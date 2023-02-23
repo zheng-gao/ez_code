@@ -28,9 +28,9 @@ class BinaryTree(Collection):
             pass
 
         def match(self, other) -> bool:
-            if any(key not in self.__dict__.keys() for key in other.__dict__.keys()):
+            if any(key not in self.__dict__ for key in other.__dict__):
                 return False
-            if any(key not in other.__dict__.keys() for key in self.__dict__.keys()):
+            if any(key not in other.__dict__ for key in self.__dict__):
                 return False
             return True
 
@@ -389,7 +389,7 @@ class BinaryTree(Collection):
         if node is None:
             return None, 0
         if not (self.root is None and self.new_node().match(node)) and not (self.root is not None and self.root.match(node)):
-            raise ValueError(f"Invalid node with attributes: {list(node.__dict__.keys())}")
+            raise ValueError(f"Invalid node with attributes: {list(node.__dict__)}")
         root_copy, size_copy = self.copy_node(node), 0
         queue, queue_copy = deque([node]), deque([root_copy])
         while len(queue) > 0:

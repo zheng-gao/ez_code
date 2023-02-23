@@ -27,14 +27,23 @@ class RandomDict:
     def __delitem__(self, key):
         pass
 
-    def items(self):
-        return self.key_value_dict.items()
+    def __iter__(self):
+        return iter(self.key_value_dict)
+
+    def __reversed__(self):
+        return reversed(self.key_value_dict)
+
+    def clear(self):
+        self.key_value_dict.clear()
 
     def keys(self):
-        return self.key_value_dict.keys()
+        yield from self.key_value_dict.keys()
 
     def values(self):
-        return self.key_value_dict.values()
+        yield from self.key_value_dict.values()
+
+    def items(self):
+        yield from self.key_value_dict.items()
 
     def random_value(self):
         pass
@@ -42,7 +51,7 @@ class RandomDict:
 
 class RandomKeyValueDict(RandomDict):
     def __init__(self, data: dict = None):
-        self.key_list = list()            # [key]
+        self.key_list = list()        # [key]
         self.key_index_dict = dict()  # {key: index of key_list}
         super().__init__(data=data)
 
@@ -61,9 +70,13 @@ class RandomKeyValueDict(RandomDict):
         last_key = self.key_list[-1]
         self.key_list[index] = last_key
         self.key_index_dict[last_key] = index
-        self.key_list.pop()
+        self.key_list.pop()  # O(1)
         del self.key_index_dict[key]
         del self.key_value_dict[key]
+
+    def clear(self):
+        super().clear()
+        self.key_list.clear()
 
     def random_key(self):
         """ O(1), probability = 1 / total number of keys """
@@ -108,8 +121,15 @@ class RandomUniqueValueDict(RandomDict):
             del self.value_counter[value]
         del self.key_value_dict[key]
 
+    def clear(self):
+        super().clear()
+        self.unique_value_list.clear()
+        self.value_index_dict.clear()
+        self.value_counter.clear()
+
     def random_value(self):
         """ O(1), probability = 1 / total number of unique values """
         return choice(self.unique_value_list)
+
 
 

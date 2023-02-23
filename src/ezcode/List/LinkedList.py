@@ -13,9 +13,9 @@ class LinkedList(MutableSequence):
             pass
 
         def match(self, other) -> bool:
-            if any(key not in self.__dict__.keys() for key in other.__dict__.keys()):
+            if any(key not in self.__dict__ for key in other.__dict__):
                 return False
-            if any(key not in other.__dict__.keys() for key in self.__dict__.keys()):
+            if any(key not in other.__dict__ for key in self.__dict__):
                 return False
             return True
 
@@ -178,7 +178,7 @@ class LinkedList(MutableSequence):
             self.clear()
         else:
             if not (self.head is None and self.new_node().match(node)) and not (self.head is not None and self.head.match(node)):
-                raise ValueError(f"Invalid node with attributes: {list(node.__dict__.keys())}")
+                raise ValueError(f"Invalid node with attributes: {list(node.__dict__)}")
             node_copy = self.new_node(data=self.get_data(node))
             self.head, self.size = node_copy, 1
             while self.get_next(node) is not None:

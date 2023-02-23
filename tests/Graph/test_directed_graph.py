@@ -141,7 +141,7 @@ f           *
         assert path_finder.bfs(n1) == (None, b)
         assert path_finder.dijkstra(n1) == (None, b)
         assert path_finder.spfa(n1) == (None, b)
-        for n2 in benchmark.keys():
+        for n2 in benchmark:
             assert benchmark[n1][n2] == path_finder.backtracking(n1, n2)[0]
     assert path_finder.floyd() == benchmark
     assert path_finder.bfs("f", "a") == (2, ["f", "d", "a"])
@@ -194,7 +194,7 @@ f                 0.4
     for n1, benchmark in benchmark_1.items():
         assert equal(path_finder.dijkstra(n1), (None, benchmark), resolution=resolution)
         assert equal(path_finder.spfa(n1), (None, benchmark), resolution=resolution)
-        for n2 in benchmark_1.keys():
+        for n2 in benchmark_1:
             assert equal(benchmark_1[n1][n2], path_finder.backtracking(n1, n2)[0], resolution=resolution)
     assert equal(path_finder.floyd(), benchmark_1, resolution=resolution)
     assert path_finder.dijkstra("f", "b") == (1.8, ["f", "d", "a", "b"])
@@ -218,7 +218,7 @@ f                 0.4
     for n1, benchmark in benchmark_2.items():
         assert equal(path_finder.dijkstra(n1, **config), (None, benchmark), resolution=resolution)
         assert equal(path_finder.spfa(n1, **config), (None, benchmark), resolution=resolution)
-        for n2 in benchmark_2.keys():
+        for n2 in benchmark_2:
             assert equal(benchmark_2[n1][n2], path_finder.backtracking(n1, n2, **config)[0], resolution=resolution)
     assert equal(path_finder.floyd(**config), benchmark_2, resolution=resolution)
     assert equal(path_finder.dijkstra("f", "b", **config), (0.224, ["f", "d", "c", "b"]), resolution=resolution)

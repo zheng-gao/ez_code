@@ -65,7 +65,7 @@ class PriorityMap(PriorityQueue):
                 self._sift_up(index)  # python sift up is from root to leaf
 
     def keys(self):
-        return self.map.keys()
+        yield from self.map.keys()
 
     def clear(self):
         super().clear()

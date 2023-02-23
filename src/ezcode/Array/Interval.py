@@ -163,7 +163,7 @@ def skyline(buildings: list[tuple]) -> list[tuple]:
         if right not in r_map:
             r_map[right] = list()
         r_map[right].append(interval)
-    index_l, index_r, sorted_l, sorted_r = 0, 0, sorted(l_map.keys()), sorted(r_map.keys())
+    index_l, index_r, sorted_l, sorted_r = 0, 0, sorted(l_map), sorted(r_map)
     max_map = PriorityMap(min_heap=False, key=lambda interval: interval.data)
     while index_r < len(sorted_r):
         left, right = sorted_l[index_l] if index_l < len(sorted_l) else float("inf"), sorted_r[index_r]

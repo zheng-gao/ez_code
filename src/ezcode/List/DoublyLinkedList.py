@@ -210,7 +210,7 @@ class DoublyLinkedList(TailedLinkedList):
             self.clear()
         else:
             if not (self.head is None and self.new_node().match(node)) and not (self.head is not None and self.head.match(node)):
-                raise ValueError(f"Invalid node with attributes: {list(node.__dict__.keys())}")
+                raise ValueError(f"Invalid node with attributes: {list(node.__dict__)}")
             node_copy = self.new_node(data=self.get_data(node))
             self.head, self.size = node_copy, 1
             self.tail = node_copy

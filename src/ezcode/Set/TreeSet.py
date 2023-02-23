@@ -27,6 +27,9 @@ class TreeSet(MutableSet):
     def __repr__(self):
         return repr(list(iter(self)))
 
+    def clear(self):
+        self.tree.clear()
+
     def add(self, key):
         parents, node = self.tree.search(data=key, track_parents=True)
         if node is None:
@@ -52,5 +55,3 @@ class TreeSet(MutableSet):
         for key in other:
             self.add(key)
 
-    def clear(self):
-        self.tree.clear()
