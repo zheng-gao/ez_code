@@ -152,7 +152,6 @@ class TailedLinkedList(LinkedList):
             return self
         if rend < rstart:
             raise ValueError(f"Invalid start {start} or end {end}")
-        print(f"rend:{rend}, rstart:{rstart}")
         range_size = rend - rstart + 1
         group_size = range_size if group_size is None else min(group_size, range_size)
         remainder_size = range_size % group_size
@@ -178,7 +177,7 @@ class TailedLinkedList(LinkedList):
             else:
                 self.set_next(node=tmp_head, next_node=predecessor)
             if node is None:          # Reset Tail
-                self.tail = tmp_tail  # Only diff than the super().reverse()
+                self.tail = tmp_tail  # Only diff from super().reverse()
             tmp_head, tmp_tail, predecessor, node = tmp_tail, node, node, self.get_next(node)
             range_size -= shift_size
             group_size = min(group_size, range_size)

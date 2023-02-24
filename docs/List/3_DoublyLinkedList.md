@@ -34,3 +34,22 @@ None <─ (T) 5 <─> 4 <─> 3 <─> 0 <─> 1 <─> 2 (H) ─> None
 ... 
 5 4 3
 ```
+### Reverse & Copy
+```python
+>>> from ezcode import DoublyLinkedList
+>>> l = DoublyLinkedList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+>>> l.print()
+None <─ (T) 0 <─> 1 <─> 2 <─> 3 <─> 4 <─> 5 <─> 6 <─> 7 <─> 8 <─> 9 (H) ─> None
+>>> l.copy().reverse().print()
+None <─ (T) 9 <─> 8 <─> 7 <─> 6 <─> 5 <─> 4 <─> 3 <─> 2 <─> 1 <─> 0 (H) ─> None
+>>> l.copy().reverse(start=2).print()
+None <─ (T) 0 <─> 1 <─> 9 <─> 8 <─> 7 <─> 6 <─> 5 <─> 4 <─> 3 <─> 2 (H) ─> None
+>>> l.copy().reverse(end=-3).print()
+None <─ (T) 7 <─> 6 <─> 5 <─> 4 <─> 3 <─> 2 <─> 1 <─> 0 <─> 8 <─> 9 (H) ─> None
+>>> l.copy().reverse(start=5, end=8).print()
+None <─ (T) 0 <─> 1 <─> 2 <─> 3 <─> 4 <─> 8 <─> 7 <─> 6 <─> 5 <─> 9 (H) ─> None
+>>> l.copy().reverse(start=1, end=8, group_size=3, remainder_on_left=True).print()
+None <─ (T) 0 <─> 2 <─> 1 <─> 5 <─> 4 <─> 3 <─> 8 <─> 7 <─> 6 <─> 9 (H) ─> None
+>>> l.copy().reverse(start=1, end=8, group_size=3, remainder_on_left=False).print()
+None <─ (T) 0 <─> 3 <─> 2 <─> 1 <─> 6 <─> 5 <─> 4 <─> 8 <─> 7 <─> 9 (H) ─> None
+```
