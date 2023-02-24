@@ -73,6 +73,53 @@ def test_doubly_linked_list_clear():
     assert l.equal(DoublyLinkedList())
 
 
+def test_doubly_linked_list_get_item():
+    l = DoublyLinkedList([0, 1, 2])
+    for i in [0, 1, 2]:
+        assert l[i] == i
+    for i in [-1, -2, -3]:
+        assert l[i] == len(l) + i
+
+
+def test_doubly_linked_list_set_item():
+    l = DoublyLinkedList([0, 1, 2])
+    l[0] = 3
+    l[-1] = 1
+    l[1] = 2
+    assert list(l) == [3, 2, 1] 
+
+
+def test_doubly_linked_list_delete_item():
+    l = DoublyLinkedList([0, 1, 2, 3, 4, 5])
+    del l[0]
+    del l[2]
+    del l[-1]
+    assert list(l) == [1, 2, 4]
+    del l[2]
+    assert list(l) == [1, 2]
+
+
+def test_doubly_linked_list_exception():
+    try:
+        DoublyLinkedList()[-1] = 0
+    except IndexError as e:
+        assert e.args[0] == "list index -1 out of range"
+    else:
+        assert False
+    try:
+        DoublyLinkedList([0, 1, 2])[3] = 0
+    except IndexError as e:
+        assert e.args[0] == "list index 3 out of range"
+    else:
+        assert False
+    try:
+        DoublyLinkedList().pop()
+    except KeyError as e:
+        assert e.args[0] == "Pop from empty list"
+    else:
+        assert False
+
+
 def test_doubly_linked_list_reverse():
     l = DoublyLinkedList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
     l.reverse()

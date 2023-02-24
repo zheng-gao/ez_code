@@ -108,6 +108,27 @@ def test_linked_list_delete_item():
     assert list(l) == [1, 2]
 
 
+def test_linked_list_exception():
+    try:
+        LinkedList()[-1] = 0
+    except IndexError as e:
+        assert e.args[0] == "list index -1 out of range"
+    else:
+        assert False
+    try:
+        LinkedList([0, 1, 2])[3] = 0
+    except IndexError as e:
+        assert e.args[0] == "list index 3 out of range"
+    else:
+        assert False
+    try:
+        LinkedList().pop()
+    except KeyError as e:
+        assert e.args[0] == "Pop from empty list"
+    else:
+        assert False
+
+
 def test_linked_list_remove_all():
     l = LinkedList([0, 4, 1, 2, 3, 4, 5])
     l.remove_all({2, 3})
@@ -153,27 +174,6 @@ def test_linked_list_insert():
     l.insert(index=-100, data=-100)
     l.insert(index=100, data=100)
     assert list(l) == [-100, 7, 0, 1, 9, 2, 3, 6, 4, 5, 8, 100]
-
-
-def test_linked_list_exception():
-    try:
-        LinkedList()[-1] = 0
-    except IndexError as e:
-        assert e.args[0] == "list index -1 out of range"
-    else:
-        assert False
-    try:
-        LinkedList([0, 1, 2])[3] = 0
-    except IndexError as e:
-        assert e.args[0] == "list index 3 out of range"
-    else:
-        assert False
-    try:
-        LinkedList().pop()
-    except KeyError as e:
-        assert e.args[0] == "Pop from empty list"
-    else:
-        assert False
 
 
 def test_linked_list_cycle_detection():

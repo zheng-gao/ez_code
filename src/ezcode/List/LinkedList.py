@@ -148,7 +148,7 @@ class LinkedList(MutableSequence):
         ).to_string(node=self.head, reverse=reverse, include_end=include_end, mark_head=mark_head)
 
     def regularize_index(self, index: int, auto_fit: bool = False):
-        """ recalculate index from head """
+        """ convert index to steps from head """
         if index > self.size - 1 or index < -self.size:
             if auto_fit:
                 return 0 if self.size == 0 or index > 0 else (self.size - 1)

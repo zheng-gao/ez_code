@@ -43,8 +43,12 @@ class DoublyLinkedList(TailedLinkedList):
         node.__dict__[self.prev_name] = prev_node
 
     def get_node(self, index: int):
-        r = self.regularize_index(index)
-        return self.get_prev(node=self.tail, step=index) if index < r else self.get_next(node=self.head, step=r)
+        steps_from_head = self.regularize_index(index)
+        steps_from_tail = self.size - 1 - steps_from_head
+        if steps_from_head < steps_from_tail:  # take the shorter path
+            return self.get_next(node=self.head, step=steps_from_head)
+        else:
+            return self.get_prev(node=self.tail, step=steps_from_tail)
 
     def __iter__(self):
         """ from index 0 (tail) to -1 (head) """
@@ -82,7 +86,7 @@ class DoublyLinkedList(TailedLinkedList):
             if prev_node is not None:
                 self.set_next(node=prev_node, next_node=next_node)
             if next_node is not None:
-                self.set_prev(node=next_node, next_node=prev_node)
+                self.set_prev(node=next_node, prev_node=prev_node)
         self.size -= 1
 
     def __str__(self) -> str:
