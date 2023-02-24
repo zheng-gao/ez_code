@@ -144,11 +144,44 @@ class TailedLinkedList(LinkedList):
                 self.size += 1
 
     def reverse(self, start: int = 0, end: int = -1, group_size: int = None, remainder_on_left: bool = False):
-        super().reverse(start=start, end=end, group_size=group_size, remainder_on_left=remainder_on_left)
-        if self.get_next(self.tail) is not None:  # reset tail, not the best solution but simple
-            self.tail = self.head
-            while self.get_next(self.tail) is not None:
-                self.tail = self.get_next(self.tail)
+        if len(self) < 2:
+            return self
+        rstart = self.regularize_index(end)
+        rend = self.regularize_index(start)
+        if rstart == rend or self.head is None:
+            return self
+        if rend < rstart:
+            raise ValueError(f"Invalid start {start} or end {end}")
+        print(f"rend:{rend}, rstart:{rstart}")
+        range_size = rend - rstart + 1
+        group_size = range_size if group_size is None else min(group_size, range_size)
+        remainder_size = range_size % group_size
+        predecessor, node = None, self.head
+        for _ in range(rstart):
+            predecessor, node = node, self.get_next(node)
+        tmp_head = predecessor  # save the tmp head
+        predecessor, node = node, self.get_next(node)  # move forward one more time
+        tmp_tail = predecessor  # save the tmp tail
+        first_loop = True
+        while group_size > 0 and range_size >= group_size:  # group_size > 0 is required, cause range_size can be 0
+            if first_loop and not remainder_on_left and remainder_size > 0:
+                first_loop, shift_size = False, remainder_size
+            else:
+                shift_size = group_size
+            for _ in range(shift_size - 1):
+                successor = self.get_next(node)
+                self.set_next(node=node, next_node=predecessor)
+                predecessor, node = node, successor
+            self.set_next(node=tmp_tail, next_node=node)
+            if tmp_head is None:
+                self.head = predecessor
+            else:
+                self.set_next(node=tmp_head, next_node=predecessor)
+            if node is None:          # Reset Tail
+                self.tail = tmp_tail  # Only diff than the super().reverse()
+            tmp_head, tmp_tail, predecessor, node = tmp_tail, node, node, self.get_next(node)
+            range_size -= shift_size
+            group_size = min(group_size, range_size)
         return self
 
 

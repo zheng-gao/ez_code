@@ -233,6 +233,7 @@ def test_linked_list_reverse():
                     list(range(len(list_orig) - 2 - end, -1, -1))
     assert list(LinkedList().reverse(group_size=1)) == []
     assert list(LinkedList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).reverse(1, 8, 3, remainder_on_left=True)) == [0, 2, 1, 5, 4, 3, 8, 7, 6, 9]
+    assert list(LinkedList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).reverse(end=7, group_size=3, remainder_on_left=False)) == [2, 1, 0, 5, 4, 3, 7, 6, 8, 9]
     assert list(LinkedList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).reverse(1, group_size=3, remainder_on_left=True)) == [0, 3, 2, 1, 6, 5, 4, 9, 8, 7]
     assert list(LinkedList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).reverse(group_size=7, remainder_on_left=True)) == [2, 1, 0, 9, 8, 7, 6, 5, 4, 3]
     assert list(LinkedList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).reverse(0, -1, 2, remainder_on_left=True)) == [1, 0, 3, 2, 5, 4, 7, 6, 9, 8]

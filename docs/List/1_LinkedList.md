@@ -74,6 +74,8 @@ None <─ 7 <─ 6 <─ 5 <─ 4 <─ 3 <─ 2 <─ 1 <─ 0 <─ 8 <─ 9 (H)
 None <─ 0 <─ 1 <─ 2 <─ 3 <─ 4 <─ 8 <─ 7 <─ 6 <─ 5 <─ 9 (H)
 >>> l.copy().reverse(start=1, end=8, group_size=3, remainder_on_left=True).print()
 None <─ 0 <─ 2 <─ 1 <─ 5 <─ 4 <─ 3 <─ 8 <─ 7 <─ 6 <─ 9 (H)
+>>> l.copy().reverse(start=1, end=8, group_size=3, remainder_on_left=False).print()
+None <─ 0 <─ 3 <─ 2 <─ 1 <─ 6 <─ 5 <─ 4 <─ 8 <─ 7 <─ 9 (H)
 ```
 
 

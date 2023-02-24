@@ -70,6 +70,20 @@ def test_tailed_linked_list_clear():
     assert l.equal(TailedLinkedList())
 
 
+def test_tailed_linked_list_reverse():
+    l = TailedLinkedList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    l.reverse()
+    assert list(l) == [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+    assert l.get_data(l.tail) == 9
+    l.reverse(group_size=5)
+    assert list(l) == [5, 6, 7, 8, 9, 0, 1, 2, 3, 4]
+    assert l.get_data(l.tail) == 5
+    l.reverse(end=7, group_size=3, remainder_on_left=False)
+    assert list(l) == [7, 6, 5, 0, 9, 8, 2, 1, 3, 4]
+    assert l.get_data(l.tail) == 7
+    l.reverse(end=4, group_size=2, remainder_on_left=True)
+    assert list(l) == [7, 5, 6, 9, 0, 8, 2, 1, 3, 4]
+    assert l.get_data(l.tail) == 7
 
 
 
