@@ -1,5 +1,7 @@
 from collections.abc import Collection
-from ezcode.Tree.BinaryTree import BinaryTree, BinaryTreePrinter, BinaryTreeIterator
+from ezcode.Tree.BinaryTree import BinaryTree
+from ezcode.Tree.BinaryTreePrinter import BinaryTreePrinter
+from ezcode.Tree.BinaryTreeIterator import BinaryTreeIterator
 
 
 class Node:
@@ -42,33 +44,30 @@ def test_binary_tree_equal():
     assert not c_tree.equal(s_tree)
 
 
-def test_binary_tree_traversals():
-    assert [0, 1, 3, 7, 4, 2, 5, 8, 9, 6] == s_tree.traversal("pre-order")
-    assert [3, 7, 1, 4, 0, 8, 5, 9, 2, 6] == s_tree.traversal("in-order")
-    assert [7, 3, 4, 1, 8, 9, 5, 6, 2, 0] == s_tree.traversal("post-order")
-    assert [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] == s_tree.traversal("level-order")
-    level_order_left_most_nodes = list()
-    s_tree.algorithm.level_order(s_tree.root, level_order_left_most_nodes, left_most_nodes=True)
-    assert [0, 1, 3, 7] == level_order_left_most_nodes
+def test_binary_tree_level_order():
+    assert s_tree.level_order(iterate_node=False) == [
+        [0],
+        [1, 2],
+        [3, 4, 5, 6],
+        [7, 8 ,9]
+    ]
+    assert s_tree.level_order(reverse=True, iterate_node=False) == [
+        [0],
+        [2, 1],
+        [6, 5, 4, 3],
+        [9, 8 ,7]
+    ]
 
 
 def test_binary_tree_iterator():
-    assert [0, 1, 3, 7, 4, 2, 5, 8, 9, 6] == list(BinaryTreeIterator(
-        s_tree.root, mode=BinaryTreeIterator.Mode.PRE_ORDER, is_left_first=True, data_name="value"))
-    assert [0, 2, 6, 5, 9, 8, 1, 4, 3, 7] == list(BinaryTreeIterator(
-        s_tree.root, mode=BinaryTreeIterator.Mode.PRE_ORDER, is_left_first=False, data_name="value"))
-    assert [3, 7, 1, 4, 0, 8, 5, 9, 2, 6] == list(BinaryTreeIterator(
-        s_tree.root, mode=BinaryTreeIterator.Mode.IN_ORDER, is_left_first=True, data_name="value"))
-    assert [6, 2, 9, 5, 8, 0, 4, 1, 7, 3] == list(BinaryTreeIterator(
-        s_tree.root, mode=BinaryTreeIterator.Mode.IN_ORDER, is_left_first=False, data_name="value"))
-    assert [7, 3, 4, 1, 8, 9, 5, 6, 2, 0] == list(BinaryTreeIterator(
-        s_tree.root, mode=BinaryTreeIterator.Mode.POST_ORDER, is_left_first=True, data_name="value"))
-    assert [6, 9, 8, 5, 2, 4, 7, 3, 1, 0] == list(BinaryTreeIterator(
-        s_tree.root, mode=BinaryTreeIterator.Mode.POST_ORDER, is_left_first=False, data_name="value"))
-    assert [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] == list(BinaryTreeIterator(
-        s_tree.root, mode=BinaryTreeIterator.Mode.BFS, is_left_first=True, data_name="value"))
-    assert [0, 2, 1, 6, 5, 4, 3, 9, 8, 7] == list(BinaryTreeIterator(
-        s_tree.root, mode=BinaryTreeIterator.Mode.BFS, is_left_first=False, data_name="value"))
+    assert [0, 1, 3, 7, 4, 2, 5, 8, 9, 6] == list(s_tree.iterator(BinaryTreeIterator.Mode.PRE_ORDER, reverse=False))
+    assert [0, 2, 6, 5, 9, 8, 1, 4, 3, 7] == list(s_tree.iterator(BinaryTreeIterator.Mode.PRE_ORDER, reverse=True))
+    assert [3, 7, 1, 4, 0, 8, 5, 9, 2, 6] == list(s_tree.iterator(BinaryTreeIterator.Mode.IN_ORDER, reverse=False))
+    assert [6, 2, 9, 5, 8, 0, 4, 1, 7, 3] == list(s_tree.iterator(BinaryTreeIterator.Mode.IN_ORDER, reverse=True))
+    assert [7, 3, 4, 1, 8, 9, 5, 6, 2, 0] == list(s_tree.iterator(BinaryTreeIterator.Mode.POST_ORDER, reverse=False))
+    assert [6, 9, 8, 5, 2, 4, 7, 3, 1, 0] == list(s_tree.iterator(BinaryTreeIterator.Mode.POST_ORDER, reverse=True))
+    assert [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] == list(s_tree.iterator(BinaryTreeIterator.Mode.BFS, reverse=False))
+    assert [0, 2, 1, 6, 5, 4, 3, 9, 8, 7] == list(s_tree.iterator(BinaryTreeIterator.Mode.BFS, reverse=True))
 
 
 def test_binary_tree_size():
@@ -114,28 +113,28 @@ def test_binary_tree_lowest_common_ancestor():
     assert s_tree.root == s_tree.lowest_common_ancestor([s6, s7, s8])
 
 
-def test_binary_tree_subtree_stats():
-    assert c_tree.subtree('sum-min') == -6
-    assert c_tree.subtree('sum-max') == 19
-    assert c_tree.subtree('avg-min') == -3
-    assert c_tree.subtree('avg-max') == 10
+def test_binary_tree_best_subtree_stats():
+    assert c_tree.best_subtree_sum(method=min) == -6
+    assert c_tree.best_subtree_sum(method=max) == 19
+    assert c_tree.best_subtree_avg(method=min) == -3
+    assert c_tree.best_subtree_avg(method=max) == 10
+
+
+def test_binary_tree_best_path_sum():
+    assert s_tree.best_path_sum(method=max) == 27
+    assert s_tree.best_path_sum(method=min) == 0
+    assert c_tree.best_path_sum(method=max) == 19
+    assert c_tree.best_path_sum(method=min) == -6
 
 
 def test_binary_tree_height():
     assert s_tree.height() == 4
-    assert s_tree.algorithm.level_order(s_tree.root) == 4
     assert c_tree.height() == 4
-    assert c_tree.algorithm.level_order(c_tree.root) == 4
 
 
 def test_binary_tree_is_balanced():
     assert s_tree.is_balanced() is True
     assert c_tree.is_balanced() is False
-
-
-def test_binary_tree_max_path_sum():
-    assert s_tree.max_path_sum() == 27
-    assert c_tree.max_path_sum() == 19
 
 
 def test_binary_tree_is_copied():

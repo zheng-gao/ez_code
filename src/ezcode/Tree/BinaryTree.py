@@ -16,7 +16,6 @@ from ezcode.Tree.BinaryTreeConstant import (
     LEFT_WING_TAIL,
     RIGHT_WING_TAIL
 )
-from ezcode.Tree.BinaryTreeAlgorithm import BinaryTreeAlgorithm
 from ezcode.Tree.BinaryTreeIterator import BinaryTreeIterator
 from ezcode.Tree.BinaryTreePrinter import BinaryTreePrinter
 
@@ -36,14 +35,11 @@ class BinaryTree(Collection):
 
     def __init__(self, init_data: Iterable = None, root=None, root_copy=None,
         data_name: str = DATA_NAME, left_name: str = LEFT_NAME, right_name: str = RIGHT_NAME,
-        iterator_mode: BinaryTreeIterator.Mode = BinaryTreeIterator.Mode.DFS,
-        iterator_is_left_first: bool = True,
-        algorithm: BinaryTreeAlgorithm = None
+        iterator_mode: BinaryTreeIterator.Mode = BinaryTreeIterator.Mode.DFS, iterator_reverse: bool = False
     ):
         self.root, self.size = root, 0
         self.data_name, self.left_name, self.right_name = data_name, left_name, right_name
-        self.iterator_mode, self.iterator_is_left_first = iterator_mode, iterator_is_left_first
-        self.algorithm = algorithm if algorithm is not None else BinaryTreeAlgorithm(data_name, left_name, right_name)
+        self.iterator_mode, self.iterator_reverse = iterator_mode, iterator_reverse
         if root is not None:  # Any change on this tree will affect the original tree on the root
             self._size()
         elif root_copy is not None:
@@ -80,25 +76,16 @@ class BinaryTree(Collection):
         for _ in iter(self):
             self.size += 1
 
+    def iterator(self, mode: BinaryTreeIterator.Mode, reverse: bool = False):
+        return BinaryTreeIterator(node=self.root, mode=mode, is_left_first=(not reverse),
+            data_name=self.data_name, left_name=self.left_name, right_name=self.right_name)
+
     def __iter__(self):
-        return BinaryTreeIterator(
-            node=self.root,
-            mode=self.iterator_mode,
-            is_left_first=self.iterator_is_left_first,
-            data_name=self.data_name,
-            left_name=self.left_name,
-            right_name=self.right_name
-        )  # New iterator every time instead of keeping an iterator instance since self.root might change overtime
+        # New iterator every time instead of keeping an iterator instance since self.root might change overtime
+        return self.iterator(mode=self.iterator_mode, reverse=self.iterator_reverse)
 
     def __reversed__(self):
-        return BinaryTreeIterator(
-            node=self.root,
-            mode=self.iterator_mode,
-            is_left_first=(not self.iterator_is_left_first),
-            data_name=self.data_name,
-            left_name=self.left_name,
-            right_name=self.right_name
-        )
+        return self.iterator(mode=self.iterator_mode, reverse=(not self.iterator_reverse))
 
     def __contains__(self, data) -> bool:
         return any(data == d for d in iter(self))
@@ -284,33 +271,66 @@ class BinaryTree(Collection):
         right_balanced, right_height = self.is_balanced_tree(self.get_right(node))
         return left_balanced and right_balanced and abs(left_height - right_height) <= 1, max(left_height, right_height) + 1
 
-    def traversal(self, mode="pre-order"):
-        valid_mode = ["pre-order", "in-order", "post-order", "level-order"]
-        result = list()
-        if mode not in valid_mode:
-            raise ValueError(f"mode \"{mode}\" is not supported, please choose from {valid_mode}")
-        elif mode == "pre-order":
-            self.algorithm.pre_order(self.root, result)
-        elif mode == "in-order":
-            self.algorithm.in_order(self.root, result)
-        elif mode == "post-order":
-            self.algorithm.post_order(self.root, result)
-        elif mode == "level-order":
-            self.algorithm.level_order(self.root, result)
-        return result
+    def level_order(self, node=None, reverse=False, iterate_node=False) -> list[list]:
+        if node is None:
+            node = self.root
+        output, level, queue = list(), list(), deque([node])
+        current_level_node_count, next_level_node_count = 1, 0
+        while len(queue) > 0:
+            node = queue.popleft()
+            level.append(node if iterate_node else self.get_data(node))
+            current_level_node_count -= 1
+            left_node, right_node = self.get_left(node), self.get_right(node)
+            if left_node is not None and right_node is not None:
+                queue.append(right_node if reverse else left_node)
+                queue.append(left_node if reverse else right_node)
+                next_level_node_count += 2
+            elif left_node is not None:
+                queue.append(left_node)
+                next_level_node_count += 1
+            elif right_node is not None:
+                queue.append(right_node)
+                next_level_node_count += 1
+            if current_level_node_count == 0:
+                current_level_node_count, next_level_node_count = next_level_node_count, 0
+                output.append(level)
+                level = list()
+        return output
 
-    def subtree(self, mode="sum-min"):
-        valid_mode = ["sum-min", "sum-max", "avg-min", "avg-max"]
-        if mode not in valid_mode:
-            raise ValueError(f"mode \"{mode}\" is not supported, please choose from {valid_mode}")
-        elif mode == "sum-min":
-            return self.algorithm.subtree_sum_extremum(self.root, min)[0]
-        elif mode == "sum-max":
-            return self.algorithm.subtree_sum_extremum(self.root, max)[0]
-        elif mode == "avg-min":
-            return self.algorithm.subtree_avg_extremum(self.root, min)[0]
-        else:
-            return self.algorithm.subtree_avg_extremum(self.root, max)[0]
+    def best_subtree_sum(self, node=None, method: callable = max):
+        def _best_subtree_sum(node):
+            if node is None:
+                return 0, 0
+            best_left_sum, left_sum = _best_subtree_sum(self.get_left(node))
+            best_right_sum, right_sum = _best_subtree_sum(self.get_right(node))
+            current_sum = left_sum + right_sum + self.get_data(node)
+            return method(current_sum, best_left_sum, best_right_sum), current_sum
+        return _best_subtree_sum(self.root if node is None else node)[0]
+
+    def best_subtree_avg(self, node=None, method: callable = max):
+        def _best_subtree_avg(node):
+            if node is None:
+                return 0, 0, 0
+            best_left_avg, left_sum, left_size = _best_subtree_avg(self.get_left(node))
+            best_right_avg, right_sum, right_size = _best_subtree_avg(self.get_right(node))
+            current_sum = left_sum + right_sum + self.get_data(node)
+            current_size = left_size + right_size + 1
+            current_average = current_sum / current_size
+            return method(current_average, best_left_avg, best_right_avg), current_sum, current_size
+        return _best_subtree_avg(self.root if node is None else node)[0]
+
+    def best_path_sum(self, node=None, method: callable = max):
+        def _best_path_sum(node):
+            """ from one node to another within the subtree """
+            if node is None:
+                return float("-inf") if method == max else float("inf"), 0
+            best_left_path_sum, left_half = _best_path_sum(self.get_left(node))
+            best_right_path_sum, right_half = _best_path_sum(self.get_right(node))
+            return (
+                method(best_left_path_sum, best_right_path_sum, self.get_data(node) + left_half + right_half),
+                method(self.get_data(node) + method(left_half, right_half), 0)
+            )
+        return _best_path_sum(self.root if node is None else node)[0]
 
     def lowest_common_ancestor(self, nodes):
         """
@@ -336,9 +356,6 @@ class BinaryTree(Collection):
         for node in nodes[1:]:
             ancestor = _lowest_common_ancestor(self.root, ancestor, node)
         return ancestor
-
-    def max_path_sum(self):
-        return self.algorithm.max_path_sum(self.root)[0]
 
     def serialize(self, delimiter: str = ",") -> str:
         if not self.root:
@@ -419,8 +436,7 @@ class BinaryTree(Collection):
         tree.left_name = self.left_name
         tree.right_name = self.right_name
         tree.iterator_mode = self.iterator_mode
-        tree.iterator_is_left_first = self.iterator_is_left_first,
-        tree.algorithm = self.algorithm
+        tree.iterator_reverse = self.iterator_reverse
         tree.root, tree.size = self.copy_tree(self.root)
         return tree
 

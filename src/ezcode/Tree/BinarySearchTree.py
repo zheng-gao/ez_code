@@ -12,7 +12,7 @@ class BinarySearchTree(BinaryTree):
         super().__init__(
             init_data=init_data, root=root, root_copy=root_copy,
             data_name=data_name, left_name=left_name, right_name=right_name,
-            iterator_mode=BinaryTreeIterator.Mode.IN_ORDER, iterator_is_left_first=True
+            iterator_mode=BinaryTreeIterator.Mode.IN_ORDER, iterator_reverse=False
         )
 
     def __contains__(self, data) -> bool:
