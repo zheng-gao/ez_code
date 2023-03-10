@@ -10,10 +10,11 @@ from .List.DoublyLinkedList import DoublyLinkedList
 
 # Queue
 from .Queue.Queue import Queue
-from .Queue.MonotonicQueue import MonotonicQueue
+# from .Queue.MonotonicQueue import MonotonicQueue
 # Stack
 from .Stack.Stack import Stack
 from .Stack.MinMaxStack import MinMaxStack
+from .Stack.MonotonicStack import MonotonicStack
 from .Stack.PersistentStack import PersistentStack
 # Heap
 from .Heap.PriorityMap import PriorityMap
