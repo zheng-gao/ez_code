@@ -3,15 +3,15 @@ from typing import Iterable
 
 
 class PriorityQueueOnPartialArray:
-    def __init__(self, array: list, min_heap: bool = True, key: Callable = lambda x: x, start: int = 0, end: int = None, init_queue: Iterable = None):
+    def __init__(self, array: list, min_heap: bool = True, key: Callable = lambda x: x, start: int = 0, end: int = None, init_data: Iterable = None):
         self.min_heap = min_heap
         self.key = key
         self.heap = array
         self.start = start
         self.end = start - 1
         self.max_end = end if end else len(array) - 1
-        if init_queue is not None:
-            for item in init_queue:
+        if init_data is not None:
+            for item in init_data:
                 self.push(item)
 
     def __len__(self):

@@ -3,13 +3,16 @@ from typing import Iterable
 
 
 class PriorityQueue:
-    def __init__(self, init_queue: Iterable = None, min_heap: bool = True, key: Callable = lambda x: x):
+    def __init__(self, init_data: Iterable = None, min_heap: bool = True, key: Callable = None, unpack_init_data: bool = False):
         self.min_heap = min_heap
         self.key = key
         self.heap = list()  # [(item, priority)]
-        if init_queue is not None:
-            for entry in init_queue:
-                self.push(entry)
+        if init_data is not None:
+            for entry in init_data:
+                if unpack_init_data:
+                    self.push(*entry)
+                else:
+                    self.push(entry)
 
     def __len__(self) -> int:
         return len(self.heap)
@@ -37,22 +40,23 @@ class PriorityQueue:
         if len_args > 2:
             raise ValueError("Cannot take more than 2 args")
         if len_args == 1:
-            if type(args[0]) is tuple:
-                item, priority = args[0]
-            else:
-                item, priority = args[0], self.key(args[0])
+            item = args[0]
+            priority = item if self.key is None else self.key(item)
         elif len_args == 2:
             item, priority = args
         else:
             if "item" not in kwargs:
                 raise ValueError(f"Invalid kwargs, must contains \"item\": {kwargs}")
             item = kwargs["item"]
-            priority = kwargs["priority"] if "priority" in kwargs else self.key(item)
+            if "priority" in kwargs:
+                priority = kwargs["priority"]
+            else:
+                priority = item if self.key is None else self.key(item)
         return item, priority
 
     def push(self, *args, **kwargs):  # O(logN)
         """
-        args: (item, priority) / item, priority / item
+        args: (item, priority) / [item, priority] / item, priority / item
         kwargs: item=..., priority=...
         """
         self.heap.append(self._get_item_and_priority(*args, **kwargs))
@@ -135,5 +139,4 @@ class PriorityQueue:
             else:
                 break
         self.heap[index] = tmp_entry
-
 

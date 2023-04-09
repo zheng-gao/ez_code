@@ -141,7 +141,7 @@ def min_groups_of_non_overlapping_intervals(intervals: list[Interval]) -> list[l
     min_queue = PriorityQueue(min_heap=True, key=lambda group: group[-1].right)
     for interval in sorted(intervals, key=lambda interval: interval.left):
         if min_queue.is_empty():
-            min_queue.push([interval])
+            min_queue.push([interval])  # init group = [interval]
         else:
             group = min_queue.top()
             if group[-1].overlap(interval):  # need a new group

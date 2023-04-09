@@ -3,11 +3,11 @@ from ezcode.Heap.PriorityQueue import PriorityQueue
 
 
 class PriorityMap(PriorityQueue):
-    def __init__(self, init_map: dict = None, min_heap: bool = True, key: Callable = lambda x: x):
+    def __init__(self, init_data: dict = None, min_heap: bool = True, key: Callable = lambda x: x):
         super().__init__(min_heap=min_heap, key=key)
         self.map = dict()  # <item, heap_index>
-        if init_map is not None:
-            for item, priority in init_map.items():
+        if init_data is not None:
+            for item, priority in init_data.items():
                 self.push(item, priority)
 
     def __contains__(self, item) -> bool:
