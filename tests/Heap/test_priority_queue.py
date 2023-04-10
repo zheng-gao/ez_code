@@ -23,7 +23,7 @@ def test_priority_queue():
     min_queue = PriorityQueue(["D", "C", "E", "A", "B"], key=lambda x: ord(x) - ord("A") + 1)
     for pop_data in [("A", 1), ("B", 2), ("C", 3), ("D", 4), ("E", 5)]:
         assert min_queue.pop(with_priority=True) == pop_data
-    min_queue = PriorityQueue([("D", 4), ("C", 3), ("E", 5), ("A", 1), ("B", 2)], unpack_init_data=True)
+    min_queue = PriorityQueue([("D", 4), ("C", 3), ("E", 5), ("A", 1), ("B", 2)])
     assert min_queue.heap == [("A", 1), ("B", 2), ("E", 5), ("D", 4), ("C", 3)] 
     min_queue.update_top("F", 6)
     assert min_queue.heap == [("B", 2), ("C", 3), ("E", 5), ("D", 4), ("F", 6)]
@@ -83,12 +83,12 @@ def test_priority_queue_custom_comparator():
             return self.c < self.c
 
     init_list = [("A", Priority(2, 2, 3)), ("B", Priority(2, 1, 1)), ("E", Priority(1, 1, 1)), ("D", Priority(1, 1, 2)), ("C", Priority(1, 1, 1))]
-    min_queue = PriorityQueue(init_list, unpack_init_data=True) 
+    min_queue = PriorityQueue(init_list) 
     for pop_data in [("E", Priority(1, 1, 1)), ("C", Priority(1, 1, 1)), ("D", Priority(1, 1, 2)), ("B", Priority(2, 1, 1)), ("A", Priority(2, 2, 3))]:
         assert min_queue.pop(with_priority=True) == pop_data
 
     init_list = [[Priority(2, 2, 3), "A"], [Priority(2, 1, 1), "B"], [Priority(1, 1, 1), "E"], [Priority(1, 1, 2), "D"], [Priority(1, 1, 1), "C"]]
-    max_queue = PriorityQueue(init_list, min_heap=False, key=lambda x: x[0])
+    max_queue = PriorityQueue(init_list, min_heap=False, key=lambda x: x[0], unpack_pairs_in_init_iterable=False)
     for pop_data in [[Priority(2, 2, 3), "A"], [Priority(2, 1, 1), "B"], [Priority(1, 1, 2), "D"], [Priority(1, 1, 1), "E"], [Priority(1, 1, 1), "C"]]:
         assert max_queue.pop() == pop_data
 

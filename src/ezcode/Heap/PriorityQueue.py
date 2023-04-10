@@ -1,18 +1,23 @@
-from typing import Callable
-from typing import Iterable
+from typing import Callable, Iterable
+from collections.abc import Mapping
 
 
 class PriorityQueue:
-    def __init__(self, init_data: Iterable = None, min_heap: bool = True, key: Callable = None, unpack_init_data: bool = False):
+    def __init__(self, init_data: Iterable = None, min_heap: bool = True, key: Callable = None, unpack_pairs_in_init_iterable: bool = True):
+        """ unpack_pairs_in_init_iterable: init_data = [(item, priority), ...] """
         self.min_heap = min_heap
         self.key = key
         self.heap = list()  # [(item, priority)]
         if init_data is not None:
-            for entry in init_data:
-                if unpack_init_data:
-                    self.push(*entry)
-                else:
-                    self.push(entry)
+            if isinstance(init_data, Mapping):
+                for item, priority in init_data.items():
+                    self.push(item, priority)
+            else:
+                for entry in init_data:
+                    if isinstance(entry, Iterable) and len(entry) == 2 and unpack_pairs_in_init_iterable:
+                        self.push(*entry)
+                    else:
+                        self.push(entry)
 
     def __len__(self) -> int:
         return len(self.heap)
@@ -43,7 +48,7 @@ class PriorityQueue:
             item = args[0]
             priority = item if self.key is None else self.key(item)
         elif len_args == 2:
-            item, priority = args
+            item, priority = args[0], args[1]
         else:
             if "item" not in kwargs:
                 raise ValueError(f"Invalid kwargs, must contains \"item\": {kwargs}")

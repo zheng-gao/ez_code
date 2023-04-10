@@ -1,14 +1,11 @@
-from typing import Callable
+from typing import Callable, Iterable
 from ezcode.Heap.PriorityQueue import PriorityQueue
 
 
 class PriorityMap(PriorityQueue):
-    def __init__(self, init_data: dict = None, min_heap: bool = True, key: Callable = lambda x: x):
-        super().__init__(min_heap=min_heap, key=key)
+    def __init__(self, init_data: Iterable = None, min_heap: bool = True, key: Callable = None):
         self.map = dict()  # <item, heap_index>
-        if init_data is not None:
-            for item, priority in init_data.items():
-                self.push(item, priority)
+        super().__init__(init_data=init_data, min_heap=min_heap, key=key)
 
     def __contains__(self, item) -> bool:
         return item in self.map
@@ -51,7 +48,7 @@ class PriorityMap(PriorityQueue):
             self.map[item] = index
             self._sift_down(index)
 
-    def update(self, *args, **kwargs):   # O(logN)
+    def update(self, *args, **kwargs):  # O(logN)
         item, priority = self._get_item_and_priority(*args, **kwargs)
         if item not in self.map:
             raise KeyError(f"{item} not found")

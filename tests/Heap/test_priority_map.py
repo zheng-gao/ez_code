@@ -87,7 +87,7 @@ def test_priority_queue_custom_comparator():
         assert min_map.pop(with_priority=True) == pop_data
 
     init_map = {"A": Priority(2, 2, 3), "B": Priority(2, 1, 1), "E": Priority(1, 1, 1), "D": Priority(1, 1, 2), "C": Priority(1, 1, 1)}
-    max_map = PriorityMap(init_map, min_heap=False, key=lambda x: x[0])
+    max_map = PriorityMap(init_map, min_heap=False)
     for pop_data in [[Priority(2, 2, 3), "A"], [Priority(2, 1, 1), "B"], [Priority(1, 1, 2), "D"], [Priority(1, 1, 1), "E"], [Priority(1, 1, 1), "C"]]:
         assert max_map.pop(with_priority=True) == (pop_data[1], pop_data[0])
 
