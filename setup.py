@@ -36,7 +36,7 @@ ez_code/ez.sh -o/--operations test -a/--arguments test_array.py::test_binary_sea
 
 setup(
     name="ezcode",
-    version="1.0.21",
+    version="1.0.22",
     author="Zheng Gao",
     author_email="mail.zheng.gao@gmail.com",
     description="Easy Algorithm & Data Structure",
