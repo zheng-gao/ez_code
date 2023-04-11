@@ -1,11 +1,12 @@
+from collections import MutableSequence
 from typing import Callable, Iterable
 from ezcode.Heap.PriorityQueue import PriorityQueue
 
 
 class PriorityMap(PriorityQueue):
-    def __init__(self, init_data: Iterable = None, min_heap: bool = True, key: Callable = None):
+    def __init__(self, init_data: Iterable = None, min_heap: bool = True, key: Callable = None, unpack_pairs: bool = True):
         self.map = dict()  # <item, heap_index>
-        super().__init__(init_data=init_data, min_heap=min_heap, key=key)
+        super().__init__(init_data=init_data, min_heap=min_heap, key=key, unpack_pairs=unpack_pairs)
 
     def __contains__(self, item) -> bool:
         return item in self.map
@@ -34,6 +35,20 @@ class PriorityMap(PriorityQueue):
     def __setitem__(self, item, priority):  # O(logN)
         self.push(item, priority)
 
+    def heapify(self, mutable_sequence: MutableSequence, min_heap: bool = True, key: Callable = None, unpack_pairs: bool = True):
+        self.heap.clear()
+        self.map.clear()
+        self.min_heap = min_heap
+        self.key = key
+        for index, entry in enumerate(mutable_sequence):
+            if isinstance(entry, Iterable) and len(entry) == 2 and unpack_pairs:
+                self.heap.append((entry[0], entry[1]))
+            else:
+                self.heap.append((entry, entry if key is None else key(entry)))
+            self.map[entry] = index
+        for index in range((len(self.heap) >> 1) - 1, -1, -1):
+            self._sift_up(index)
+
     def push(self, *args, **kwargs):  # O(logN)
         """
         args: (item, priority) / item, priority / item
@@ -47,6 +62,9 @@ class PriorityMap(PriorityQueue):
             index = len(self) - 1
             self.map[item] = index
             self._sift_down(index)
+
+    def update_top(self, *args, **kwargs):
+        self.update(args=args, kwargs=kwargs)
 
     def update(self, *args, **kwargs):  # O(logN)
         item, priority = self._get_item_and_priority(*args, **kwargs)

@@ -1,10 +1,10 @@
 from typing import Callable, Iterable
-from collections.abc import Mapping
+from collections.abc import Mapping, MutableSequence
 
 
 class PriorityQueue:
-    def __init__(self, init_data: Iterable = None, min_heap: bool = True, key: Callable = None, unpack_pairs_in_init_iterable: bool = True):
-        """ unpack_pairs_in_init_iterable: init_data = [(item, priority), ...] """
+    def __init__(self, init_data: Iterable = None, min_heap: bool = True, key: Callable = None, unpack_pairs: bool = True):
+        """ unpack_pairs: init_data = [(item, priority), ...] """
         self.min_heap = min_heap
         self.key = key
         self.heap = list()  # [(item, priority)]
@@ -14,7 +14,7 @@ class PriorityQueue:
                     self.push(item, priority)
             else:
                 for entry in init_data:
-                    if isinstance(entry, Iterable) and len(entry) == 2 and unpack_pairs_in_init_iterable:
+                    if isinstance(entry, Iterable) and len(entry) == 2 and unpack_pairs:
                         self.push(*entry)
                     else:
                         self.push(entry)
@@ -58,6 +58,19 @@ class PriorityQueue:
             else:
                 priority = item if self.key is None else self.key(item)
         return item, priority
+
+    def heapify(self, mutable_sequence: MutableSequence, min_heap: bool = True, key: Callable = None, unpack_pairs: bool = True):
+        """ O(N) """
+        self.heap.clear()
+        self.min_heap = min_heap
+        self.key = key
+        for entry in mutable_sequence:
+            if isinstance(entry, Iterable) and len(entry) == 2 and unpack_pairs:
+                self.heap.append((entry[0], entry[1]))
+            else:
+                self.heap.append((entry, entry if key is None else key(entry)))
+        for index in range((len(self.heap) >> 1) - 1, -1, -1):
+            self._sift_up(index)
 
     def push(self, *args, **kwargs):  # O(logN)
         """

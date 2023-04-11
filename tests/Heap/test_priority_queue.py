@@ -1,7 +1,7 @@
 from ezcode.Heap.PriorityQueue import PriorityQueue
 
 
-def test_priority_queue():
+def test_priority_queue_push_pop_top():
     min_queue = PriorityQueue([4, 3, 5, 1, 2])
     assert min_queue.top(3) == [1, 2, 3]
     assert min_queue.top(len(min_queue)) == [1, 2, 3, 4, 5]
@@ -47,6 +47,19 @@ def test_priority_queue():
         assert max_queue.pop(with_priority=True) == pop_data
 
 
+def test_priority_queue_heapify():
+    pq = PriorityQueue()
+    pq.heapify([4, 3, 5, 1, 2], min_heap=True)
+    pq.top(len(pq)) == [1, 2, 3, 4, 5]
+    pq.heapify([4, 3, 5, 1, 2], min_heap=False)
+    pq.top(len(pq)) == [5, 4, 3, 2, 1]
+    pq.heapify([("D", 4), ("C", 3), ("E", 5), ("A", 1), ("B", 2)], min_heap=True, key=lambda x: x[1], unpack_pairs=False)
+    pq.top(len(pq)) == [("A", 1), ("B", 2), ("C", 3), ("D", 4), ("E", 5)]
+    pq.heapify([("D", 4), ("C", 3), ("E", 5), ("A", 1), ("B", 2)], min_heap=True, unpack_pairs=True)
+    pq.top(len(pq)) == ["A", "B", "C", "D", "E"]
+    pq.top(len(pq), with_priority=True) == [("A", 1), ("B", 2), ("C", 3), ("D", 4), ("E", 5)]
+
+
 def test_priority_queue_custom_comparator():
 
     class Priority:
@@ -88,7 +101,7 @@ def test_priority_queue_custom_comparator():
         assert min_queue.pop(with_priority=True) == pop_data
 
     init_list = [[Priority(2, 2, 3), "A"], [Priority(2, 1, 1), "B"], [Priority(1, 1, 1), "E"], [Priority(1, 1, 2), "D"], [Priority(1, 1, 1), "C"]]
-    max_queue = PriorityQueue(init_list, min_heap=False, key=lambda x: x[0], unpack_pairs_in_init_iterable=False)
+    max_queue = PriorityQueue(init_list, min_heap=False, key=lambda x: x[0], unpack_pairs=False)
     for pop_data in [[Priority(2, 2, 3), "A"], [Priority(2, 1, 1), "B"], [Priority(1, 1, 2), "D"], [Priority(1, 1, 1), "E"], [Priority(1, 1, 1), "C"]]:
         assert max_queue.pop() == pop_data
 

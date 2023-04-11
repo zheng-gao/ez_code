@@ -1,7 +1,7 @@
 from ezcode.Heap.PriorityMap import PriorityMap
 
 
-def test_priority_map():
+def test_priority_map_push_pop_top():
     min_map = PriorityMap(key=lambda x: ord(x) - ord("A") + 1)
     for push_data, top_data in zip(["D", "C", "E", "A", "B"], [("D", 4), ("C", 3), ("C", 3), ("A", 1), ("A", 1)]):
         min_map.push(push_data)
@@ -43,6 +43,26 @@ def test_priority_map():
     assert max_map.top() == "C"
     del max_map["C"]
     assert len(max_map) == 0
+
+
+def test_priority_map_heapify():
+    pm = PriorityMap()
+    pm.heapify([4, 3, 5, 1, 2], min_heap=True)
+    pm.top(len(pm)) == [1, 2, 3, 4, 5]
+    pm.heapify([4, 3, 5, 1, 2], min_heap=False)
+    pm.top(len(pm)) == [5, 4, 3, 2, 1]
+    pm.update(item=3, priority=6)
+    pm.top(len(pm)) == [6, 5, 4, 2, 1]
+    pm.heapify([("D", 4), ("C", 3), ("E", 5), ("A", 1), ("B", 2)], min_heap=True, key=lambda x: x[1], unpack_pairs=False)
+    pm.top(len(pm)) == [("A", 1), ("B", 2), ("C", 3), ("D", 4), ("E", 5)]
+    pm.update(item=("D", 4), priority=0)
+    pm.top(len(pm)) == [("D", 4), ("A", 1), ("B", 2), ("C", 3), ("E", 5)]
+    pm.heapify([("D", 4), ("C", 3), ("E", 5), ("A", 1), ("B", 2)], min_heap=True, unpack_pairs=True)
+    pm.top(len(pm)) == ["A", "B", "C", "D", "E"]
+    pm.top(len(pm), with_priority=True) == [("A", 1), ("B", 2), ("C", 3), ("D", 4), ("E", 5)]
+    pm.update("D", 0)
+    pm.top(len(pm), with_priority=False) == ["D", "A", "B", "C", "E"]
+    pm.top(len(pm), with_priority=True) == [("D", 4), ("A", 1), ("B", 2), ("C", 3), ("E", 5)]
 
 
 def test_priority_queue_custom_comparator():
