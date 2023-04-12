@@ -141,7 +141,7 @@ class GridPathFinder:
         if source == destination:
             return list([source])
         path_dict, visited = dict(), set()                  # path_dict = {child: parent}
-        candidates = PriorityMap(min_heap=True)
+        candidates = PriorityMap()
         g_values = {source: 0}                              # g_value: path cost to source
         candidates.push(item=source, priority=0)            # priority = g_value
         while len(candidates) > 0:
@@ -172,7 +172,7 @@ class GridPathFinder:
         if source == destination:
             return list([source])
         path_dict, visited = dict(), set()  # path_dict = {child: parent}
-        candidates = PriorityMap(min_heap=True)
+        candidates = PriorityMap()
         g_values = {source: 0}                                     # g_value: path cost to source
         h_value = self.distance(source, destination, "manhattan")  # h_value: huristic estimate of the path cost to destination
         f_value = g_values[source] + h_value                       # f_value: g_value + h_value

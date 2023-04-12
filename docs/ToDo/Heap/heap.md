@@ -29,7 +29,7 @@
 
 ```python
 >>> from ezcode.heap import PriorityQueue
->>> max_pq = PriorityQueue(min_heap=False)
+>>> max_pq = PriorityQueue(reverse=True)
 >>> for data in [("D", 4), ("C", 3), ("E", 5), ("A", 1), ("B", 2)]:
 ...     max_pq.push(data)
 ...     print(max_pq.top(with_priority=True))
@@ -96,7 +96,7 @@ F in min_map: False
 
 ```python
 >>> from ezcode.heap import PriorityMap
->>> max_map = PriorityMap(min_heap=False)
+>>> max_map = PriorityMap(reverse=True)
 >>> for data in [("D", 4), ("C", 3), ("E", 5), ("A", 1), ("B", 2)]:
 ...     max_map.push(data)
 ...     max_map.top(with_priority=True)
@@ -129,6 +129,6 @@ F in max_map: False
 ('A', 1)
 ('E', 0)
 
->>> print(PriorityMap({"A": 1, "B": 2, "C": 3}, min_heap=False))
+>>> print(PriorityMap({"A": 1, "B": 2, "C": 3}, reverse=True))
 [('C', 3), ('A', 1), ('B', 2)]
 ```

@@ -1,7 +1,17 @@
+from random import randrange
 from ezcode.Heap.PriorityMap import PriorityMap
 
 
-def test_priority_map_push_pop_top():
+def test_priority_map_top():
+    size = 500
+    random_list = [randrange(size) for _ in range(size)]
+    pm = PriorityMap(random_list)
+    assert pm.top(len(pm)) == sorted(random_list)
+    pm = PriorityMap(random_list, reverse=True)
+    assert pm.top(len(pm)) == sorted(random_list, reverse=True)
+
+
+def test_priority_map_push_pop():
     min_map = PriorityMap(key=lambda x: ord(x) - ord("A") + 1)
     for push_data, top_data in zip(["D", "C", "E", "A", "B"], [("D", 4), ("C", 3), ("C", 3), ("A", 1), ("A", 1)]):
         min_map.push(push_data)
@@ -19,7 +29,7 @@ def test_priority_map_push_pop_top():
     del min_map["D"]
     del min_map["B"]
     assert min_map.pop(len(min_map)) == ["A", "C", "E"]
-    max_map = PriorityMap(min_heap=False, key=lambda x: ord(x) - ord("A") + 1)
+    max_map = PriorityMap(reverse=True, key=lambda x: ord(x) - ord("A") + 1)
     for push_data, top_data in zip(["D", "C", "E", "A", "B"], ["D", "D", "E", "E", "E"]):
         max_map.push(push_data)
         assert max_map.top() == top_data
@@ -32,7 +42,7 @@ def test_priority_map_push_pop_top():
     assert max_map.top() == "B"
     assert max_map["B"] == 6
     assert max_map.pop(3, with_priority=True) == [("B", 6), ("E", 5), ("D", 4)]
-    max_map = PriorityMap({"D": 4, "C": 3, "E": 5, "A": 1, "B": 2}, min_heap=False)
+    max_map = PriorityMap({"D": 4, "C": 3, "E": 5, "A": 1, "B": 2}, reverse=True)
     del max_map["E"]
     assert max_map.top(with_priority=True) == ("D", 4)
     del max_map["B"]
@@ -86,7 +96,7 @@ def test_priority_queue_custom_comparator():
         assert min_map.pop(with_priority=True) == pop_data
 
     init_map = {"A": Priority(2, 2, 3), "B": Priority(2, 1, 1), "E": Priority(1, 1, 1), "D": Priority(1, 1, 2), "C": Priority(1, 1, 1)}
-    max_map = PriorityMap(init_map, min_heap=False)
+    max_map = PriorityMap(init_map, reverse=True)
     for pop_data in [[Priority(2, 2, 3), "A"], [Priority(2, 1, 1), "B"], [Priority(1, 1, 2), "D"], [Priority(1, 1, 1), "E"], [Priority(1, 1, 1), "C"]]:
         assert max_map.pop(with_priority=True) == (pop_data[1], pop_data[0])
 

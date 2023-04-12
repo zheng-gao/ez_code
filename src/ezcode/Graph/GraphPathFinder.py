@@ -123,7 +123,7 @@ class GraphPathFinder:
         if src_node_id is not None and src_node_id == dst_node_id:
             return self_loop_weight, list([src_node_id])
         path_values, path_dict, visited = dict(), dict(), set()
-        candidates = PriorityMap({src_node_id: self_loop_weight}, min_heap=is_min)
+        candidates = PriorityMap({src_node_id: self_loop_weight}, reverse=not is_min)
         for node_id in self.graph.nodes:
             path_values[node_id] = self_loop_weight if node_id == src_node_id else disconnected_edge_weight
         while len(candidates) > 0:

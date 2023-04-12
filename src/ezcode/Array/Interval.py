@@ -138,7 +138,7 @@ def overlapping_interval_pairs(intervals: list[Interval]) -> list[tuple[Interval
 
 
 def min_groups_of_non_overlapping_intervals(intervals: list[Interval]) -> list[list[Interval]]:
-    min_queue = PriorityQueue(min_heap=True, key=lambda group: group[-1].right)
+    min_queue = PriorityQueue(key=lambda group: group[-1].right)
     for interval in sorted(intervals, key=lambda interval: interval.left):
         if min_queue.is_empty():
             min_queue.push([interval])  # init group = [interval]
@@ -164,7 +164,7 @@ def skyline(buildings: list[tuple]) -> list[tuple]:
             r_map[right] = list()
         r_map[right].append(interval)
     index_l, index_r, sorted_l, sorted_r = 0, 0, sorted(l_map), sorted(r_map)
-    max_map = PriorityMap(min_heap=False, key=lambda interval: interval.data)
+    max_map = PriorityMap(reverse=True, key=lambda interval: interval.data)
     while index_r < len(sorted_r):
         left, right = sorted_l[index_l] if index_l < len(sorted_l) else float("inf"), sorted_r[index_r]
         if left >= right:  # process right edge first

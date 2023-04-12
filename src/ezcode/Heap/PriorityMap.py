@@ -3,9 +3,9 @@ from ezcode.Heap.PriorityQueue import PriorityQueue
 
 
 class PriorityMap(PriorityQueue):
-    def __init__(self, init_data: Iterable = None, min_heap: bool = True, key: Callable = None, unpack_pairs: bool = True):
+    def __init__(self, init_data: Iterable = None, reverse: bool = False, key: Callable = None, unpack_pairs: bool = True):
         self.map = dict()  # <item, heap_index>
-        super().__init__(init_data=init_data, min_heap=min_heap, key=key, unpack_pairs=unpack_pairs)
+        super().__init__(init_data=init_data, reverse=reverse, key=key, unpack_pairs=unpack_pairs)
 
     def __contains__(self, item) -> bool:
         return item in self.map
@@ -64,7 +64,7 @@ class PriorityMap(PriorityQueue):
         old_entry = self.heap[index]
         if old_entry[1] != priority:
             self.heap[index] = (item, priority)
-            if (self.min_heap and priority < old_entry[1]) or (not self.min_heap and old_entry[1] < priority):
+            if (not self.reverse and priority < old_entry[1]) or (self.reverse and old_entry[1] < priority):
                 self._sift_down(index)  # python sift down is from leaf to root
             else:
                 self._sift_up(index)  # python sift up is from root to leaf
@@ -86,7 +86,7 @@ class PriorityMap(PriorityQueue):
                 return [self.heap[0]] if with_priority else [self.heap[0][0]]  # [item / (item, priority)]
             return self.heap[0] if with_priority else self.heap[0][0]  # item / (item, priority)
         else:  # O(2N + KlogN)
-            pm_copy = PriorityMap(min_heap=self.min_heap, key=self.key)
+            pm_copy = PriorityMap(reverse=self.reverse, key=self.key)
             pm_copy.heap = self.heap.copy()  # shallow copy: O(N)
             pm_copy.map = self.map.copy()    # shallow copy: O(N)
             return pm_copy.pop(k, with_priority)  # [item / (item, priority)], O(KlogN)
@@ -120,7 +120,7 @@ class PriorityMap(PriorityQueue):
         while index > 0:
             parent_index = (index - 1) >> 1
             parent = self.heap[parent_index]
-            if (self.min_heap and tmp_entry[1] < parent[1]) or (not self.min_heap and parent[1] < tmp_entry[1]):
+            if (not self.reverse and tmp_entry[1] < parent[1]) or (self.reverse and parent[1] < tmp_entry[1]):
                 self.heap[index] = parent
                 self.map[parent[0]] = index
                 index = parent_index
@@ -139,10 +139,10 @@ class PriorityMap(PriorityQueue):
             child_index = left_index
             if right_index <= end_index:
                 left_child, right_child = self.heap[left_index], self.heap[right_index]
-                if (self.min_heap and right_child[1] < left_child[1]) or (not self.min_heap and left_child[1] < right_child[1]):
+                if (not self.reverse and right_child[1] < left_child[1]) or (self.reverse and left_child[1] < right_child[1]):
                     child_index = right_index
             child = self.heap[child_index]
-            if (self.min_heap and child[1] < tmp_entry[1]) or (not self.min_heap and tmp_entry[1] < child[1]):
+            if (not self.reverse and child[1] < tmp_entry[1]) or (self.reverse and tmp_entry[1] < child[1]):
                 self.heap[index] = child
                 self.map[child[0]] = index
                 index = child_index

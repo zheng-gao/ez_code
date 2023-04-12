@@ -9,7 +9,7 @@ def merge_sorted_iterables(iterables: Iterable[Iterable], key: Callable = None, 
         Space: O(K) where K is priority queue size
         reverse = True for descending order
     """
-    pq = PriorityQueue(min_heap=not reverse)
+    pq = PriorityQueue(reverse=reverse)
     for iterable in iterables:
         iterator = iter(iterable)
         data = next(iterator, None)

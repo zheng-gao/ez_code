@@ -3,16 +3,23 @@ from typing import Iterable
 
 
 class PriorityQueueOnPartialArray:
-    def __init__(self, array: list, min_heap: bool = True, key: Callable = lambda x: x, start: int = 0, end: int = None, init_data: Iterable = None):
-        self.min_heap = min_heap
+    def __init__(self, array: list, reverse: bool = False, key: Callable = lambda x: x, start: int = 0, end: int = None, init_data: Iterable = None):
+        self.reverse = reverse
         self.key = key
         self.heap = array
         self.start = start
         self.end = start - 1
         self.max_end = end if end else len(array) - 1
         if init_data is not None:
-            for item in init_data:
-                self.push(item)
+            capacity = self.max_end - start + 1
+            if len(init_data) > capacity:
+                raise IndexError("Out of capacity")
+            else:
+                for item in init_data:
+                    self.end += 1
+                    self.heap[self.end] = item
+                for index in range(((self.end - start + 1) >> 1) - 1 + start, start - 1, -1):
+                    self._sift_up(index)
 
     def __len__(self):
         return self.end - self.start + 1
@@ -53,8 +60,9 @@ class PriorityQueueOnPartialArray:
         else:  # O(N + KlogN)
             pq_copy = PriorityQueueOnPartialArray(
                 array=self.heap[self.start:self.end + 1],
-                min_heap=self.min_heap, key=self.key, start=0
+                reverse=self.reverse, key=self.key, start=0
             )  # shallow copy: O(N)
+            pq_copy.end = self.end - self.start
             return pq_copy.pop(k)  # [item], O(KlogN)
 
     def pop(self, k: int = 1, with_priority: bool = False, always_return_list: bool = False):
@@ -93,7 +101,7 @@ class PriorityQueueOnPartialArray:
             parent_index = ((index - self.start - 1) >> 1) + self.start
             parent = self.heap[parent_index]
             parent_priority = self.key(parent)
-            if (self.min_heap and item_priority < parent_priority) or (not self.min_heap and parent_priority < item_priority):
+            if (not self.reverse and item_priority < parent_priority) or (self.reverse and parent_priority < item_priority):
                 self.heap[index] = parent
                 index = parent_index
             else:
@@ -110,11 +118,11 @@ class PriorityQueueOnPartialArray:
             child_index = left_index
             if right_index <= self.end:
                 left_priority, right_priority = self.key(self.heap[left_index]), self.key(self.heap[right_index])
-                if (self.min_heap and right_priority < left_priority) or (not self.min_heap and left_priority < right_priority):
+                if (not self.reverse and right_priority < left_priority) or (self.reverse and left_priority < right_priority):
                     child_index = right_index
             child = self.heap[child_index]
             child_priority = self.key(child)
-            if (self.min_heap and child_priority < item_priority) or (not self.min_heap and item_priority < child_priority):
+            if (not self.reverse and child_priority < item_priority) or (self.reverse and item_priority < child_priority):
                 self.heap[index] = child
                 index = child_index
                 left_index = ((index - self.start) << 1) + 1 + self.start
