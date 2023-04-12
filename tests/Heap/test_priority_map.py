@@ -45,26 +45,6 @@ def test_priority_map_push_pop_top():
     assert len(max_map) == 0
 
 
-def test_priority_map_heapify():
-    pm = PriorityMap()
-    pm.heapify([4, 3, 5, 1, 2], min_heap=True)
-    pm.top(len(pm)) == [1, 2, 3, 4, 5]
-    pm.heapify([4, 3, 5, 1, 2], min_heap=False)
-    pm.top(len(pm)) == [5, 4, 3, 2, 1]
-    pm.update(item=3, priority=6)
-    pm.top(len(pm)) == [6, 5, 4, 2, 1]
-    pm.heapify([("D", 4), ("C", 3), ("E", 5), ("A", 1), ("B", 2)], min_heap=True, key=lambda x: x[1], unpack_pairs=False)
-    pm.top(len(pm)) == [("A", 1), ("B", 2), ("C", 3), ("D", 4), ("E", 5)]
-    pm.update(item=("D", 4), priority=0)
-    pm.top(len(pm)) == [("D", 4), ("A", 1), ("B", 2), ("C", 3), ("E", 5)]
-    pm.heapify([("D", 4), ("C", 3), ("E", 5), ("A", 1), ("B", 2)], min_heap=True, unpack_pairs=True)
-    pm.top(len(pm)) == ["A", "B", "C", "D", "E"]
-    pm.top(len(pm), with_priority=True) == [("A", 1), ("B", 2), ("C", 3), ("D", 4), ("E", 5)]
-    pm.update("D", 0)
-    pm.top(len(pm), with_priority=False) == ["D", "A", "B", "C", "E"]
-    pm.top(len(pm), with_priority=True) == [("D", 4), ("A", 1), ("B", 2), ("C", 3), ("E", 5)]
-
-
 def test_priority_queue_custom_comparator():
 
     class Priority:
@@ -77,16 +57,16 @@ def test_priority_queue_custom_comparator():
             if not isinstance(other, type(self)):
                 raise NotImplementedError(f"{other} is not type {type(self)}")
 
-        def __str__(self):
+        def __repr__(self):
             return f"({self.a},{self.b},{self.c})"
 
         def __eq__(self, other) -> bool:
             self.check_type(other)
-            return not self < other and not other < self
+            return self.a == other.a and self.b == other.b and self.c == other.c
 
         def __gt__(self, other) -> bool:
             self.check_type(other)
-            return other < self
+            return other.__lt__(self)
 
         def __lt__(self, other) -> bool:
             self.check_type(other)
@@ -98,12 +78,11 @@ def test_priority_queue_custom_comparator():
                 return True
             if other.b < self.b:
                 return False
-            return self.c < self.c
-
+            return self.c < other.c
 
     init_map = {"A": Priority(2, 2, 3), "B": Priority(2, 1, 1), "E": Priority(1, 1, 1), "D": Priority(1, 1, 2), "C": Priority(1, 1, 1)}
     min_map = PriorityMap(init_map) 
-    for pop_data in [("E", Priority(1, 1, 1)), ("C", Priority(1, 1, 1)), ("D", Priority(1, 1, 2)), ("B", Priority(2, 1, 1)), ("A", Priority(2, 2, 3))]:
+    for pop_data in [("C", Priority(1, 1, 1)), ("E", Priority(1, 1, 1)), ("D", Priority(1, 1, 2)), ("B", Priority(2, 1, 1)), ("A", Priority(2, 2, 3))]:
         assert min_map.pop(with_priority=True) == pop_data
 
     init_map = {"A": Priority(2, 2, 3), "B": Priority(2, 1, 1), "E": Priority(1, 1, 1), "D": Priority(1, 1, 2), "C": Priority(1, 1, 1)}

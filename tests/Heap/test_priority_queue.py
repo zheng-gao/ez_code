@@ -24,14 +24,14 @@ def test_priority_queue_push_pop_top():
     for pop_data in [("A", 1), ("B", 2), ("C", 3), ("D", 4), ("E", 5)]:
         assert min_queue.pop(with_priority=True) == pop_data
     min_queue = PriorityQueue([("D", 4), ("C", 3), ("E", 5), ("A", 1), ("B", 2)])
-    assert min_queue.heap == [("A", 1), ("B", 2), ("E", 5), ("D", 4), ("C", 3)] 
+    assert min_queue.heap == [("A", 1), ("B", 2), ("E", 5), ("C", 3), ("D", 4)]
     min_queue.update_top("F", 6)
-    assert min_queue.heap == [("B", 2), ("C", 3), ("E", 5), ("D", 4), ("F", 6)]
+    assert min_queue.heap == [("B", 2), ("C", 3), ("E", 5), ("F", 6), ("D", 4)]
     min_queue.update_top("B", 4)
-    assert min_queue.heap == [("C", 3), ("B", 4), ("E", 5), ("D", 4), ("F", 6)]
+    assert min_queue.heap == [("C", 3), ("B", 4), ("E", 5), ("F", 6), ("D", 4)]
     min_queue.update_top("C", 2)
-    assert min_queue.heap == [("C", 2), ("B", 4), ("E", 5), ("D", 4), ("F", 6)] 
-    assert min_queue.top(len(min_queue)) == ["C", "B", "D", "E", "F"]
+    assert min_queue.heap == [("C", 2), ("B", 4), ("E", 5), ("F", 6), ("D", 4)]
+    assert min_queue.top(len(min_queue)) == ["C", "D", "B", "E", "F"]
     push_list = [("D", 4), ("C", 3), ("E", 5), ("A", 1), ("B", 2)]
     max_top_list = [("D", 4), ("D", 4), ("E", 5), ("E", 5), ("E", 5)]
     max_queue = PriorityQueue(min_heap=False, key=lambda x: ord(x) - ord("A") + 1)
@@ -47,19 +47,6 @@ def test_priority_queue_push_pop_top():
         assert max_queue.pop(with_priority=True) == pop_data
 
 
-def test_priority_queue_heapify():
-    pq = PriorityQueue()
-    pq.heapify([4, 3, 5, 1, 2], min_heap=True)
-    pq.top(len(pq)) == [1, 2, 3, 4, 5]
-    pq.heapify([4, 3, 5, 1, 2], min_heap=False)
-    pq.top(len(pq)) == [5, 4, 3, 2, 1]
-    pq.heapify([("D", 4), ("C", 3), ("E", 5), ("A", 1), ("B", 2)], min_heap=True, key=lambda x: x[1], unpack_pairs=False)
-    pq.top(len(pq)) == [("A", 1), ("B", 2), ("C", 3), ("D", 4), ("E", 5)]
-    pq.heapify([("D", 4), ("C", 3), ("E", 5), ("A", 1), ("B", 2)], min_heap=True, unpack_pairs=True)
-    pq.top(len(pq)) == ["A", "B", "C", "D", "E"]
-    pq.top(len(pq), with_priority=True) == [("A", 1), ("B", 2), ("C", 3), ("D", 4), ("E", 5)]
-
-
 def test_priority_queue_custom_comparator():
 
     class Priority:
@@ -72,16 +59,16 @@ def test_priority_queue_custom_comparator():
             if not isinstance(other, type(self)):
                 raise NotImplementedError(f"{other} is not type {type(self)}")
 
-        def __str__(self):
+        def __repr__(self):
             return f"({self.a},{self.b},{self.c})"
 
         def __eq__(self, other) -> bool:
             self.check_type(other)
-            return not self < other and not other < self
+            return self.a == other.a and self.b == other.b and self.c == other.c
 
         def __gt__(self, other) -> bool:
             self.check_type(other)
-            return other < self
+            return other.__lt__(self)
 
         def __lt__(self, other) -> bool:
             self.check_type(other)
@@ -93,11 +80,11 @@ def test_priority_queue_custom_comparator():
                 return True
             if other.b < self.b:
                 return False
-            return self.c < self.c
+            return self.c < other.c
 
     init_list = [("A", Priority(2, 2, 3)), ("B", Priority(2, 1, 1)), ("E", Priority(1, 1, 1)), ("D", Priority(1, 1, 2)), ("C", Priority(1, 1, 1))]
     min_queue = PriorityQueue(init_list) 
-    for pop_data in [("E", Priority(1, 1, 1)), ("C", Priority(1, 1, 1)), ("D", Priority(1, 1, 2)), ("B", Priority(2, 1, 1)), ("A", Priority(2, 2, 3))]:
+    for pop_data in [("C", Priority(1, 1, 1)), ("E", Priority(1, 1, 1)), ("D", Priority(1, 1, 2)), ("B", Priority(2, 1, 1)), ("A", Priority(2, 2, 3))]:
         assert min_queue.pop(with_priority=True) == pop_data
 
     init_list = [[Priority(2, 2, 3), "A"], [Priority(2, 1, 1), "B"], [Priority(1, 1, 1), "E"], [Priority(1, 1, 2), "D"], [Priority(1, 1, 1), "C"]]

@@ -1,4 +1,3 @@
-from collections import MutableSequence
 from typing import Callable, Iterable
 from ezcode.Heap.PriorityQueue import PriorityQueue
 
@@ -35,19 +34,10 @@ class PriorityMap(PriorityQueue):
     def __setitem__(self, item, priority):  # O(logN)
         self.push(item, priority)
 
-    def heapify(self, mutable_sequence: MutableSequence, min_heap: bool = True, key: Callable = None, unpack_pairs: bool = True):
-        self.heap.clear()
-        self.map.clear()
-        self.min_heap = min_heap
-        self.key = key
-        for index, entry in enumerate(mutable_sequence):
-            if isinstance(entry, Iterable) and len(entry) == 2 and unpack_pairs:
-                self.heap.append((entry[0], entry[1]))
-            else:
-                self.heap.append((entry, entry if key is None else key(entry)))
-            self.map[entry] = index
-        for index in range((len(self.heap) >> 1) - 1, -1, -1):
-            self._sift_up(index)
+    def _heapify(self):  # O(N)
+        for index, entry in enumerate(self.heap):
+            self.map[entry[0]] = index
+        super()._heapify()
 
     def push(self, *args, **kwargs):  # O(logN)
         """

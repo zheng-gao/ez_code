@@ -1,5 +1,5 @@
 from typing import Callable, Iterable
-from collections.abc import Mapping, MutableSequence
+from collections.abc import Mapping
 
 
 class PriorityQueue:
@@ -11,13 +11,14 @@ class PriorityQueue:
         if init_data is not None:
             if isinstance(init_data, Mapping):
                 for item, priority in init_data.items():
-                    self.push(item, priority)
+                    self.heap.append((item, priority))
             else:
                 for entry in init_data:
                     if isinstance(entry, Iterable) and len(entry) == 2 and unpack_pairs:
-                        self.push(*entry)
+                        self.heap.append((entry[0], entry[1]))
                     else:
-                        self.push(entry)
+                        self.heap.append((entry, entry if key is None else key(entry)))
+            self._heapify()
 
     def __len__(self) -> int:
         return len(self.heap)
@@ -59,16 +60,7 @@ class PriorityQueue:
                 priority = item if self.key is None else self.key(item)
         return item, priority
 
-    def heapify(self, mutable_sequence: MutableSequence, min_heap: bool = True, key: Callable = None, unpack_pairs: bool = True):
-        """ O(N) """
-        self.heap.clear()
-        self.min_heap = min_heap
-        self.key = key
-        for entry in mutable_sequence:
-            if isinstance(entry, Iterable) and len(entry) == 2 and unpack_pairs:
-                self.heap.append((entry[0], entry[1]))
-            else:
-                self.heap.append((entry, entry if key is None else key(entry)))
+    def _heapify(self):  # O(N)
         for index in range((len(self.heap) >> 1) - 1, -1, -1):
             self._sift_up(index)
 
