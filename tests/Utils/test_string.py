@@ -1,4 +1,4 @@
-from ezcode.Utils.String import rotate_char, substrings
+from ezcode.Utils.String import rotate_char, substrings, ignore_quoted_delimiters_split
 
 
 def test_rotate_char():
@@ -32,3 +32,18 @@ def test_substrings():
         4: ['abbb', 'bbbc'],
         5: ['abbbc']
     }
+
+
+def test_ignore_quoted_delimiters_split():
+    assert ignore_quoted_delimiters_split("") == []
+    assert ignore_quoted_delimiters_split(",", delimiters={","}) == []
+    assert ignore_quoted_delimiters_split(",", delimiters={","}, keep_blank_values=True) == ["", ""]
+    string = " 1: ' quoted delimiters!  ' :2  \" double quotes! \" !  "
+    assert ignore_quoted_delimiters_split(string) == [
+        "1:", "' quoted delimiters!  '", ":2", "\" double quotes! \"", "!"]
+    assert ignore_quoted_delimiters_split(string, keep_blank_values=True) == [
+        "", "1:", "' quoted delimiters!  '", ":2", "", "\" double quotes! \"", "!", "", ""]
+    assert ignore_quoted_delimiters_split(string, delimiters={" ", ":", "!"}, keep_blank_values=True) == [
+        "", "1", "", "' quoted delimiters!  '", "", "2", "", "\" double quotes! \"", "", "", "", ""]
+    assert ignore_quoted_delimiters_split(string, delimiters={":", "!"}) == [
+        " 1", " ' quoted delimiters!  ' ", "2  \" double quotes! \" ", "  "]

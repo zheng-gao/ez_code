@@ -38,6 +38,32 @@ def substrings(string: str, unique: bool = True, by_size: bool = False):
     return output
 
 
+def ignore_quoted_delimiters_split(string, delimiters=None, keep_blank_values=False):
+    # shlex.split
+    if delimiters is None:
+        delimiters = {" "}
+    output, quote, in_quotes, substring, substring_complete = list(), None, False, "", False
+    for char in string:
+        if not in_quotes and char in delimiters:
+            substring_complete = True
+        elif not in_quotes and char in ['"', "'"]:
+            quote, in_quotes = char, True
+            substring += char
+        elif in_quotes and char == quote:
+            quote, in_quotes = None, False
+            substring += char
+        else:
+            substring += char
+        if substring_complete:
+            if keep_blank_values or len(substring) > 0:
+                output.append(substring)
+            substring, substring_complete = "", False
+    if keep_blank_values or len(substring) > 0:
+        output.append(substring)
+    return output
+
+
 def text_justification(words: list, line_width: int) -> list:
     for word in words:
         pass
+
