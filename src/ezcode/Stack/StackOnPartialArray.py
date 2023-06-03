@@ -12,7 +12,7 @@ class StackOnPartialArray:
     def push(self, data):
         if self.size == self.end - self.start + 1:
             raise IndexError("Push to a full stack")
-        self.head = (self.head + 1) if self.head < self.end else self.start
+        self.head += 1
         self.array[self.head] = data
         self.size += 1
 
@@ -20,7 +20,7 @@ class StackOnPartialArray:
         if self.size == 0:
             raise IndexError("Pop from an empty queue")
         data = self.array[self.head]
-        self.head = (self.head - 1) if self.head > self.start else self.end
+        self.head -= 1
         self.size -= 1
         return data
 
@@ -35,5 +35,5 @@ class StackOnPartialArray:
             head, output = self.head, list()
             for _ in range(k):
                 output.append(self.array[head])
-                head = (head + 1) if self.head > self.start else self.end
+                head -= 1
             return output

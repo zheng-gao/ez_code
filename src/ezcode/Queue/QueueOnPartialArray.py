@@ -37,5 +37,5 @@ class QueueOnPartialArray:
             tail, output = self.tail, list()
             for _ in range(k):
                 output.append(self.array[tail])
-                tail = (tail + 1) if self.tail < self.end else self.start
+                tail = (tail + 1) if tail < self.end else self.start
             return output
